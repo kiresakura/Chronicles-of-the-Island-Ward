@@ -41,23 +41,32 @@
 - 加入 `config/name_localized` (en/ja/zh_CN/zh_TW)
 - 加入 `config/description`
 
-## 待憲龍決策（見 QUESTIONS.md）
+## QUESTIONS.md Q1-Q8 已回覆（2026-05-16）
 
-- Q1: Godot 4.4 vs 4.6.1 版本鎖定
-- Q2: 直向 UI 切換時機
-- Q3: GitHub private repo 建立指示
-- Q4: 素材調查文件位置
-- Q5: STR vs PRD 術語對應（已暫定）
-- Q6: i18n 機制（已暫定）
-- Q7: Apple Developer Account 狀態
-- Q8: Xcode 26.5 iOS export 風險
+| Q | 決策 | 後續 Action |
+|---|---|---|
+| Q1 | ✅ 留 Godot 4.6.1 | CI 也鎖 4.4.1 / 4.6 都可 |
+| Q2 | ✅ Sprint 2 才切直向 | Sprint 1 用 STR 原橫向驗證資料管線 |
+| Q3 | 帳號 `kiresakura`，repo `Chronicles of the Island Ward` | 等憲龍給 token 後 push（注意：keyring 已有 kiresakura token） |
+| Q4 | 移除素材調查引用 | ✅ 已從 CLAUDE.md / PRD.md / README.md 移除 |
+| Q5 | ✅ 確認術語對應策略 | 程式碼用 STR 命名，UI 用 i18n 翻譯 |
+| Q6 | ✅ TranslationServer + KeywordData 並用 | Sprint 1 試 KeywordData 戰鬥詞彙 |
+| Q7 | ✅ 有 Apple Developer Account | Sprint 1 末試 iOS Simulator 打包 |
+| Q8 | ✅ 採納先試 iOS Simulator | 進行中：背景下載 export templates |
+
+## 進行中
+
+- Godot 4.6.1 export templates 背景下載（~1GB）
+- 完成後可設定 iOS Simulator export preset 並試打包
 
 ## 待真機環境
 
-- iPhone 真機跑通 STR 預設範例
+- iPhone 真機跑通 STR 預設範例（憲龍動作 — 在 Godot 編輯器中 deploy）
 - Android 真機跑通 STR 預設範例
-- iOS / Android export presets 完成設定
+- iOS / Android export presets 完成設定（templates 下載完後可進）
 
-## 下一步
+## 下一步建議
 
-收到 Q3 指示後 → 建 GH private repo → push → 開始 Sprint 1（乩童主題替換）。
+1. 待憲龍給 kiresakura token → `gh auth switch kiresakura` → 建 private repo → push
+2. 開始 Sprint 1（乩童主題替換 + 10 張卡）
+3. iOS Simulator export 驗證（不需要憲龍指示，等 templates 下載完）
