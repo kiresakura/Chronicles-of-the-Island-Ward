@@ -43,3 +43,8 @@ external/profile.json
 .env.local
 secret_*.cfg
 
+# Ruby
+scripts/Gemfile.lock
+scripts/.bundle/
+scripts/vendor/bundle/
+
