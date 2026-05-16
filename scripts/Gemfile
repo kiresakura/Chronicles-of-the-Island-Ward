@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+# fastlane 帶最新版 spaceship（Apple Developer Portal API wrapper）
+gem "fastlane", "~> 2.225"
+gem "io-console"
