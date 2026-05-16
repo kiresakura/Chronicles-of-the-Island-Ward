@@ -10,7 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Slay The Robot"
+config/name="鎮島錄"
+config/name_localized={
+"en": "Chronicles of the Island Ward",
+"ja": "鎮島録",
+"zh_CN": "镇岛录",
+"zh_TW": "鎮島錄"
+}
+config/description="台灣民俗主題肉鴿卡牌戰鬥手機遊戲。Fork from Slay The Robot framework (MIT)."
 run/main_scene="res://scenes/Root.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="uid://8kopj5luv8dc"

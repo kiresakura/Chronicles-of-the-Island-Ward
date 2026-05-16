@@ -11,3 +11,35 @@ export_presets.cfg
 .mono/
 /external/saves
 external/profile.json
+
+# === COTIW additions ===
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build output
+/build/
+*.ipa
+*.apk
+*.aab
+*.dSYM/
+
+# Backup files
+*.bak
+*.tmp
+
+# Local secret config (sentry keys, etc.)
+.env
+.env.local
+secret_*.cfg
+

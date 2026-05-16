@@ -1,77 +1,64 @@
-# Slay The Robot
+# 鎮島錄 / Chronicles of the Island Ward (COTIW)
 
-Slay the Robot is a comprehensive framework for Godot 4 which enables and streamlines the creation of roguelike deckbuilders similar to Slay the Spire.
+> 一款台灣民俗主題的肉鴿卡牌戰鬥手機遊戲
+> Godot 4 · iOS + Android · F2P + IAP
 
-# Features
+---
 
-*Some of the core features include but are not limited to:*
+## 專案文件導覽
 
-## 🃏 Cards, Cards, and More Cards
+| 檔案 | 用途 | 給誰看 |
+|---|---|---|
+| [PRD.md](./PRD.md) | 完整產品需求文件（13 章節） | 全部人 |
+| [CLAUDE.md](./CLAUDE.md) | Claude Code 接手指南 | Claude Code、其他工程師 |
+| [QUESTIONS.md](./QUESTIONS.md) | 開發過程累積問題 | Claude Code → 憲龍 |
+| [docs/UPSTREAM_README.md](./docs/UPSTREAM_README.md) | Slay The Robot 上游 README | 框架開發者 |
+| [../鎮島錄 - 開源倉庫與台灣文化素材調查.md](../鎮島錄%20-%20開源倉庫與台灣文化素材調查.md) | 前期技術與素材調查（檔案位置待確認，見 QUESTIONS.md Q4） | 全部人 |
 
-Cards have a massive and robust data-driven API, allowing you to create cards from simple JSON payloads. Almost every card in Slay the Spire is possible with this framework, many even possible without having to touch a single line of code, just by using the existing actions and card properties provided in the default framework.
+---
 
-Got too many cards? Nonsense! Use card packs to query and organize even thousands of cards in a performant manner. Add a new red card to the game? The red card pack will instantly add it to the red deck and they'll start showing up. Want to suddenly start being able to draft green cards during a run? Simply add a green card pack to the player and it'll automatically sort out the rest.
+## 30 秒理解這個專案
 
-## ⚔️ Action System
+**做什麼**：類《殺戮尖塔》的肉鴿卡牌遊戲，但題材是台灣民俗——乩童、道士、八家將對抗妖怪邪神。
 
-A system of reusable action scripts drives everything. From attacking and drawing cards, to buying things from a shop, to more technical things like generating the world, ending your turn, or incrementing a status effect all pipe through this system in an orderly and consistent fashion. There's even actions that make or modify other actions, allowing for deep nested behavior.
+**為什麼**：肉鴿卡牌類型市場成熟，但台灣文化題材是個被忽略的縫隙。中文圈玩家對廟會、家將、妖怪意象有強烈共鳴。
 
-A value hierarchy ensures you have total control over where data is pulled. Restrict action parameters to a single action, or provide them to your cards so all actions inherit from them. Or even assign custom values to the player themself and pull data from there.
+**技術選擇**：Godot 4 + fork [Slay The Robot](https://github.com/DesirePathGames/Slay-The-Robot)（MIT）作為核心戰鬥框架。
 
-Actions can be assigned timers to ensure they take exactly as long as you need them to. Both synchronous and asynchronous actions are also supported. Maybe you want a card that torrents the entirety of Bee Movie, plays it, and makes the player sit through to the end before they can play another card. Hey, I'm not here to judge your impeccable taste.
+**目標**：13 個月內上架 App Store + Google Play。
 
-## 📜 Interceptors
+**變現**：F2P + IAP（角色解鎖、皮膚、Battle Pass），**不放廣告**。
 
-Data driven behavior not enough? Want to attach scripts to other scripts, setting off crazy chains that mess with the game's own internal systems through status effects and relics? Actions can be dynamically modified by action interceptors right before they run, creating complex and consistent interactions with minimal code.
+---
 
-Prevent the player from drawing cards, make shops more expensive, preserve your block between turns, make it so attacks hit harder, expand the amount of cards you can have in your hand? All easily possible with interceptors by writing short scripts and specifying what actions they affect and how.
+## 開發狀態
 
-## 🤔 Validators 
+- [x] 產品定位確認
+- [x] 技術選型確認（Godot 4 + Slay The Robot fork）
+- [x] PRD v0.1 完成
+- [x] Claude Code 接手指南完成
+- [x] Sprint 0：環境設置（進行中）
+  - [x] Fork Slay The Robot 至本機
+  - [x] Godot 4.6.1 可載入並 headless 跑通
+  - [x] 建立 COTIW 內容資料夾骨架（cards/tongji 等）
+  - [x] QUESTIONS.md / i18n CSV 骨架
+  - [ ] GitHub private repo（待憲龍指示）
+  - [ ] iOS / Android 真機跑通（待真機環境）
+  - [ ] export presets（待真機環境）
+- [ ] Sprint 1：主題改造（乩童 + 10 張卡）
+- [ ] Sprint 2：直向 mobile UI
+- [ ] Sprint 3：第一章完整流程
+- [ ] Phase 1 驗收
 
-Validators drive conditional logic across the UI and game logic. Want to restrict a card to being only played under certain conditions? How about glow if there's 3 enemies? Perhaps have some additional effect when played if you have 7+ cards in hand? Maybe it only plays when the [International Space Station's urine tank is full](https://github.com/Stovoy/pISSStreamGodot)? Easy.
+---
 
-## 📖 Events and Dialogue
+## 下一步
 
-Both combat and non combat events are supported. A simple but powerful state machine driven dialogue system ensures you can write whatever events you need. Event pools control exactly what kind of events can show up and when.
+請開啟 [CLAUDE.md](./CLAUDE.md)，從 Sprint 0 開始。
 
-## 🏃 Acts, Ascensions, and Custom Runs
+---
 
-A 3-Act structure is provided by default, with a custom run modifier for endless mode. Branching acts are also supported. Run modifiers and "ascensions" are handled by the same tech, making it easy to add more.
+## 聯絡
 
-A system for run start options is also provided. Want to choose between losing all your money to gain a rare card, or maybe gain a random common artifact? Decisions decisions...
-
-## 🎲 Deterministic RNG
-
-Random number generation is extremely important to card games and great care has been taken to ensure deterministic behavior. Automatically generate "tracks" of RNG and dependency inject them into your actions with ease. Things like shuffling your deck, events, random card damage, and much more have all been sorted into non competing buckets so the same behavior happens every time. This ensures that no matter how hard you save scum, you'll still lose.
-
-## 🧮 Combat Stats
-
-The combat system keeps track of everything that happens, and can be queried on a per turn or per combat basis. These can be hooked into to provide cards with conditional effects. You or users can even provide custom stats.
-
-## 💾 Saving and Loading
-
-The framework handles all the scary data handling work for you, automatically. Simply extend from SerializableData and add @export to a variable, and you can save and load even complex nested objects with ease in human readable JSON.
-
-The game manages autosaves for player data all on its own, and keeps track of wins and losses in total and for each character.
-
-## ⚙️Mod Support
-
-The same technology that streamlines saving and loading also makes mod support a breeze. Data, assets, and scripts (including your own!) can be loaded from external files.
-
-Simply create a mod_info.json file, specify which folders to load from and what data types it represents, and it will automatically load them if enabled in mod_list.json. Scripts may also be trivially loaded in, allowing users to inject new behavior into the game or override existing scripts.
-
-An example mod has been provided to see this technology in action.
-
-## ⚖️ Permissive Lisense
-
-Under the MIT Lisense you're free to use this framework for anything and it's yours to do as you please, from hobby to commercial.
-
-## And So Much More
-
-Rest actions, shops, chests, consumables, status effects, artifacts. This framework has everything you need to make your dream deckbuilder.
-
-# Requirements
-
-Slay the Robot is written in Godot 4.4 via GDScript, which can be downloaded from the official site [here](https://godotengine.org/download/archive/4.4-stable/).
-
-![Sample Image](https://raw.githubusercontent.com/godotengine/godot/master/logo_outlined.svg)
+- 產品負責人：憲龍 (johnny963214@gmail.com)
+- 開發接手：Claude Code

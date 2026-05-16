@@ -1,0 +1,59 @@
+name: COTIW CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  godot-import:
+    name: Godot project import & parse check
+    runs-on: ubuntu-22.04
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Import project (validates parse + assets)
+        run: godot --headless --import || true
+
+      - name: Re-run import to flush warnings
+        run: godot --headless --import
+
+      - name: Run automated checks (placeholder)
+        run: echo "TODO Sprint 2: GUT test suite"
+
+  # === Placeholders for mobile build pipelines ===
+  # Activated when:
+  # 1) GitHub repo is created and secrets configured
+  # 2) Apple Developer Account is provisioned for iOS signing
+  # 3) Android keystore is set up for Play Store
+
+  # ios-build:
+  #   name: iOS export
+  #   runs-on: macos-14
+  #   needs: godot-import
+  #   if: false  # disabled until signing is ready
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Install Godot
+  #       run: |
+  #         brew install --cask godot
+  #     - name: Build iOS Simulator (.app)
+  #       run: |
+  #         godot --headless --export-debug "iOS" build/cotiw.app
+
+  # android-build:
+  #   name: Android export
+  #   runs-on: ubuntu-22.04
+  #   container:
+  #     image: barichello/godot-ci:4.4.1
+  #   needs: godot-import
+  #   if: false  # disabled until keystore is set up
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Build Android (.apk)
+  #       run: |
+  #         godot --headless --export-debug "Android" build/cotiw.apk
