@@ -13,7 +13,6 @@
 | [CLAUDE.md](./CLAUDE.md) | Claude Code 接手指南 | Claude Code、其他工程師 |
 | [QUESTIONS.md](./QUESTIONS.md) | 開發過程累積問題 | Claude Code → 憲龍 |
 | [docs/UPSTREAM_README.md](./docs/UPSTREAM_README.md) | Slay The Robot 上游 README | 框架開發者 |
-| [../鎮島錄 - 開源倉庫與台灣文化素材調查.md](../鎮島錄%20-%20開源倉庫與台灣文化素材調查.md) | 前期技術與素材調查（檔案位置待確認，見 QUESTIONS.md Q4） | 全部人 |
 
 ---
 
