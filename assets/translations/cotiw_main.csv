@@ -1,0 +1,33 @@
+keys,zh_TW,zh_CN,en,ja
+ui.game_title,鎮島錄,镇岛录,Chronicles of the Island Ward,鎮島録
+ui.subtitle,Formosa: The Warding,Formosa: The Warding,Formosa: The Warding,Formosa: The Warding
+ui.new_run,新一局,新一局,New Run,新しいラン
+ui.continue,繼續,继续,Continue,続ける
+ui.settings,設定,设置,Settings,設定
+ui.quit,離開,离开,Quit,終了
+ui.character_select,選擇角色,选择角色,Select Character,キャラクター選択
+ui.character.tongji.name,乩童,乩童,Tongji,タンキー
+ui.character.daoshi.name,道士,道士,Daoshi,道士
+ui.character.family_general.name,家將,家将,Family General,家将
+keyword.energy,神力,神力,Divine Energy,神力
+keyword.hp,元神,元神,Spirit,元神
+keyword.block,護身符,护身符,Talisman,護身符
+keyword.poison,邪氣,邪气,Evil Aura,邪気
+keyword.strength,神威,神威,Divine Might,神威
+keyword.vulnerable,驚嚇,惊吓,Startled,驚き
+keyword.weak,怯戰,怯战,Cowed,怯み
+keyword.frail,失神,失神,Distracted,放心
+keyword.permanent_strength,香火,香火,Incense Strength,香火
+currency.silver,銀兩,银两,Silver,銀
+currency.incense,香火,香火,Incense,香火
+currency.yuanbao,元寶,元宝,Yuanbao,元宝
+battle.end_turn,結束回合,结束回合,End Turn,ターン終了
+battle.draw_pile,抽牌堆,抽牌堆,Draw Pile,山札
+battle.discard_pile,棄牌堆,弃牌堆,Discard Pile,捨て札
+battle.exhaust_pile,消除堆,消除堆,Exhaust Pile,除外
+map.node.battle,戰鬥,战斗,Battle,戦闘
+map.node.elite,菁英戰,精英战,Elite,エリート
+map.node.shop,夜市攤,夜市摊,Night Market,夜市
+map.node.rest,廟宇,庙宇,Temple Rest,休息
+map.node.event,民俗遭遇,民俗遭遇,Folk Event,イベント
+map.node.boss,章節王,章节王,Boss,ボス
