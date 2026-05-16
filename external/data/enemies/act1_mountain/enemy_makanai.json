@@ -38,7 +38,7 @@
 						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
 							"status_effect_object_id": "status_effect_vulnerable",
 							"status_charge_amount": 2,
-							"target_override": 3
+							"target_override": 2
 						}
 					}
 				],
