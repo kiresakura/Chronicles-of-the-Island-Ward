@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "keyword_divine_might",
+		"keyword_name": "神威",
+		"keyword_description": "每點神威使攻擊傷害 +1。"
+	}
+}

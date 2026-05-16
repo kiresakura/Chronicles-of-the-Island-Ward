@@ -1,0 +1,62 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_tree_spirit",
+		"enemy_object_id": "enemy_tree_spirit",
+		"enemy_name": "樹靈",
+		"enemy_health": 18,
+		"enemy_health_max": 18,
+		"enemy_block": 0,
+		"enemy_type": 0,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"root_strike": 1,
+					"bark_defense": 1
+				}
+			},
+			"root_strike": {
+				"attack_damage": 5,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"bark_defense": 2,
+					"curse": 1
+				}
+			},
+			"bark_defense": {
+				"attack_damage": 3,
+				"number_of_attacks": 1,
+				"block": 8,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"root_strike": 1,
+					"curse": 1
+				}
+			},
+			"curse": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_weak",
+							"status_charge_amount": 2,
+							"target_override": 3
+						}
+					}
+				],
+				"next_attack_weights": {
+					"root_strike": 2,
+					"bark_defense": 1
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_tongji_amulet",
+		"artifact_name": "平安符",
+		"artifact_description": "戰鬥開始時獲得 5 點護身符。",
+		"artifact_script_path": "res://scripts/artifacts/BaseArtifact.gd",
+		"artifact_color_id": "color_tongji",
+		"artifact_rarity": 0,
+		"artifact_counter_max": 1,
+		"artifact_counter_wraparound": true,
+		"artifact_appears_in_artifact_packs": false,
+		"artifact_first_turn_actions": [
+			{
+				"res://scripts/actions/ActionBlock.gd": {
+					"block": 5,
+					"target_override": 2
+				}
+			}
+		]
+	}
+}

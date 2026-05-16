@@ -1,0 +1,20 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_tongji_talisman",
+		"card_name": "護身符",
+		"card_description": "獲得 6 點護身符。",
+		"card_color_id": "color_tongji",
+		"card_type": 1,
+		"card_rarity": 0,
+		"card_energy_cost": 1,
+		"card_requires_target": false,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/ActionBlock.gd": {
+					"block": 6
+				}
+			}
+		]
+	}
+}
