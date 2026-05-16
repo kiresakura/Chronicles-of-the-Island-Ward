@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "keyword_startled",
+		"keyword_name": "驚嚇",
+		"keyword_description": "受到攻擊時傷害 +50%，每回合減少 1 層。"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_tongji_heavy_strike",
+		"card_name": "重擊",
+		"card_description": "造成 12 點傷害。",
+		"card_color_id": "color_tongji",
+		"card_type": 0,
+		"card_rarity": 1,
+		"card_energy_cost": 2,
+		"card_requires_target": true,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 12,
+					"number_of_attacks": 1
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "character_tongji",
+		"character_name": "乩童",
+		"character_description": "被神明附體的瘋狂戰士。以自身為代價爆發強大力量。",
+		"character_color_id": "color_tongji",
+		"character_player_id": "player_tongji",
+		"character_starting_artifact_ids": ["artifact_tongji_amulet"],
+		"character_starting_artifact_pack_ids": ["artifact_pack_neutral", "artifact_pack_tongji"],
+		"character_starting_card_object_ids": [
+			"card_tongji_punch",
+			"card_tongji_punch",
+			"card_tongji_punch",
+			"card_tongji_punch",
+			"card_tongji_punch",
+			"card_tongji_talisman",
+			"card_tongji_talisman",
+			"card_tongji_talisman",
+			"card_tongji_talisman",
+			"card_tongji_double_strike"
+		],
+		"character_starting_money": 99,
+		"character_starting_health": 75,
+		"character_starting_card_draft_card_pack_ids": ["card_pack_tongji"]
+	}
+}

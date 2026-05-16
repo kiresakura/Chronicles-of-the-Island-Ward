@@ -1,0 +1,61 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_tiger_aunt",
+		"enemy_object_id": "enemy_tiger_aunt",
+		"enemy_name": "虎姑婆",
+		"enemy_health": 30,
+		"enemy_health_max": 30,
+		"enemy_block": 0,
+		"enemy_type": 0,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"claw": 1,
+					"lullaby": 1
+				}
+			},
+			"claw": {
+				"attack_damage": 6,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"lullaby": 1,
+					"bite": 1
+				}
+			},
+			"lullaby": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 4,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_vulnerable",
+							"status_charge_amount": 1,
+							"target_override": 3
+						}
+					}
+				],
+				"next_attack_weights": {
+					"bite": 2
+				}
+			},
+			"bite": {
+				"attack_damage": 9,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"claw": 1,
+					"lullaby": 1
+				}
+			}
+		}
+	}
+}

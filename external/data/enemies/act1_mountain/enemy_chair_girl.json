@@ -1,0 +1,69 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_chair_girl",
+		"enemy_object_id": "enemy_chair_girl",
+		"enemy_name": "椅仔姑",
+		"enemy_health": 48,
+		"enemy_health_max": 48,
+		"enemy_block": 0,
+		"enemy_type": 1,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"summon": 1
+				}
+			},
+			"summon": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 8,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_damage_increase",
+							"status_charge_amount": 2,
+							"target_override": 2
+						}
+					}
+				],
+				"next_attack_weights": {
+					"haunt": 1,
+					"chair_throw": 1
+				}
+			},
+			"haunt": {
+				"attack_damage": 4,
+				"number_of_attacks": 2,
+				"block": 0,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_weak",
+							"status_charge_amount": 2,
+							"target_override": 3
+						}
+					}
+				],
+				"next_attack_weights": {
+					"chair_throw": 1,
+					"summon": 1
+				}
+			},
+			"chair_throw": {
+				"attack_damage": 11,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"haunt": 1,
+					"summon": 1
+				}
+			}
+		}
+	}
+}

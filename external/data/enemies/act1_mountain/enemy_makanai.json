@@ -1,0 +1,62 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_makanai",
+		"enemy_object_id": "enemy_makanai",
+		"enemy_name": "魔神仔",
+		"enemy_health": 42,
+		"enemy_health_max": 42,
+		"enemy_block": 0,
+		"enemy_type": 1,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"trick": 1,
+					"lure": 1
+				}
+			},
+			"trick": {
+				"attack_damage": 3,
+				"number_of_attacks": 3,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"lure": 1,
+					"vanish": 1
+				}
+			},
+			"lure": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_vulnerable",
+							"status_charge_amount": 2,
+							"target_override": 3
+						}
+					}
+				],
+				"next_attack_weights": {
+					"trick": 2,
+					"vanish": 1
+				}
+			},
+			"vanish": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 12,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"trick": 1,
+					"lure": 1
+				}
+			}
+		}
+	}
+}

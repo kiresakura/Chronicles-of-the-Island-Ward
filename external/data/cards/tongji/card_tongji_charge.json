@@ -1,0 +1,29 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_tongji_charge",
+		"card_name": "威靈出陣",
+		"card_description": "造成 8 點傷害，獲得 1 點神威。",
+		"card_color_id": "color_tongji",
+		"card_type": 0,
+		"card_rarity": 2,
+		"card_energy_cost": 2,
+		"card_requires_target": true,
+		"card_keyword_object_ids": ["keyword_divine_might"],
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 8,
+					"number_of_attacks": 1
+				}
+			},
+			{
+				"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+					"status_effect_object_id": "status_effect_damage_increase",
+					"status_charge_amount": 1,
+					"target_override": 2
+				}
+			}
+		]
+	}
+}

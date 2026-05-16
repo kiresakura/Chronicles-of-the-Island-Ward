@@ -1,0 +1,12 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "interceptor_divine_might",
+		"action_interceptor_script_path": "res://scripts/action_interceptors/InterceptorDamageIncrease.gd",
+		"action_intercepted_action_paths": [
+			"res://scripts/actions/generated_actions/ActionAttack.gd"
+		],
+		"action_interceptor_modifies_parent": true,
+		"action_interceptor_priority": 100
+	}
+}

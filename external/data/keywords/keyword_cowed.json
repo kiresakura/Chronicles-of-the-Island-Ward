@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "keyword_cowed",
+		"keyword_name": "怯戰",
+		"keyword_description": "攻擊造成傷害 -25%，每回合減少 1 層。"
+	}
+}
