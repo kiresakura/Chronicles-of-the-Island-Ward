@@ -196,7 +196,6 @@ godot --headless --script res://tests/run_all.gd
 ## 11. 重要連結
 
 - **PRD**：`./PRD.md`
-- **素材調查**：`../鎮島錄 - 開源倉庫與台灣文化素材調查.md`
 - **Slay The Robot 原 repo**：https://github.com/DesirePathGames/Slay-The-Robot
 - **Godot 4 mobile 匯出文件**：https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_ios.html
 - **GUT 測試框架**：https://github.com/bitwes/Gut
