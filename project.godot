@@ -60,6 +60,10 @@ window/handheld/orientation="landscape"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
 
+[gui]
+
+theme/custom_font="res://assets/fonts/NotoSansTC-Regular.otf"
+
 [input]
 
 left_click={
