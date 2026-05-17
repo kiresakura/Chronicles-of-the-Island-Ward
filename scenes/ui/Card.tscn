@@ -101,13 +101,22 @@ layout_mode = 2
 offset_right = 144.0
 offset_bottom = 184.0
 
+[node name="GoldBorder" type="ColorRect" parent="Pivot/CardVisual"]
+layout_mode = 2
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 142.0
+offset_bottom = 182.0
+color = Color(0.831, 0.686, 0.216, 1)
+mouse_filter = 2
+
 [node name="Background" type="ColorRect" parent="Pivot/CardVisual"]
 layout_mode = 2
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 140.0
-offset_bottom = 180.0
-color = Color(0.207843, 0.207843, 0.207843, 1)
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 139.0
+offset_bottom = 179.0
+color = Color(0.169, 0.075, 0.055, 1)
 
 [node name="CardDescription" type="RichTextLabel" parent="Pivot/CardVisual"]
 unique_name_in_owner = true
@@ -117,6 +126,7 @@ offset_top = 112.0
 offset_right = 136.0
 offset_bottom = 184.0
 theme_override_font_sizes/normal_font_size = 12
+theme_override_colors/default_color = Color(0.957, 0.839, 0.498, 1)
 bbcode_enabled = true
 text = "100/100
 "
@@ -126,13 +136,22 @@ _max_size = 12
 _current_font_size = 12
 _editor_defaults_set = true
 
+[node name="EnergyBorder" type="ColorRect" parent="Pivot/CardVisual"]
+layout_mode = 0
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 20.0
+offset_bottom = 20.0
+color = Color(0.831, 0.686, 0.216, 1)
+mouse_filter = 2
+
 [node name="EnergySprite" type="ColorRect" parent="Pivot/CardVisual"]
 layout_mode = 0
 offset_left = -8.0
 offset_top = -8.0
 offset_right = 16.0
 offset_bottom = 16.0
-color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+color = Color(0.627, 0.157, 0.157, 1)
 metadata/_edit_group_ = true
 
 [node name="EnergyCost" type="Label" parent="Pivot/CardVisual/EnergySprite"]
@@ -141,7 +160,11 @@ layout_mode = 0
 offset_right = 24.0
 offset_bottom = 24.0
 theme_override_constants/line_spacing = -3
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 text = "3"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -163,13 +186,14 @@ offset_left = -16.0
 offset_top = -4.0
 offset_right = 112.0
 offset_bottom = 12.0
-theme_override_font_sizes/normal_font_size = 11
+theme_override_font_sizes/normal_font_size = 13
+theme_override_colors/default_color = Color(1, 0.953, 0.498, 1)
 bbcode_enabled = true
-text = "Card Name"
+text = "卡牌名"
 scroll_active = false
 script = ExtResource("3_8gkbw")
-_max_size = 12
-_current_font_size = 11
+_max_size = 14
+_current_font_size = 13
 _editor_defaults_set = true
 
 [node name="CardType" type="Label" parent="Pivot/CardVisual"]
@@ -180,8 +204,9 @@ offset_top = 95.0
 offset_right = 136.0
 offset_bottom = 112.0
 theme_override_constants/line_spacing = -3
-theme_override_font_sizes/font_size = 12
-text = "Hit and Run"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.831, 0.686, 0.216, 1)
+text = "攻擊"
 horizontal_alignment = 1
 
 [node name="CardButton" type="Button" parent="Pivot"]
