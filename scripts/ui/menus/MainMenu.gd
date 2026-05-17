@@ -10,15 +10,28 @@ extends Control
 @onready var settings_button: Button = $VBoxContainer/SettingsButton
 @onready var exit_button: Button = $VBoxContainer/ExitButton
 
+# COTIW portrait redesign buttons
+@onready var qi_jia_button: Button = $QiJiaButton if has_node("QiJiaButton") else null
+@onready var portrait_codex_button: Button = $PortraitCodexButton if has_node("PortraitCodexButton") else null
+@onready var portrait_exit_button: Button = $PortraitExitButton if has_node("PortraitExitButton") else null
+
 func _ready():
 	continue_button.button_up.connect(_on_continue_button_up)
 	forfeit_run_button.button_up.connect(_on_forfeit_run_button_up)
 	new_run_button.button_up.connect(_on_new_run_button_up)
 	codex_button.button_up.connect(_on_codex_button_up)
 	exit_button.button_up.connect(_on_exit_button_up)
-	
+
+	# COTIW: portrait redesign buttons forward to same callbacks
+	if qi_jia_button:
+		qi_jia_button.button_up.connect(_on_new_run_button_up)
+	if portrait_codex_button:
+		portrait_codex_button.button_up.connect(_on_codex_button_up)
+	if portrait_exit_button:
+		portrait_exit_button.button_up.connect(_on_exit_button_up)
+
 	Signals.run_ended.connect(_on_run_ended)
-	
+
 	update_continue_button_visibility()
 
 func _on_continue_button_up():

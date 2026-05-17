@@ -221,9 +221,9 @@ metadata/_edit_lock_ = true
 
 [node name="Background" type="ColorRect" parent="TitleScreen"]
 layout_mode = 0
-offset_right = 1200.0
-offset_bottom = 700.0
-color = Color(0.202309, 0.187588, 0.216973, 1)
+offset_right = 1080.0
+offset_bottom = 2340.0
+color = Color(0.102, 0.055, 0.039, 1)
 
 [node name="MainMenu" type="Control" parent="TitleScreen"]
 anchors_preset = 0
@@ -231,22 +231,139 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("3_jd5n0")
 
+[node name="PortraitBackdrop" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_right = 1080.0
+offset_bottom = 2340.0
+color = Color(0.627, 0.157, 0.157, 1)
+mouse_filter = 2
+
+[node name="Vignette" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 120.0
+offset_right = 1020.0
+offset_bottom = 2280.0
+color = Color(0.102, 0.055, 0.039, 0.6)
+mouse_filter = 2
+
+[node name="Shrine" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 380.0
+offset_right = 940.0
+offset_bottom = 1600.0
+color = Color(0.169, 0.075, 0.055, 1)
+mouse_filter = 2
+
+[node name="ShrineGold" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 370.0
+offset_right = 950.0
+offset_bottom = 390.0
+color = Color(0.831, 0.686, 0.216, 1)
+mouse_filter = 2
+
+[node name="ShrineGoldBottom" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 1600.0
+offset_right = 950.0
+offset_bottom = 1620.0
+color = Color(0.831, 0.686, 0.216, 1)
+mouse_filter = 2
+
+[node name="ShrineGoldLeft" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 370.0
+offset_right = 150.0
+offset_bottom = 1620.0
+color = Color(0.831, 0.686, 0.216, 1)
+mouse_filter = 2
+
+[node name="ShrineGoldRight" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 930.0
+offset_top = 370.0
+offset_right = 950.0
+offset_bottom = 1620.0
+color = Color(0.831, 0.686, 0.216, 1)
+mouse_filter = 2
+
+[node name="CharacterPlaceholder" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 340.0
+offset_top = 580.0
+offset_right = 740.0
+offset_bottom = 1380.0
+color = Color(0.957, 0.839, 0.498, 0.15)
+mouse_filter = 2
+
+[node name="CharacterLabel" type="Label" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 1430.0
+offset_right = 940.0
+offset_bottom = 1530.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 80
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+text = "乩童"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Label" type="Label" parent="TitleScreen/MainMenu"]
 layout_direction = 2
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.0414286
-anchor_right = 1.0
-anchor_bottom = 0.0742857
-offset_top = 27.3429
-offset_right = 1160.0
-offset_bottom = 93.0286
-grow_horizontal = 2
+layout_mode = 0
+offset_left = 60.0
+offset_top = 140.0
+offset_right = 1020.0
+offset_bottom = 340.0
 theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 160
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
 text = "鎮島錄"
 horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitle" type="Label" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 320.0
+offset_right = 1020.0
+offset_bottom = 370.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.831, 0.686, 0.216, 1)
+text = "Chronicles of the Island Ward"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IncenseBar" type="ColorRect" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 1680.0
+offset_right = 940.0
+offset_bottom = 1760.0
+color = Color(0.169, 0.075, 0.055, 1)
+mouse_filter = 2
+
+[node name="IncenseLabel" type="Label" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 1680.0
+offset_right = 920.0
+offset_bottom = 1760.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+text = "🔥 香火祈願   0 / 1000   下一解鎖：道士"
+vertical_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TitleScreen/MainMenu"]
+visible = false
 layout_mode = 0
 offset_left = 27.0
 offset_top = 514.0
@@ -268,7 +385,7 @@ text = "放棄此局"
 [node name="NewRunButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
-text = "新一局"
+text = "起駕"
 
 [node name="CodexButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
@@ -284,6 +401,52 @@ text = "設定"
 [node name="ExitButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
+text = "離開"
+
+[node name="QiJiaButton" type="Button" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 1820.0
+offset_right = 900.0
+offset_bottom = 2000.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 96
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+text = "起　駕"
+
+[node name="PortraitCodexButton" type="Button" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 2060.0
+offset_right = 380.0
+offset_bottom = 2200.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+text = "圖鑑"
+
+[node name="PortraitEventButton" type="Button" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 2060.0
+offset_right = 660.0
+offset_bottom = 2200.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+disabled = true
+text = "事件"
+
+[node name="PortraitExitButton" type="Button" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 700.0
+offset_top = 2060.0
+offset_right = 940.0
+offset_bottom = 2200.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
 text = "離開"
 
 [node name="NewRunMenu" type="Control" parent="TitleScreen"]
