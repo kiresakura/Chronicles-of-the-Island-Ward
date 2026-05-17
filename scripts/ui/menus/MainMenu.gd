@@ -25,6 +25,7 @@ func _ready():
 	# COTIW: portrait redesign buttons forward to same callbacks
 	if qi_jia_button:
 		qi_jia_button.button_up.connect(_on_new_run_button_up)
+		_start_qi_jia_pulse()
 	if portrait_codex_button:
 		portrait_codex_button.button_up.connect(_on_codex_button_up)
 	if portrait_exit_button:
@@ -33,6 +34,16 @@ func _ready():
 	Signals.run_ended.connect(_on_run_ended)
 
 	update_continue_button_visibility()
+
+# COTIW: 「起駕」按鈕呼吸式脈動，吸引視線
+func _start_qi_jia_pulse() -> void:
+	if not qi_jia_button:
+		return
+	qi_jia_button.pivot_offset = qi_jia_button.size * 0.5
+	var tween: Tween = create_tween().set_loops()
+	tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(qi_jia_button, "scale", Vector2(1.04, 1.04), 1.2)
+	tween.tween_property(qi_jia_button, "scale", Vector2(1.0, 1.0), 1.2)
 
 func _on_continue_button_up():
 	FileLoader.autoload()
