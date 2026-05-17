@@ -1,0 +1,10 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "event_act_1_easy_combat_3",
+		"event_weighted_enemy_object_ids": [
+			{"enemy_tiger_aunt": 1}
+		],
+		"event_enemy_placement_is_automatic": true
+	}
+}

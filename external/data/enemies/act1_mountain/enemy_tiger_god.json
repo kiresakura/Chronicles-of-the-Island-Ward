@@ -1,0 +1,86 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_tiger_god",
+		"enemy_object_id": "enemy_tiger_god",
+		"enemy_name": "百年虎爺",
+		"enemy_health": 120,
+		"enemy_health_max": 120,
+		"enemy_block": 0,
+		"enemy_type": 2,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"roar": 1
+				}
+			},
+			"roar": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 15,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_damage_increase",
+							"status_charge_amount": 3,
+							"target_override": 1
+						}
+					}
+				],
+				"next_attack_weights": {
+					"pounce": 2,
+					"claw": 1
+				}
+			},
+			"pounce": {
+				"attack_damage": 14,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"claw": 1,
+					"curse": 1
+				}
+			},
+			"claw": {
+				"attack_damage": 6,
+				"number_of_attacks": 3,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"roar": 1,
+					"curse": 1
+				}
+			},
+			"curse": {
+				"attack_damage": 4,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_vulnerable",
+							"status_charge_amount": 2,
+							"target_override": 2
+						}
+					},
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_weak",
+							"status_charge_amount": 2,
+							"target_override": 2
+						}
+					}
+				],
+				"next_attack_weights": {
+					"roar": 1,
+					"pounce": 1
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "event_act_1_miniboss_2",
+		"event_weighted_enemy_object_ids": [
+			{"enemy_makanai": 1}
+		],
+		"event_enemy_placement_is_automatic": true
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_temple_drum",
+		"artifact_name": "陣頭鑼",
+		"artifact_description": "戰鬥開始時獲得 1 點額外神力。",
+		"artifact_script_path": "res://scripts/artifacts/BaseArtifact.gd",
+		"artifact_color_id": "color_white",
+		"artifact_rarity": 2,
+		"artifact_counter_max": 1,
+		"artifact_counter_wraparound": true,
+		"artifact_first_turn_actions": [
+			{
+				"res://scripts/actions/ActionAddEnergy.gd": {
+					"energy": 1,
+					"target_override": 2
+				}
+			}
+		]
+	}
+}

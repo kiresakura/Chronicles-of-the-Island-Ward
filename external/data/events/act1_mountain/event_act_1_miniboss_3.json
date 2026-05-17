@@ -1,0 +1,11 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "event_act_1_miniboss_3",
+		"event_weighted_enemy_object_ids": [
+			{"enemy_chair_girl": 1},
+			{"enemy_makanai": 1}
+		],
+		"event_enemy_placement_is_automatic": true
+	}
+}

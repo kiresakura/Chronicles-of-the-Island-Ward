@@ -243,7 +243,7 @@ offset_right = 1160.0
 offset_bottom = 93.0286
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
-text = "Slay the Robot"
+text = "鎮島錄"
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TitleScreen/MainMenu"]
@@ -257,34 +257,34 @@ offset_bottom = 677.0
 visible = false
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
-text = "Continue"
+text = "繼續"
 
 [node name="ForfeitRunButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
-text = "Forfeit Run"
+text = "放棄此局"
 
 [node name="NewRunButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
-text = "New Game"
+text = "新一局"
 
 [node name="CodexButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
-text = "Codex"
+text = "圖鑑"
 
 [node name="SettingsButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
 disabled = true
-text = "Settings"
+text = "設定"
 
 [node name="ExitButton" type="Button" parent="TitleScreen/MainMenu/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_bi5lp")
-text = "Exit"
+text = "離開"
 
 [node name="NewRunMenu" type="Control" parent="TitleScreen"]
 visible = false
@@ -305,7 +305,7 @@ offset_right = 1160.0
 offset_bottom = 93.0286
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
-text = "New Run"
+text = "新一局"
 horizontal_alignment = 1
 
 [node name="CharacterNameLabel" type="Label" parent="TitleScreen/NewRunMenu"]
@@ -322,7 +322,7 @@ offset_bottom = 159.029
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 24
-text = "Character Name"
+text = "角色名稱"
 
 [node name="CharacterHealthLabel" type="Label" parent="TitleScreen/NewRunMenu"]
 layout_direction = 2
@@ -355,7 +355,7 @@ offset_bottom = 199.029
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 17
-text = "Money:"
+text = "銀兩："
 
 [node name="CharacterDescriptionLabel" type="Label" parent="TitleScreen/NewRunMenu"]
 layout_direction = 2
@@ -370,7 +370,7 @@ offset_right = 328.0
 offset_bottom = 309.029
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 16
-text = "Character Description"
+text = "角色說明"
 
 [node name="CharacterArtifactTextureRect" type="TextureRect" parent="TitleScreen/NewRunMenu"]
 custom_minimum_size = Vector2(64, 64)
@@ -395,7 +395,7 @@ offset_right = 352.0
 offset_bottom = 349.029
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 16
-text = "Artifact Name"
+text = "遺物名稱"
 clip_text = true
 
 [node name="CharacterArtifactDescriptionLabel" type="Label" parent="TitleScreen/NewRunMenu"]
@@ -441,7 +441,7 @@ offset_right = -72.0
 offset_bottom = 37.0286
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 16
-text = "Difficulty 0"
+text = "難度 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
@@ -498,7 +498,7 @@ offset_bottom = 583.029
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 24
-text = "Seed"
+text = "種子"
 vertical_alignment = 1
 
 [node name="Label4" type="Label" parent="TitleScreen/NewRunMenu"]
@@ -515,7 +515,7 @@ offset_bottom = 159.029
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 24
-text = "Custom Modifiers"
+text = "自訂修正"
 horizontal_alignment = 1
 
 [node name="SeedInput" type="LineEdit" parent="TitleScreen/NewRunMenu"]
@@ -535,7 +535,7 @@ offset_top = 600.0
 offset_right = 785.0
 offset_bottom = 634.0
 theme = ExtResource("2_bi5lp")
-text = "Start Run"
+text = "開始"
 
 [node name="BackButton" type="Button" parent="TitleScreen/NewRunMenu"]
 layout_mode = 2
@@ -544,7 +544,7 @@ offset_top = 648.0
 offset_right = 785.0
 offset_bottom = 682.0
 theme = ExtResource("2_bi5lp")
-text = "Back"
+text = "返回"
 
 [node name="CodexMenu" type="Control" parent="TitleScreen"]
 visible = false
@@ -588,7 +588,7 @@ offset_top = 648.0
 offset_right = 785.0
 offset_bottom = 682.0
 theme = ExtResource("2_bi5lp")
-text = "Back"
+text = "返回"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TitleScreen/CodexMenu"]
 layout_mode = 0
@@ -599,22 +599,22 @@ offset_bottom = 584.0
 
 [node name="Button" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 layout_mode = 2
-text = "Cards"
+text = "卡牌"
 
 [node name="Button2" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 layout_mode = 2
 disabled = true
-text = "Enemies"
+text = "敵人"
 
 [node name="Button3" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 layout_mode = 2
 disabled = true
-text = "Artifacts"
+text = "遺物"
 
 [node name="Button4" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 layout_mode = 2
 disabled = true
-text = "Consumables"
+text = "消耗品"
 
 [node name="RunScreen" type="Control" parent="."]
 visible = false
@@ -789,7 +789,7 @@ offset_top = 8.0
 offset_right = 136.0
 offset_bottom = 39.0
 theme_override_font_sizes/font_size = 16
-text = "Use"
+text = "使用"
 
 [node name="DiscardConsumableButton" type="Button" parent="RunScreen/Combat/Consumables/ConsumableActionDropdown"]
 layout_mode = 0
@@ -798,7 +798,7 @@ offset_top = 48.0
 offset_right = 136.0
 offset_bottom = 79.0
 theme_override_font_sizes/font_size = 16
-text = "Discard"
+text = "丟棄"
 
 [node name="Chest" type="TextureButton" parent="RunScreen/Combat"]
 visible = false
@@ -818,7 +818,7 @@ offset_top = -56.0
 offset_right = 192.0
 offset_bottom = -11.0
 theme_override_font_sizes/font_size = 32
-text = "Chest"
+text = "寶箱"
 horizontal_alignment = 1
 
 [node name="Shop" type="TextureButton" parent="RunScreen/Combat"]
@@ -839,7 +839,7 @@ offset_top = -56.0
 offset_right = 192.0
 offset_bottom = -11.0
 theme_override_font_sizes/font_size = 32
-text = "Shop"
+text = "夜市攤"
 horizontal_alignment = 1
 
 [node name="Energy" type="TextureButton" parent="RunScreen/Combat"]
@@ -849,7 +849,7 @@ offset_left = 24.0
 offset_top = 560.0
 offset_right = 74.0
 offset_bottom = 610.0
-tooltip_text = "Energy"
+tooltip_text = "神力"
 texture_normal = ExtResource("3_8ax2e")
 ignore_texture_size = true
 stretch_mode = 0
@@ -871,7 +871,7 @@ offset_left = 24.0
 offset_top = 616.0
 offset_right = 74.0
 offset_bottom = 666.0
-tooltip_text = "Draw Pile"
+tooltip_text = "抽牌堆"
 texture_normal = ExtResource("3_8ax2e")
 ignore_texture_size = true
 stretch_mode = 0
@@ -893,7 +893,7 @@ offset_left = 1136.0
 offset_top = 560.0
 offset_right = 1186.0
 offset_bottom = 610.0
-tooltip_text = "Discard Pile"
+tooltip_text = "棄牌堆"
 texture_normal = ExtResource("3_8ax2e")
 ignore_texture_size = true
 stretch_mode = 0
@@ -1095,7 +1095,7 @@ offset_left = 528.0
 offset_top = 624.0
 offset_right = 672.0
 offset_bottom = 655.0
-text = "Continue"
+text = "繼續"
 
 [node name="ShopOverlay" type="Control" parent="RunScreen"]
 unique_name_in_owner = true
@@ -1180,7 +1180,7 @@ offset_left = 528.0
 offset_top = 656.0
 offset_right = 672.0
 offset_bottom = 687.0
-text = "Continue"
+text = "繼續"
 
 [node name="DialogueOverlay" type="Control" parent="RunScreen"]
 unique_name_in_owner = true
@@ -1383,7 +1383,7 @@ offset_left = 528.0
 offset_top = 544.0
 offset_right = 672.0
 offset_bottom = 575.0
-text = "Continue"
+text = "繼續"
 
 [node name="CardSelectionOverlay" type="Control" parent="RunScreen"]
 unique_name_in_owner = true
@@ -1620,4 +1620,4 @@ text = "Return to Title"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-text = "Forfeit Run"
+text = "放棄此局"

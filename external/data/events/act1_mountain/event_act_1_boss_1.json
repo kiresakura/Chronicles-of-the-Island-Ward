@@ -1,0 +1,11 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "event_act_1_boss_1",
+		"event_weighted_enemy_object_ids": [
+			{"enemy_tiger_god": 1}
+		],
+		"event_enemy_placement_is_automatic": false,
+		"event_enemy_placement_positions": [[0, 0]]
+	}
+}

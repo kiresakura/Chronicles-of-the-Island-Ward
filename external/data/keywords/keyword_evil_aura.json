@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "keyword_evil_aura",
+		"keyword_name": "邪氣",
+		"keyword_description": "每回合扣 N 點元神，N 為層數。每回合 -2 層。"
+	}
+}
