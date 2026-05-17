@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "attack_lower_cost_on_discard_card",
+		"card_name": "降費攻擊",
+		"card_description": "棄牌後神力消耗 -1"
+	}
+}

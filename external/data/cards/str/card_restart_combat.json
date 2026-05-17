@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_restart_combat",
+		"card_name": "重戰",
+		"card_description": "重置戰鬥"
+	}
+}

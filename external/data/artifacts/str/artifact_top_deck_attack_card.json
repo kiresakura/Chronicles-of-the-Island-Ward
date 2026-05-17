@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_top_deck_attack_card",
+		"artifact_name": "固牌符",
+		"artifact_description": "選一張攻擊卡使其每場戰鬥首抽出現"
+	}
+}

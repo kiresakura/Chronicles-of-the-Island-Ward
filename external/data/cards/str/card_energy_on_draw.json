@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_energy_on_draw",
+		"card_name": "抽中力",
+		"card_description": "抽到時 +神力"
+	}
+}

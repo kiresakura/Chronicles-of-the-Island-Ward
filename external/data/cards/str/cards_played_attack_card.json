@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "cards_played_attack_card",
+		"card_name": "牌效攻擊",
+		"card_description": "傷害取決於本回合出牌數"
+	}
+}

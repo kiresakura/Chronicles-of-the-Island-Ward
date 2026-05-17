@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "consumable_block",
+		"consumable_name": "護身符",
+		"consumable_description": "獲得 10 點護身符"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_play_random_from_hand",
+		"card_name": "亂出",
+		"card_description": "隨機出一張手牌"
+	}
+}

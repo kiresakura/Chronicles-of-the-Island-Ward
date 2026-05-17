@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_draft_random_player_pool",
+		"card_name": "亂抽",
+		"card_description": "從牌池隨機選一張"
+	}
+}

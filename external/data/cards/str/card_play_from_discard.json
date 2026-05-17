@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_play_from_discard",
+		"card_name": "棄堆出牌",
+		"card_description": "從棄牌堆使用一張牌"
+	}
+}

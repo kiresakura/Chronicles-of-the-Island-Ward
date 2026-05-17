@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_right_click_shuffle_deck",
+		"artifact_name": "重洗符",
+		"artifact_description": "右鍵將棄牌堆洗回抽牌堆"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_debug_log",
+		"card_name": "除錯印",
+		"card_description": "輸出 console 訊息"
+	}
+}

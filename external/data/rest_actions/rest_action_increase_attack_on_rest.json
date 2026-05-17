@@ -1,0 +1,7 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "rest_action_increase_attack_on_rest",
+		"rest_action_name": "增加傷害"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_special_discard",
+		"card_name": "特別棄牌",
+		"card_description": "棄一張牌並獲得效果"
+	}
+}

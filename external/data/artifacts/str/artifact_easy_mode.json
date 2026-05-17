@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_easy_mode",
+		"artifact_name": "弱敵符",
+		"artifact_description": "所有敵人 HP 設為 1"
+	}
+}

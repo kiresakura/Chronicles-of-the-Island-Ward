@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "transform_hand_card",
+		"card_name": "變換手牌",
+		"card_description": "變換所有手牌"
+	}
+}

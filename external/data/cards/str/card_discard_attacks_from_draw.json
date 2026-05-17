@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_discard_attacks_from_draw",
+		"card_name": "棄抽攻擊",
+		"card_description": "從抽牌堆棄所有攻擊"
+	}
+}

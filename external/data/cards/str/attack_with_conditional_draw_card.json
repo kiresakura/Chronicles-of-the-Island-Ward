@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "attack_with_conditional_draw_card",
+		"card_name": "抽牌攻擊",
+		"card_description": "造成傷害並抽牌"
+	}
+}

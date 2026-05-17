@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_attack_rng",
+		"card_name": "隨機攻擊",
+		"card_description": "隨機造成 [damage] - [damage_random] 點傷害"
+	}
+}

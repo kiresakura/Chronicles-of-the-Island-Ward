@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "consumable_damaging",
+		"consumable_name": "符紙",
+		"consumable_description": "對一個目標造成 10 點傷害"
+	}
+}
