@@ -32,10 +32,92 @@
 [ext_resource type="Script" uid="uid://ci6oby4hmnfg6" path="res://scripts/ui/DialogueOverlay.gd" id="25_tn5yy"]
 [ext_resource type="Script" uid="uid://b3nvcsku8u75w" path="res://addons/smooth_scroll_container/scroll_damper/expo_scroll_damper.gd" id="26_08sam"]
 [ext_resource type="Script" uid="uid://6xsavir53fvp" path="res://scripts/ui/PauseOverlay.gd" id="29_p8axl"]
+[ext_resource type="Texture2D" uid="uid://bt3v8kefufsi8" path="res://assets/ui/smoke_puff.png" id="30_smoke"]
 
 [sub_resource type="Gradient" id="Gradient_smoke"]
 offsets = PackedFloat32Array(0, 0.3, 1)
-colors = PackedColorArray(0.957, 0.839, 0.498, 0.55, 0.831, 0.686, 0.216, 0.3, 0.2, 0.1, 0.08, 0)
+colors = PackedColorArray(0.957, 0.839, 0.498, 0.6, 0.831, 0.486, 0.16, 0.35, 0.2, 0.1, 0.08, 0)
+
+[sub_resource type="Curve" id="Curve_smoke_scale"]
+_data = [Vector2(0, 0.3), 0.0, 0.0, 0, 0, Vector2(0.5, 1.0), 0.0, 0.0, 0, 0, Vector2(1, 1.4), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qijia_normal"]
+bg_color = Color(0.627, 0.157, 0.157, 1)
+border_color = Color(0.957, 0.839, 0.498, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 18
+shadow_offset = Vector2(0, 6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qijia_hover"]
+bg_color = Color(0.831, 0.247, 0.157, 1)
+border_color = Color(1, 0.953, 0.498, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0.957, 0.839, 0.498, 0.4)
+shadow_size = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qijia_pressed"]
+bg_color = Color(0.482, 0.094, 0.094, 1)
+border_color = Color(0.831, 0.686, 0.216, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_secondary_normal"]
+bg_color = Color(0.169, 0.075, 0.055, 0.85)
+border_color = Color(0.831, 0.686, 0.216, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_secondary_hover"]
+bg_color = Color(0.339, 0.149, 0.11, 1)
+border_color = Color(0.957, 0.839, 0.498, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_secondary_disabled"]
+bg_color = Color(0.1, 0.05, 0.04, 0.7)
+border_color = Color(0.4, 0.3, 0.15, 0.5)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_incense_bg"]
 bg_color = Color(0.102, 0.055, 0.039, 1)
@@ -396,20 +478,21 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SmokeParticles" type="CPUParticles2D" parent="TitleScreen/MainMenu"]
-position = Vector2(540, 380)
-amount = 30
-lifetime = 4.0
-texture = ExtResource("3_8ax2e")
+position = Vector2(540, 460)
+amount = 40
+lifetime = 5.0
+texture = ExtResource("30_smoke")
 emission_shape = 3
-emission_rect_extents = Vector2(180, 8)
+emission_rect_extents = Vector2(160, 6)
 direction = Vector2(0, -1)
-spread = 25.0
-initial_velocity_min = 40.0
-initial_velocity_max = 90.0
-gravity = Vector2(0, -30)
-scale_amount_min = 0.08
-scale_amount_max = 0.18
-color = Color(0.957, 0.839, 0.498, 0.35)
+spread = 22.0
+initial_velocity_min = 50.0
+initial_velocity_max = 110.0
+gravity = Vector2(0, -40)
+scale_amount_min = 0.6
+scale_amount_max = 1.4
+scale_amount_curve = SubResource("Curve_smoke_scale")
+color = Color(0.957, 0.839, 0.498, 0.45)
 color_ramp = SubResource("Gradient_smoke")
 
 [node name="IncenseProgressBar" type="ProgressBar" parent="TitleScreen/MainMenu"]
@@ -487,8 +570,15 @@ offset_right = 900.0
 offset_bottom = 2000.0
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 96
-theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.9, 1)
+theme_override_colors/font_pressed_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
+theme_override_styles/normal = SubResource("StyleBoxFlat_qijia_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qijia_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qijia_pressed")
 text = "起　駕"
 
 [node name="PortraitCodexButton" type="Button" parent="TitleScreen/MainMenu"]
@@ -500,6 +590,10 @@ offset_bottom = 2200.0
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 48
 theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.9, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_secondary_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_secondary_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_secondary_normal")
 text = "圖鑑"
 
 [node name="PortraitEventButton" type="Button" parent="TitleScreen/MainMenu"]
@@ -511,6 +605,9 @@ offset_bottom = 2200.0
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 48
 theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_secondary_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_secondary_hover")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_secondary_disabled")
 disabled = true
 text = "事件"
 
@@ -523,6 +620,10 @@ offset_bottom = 2200.0
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 48
 theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.9, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_secondary_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_secondary_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_secondary_normal")
 text = "離開"
 
 [node name="NewRunMenu" type="Control" parent="TitleScreen"]
