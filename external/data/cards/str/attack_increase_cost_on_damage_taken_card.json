@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "attack_increase_cost_on_damage_taken_card",
+		"card_name": "受傷攻擊",
+		"card_description": "受傷後神力消耗 +1"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_generate_shoves",
+		"card_name": "震天舞",
+		"card_description": "產生震開卡"
+	}
+}

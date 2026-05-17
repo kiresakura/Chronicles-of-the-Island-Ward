@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "consumable_heal",
+		"consumable_name": "符水",
+		"consumable_description": "恢復 20% 元神"
+	}
+}

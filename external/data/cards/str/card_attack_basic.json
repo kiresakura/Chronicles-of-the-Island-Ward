@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_attack_basic",
+		"card_name": "基礎攻擊",
+		"card_description": "造成 [damage] 點傷害 [number_of_attacks] 次"
+	}
+}

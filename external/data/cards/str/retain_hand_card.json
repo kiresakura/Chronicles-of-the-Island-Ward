@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "retain_hand_card",
+		"card_name": "持手",
+		"card_description": "本回合保留手牌"
+	}
+}

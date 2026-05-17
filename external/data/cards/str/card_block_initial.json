@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_block_initial",
+		"card_name": "護身符卡",
+		"card_description": "獲得 [block] 點護身符"
+	}
+}

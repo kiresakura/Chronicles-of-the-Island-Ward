@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "run_modifier_custom_endless_mode",
+		"run_modifier_name": "無盡模式",
+		"run_modifier_description": "通關後繼續挑戰"
+	}
+}

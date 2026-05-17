@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "upgrade_entire_deck_card",
+		"card_name": "升級全戰場",
+		"card_description": "升級戰鬥所有卡"
+	}
+}

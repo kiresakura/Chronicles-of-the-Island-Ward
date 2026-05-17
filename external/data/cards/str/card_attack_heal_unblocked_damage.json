@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_attack_heal_unblocked_damage",
+		"card_name": "癒擊",
+		"card_description": "造成傷害並回復未阻擋的傷害"
+	}
+}

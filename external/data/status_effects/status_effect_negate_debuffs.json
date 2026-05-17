@@ -1,0 +1,7 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "status_effect_negate_debuffs",
+		"status_effect_name": "無視 debuff"
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "status_effect_duplicate_card_plays",
+		"status_effect_name": "重複出牌"
+	}
+}

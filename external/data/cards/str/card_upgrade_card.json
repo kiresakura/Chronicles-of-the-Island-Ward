@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_upgrade_card",
+		"card_name": "升級卡",
+		"card_description": "升級一張手牌"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "variable_cost_attack_card",
+		"card_name": "變費攻擊",
+		"card_description": "消耗所有神力造成等量傷害"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_banish_attack",
+		"card_name": "驅逐攻擊",
+		"card_description": "造成傷害並驅逐"
+	}
+}

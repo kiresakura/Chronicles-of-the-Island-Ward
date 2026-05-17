@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_draw_on_kill",
+		"artifact_name": "斬鬼符",
+		"artifact_description": "擊殺敵人時抽 1 張牌"
+	}
+}

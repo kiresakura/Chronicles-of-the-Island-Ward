@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_requires_adjacency",
+		"card_name": "鄰擊",
+		"card_description": "敵人有鄰居才能出"
+	}
+}

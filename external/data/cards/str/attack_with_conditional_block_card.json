@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "attack_with_conditional_block_card",
+		"card_name": "護擊",
+		"card_description": "造成傷害並獲得護身符"
+	}
+}

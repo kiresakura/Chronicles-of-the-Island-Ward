@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_draft_random_attack",
+		"card_name": "選張攻擊",
+		"card_description": "選一張攻擊加入牌組"
+	}
+}

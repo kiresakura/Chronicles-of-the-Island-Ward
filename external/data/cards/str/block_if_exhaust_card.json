@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "block_if_exhaust_card",
+		"card_name": "消除護身符",
+		"card_description": "消除時獲得護身符"
+	}
+}

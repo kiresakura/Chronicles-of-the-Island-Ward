@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "consumable_multi_damaging",
+		"consumable_name": "散符",
+		"consumable_description": "對所有敵人造成 10 點傷害"
+	}
+}

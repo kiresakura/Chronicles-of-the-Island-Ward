@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_draw_on_combat_start",
+		"artifact_name": "啟戰符",
+		"artifact_description": "第一回合多抽 2 張牌"
+	}
+}

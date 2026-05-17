@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_heal_on_combat_ended",
+		"artifact_name": "癒戰符",
+		"artifact_description": "戰鬥結束時 +5 元神"
+	}
+}

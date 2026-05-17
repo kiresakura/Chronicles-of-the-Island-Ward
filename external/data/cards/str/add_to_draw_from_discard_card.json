@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "add_to_draw_from_discard_card",
+		"card_name": "添抽牌",
+		"card_description": "從棄牌堆加一張到抽牌堆"
+	}
+}

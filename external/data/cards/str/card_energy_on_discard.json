@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_energy_on_discard",
+		"card_name": "棄牌生力",
+		"card_description": "棄牌時 +神力"
+	}
+}

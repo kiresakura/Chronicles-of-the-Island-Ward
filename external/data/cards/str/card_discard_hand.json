@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_discard_hand",
+		"card_name": "棄全手",
+		"card_description": "棄掉所有手牌"
+	}
+}

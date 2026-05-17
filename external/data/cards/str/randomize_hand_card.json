@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "randomize_hand_card",
+		"card_name": "亂費",
+		"card_description": "隨機重設手牌神力"
+	}
+}

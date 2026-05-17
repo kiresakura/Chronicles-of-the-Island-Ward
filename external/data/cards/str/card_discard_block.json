@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_discard_block",
+		"card_name": "棄牌護身符",
+		"card_description": "棄牌獲得護身符"
+	}
+}

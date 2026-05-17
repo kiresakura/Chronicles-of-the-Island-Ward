@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "end_turn_card",
+		"card_name": "結束回合",
+		"card_description": "立刻結束回合"
+	}
+}

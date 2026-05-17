@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "run_modifier_custom_easy_mode",
+		"run_modifier_name": "易模式",
+		"run_modifier_description": "所有敵人僅 1 HP"
+	}
+}

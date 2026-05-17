@@ -1,0 +1,8 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "set_hand_energy_card",
+		"card_name": "歸零神力",
+		"card_description": "本回合所有手牌神力 0"
+	}
+}
