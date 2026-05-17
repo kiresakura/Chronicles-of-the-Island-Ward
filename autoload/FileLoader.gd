@@ -48,7 +48,13 @@ const VALID_IMAGE_EXTENSIONS: Array[String] = [
 func _ready():
 	# change the base folder path based on the build type
 	DebugLogger.log_line("FileLoader: To enable external file loading in builds, download an export template and add the custom feature tag \"exported\" to the export. See https://docs.godotengine.org/en/stable/tutorials/export/feature_tags.html",Color.YELLOW, DebugLogger.Severities.WARNING)
-	if !OS.has_feature("exported"):
+	if OS.get_name() in ["Android", "iOS"]:
+		# COTIW patch: mobile uses user:// (res:// is read-only on APK/IPA)
+		# First run: seed user://external from packed res://external
+		_EXTERNAL_FILE_PREFIX = "user://"
+		_seed_user_data_from_packed()
+		DebugLogger.log_line("Mobile Base Directory: " + _EXTERNAL_FILE_PREFIX + " (OS=" + OS.get_name() + ")", Color.LIGHT_BLUE)
+	elif !OS.has_feature("exported"):
 		# debug build uses project directory
 		_EXTERNAL_FILE_PREFIX = "res://"
 		DebugLogger.log_line("Debug Base Directory: " + _EXTERNAL_FILE_PREFIX, Color.LIGHT_BLUE)
@@ -56,9 +62,44 @@ func _ready():
 		# release build uses exe folder for user ease of access
 		_EXTERNAL_FILE_PREFIX = OS.get_executable_path().get_base_dir() + "/"
 		DebugLogger.log_line("Build Base Directory: " + _EXTERNAL_FILE_PREFIX, Color.LIGHT_BLUE)
-		
+
 	if not AUTOSAVING_ENABLED:
 		DebugLogger.log_line("FileLoader: Autosaving disabled", Color.RED)
+
+# COTIW patch: copy packed res://external/* to user://external/* on first run
+# (only on mobile platforms where res:// is read-only)
+func _seed_user_data_from_packed() -> void:
+	if DirAccess.dir_exists_absolute("user://external"):
+		return  # already seeded
+	_copy_dir_recursive("res://external", "user://external")
+
+func _copy_dir_recursive(from: String, to: String) -> void:
+	var dir: DirAccess = DirAccess.open(from)
+	if dir == null:
+		return
+	DirAccess.make_dir_recursive_absolute(to)
+	dir.list_dir_begin()
+	var name: String = dir.get_next()
+	while name != "":
+		if dir.current_is_dir():
+			_copy_dir_recursive(from + "/" + name, to + "/" + name)
+		else:
+			_copy_file_packed(from + "/" + name, to + "/" + name)
+		name = dir.get_next()
+	dir.list_dir_end()
+
+# Use FileAccess (works on packed sparse pck) rather than DirAccess.copy_absolute
+func _copy_file_packed(from: String, to: String) -> void:
+	var src: FileAccess = FileAccess.open(from, FileAccess.READ)
+	if src == null:
+		return
+	var buf: PackedByteArray = src.get_buffer(src.get_length())
+	src.close()
+	var dst: FileAccess = FileAccess.open(to, FileAccess.WRITE)
+	if dst == null:
+		return
+	dst.store_buffer(buf)
+	dst.close()
 
 func _get_modified_filepath(partial_filepath: String) -> String:
 	# given a partial filepath, return the full one, which will change based on the build
