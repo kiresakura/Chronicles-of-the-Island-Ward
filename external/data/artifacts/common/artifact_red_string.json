@@ -1,0 +1,21 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_red_string",
+		"artifact_name": "紅線符",
+		"artifact_description": "每回合開始時恢復 2 點元神。",
+		"artifact_script_path": "res://scripts/artifacts/BaseArtifact.gd",
+		"artifact_color_id": "color_white",
+		"artifact_rarity": 1,
+		"artifact_counter_max": 1,
+		"artifact_counter_wraparound": true,
+		"artifact_turn_start_actions": [
+			{
+				"res://scripts/actions/ActionAddHealth.gd": {
+					"health": 2,
+					"target_override": 2
+				}
+			}
+		]
+	}
+}

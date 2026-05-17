@@ -1,0 +1,20 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_incense_burner",
+		"artifact_name": "香爐",
+		"artifact_description": "戰鬥開始時多抽 1 張牌。",
+		"artifact_script_path": "res://scripts/artifacts/BaseArtifact.gd",
+		"artifact_color_id": "color_white",
+		"artifact_rarity": 1,
+		"artifact_counter_max": 1,
+		"artifact_counter_wraparound": true,
+		"artifact_first_turn_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionDrawGenerator.gd": {
+					"draw_amount": 1
+				}
+			}
+		]
+	}
+}
