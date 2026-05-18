@@ -366,6 +366,39 @@ expand_mode = 1
 stretch_mode = 6
 mouse_filter = 2
 
+
+[node name="HUDMoneyLabel" type="Label" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 6.0
+offset_right = 280.0
+offset_bottom = 40.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "銀兩 999"
+vertical_alignment = 1
+mouse_filter = 2
+
+[node name="HUDIncenseLabel" type="Label" parent="TitleScreen/MainMenu"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 42.0
+offset_right = 280.0
+offset_bottom = 72.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.957, 0.682, 0.286, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "香火 250"
+vertical_alignment = 1
+mouse_filter = 2
+
 [node name="Vignette" type="ColorRect" parent="TitleScreen/MainMenu"]
 visible = false
 layout_mode = 0
@@ -598,6 +631,23 @@ flat = true
 disabled = true
 mouse_default_cursor_shape = 2
 
+[node name="Label" type="Label" parent="TitleScreen/MainMenu/BtnCharacter"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 56.0
+offset_right = 74.0
+offset_bottom = 80.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "角色"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
+
 [node name="BtnFormation" type="Button" parent="TitleScreen/MainMenu"]
 layout_mode = 0
 offset_left = 95.0
@@ -608,6 +658,23 @@ flat = true
 disabled = true
 mouse_default_cursor_shape = 2
 
+[node name="Label" type="Label" parent="TitleScreen/MainMenu/BtnFormation"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 56.0
+offset_right = 80.0
+offset_bottom = 80.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "陣型"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
+
 [node name="BtnBattle" type="Button" parent="TitleScreen/MainMenu"]
 layout_mode = 0
 offset_left = 180.0
@@ -616,6 +683,23 @@ offset_right = 260.0
 offset_bottom = 700.0
 flat = true
 mouse_default_cursor_shape = 2
+
+[node name="Label" type="Label" parent="TitleScreen/MainMenu/BtnBattle"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 56.0
+offset_right = 80.0
+offset_bottom = 80.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "戰鬥"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
 
 [node name="BtnShop" type="Button" parent="TitleScreen/MainMenu"]
 layout_mode = 0
@@ -627,6 +711,23 @@ flat = true
 disabled = true
 mouse_default_cursor_shape = 2
 
+[node name="Label" type="Label" parent="TitleScreen/MainMenu/BtnShop"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 56.0
+offset_right = 85.0
+offset_bottom = 80.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "商店"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
+
 [node name="BtnRecruit" type="Button" parent="TitleScreen/MainMenu"]
 layout_mode = 0
 offset_left = 910.0
@@ -637,6 +738,23 @@ flat = true
 disabled = true
 mouse_default_cursor_shape = 2
 
+[node name="Label" type="Label" parent="TitleScreen/MainMenu/BtnRecruit"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 56.0
+offset_right = 90.0
+offset_bottom = 80.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "招募"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
+
 [node name="BtnInventory" type="Button" parent="TitleScreen/MainMenu"]
 layout_mode = 0
 offset_left = 1005.0
@@ -645,6 +763,23 @@ offset_right = 1095.0
 offset_bottom = 700.0
 flat = true
 mouse_default_cursor_shape = 2
+
+[node name="Label" type="Label" parent="TitleScreen/MainMenu/BtnInventory"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 56.0
+offset_right = 90.0
+offset_bottom = 80.0
+theme = ExtResource("2_bi5lp")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.95)
+text = "收藏"
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
 
 [node name="BtnExit" type="Button" parent="TitleScreen/MainMenu"]
 layout_mode = 0
@@ -668,7 +803,7 @@ offset_top = 630.0
 offset_right = 800.0
 offset_bottom = 700.0
 theme = ExtResource("2_bi5lp")
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 56
 theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 0.9, 1)
 theme_override_colors/font_pressed_color = Color(0.957, 0.839, 0.498, 1)
