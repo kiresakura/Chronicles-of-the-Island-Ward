@@ -18,7 +18,7 @@ config/name_localized={
 "zh_TW": "鎮島錄"
 }
 config/description="台灣民俗主題肉鴿卡牌戰鬥手機遊戲。Fork from Slay The Robot framework (MIT)."
-run/main_scene="res://scenes/Root.tscn"
+run/main_scene="res://scenes/SplashScreen.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="uid://8kopj5luv8dc"
 boot_splash/bg_color=Color(0.788, 0.125, 0.125, 1)
