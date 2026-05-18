@@ -15,6 +15,11 @@ extends Control
 @onready var portrait_codex_button: Button = $PortraitCodexButton if has_node("PortraitCodexButton") else null
 @onready var portrait_exit_button: Button = $PortraitExitButton if has_node("PortraitExitButton") else null
 
+# V5 main-menu buttons (mockup-overlay slot buttons)
+@onready var btn_battle: Button = $BtnBattle if has_node("BtnBattle") else null
+@onready var btn_inventory: Button = $BtnInventory if has_node("BtnInventory") else null
+@onready var btn_exit_x: Button = $BtnExit if has_node("BtnExit") else null
+
 func _ready():
 	continue_button.button_up.connect(_on_continue_button_up)
 	forfeit_run_button.button_up.connect(_on_forfeit_run_button_up)
@@ -30,6 +35,14 @@ func _ready():
 		portrait_codex_button.button_up.connect(_on_codex_button_up)
 	if portrait_exit_button:
 		portrait_exit_button.button_up.connect(_on_exit_button_up)
+
+	# V5: 底部 6 個 slot button hook（Battle = 起一局；Inventory = 圖鑑；其他 disabled）
+	if btn_battle:
+		btn_battle.button_up.connect(_on_new_run_button_up)
+	if btn_inventory:
+		btn_inventory.button_up.connect(_on_codex_button_up)
+	if btn_exit_x:
+		btn_exit_x.button_up.connect(_on_exit_button_up)
 
 	Signals.run_ended.connect(_on_run_ended)
 
