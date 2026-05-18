@@ -43,6 +43,11 @@ external/profile.json
 .env.local
 secret_*.cfg
 
+# Asset pack download staging (zips not tracked, only README)
+assets/_pack_downloads/*.zip
+assets/_pack_downloads/*.7z
+assets/_pack_downloads/*.rar
+
 # Ruby
 scripts/Gemfile.lock
 scripts/.bundle/
