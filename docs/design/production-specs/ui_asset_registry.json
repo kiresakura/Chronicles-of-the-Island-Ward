@@ -1,0 +1,1050 @@
+{
+  "registry_version": 1,
+  "notes": "Active registry for B2 component and AI art batch v1.",
+  "fields": [
+    "id",
+    "path",
+    "type",
+    "screen",
+    "states",
+    "base_size",
+    "stretchable",
+    "tintable",
+    "owner",
+    "status",
+    "notes"
+  ],
+  "rows": [
+    {
+      "id": "frame_card_common",
+      "path": "assets/ui/frames/ui_frame_card_common_default.svg",
+      "type": "frame",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "200x320",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Common card frame v1"
+    },
+    {
+      "id": "frame_card_uncommon",
+      "path": "assets/ui/frames/ui_frame_card_uncommon_default.svg",
+      "type": "frame",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "200x320",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Uncommon card frame v1"
+    },
+    {
+      "id": "frame_card_rare",
+      "path": "assets/ui/frames/ui_frame_card_rare_default.svg",
+      "type": "frame",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "200x320",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Rare card frame v1"
+    },
+    {
+      "id": "badge_intent_attack",
+      "path": "assets/ui/badges/ui_badge_intent_attack_default.svg",
+      "type": "badge",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Intent attack badge"
+    },
+    {
+      "id": "badge_intent_defend",
+      "path": "assets/ui/badges/ui_badge_intent_defend_default.svg",
+      "type": "badge",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Intent defend badge"
+    },
+    {
+      "id": "node_map_battle",
+      "path": "assets/ui/map/ui_node_map_battle_default.svg",
+      "type": "node",
+      "screen": [
+        "map"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "128x128",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Battle node v1"
+    },
+    {
+      "id": "node_map_boss",
+      "path": "assets/ui/map/ui_node_map_boss_default.svg",
+      "type": "node",
+      "screen": [
+        "map"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "128x128",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Boss node v1"
+    },
+    {
+      "id": "bar_hp",
+      "path": "assets/ui/bars/ui_bar_hp_default.svg",
+      "type": "bar",
+      "screen": [
+        "combat",
+        "main_menu"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "320x44",
+      "stretchable": true,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "HP bar v1"
+    },
+    {
+      "id": "char_tongji_portrait_v1",
+      "path": "assets/generated/characters/tongji_portrait_v1.png",
+      "type": "character_art",
+      "screen": [
+        "run",
+        "character_select"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated character portrait"
+    },
+    {
+      "id": "card_tongji_punch_art_v1",
+      "path": "assets/generated/cards/card_tongji_punch_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art"
+    },
+    {
+      "id": "enemy_tiger_god_v1",
+      "path": "assets/generated/enemies/enemy_tiger_god_v1.png",
+      "type": "enemy_art",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated boss art"
+    },
+    {
+      "id": "scene_act1_mountain_temple_v1",
+      "path": "assets/generated/scenes/act1_mountain_temple_bg_v1.png",
+      "type": "scene_art",
+      "screen": [
+        "character_select",
+        "chapter_bg"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "1344x768",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated chapter background"
+    },
+    {
+      "id": "card_tongji_heavy_strike_art_v1",
+      "path": "assets/generated/cards/card_tongji_heavy_strike_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_double_strike_art_v1",
+      "path": "assets/generated/cards/card_tongji_double_strike_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_great_talisman_art_v1",
+      "path": "assets/generated/cards/card_tongji_great_talisman_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_possession_art_v1",
+      "path": "assets/generated/cards/card_tongji_possession_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_fury_strike_art_v1",
+      "path": "assets/generated/cards/card_tongji_fury_strike_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_draw_charm_art_v1",
+      "path": "assets/generated/cards/card_tongji_draw_charm_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_exorcise_art_v1",
+      "path": "assets/generated/cards/card_tongji_exorcise_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_charge_art_v1",
+      "path": "assets/generated/cards/card_tongji_charge_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "card_tongji_evil_curse_art_v1",
+      "path": "assets/generated/cards/card_tongji_evil_curse_art_v1.png",
+      "type": "card_art",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated card art batch 2"
+    },
+    {
+      "id": "enemy_tree_spirit_v1",
+      "path": "assets/generated/enemies/enemy_tree_spirit_v1.png",
+      "type": "enemy_art",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated enemy art batch 2"
+    },
+    {
+      "id": "enemy_tiger_aunt_v1",
+      "path": "assets/generated/enemies/enemy_tiger_aunt_v1.png",
+      "type": "enemy_art",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated enemy art batch 2"
+    },
+    {
+      "id": "enemy_chair_girl_v1",
+      "path": "assets/generated/enemies/enemy_chair_girl_v1.png",
+      "type": "enemy_art",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated enemy art batch 2"
+    },
+    {
+      "id": "enemy_makanai_v1",
+      "path": "assets/generated/enemies/enemy_makanai_v1.png",
+      "type": "enemy_art",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "864x1184",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Gemini generated enemy art batch 2"
+    },
+    {
+      "id": "card_back_default",
+      "path": "assets/ui/cardbacks/ui_card_back_default.svg",
+      "type": "card_back",
+      "screen": [
+        "combat",
+        "reward"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "200x320",
+      "stretchable": true,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Default card back v1"
+    },
+    {
+      "id": "stamp_upgrade",
+      "path": "assets/ui/stamps/ui_stamp_upgrade_default.svg",
+      "type": "stamp",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Upgrade stamp v1"
+    },
+    {
+      "id": "stamp_rarity_rare",
+      "path": "assets/ui/stamps/ui_stamp_rarity_rare_default.svg",
+      "type": "stamp",
+      "screen": [
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "120x56",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Rare rarity stamp v1"
+    },
+    {
+      "id": "stamp_rarity_boss",
+      "path": "assets/ui/stamps/ui_stamp_rarity_boss_default.svg",
+      "type": "stamp",
+      "screen": [
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "120x56",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Boss rarity stamp v1"
+    },
+    {
+      "id": "status_divine_might",
+      "path": "assets/ui/status/ui_status_divine_might_default.svg",
+      "type": "status_icon",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Divine Might icon"
+    },
+    {
+      "id": "status_startled",
+      "path": "assets/ui/status/ui_status_startled_default.svg",
+      "type": "status_icon",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Startled icon"
+    },
+    {
+      "id": "status_weak",
+      "path": "assets/ui/status/ui_status_weak_default.svg",
+      "type": "status_icon",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Weak icon"
+    },
+    {
+      "id": "status_evil_aura",
+      "path": "assets/ui/status/ui_status_evil_aura_default.svg",
+      "type": "status_icon",
+      "screen": [
+        "combat"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "96x96",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Evil Aura icon"
+    },
+    {
+      "id": "panel_reward_choice",
+      "path": "assets/ui/panels/ui_panel_reward_choice_default.svg",
+      "type": "panel",
+      "screen": [
+        "reward"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "260x980",
+      "stretchable": true,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Reward panel shell"
+    },
+    {
+      "id": "panel_shop_item",
+      "path": "assets/ui/panels/ui_panel_shop_item_default.svg",
+      "type": "panel",
+      "screen": [
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "972x240",
+      "stretchable": true,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Shop item panel shell"
+    },
+    {
+      "id": "panel_rest_action",
+      "path": "assets/ui/panels/ui_panel_rest_action_default.svg",
+      "type": "panel",
+      "screen": [
+        "rest"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "540x220",
+      "stretchable": true,
+      "tintable": false,
+      "owner": "art",
+      "status": "done",
+      "notes": "Rest action panel shell"
+    },
+    {
+      "id": "scene_event_folklore_crossroad_v1",
+      "path": "assets/generated/scenes/scene_event_folklore_crossroad_v1.png",
+      "type": "scene_art",
+      "screen": [
+        "event"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "1344x768",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Event scene background v1"
+    },
+    {
+      "id": "scene_shop_night_market_stall_v1",
+      "path": "assets/generated/scenes/scene_shop_night_market_stall_v1.png",
+      "type": "scene_art",
+      "screen": [
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "1344x768",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Shop scene background v1"
+    },
+    {
+      "id": "scene_rest_temple_courtyard_v1",
+      "path": "assets/generated/scenes/scene_rest_temple_courtyard_v1.png",
+      "type": "scene_art",
+      "screen": [
+        "rest"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "1344x768",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Rest scene background v1"
+    },
+    {
+      "id": "char_tongji_icon_v1",
+      "path": "assets/generated/icons/characters/tongji_portrait_icon_v1.png",
+      "type": "character_icon",
+      "screen": [
+        "character_select",
+        "run"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped character icon v1"
+    },
+    {
+      "id": "enemy_chair_girl_v1_icon_v1",
+      "path": "assets/generated/icons/enemies/enemy_chair_girl_v1_icon_v1.png",
+      "type": "enemy_icon",
+      "screen": [
+        "combat",
+        "bestiary"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped enemy icon v1"
+    },
+    {
+      "id": "enemy_makanai_v1_icon_v1",
+      "path": "assets/generated/icons/enemies/enemy_makanai_v1_icon_v1.png",
+      "type": "enemy_icon",
+      "screen": [
+        "combat",
+        "bestiary"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped enemy icon v1"
+    },
+    {
+      "id": "enemy_mountain_boar_v1_icon_v1",
+      "path": "assets/generated/icons/enemies/enemy_mountain_boar_v1_icon_v1.png",
+      "type": "enemy_icon",
+      "screen": [
+        "combat",
+        "bestiary"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped enemy icon v1"
+    },
+    {
+      "id": "enemy_tiger_aunt_v1_icon_v1",
+      "path": "assets/generated/icons/enemies/enemy_tiger_aunt_v1_icon_v1.png",
+      "type": "enemy_icon",
+      "screen": [
+        "combat",
+        "bestiary"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped enemy icon v1"
+    },
+    {
+      "id": "enemy_tiger_god_v1_icon_v1",
+      "path": "assets/generated/icons/enemies/enemy_tiger_god_v1_icon_v1.png",
+      "type": "enemy_icon",
+      "screen": [
+        "combat",
+        "bestiary"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped enemy icon v1"
+    },
+    {
+      "id": "enemy_tree_spirit_v1_icon_v1",
+      "path": "assets/generated/icons/enemies/enemy_tree_spirit_v1_icon_v1.png",
+      "type": "enemy_icon",
+      "screen": [
+        "combat",
+        "bestiary"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "256x256",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Cropped enemy icon v1"
+    },
+    {
+      "id": "card_tongji_charge_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_charge_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_double_strike_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_double_strike_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_draw_charm_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_draw_charm_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_evil_curse_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_evil_curse_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_exorcise_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_exorcise_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_fury_strike_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_fury_strike_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_great_talisman_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_great_talisman_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_heavy_strike_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_heavy_strike_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_possession_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_possession_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_punch_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_punch_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    },
+    {
+      "id": "card_tongji_talisman_mobile_safe_v1",
+      "path": "assets/generated/cards/mobile_safe/card_tongji_talisman_mobile_safe_v1.png",
+      "type": "card_art_mobile_safe",
+      "screen": [
+        "combat",
+        "reward",
+        "shop"
+      ],
+      "states": [
+        "default"
+      ],
+      "base_size": "640x640",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "ai",
+      "status": "done",
+      "notes": "Mobile-safe cropped card art v1"
+    }
+  ]
+}

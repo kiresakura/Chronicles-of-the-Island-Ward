@@ -1,0 +1,5 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="64" cy="64" r="40" fill="#261310" stroke="#57C7D4" stroke-width="6"/>
+  <circle cx="64" cy="64" r="24" fill="#57C7D4" opacity="0.18"/>
+  <text x="64" y="71" text-anchor="middle" font-size="18" fill="#F5E7CF">節點</text>
+</svg>

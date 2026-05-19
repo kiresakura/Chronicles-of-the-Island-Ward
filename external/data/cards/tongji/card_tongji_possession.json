@@ -4,6 +4,7 @@
 		"object_id": "card_tongji_possession",
 		"card_name": "乩童附體",
 		"card_description": "獲得 2 點神威。",
+		"card_texture_path": "assets/generated/cards/card_tongji_possession_art_v1.png",
 		"card_color_id": "color_tongji",
 		"card_type": 2,
 		"card_rarity": 1,

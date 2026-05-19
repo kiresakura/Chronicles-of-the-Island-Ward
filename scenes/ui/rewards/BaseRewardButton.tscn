@@ -4,9 +4,20 @@
 [ext_resource type="Script" uid="uid://cdbs7aby3q3x8" path="res://scripts/ui/rewards/BaseRewardButton.gd" id="2_fjsnl"]
 
 [node name="BaseRewardButton" type="Button"]
-offset_right = 112.0
-offset_bottom = 31.0
+custom_minimum_size = Vector2(320, 112)
+offset_right = 320.0
+offset_bottom = 112.0
 text = "Reward 1"
 icon = ExtResource("1_8q1fk")
 expand_icon = true
 script = ExtResource("2_fjsnl")
+
+[node name="PanelBackground" type="TextureRect" parent="."]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

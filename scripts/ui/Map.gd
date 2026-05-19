@@ -39,20 +39,20 @@ func populate_locations(locations: Array[LocationData] = Global.get_all_act_loca
 		
 		var map_location: MapLocation = Scenes.MAP_LOCATION.instantiate()
 		location_container.add_child(map_location)
-		map_location.init(location_data)
 		
+		var is_reachable: bool = can_travel and next_locations.has(location_data)
+		var is_current: bool = location_data == Global.get_player_location_data()
+		map_location.init(location_data, is_reachable, is_current, can_travel)
 		map_location.map_location_button_up.connect(_on_map_location_button_up)
 		
 		max_y = max(max_y, location_data.location_position.y)
 		
-		# flash the locations the player can travel to
-		if can_travel:
-			if next_locations.has(location_data):
-				map_location.flash_location()
-				current_map_location = map_location
-		
-		#if location_data == Global.get_player_location_data():
-			#current_map_location = map_location
+		if is_reachable:
+			map_location.flash_location()
+		if is_current:
+			current_map_location = map_location
+		elif current_map_location == null and is_reachable:
+			current_map_location = map_location
 	
 	# set the size of the container to make scrolling posible
 	location_container.custom_minimum_size.y = max_y + MAP_Y_MARGIN

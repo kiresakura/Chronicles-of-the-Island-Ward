@@ -1,8 +1,12 @@
 # Overlay for acceptable rewards
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 @onready var reward_container: VBoxContainer = $RewardContainer
 @onready var continue_button: Button = $ContinueButton
+@onready var backdrop: ColorRect = $Background
+@onready var panel_fill: ColorRect = $Background2
 
 @onready var map = $%Map
 
@@ -30,6 +34,8 @@ func _ready():
 	Signals.reward_clear_requested.connect(_on_reward_clear_requested)
 	
 	continue_button.button_up.connect(_on_continue_button_up)
+	COTIW_UI_THEME.apply_primary_button_style(continue_button)
+	COTIW_UI_THEME.style_overlay_backdrop(backdrop, panel_fill)
 
 #region Reward Display
 func populate_reward_display() -> void:

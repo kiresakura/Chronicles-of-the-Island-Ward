@@ -2,6 +2,8 @@
 extends Control
 class_name Card
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 var card_data: CardData = null
 var card_listeners: Array[BaseCardListener] = []
 
@@ -16,6 +18,7 @@ const ENERGY_ICON_KEYWORD: String = "[energy_icon]"	# tells description to displ
 @onready var pivot: Node2D = $Pivot
 
 @onready var card_texture = %CardTexture
+@onready var card_frame: TextureRect = %CardFrame
 @onready var card_name: RichLabelAutoSizer = %CardName
 @onready var card_type: Label = %CardType
 @onready var card_description: RichLabelAutoSizer = %CardDescription
@@ -74,17 +77,28 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 		_card_is_rerendering = false
 	
 	# update visuals
-	if card_data.card_texture_path != "":
-		card_texture.texture = FileLoader.load_texture(card_data.card_texture_path)
+	var card_art_path: String = COTIW_UI_THEME.get_mobile_safe_card_art_path(card_data.card_texture_path)
+	if card_art_path != "":
+		card_texture.texture = FileLoader.load_texture(card_art_path)
+	
+	var frame_path: String = COTIW_UI_THEME.get_card_frame_path(card_data.card_rarity)
+	if frame_path != "" and ResourceLoader.exists(frame_path):
+		card_frame.texture = load(frame_path)
 	
 	# updates the card's display
 	card_name.set_bbcode("[center]" + card_data.get_card_name() + "[/center]")
 	card_description.set_bbcode(get_card_description(selected_enemy))
 	card_type.text = CardData.CARD_RARITIES.keys()[card_data.card_rarity] + " " + CardData.CARD_TYPES.keys()[card_data.card_type]
+	card_name.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
+	card_type.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color.GOLD))
+	card_description.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("lacquer_black", Color.BLACK))
+	card_glow.color = COTIW_UI_THEME.get_color("neon_cyan", Color(0.909804, 0.901961, 0.992157, 0.392157))
 	
 	var color_data: ColorData = Global.get_color_data(card_data.card_color_id)
 	if color_data != null:
-		card_color.color = color_data.color
+		card_color.color = color_data.color.lerp(COTIW_UI_THEME.get_color("paper_warm", Color.WHITE), 0.82)
+	else:
+		card_color.color = COTIW_UI_THEME.get_color("paper_warm", Color(0.957, 0.905, 0.811))
 	
 	$Pivot/CardVisual/EnergySprite.visible = card_data.card_is_playable
 	

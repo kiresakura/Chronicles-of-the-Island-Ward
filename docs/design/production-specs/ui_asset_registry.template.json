@@ -1,0 +1,45 @@
+{
+  "registry_version": 1,
+  "notes": "Fill this as assets are produced. One row per deliverable asset.",
+  "fields": [
+    "id",
+    "path",
+    "type",
+    "screen",
+    "states",
+    "base_size",
+    "stretchable",
+    "tintable",
+    "owner",
+    "status",
+    "notes"
+  ],
+  "rows": [
+    {
+      "id": "button_primary",
+      "path": "assets/ui/buttons/ui_button_primary_idle.svg",
+      "type": "button",
+      "screen": ["main_menu", "reward", "shop"],
+      "states": ["idle", "pressed", "disabled"],
+      "base_size": "320x112",
+      "stretchable": true,
+      "tintable": false,
+      "owner": "art",
+      "status": "todo",
+      "notes": "Main CTA button"
+    },
+    {
+      "id": "frame_card_common",
+      "path": "assets/ui/frames/ui_frame_card_common_default.svg",
+      "type": "frame",
+      "screen": ["combat", "reward", "shop"],
+      "states": ["default", "selected"],
+      "base_size": "200x320",
+      "stretchable": false,
+      "tintable": false,
+      "owner": "art",
+      "status": "todo",
+      "notes": "Base common card frame"
+    }
+  ]
+}

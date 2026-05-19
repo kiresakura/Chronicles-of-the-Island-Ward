@@ -39,7 +39,7 @@ func play_card(card_data: CardData):
 
 ### 鐵律 2：Mobile-First，不是 Mobile-Port
 
-- 所有 UI 設計**從直向 6.1" 螢幕開始**（基準解析度 1080×2340）
+- 所有 UI 設計**從橫向手機螢幕開始**（基準解析度 1200×700；2026-05-19 定案橫向，見 PRD §5.1 / QUESTIONS）
 - 所有互動**設計給觸控**，不要有「需要滑鼠 hover」才能用的功能
 - 在 Godot Editor 把 Display 設成 mobile preset
 - 每個 Sprint 結束都要在**真機**測試（iPhone SE 模擬器最低標，理想是真 iPhone + 真 Android）
@@ -82,9 +82,9 @@ git push -u origin main
 
 **驗收問題**：能不能用乩童打完一場「山豬精」戰鬥？資料是不是全部從 JSON 載入？
 
-### Sprint 2: 直向 Mobile UI（2 週）
+### Sprint 2: 橫向 Mobile UI（2 週）
 
-- [ ] 重新設計戰鬥場景 UI 為直向
+- [ ] 重新設計戰鬥場景 UI 為橫向
 - [ ] 實作觸控手勢（拖曳出卡、長按看詳情）
 - [ ] 適配多種螢幕尺寸（iPhone SE 至 iPhone Pro Max）
 - [ ] 加入 i18n 框架（即使只支援繁中）
@@ -109,7 +109,7 @@ git push -u origin main
 | 引擎 | Godot 4.4+ | MIT、STS2 同款、行動匯出成熟 |
 | 主要語言 | GDScript | 開發快、社群大、效能瓶頸再換 C# |
 | 起手框架 | Slay The Robot (MIT) | 省 6+ 月開發時間 |
-| 螢幕方向 | 直向 | 通勤、單手、市場習慣 |
+| 螢幕方向 | 橫向 | R1999 lobby 風、沿用 STR 橫向基底（2026-05-19 定案，早期直向作廢）|
 | 變現模式 | F2P + IAP | 已定，**不放廣告**（MVP） |
 | 首發語言 | 繁中、簡中、英文 | 主要市場 |
 | 後端 | 無（MVP） | 純本地 + 雲端存檔 |
@@ -187,8 +187,8 @@ godot --headless --export-release "iOS" build/cotiw.ipa
 # 命令列建 Android 版
 godot --headless --export-release "Android" build/cotiw.apk
 
-# 跑單元測試
-godot --headless --script res://tests/run_all.gd
+# 跑單元測試（場景模式；--script 不會載入 autoload，Global/Random 會找不到）
+godot --headless res://tests/TestRunner.tscn
 ```
 
 ---

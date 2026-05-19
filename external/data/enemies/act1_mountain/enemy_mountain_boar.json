@@ -4,6 +4,7 @@
 		"object_id": "enemy_mountain_boar",
 		"enemy_object_id": "enemy_mountain_boar",
 		"enemy_name": "山豬精",
+		"enemy_texture_path": "assets/generated/enemies/enemy_mountain_boar_v1.png",
 		"enemy_health": 24,
 		"enemy_health_max": 24,
 		"enemy_block": 0,

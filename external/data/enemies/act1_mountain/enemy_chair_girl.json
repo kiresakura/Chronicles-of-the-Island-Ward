@@ -4,6 +4,7 @@
 		"object_id": "enemy_chair_girl",
 		"enemy_object_id": "enemy_chair_girl",
 		"enemy_name": "椅仔姑",
+		"enemy_texture_path": "assets/generated/enemies/enemy_chair_girl_v1.png",
 		"enemy_health": 48,
 		"enemy_health_max": 48,
 		"enemy_block": 0,

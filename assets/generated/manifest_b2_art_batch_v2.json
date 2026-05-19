@@ -1,0 +1,71 @@
+{
+  "model": "gemini-2.5-flash-image",
+  "generated_at": "2026-05-18 22:13:16",
+  "results": [
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_heavy_strike_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_double_strike_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_great_talisman_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_possession_art_v1.png",
+      "attempt": 2,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_fury_strike_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_draw_charm_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_exorcise_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_charge_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_evil_curse_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/enemies/enemy_tree_spirit_v1.png",
+      "attempt": 2,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/enemies/enemy_tiger_aunt_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/enemies/enemy_chair_girl_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/enemies/enemy_makanai_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    }
+  ]
+}

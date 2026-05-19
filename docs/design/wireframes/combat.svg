@@ -1,0 +1,29 @@
+<svg width="1080" height="2340" viewBox="0 0 1080 2340" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="2340" fill="#120A09"/>
+  <rect x="0" y="0" width="1080" height="820" fill="#2D4F8B" opacity="0.45"/>
+  <rect x="0" y="820" width="1080" height="900" fill="#4B2D22" opacity="0.55"/>
+  <rect x="24" y="36" width="420" height="104" rx="18" fill="#261310" stroke="#A47D2A" stroke-width="3"/>
+  <text x="234" y="100" fill="#F5E7CF" font-size="36" text-anchor="middle">百年虎爺 / Boss 區</text>
+  <rect x="700" y="36" width="320" height="104" rx="18" fill="#261310" stroke="#E8C56A" stroke-width="3"/>
+  <text x="860" y="100" fill="#E8C56A" font-size="34" text-anchor="middle">回合 3 / 神力 2</text>
+  <circle cx="540" cy="640" r="190" fill="#8E1E1E" opacity="0.18" stroke="#E8C56A" stroke-width="4" stroke-dasharray="12 12"/>
+  <text x="540" y="650" fill="#F5E7CF" font-size="42" text-anchor="middle">戰場焦點區</text>
+  <rect x="48" y="1440" width="984" height="160" rx="28" fill="#261310" stroke="#A47D2A" stroke-width="4"/>
+  <text x="100" y="1506" fill="#D64646" font-size="30">HP</text>
+  <rect x="150" y="1472" width="280" height="28" rx="14" fill="#3B1616"/>
+  <rect x="150" y="1472" width="210" height="28" rx="14" fill="#D64646"/>
+  <text x="470" y="1506" fill="#E7B94C" font-size="30">護甲</text>
+  <rect x="560" y="1472" width="180" height="28" rx="14" fill="#41331A"/>
+  <rect x="560" y="1472" width="96" height="28" rx="14" fill="#E7B94C"/>
+  <text x="790" y="1506" fill="#4EC8E5" font-size="30">神力</text>
+  <rect x="870" y="1458" width="100" height="46" rx="20" fill="#17353C" stroke="#4EC8E5" stroke-width="3"/>
+  <text x="920" y="1490" fill="#F5E7CF" font-size="30" text-anchor="middle">2</text>
+  <g>
+    <rect x="30" y="1740" width="190" height="360" rx="22" fill="#F5E7CF" stroke="#A47D2A" stroke-width="4"/>
+    <rect x="240" y="1740" width="190" height="360" rx="22" fill="#F5E7CF" stroke="#A47D2A" stroke-width="4"/>
+    <rect x="450" y="1680" width="200" height="420" rx="24" fill="#FFF1D8" stroke="#E8C56A" stroke-width="6"/>
+    <rect x="670" y="1740" width="190" height="360" rx="22" fill="#F5E7CF" stroke="#A47D2A" stroke-width="4"/>
+    <rect x="880" y="1740" width="170" height="360" rx="22" fill="#F5E7CF" stroke="#A47D2A" stroke-width="4"/>
+  </g>
+  <text x="550" y="2148" fill="#E8C56A" font-size="28" text-anchor="middle">中央卡牌為選取 / 拖曳主態</text>
+</svg>
