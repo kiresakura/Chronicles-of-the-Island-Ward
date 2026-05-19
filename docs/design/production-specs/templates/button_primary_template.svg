@@ -1,0 +1,4 @@
+<svg width="320" height="112" viewBox="0 0 320 112" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="312" height="104" rx="18" fill="#D94A2B" stroke="#E8C56A" stroke-width="4"/>
+  <text x="160" y="67" text-anchor="middle" font-size="28" fill="#F5E7CF">Primary CTA</text>
+</svg>

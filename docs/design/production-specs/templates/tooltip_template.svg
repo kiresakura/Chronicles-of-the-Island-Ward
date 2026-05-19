@@ -1,0 +1,5 @@
+<svg width="420" height="220" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="412" height="212" rx="16" fill="#1A100D" stroke="#E8C56A" stroke-width="3"/>
+  <text x="24" y="40" font-size="20" fill="#E8C56A">關鍵字</text>
+  <text x="24" y="78" font-size="16" fill="#F5E7CF">這裡放 tooltip 內文，確保行距與邊距正確。</text>
+</svg>

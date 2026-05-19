@@ -4,6 +4,7 @@
 		"object_id": "card_tongji_charge",
 		"card_name": "威靈出陣",
 		"card_description": "造成 8 點傷害，獲得 1 點神威。",
+		"card_texture_path": "assets/generated/cards/card_tongji_charge_art_v1.png",
 		"card_color_id": "color_tongji",
 		"card_type": 0,
 		"card_rarity": 2,

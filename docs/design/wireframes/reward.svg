@@ -1,0 +1,14 @@
+<svg width="1080" height="2340" viewBox="0 0 1080 2340" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="2340" fill="#120A09"/>
+  <rect width="1080" height="2340" fill="#000" opacity="0.55"/>
+  <rect x="60" y="180" width="960" height="1760" rx="36" fill="#261310" stroke="#E8C56A" stroke-width="6"/>
+  <text x="540" y="320" fill="#F5E7CF" font-size="64" text-anchor="middle">戰利品</text>
+  <text x="540" y="386" fill="#E8C56A" font-size="28" text-anchor="middle">三選一 / 高亮選中 / 下方確認</text>
+  <g>
+    <rect x="110" y="520" width="260" height="920" rx="24" fill="#F5E7CF" stroke="#A47D2A" stroke-width="4"/>
+    <rect x="410" y="470" width="260" height="980" rx="28" fill="#FFF1D8" stroke="#E8C56A" stroke-width="6"/>
+    <rect x="710" y="520" width="260" height="920" rx="24" fill="#F5E7CF" stroke="#A47D2A" stroke-width="4"/>
+  </g>
+  <rect x="240" y="1610" width="600" height="132" rx="28" fill="#D94A2B" stroke="#E8C56A" stroke-width="5"/>
+  <text x="540" y="1692" fill="#F5E7CF" font-size="44" text-anchor="middle">收下此符</text>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "character_icon": "/Users/crimson/Developer/COTIW/assets/generated/icons/characters/tongji_portrait_icon_v1.png",
+  "enemy_icons": [
+    "/Users/crimson/Developer/COTIW/assets/generated/icons/enemies/enemy_mountain_boar_v1_icon_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/icons/enemies/enemy_tiger_god_v1_icon_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/icons/enemies/enemy_tree_spirit_v1_icon_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/icons/enemies/enemy_tiger_aunt_v1_icon_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/icons/enemies/enemy_chair_girl_v1_icon_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/icons/enemies/enemy_makanai_v1_icon_v1.png"
+  ],
+  "card_mobile_safe_count": 11,
+  "card_mobile_safe_samples": [
+    "/Users/crimson/Developer/COTIW/assets/generated/cards/mobile_safe/card_tongji_charge_mobile_safe_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/cards/mobile_safe/card_tongji_double_strike_mobile_safe_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/cards/mobile_safe/card_tongji_draw_charm_mobile_safe_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/cards/mobile_safe/card_tongji_evil_curse_mobile_safe_v1.png",
+    "/Users/crimson/Developer/COTIW/assets/generated/cards/mobile_safe/card_tongji_exorcise_mobile_safe_v1.png"
+  ]
+}

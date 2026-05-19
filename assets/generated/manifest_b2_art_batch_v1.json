@@ -1,0 +1,36 @@
+{
+  "model": "gemini-2.5-flash-image",
+  "generated_at": "2026-05-18 22:00:57",
+  "results": [
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/characters/tongji_portrait_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_punch_art_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/cards/card_tongji_talisman_art_v1.png",
+      "attempt": 2,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/enemies/enemy_mountain_boar_v1.png",
+      "attempt": 2,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/enemies/enemy_tiger_god_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/scenes/act1_mountain_temple_bg_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    }
+  ]
+}

@@ -1,11 +1,15 @@
 # Overlay for a shop
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 @onready var card_container: HBoxContainer = $CardContainer
 @onready var artifact_container: VBoxContainer = $ArtifactContainer
 @onready var consumable_container: VBoxContainer = $ConsumableContainer
 
 @onready var continue_button: Button = $ContinueButton
+@onready var backdrop: ColorRect = $Background
+@onready var panel_fill: ColorRect = $Background2
 
 @onready var map = $%Map
 
@@ -20,6 +24,8 @@ func _ready():
 	Signals.consumable_purchased.connect(_on_consumable_purchased)
 	
 	continue_button.button_up.connect(_on_continue_button_up)
+	COTIW_UI_THEME.apply_primary_button_style(continue_button)
+	COTIW_UI_THEME.style_overlay_backdrop(backdrop, panel_fill)
 
 func populate_shop() -> void:
 	clear_shop()

@@ -3,8 +3,18 @@
 [ext_resource type="Script" uid="uid://dv7mjgtd73m7l" path="res://scripts/ui/RestActionButton.gd" id="1_t1ki4"]
 
 [node name="RestActionButton" type="Button"]
-custom_minimum_size = Vector2(240, 240)
-theme_override_font_sizes/font_size = 32
+custom_minimum_size = Vector2(240, 180)
+theme_override_font_sizes/font_size = 24
 text = "Rest Action"
 text_overrun_behavior = 3
 script = ExtResource("1_t1ki4")
+
+[node name="PanelBackground" type="TextureRect" parent="."]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

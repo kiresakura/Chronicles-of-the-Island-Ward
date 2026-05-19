@@ -1,0 +1,21 @@
+{
+  "model": "gemini-2.5-flash-image",
+  "generated_at": "2026-05-18 22:30:17",
+  "results": [
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/scenes/scene_event_folklore_crossroad_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/scenes/scene_shop_night_market_stall_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    },
+    {
+      "path": "/Users/crimson/Developer/COTIW/assets/generated/scenes/scene_rest_temple_courtyard_v1.png",
+      "attempt": 1,
+      "status": "ok"
+    }
+  ]
+}

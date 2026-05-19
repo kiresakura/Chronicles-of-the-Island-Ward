@@ -1,0 +1,16 @@
+<svg width="1080" height="2340" viewBox="0 0 1080 2340" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="2340" fill="#1B0F0D"/>
+  <rect x="0" y="0" width="1080" height="2340" fill="url(#g)" opacity="0.8"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2D4F8B"/>
+      <stop offset="65%" stop-color="#4B2D22"/>
+      <stop offset="100%" stop-color="#A62F1F"/>
+    </linearGradient>
+  </defs>
+  <text x="540" y="540" fill="#F5E7CF" font-size="76" text-anchor="middle">鎮島錄</text>
+  <text x="540" y="620" fill="#E8C56A" font-size="34" text-anchor="middle">焚香淨壇中…</text>
+  <rect x="140" y="1820" width="800" height="44" rx="22" fill="#261310" stroke="#A47D2A" stroke-width="4"/>
+  <rect x="148" y="1828" width="560" height="28" rx="14" fill="#E8C56A"/>
+  <text x="540" y="1970" fill="#F5E7CF" font-size="28" text-anchor="middle">點擊任意處開始</text>
+</svg>

@@ -4,6 +4,7 @@
 		"object_id": "card_tongji_great_talisman",
 		"card_name": "鐵布衫",
 		"card_description": "獲得 12 點護身符。",
+		"card_texture_path": "assets/generated/cards/card_tongji_great_talisman_art_v1.png",
 		"card_color_id": "color_tongji",
 		"card_type": 1,
 		"card_rarity": 1,

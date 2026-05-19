@@ -1,0 +1,111 @@
+{
+  "theme": "cotiw-temple-neon-pixel",
+  "version": 1,
+  "base_resolution": {
+    "width": 1200,
+    "height": 700,
+    "orientation": "landscape",
+    "_note": "2026-05-19 定案：實裝採橫向（R1999 lobby 風），與 project.godot 1200×700 一致。早期 portrait 1080×2340 假設作廢。"
+  },
+  "colors": {
+    "temple_red": "#A62F1F",
+    "festival_red": "#D94A2B",
+    "incense_gold": "#E8C56A",
+    "old_gold": "#A47D2A",
+    "lacquer_black": "#1B0F0D",
+    "wood_brown": "#4B2D22",
+    "neon_cyan": "#57C7D4",
+    "sign_blue": "#2D4F8B",
+    "spirit_jade": "#4FA56D",
+    "mystic_purple": "#6E4AA8",
+    "hp_red": "#D64646",
+    "armor_gold": "#E7B94C",
+    "energy_cyan": "#4EC8E5",
+    "heal_green": "#5BC777",
+    "warning_orange": "#FF9F43",
+    "danger_crimson": "#8E1E1E",
+    "paper_warm": "#F5E7CF",
+    "ash_beige": "#D7C4A5",
+    "smoke_gray": "#8B7C73",
+    "night_ink": "#120A09"
+  },
+  "typography": {
+    "font_family": "Noto Sans TC",
+    "display": {"size": 48, "weight": 700, "line_height": 1.1},
+    "h1": {"size": 36, "weight": 700, "line_height": 1.15},
+    "h2": {"size": 28, "weight": 700, "line_height": 1.2},
+    "body": {"size": 22, "weight": 400, "line_height": 1.35},
+    "caption": {"size": 18, "weight": 500, "line_height": 1.3},
+    "micro": {"size": 16, "weight": 500, "line_height": 1.2},
+    "numeric_shadow": true
+  },
+  "spacing": {
+    "xs": 8,
+    "sm": 12,
+    "md": 16,
+    "lg": 24,
+    "xl": 32,
+    "xxl": 48
+  },
+  "radii": {
+    "sm": 10,
+    "md": 12,
+    "lg": 16,
+    "pill": 999
+  },
+  "borders": {
+    "default": 2,
+    "strong": 3,
+    "cta": 4
+  },
+  "shadows": {
+    "panel": "0 4 12 rgba(0,0,0,0.30)",
+    "button": "0 3 8 rgba(0,0,0,0.28)",
+    "glow_gold": "0 0 12 rgba(232,197,106,0.28)",
+    "glow_cyan": "0 0 12 rgba(87,199,212,0.26)"
+  },
+  "touch_targets": {
+    "minimum": 88,
+    "comfortable": 96,
+    "cta_height": 112
+  },
+  "components": {
+    "primary_button": {
+      "fill": "festival_red",
+      "border": "incense_gold",
+      "text": "paper_warm",
+      "radius": "lg",
+      "height": 112
+    },
+    "secondary_button": {
+      "fill": "lacquer_black",
+      "border": "old_gold",
+      "text": "incense_gold",
+      "radius": "md",
+      "height": 92
+    },
+    "panel": {
+      "fill": "#261310EE",
+      "border": "old_gold",
+      "radius": "lg"
+    },
+    "tooltip": {
+      "fill": "#1A100DF2",
+      "border": "incense_gold",
+      "text": "paper_warm",
+      "radius": "md"
+    },
+    "resource_hp": {"fill": "hp_red", "track": "#3B1616"},
+    "resource_armor": {"fill": "armor_gold", "track": "#41331A"},
+    "resource_energy": {"fill": "energy_cyan", "track": "#17353C"}
+  },
+  "layers": {
+    "background": 0,
+    "panel": 10,
+    "content": 20,
+    "floating": 30,
+    "overlay": 40,
+    "modal": 50,
+    "toast": 60
+  }
+}

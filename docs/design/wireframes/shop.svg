@@ -1,0 +1,22 @@
+<svg width="1080" height="2340" viewBox="0 0 1080 2340" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="2340" fill="#1B0F0D"/>
+  <text x="540" y="110" fill="#F5E7CF" font-size="60" text-anchor="middle">夜市商店</text>
+  <rect x="770" y="54" width="240" height="64" rx="28" fill="#261310" stroke="#E8C56A" stroke-width="4"/>
+  <text x="890" y="96" fill="#E8C56A" font-size="30" text-anchor="middle">銀兩 245</text>
+  <g fill="#261310" stroke="#A47D2A" stroke-width="4">
+    <rect x="54" y="220" width="972" height="240" rx="26"/>
+    <rect x="54" y="500" width="972" height="240" rx="26"/>
+    <rect x="54" y="780" width="972" height="240" rx="26"/>
+    <rect x="54" y="1060" width="972" height="240" rx="26"/>
+  </g>
+  <g>
+    <rect x="760" y="286" width="190" height="88" rx="22" fill="#D94A2B" stroke="#E8C56A" stroke-width="4"/>
+    <rect x="760" y="566" width="190" height="88" rx="22" fill="#D94A2B" stroke="#E8C56A" stroke-width="4"/>
+    <rect x="760" y="846" width="190" height="88" rx="22" fill="#261310" stroke="#A47D2A" stroke-width="4"/>
+    <rect x="760" y="1126" width="190" height="88" rx="22" fill="#D94A2B" stroke="#E8C56A" stroke-width="4"/>
+  </g>
+  <text x="855" y="342" fill="#F5E7CF" font-size="34" text-anchor="middle">購買</text>
+  <text x="855" y="622" fill="#F5E7CF" font-size="34" text-anchor="middle">購買</text>
+  <text x="855" y="902" fill="#8B7C73" font-size="34" text-anchor="middle">售罄</text>
+  <text x="855" y="1182" fill="#F5E7CF" font-size="34" text-anchor="middle">購買</text>
+</svg>

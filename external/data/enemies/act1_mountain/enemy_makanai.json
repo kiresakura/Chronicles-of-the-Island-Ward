@@ -4,6 +4,7 @@
 		"object_id": "enemy_makanai",
 		"enemy_object_id": "enemy_makanai",
 		"enemy_name": "魔神仔",
+		"enemy_texture_path": "assets/generated/enemies/enemy_makanai_v1.png",
 		"enemy_health": 42,
 		"enemy_health_max": 42,
 		"enemy_block": 0,

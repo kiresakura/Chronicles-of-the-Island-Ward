@@ -1,0 +1,23 @@
+<svg width="1080" height="2340" viewBox="0 0 1080 2340" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="2340" fill="#120A09"/>
+  <text x="540" y="110" fill="#F5E7CF" font-size="60" text-anchor="middle">第一章・山路入廟</text>
+  <text x="540" y="170" fill="#E8C56A" font-size="28" text-anchor="middle">地圖 / 章節進度 / 可點大節點</text>
+  <g stroke="#8B7C73" stroke-width="8" opacity="0.8">
+    <path d="M200 1920 C260 1700, 280 1500, 370 1320 S500 900, 520 760" fill="none"/>
+    <path d="M540 1920 C540 1700, 540 1480, 540 1240 S550 920, 550 760" fill="none"/>
+    <path d="M880 1920 C820 1700, 790 1480, 700 1300 S590 900, 560 760" fill="none"/>
+  </g>
+  <g>
+    <circle cx="200" cy="1920" r="44" fill="#261310" stroke="#E8C56A" stroke-width="6"/>
+    <circle cx="540" cy="1920" r="44" fill="#261310" stroke="#E8C56A" stroke-width="6"/>
+    <circle cx="880" cy="1920" r="44" fill="#261310" stroke="#E8C56A" stroke-width="6"/>
+    <circle cx="370" cy="1320" r="44" fill="#261310" stroke="#57C7D4" stroke-width="6"/>
+    <circle cx="540" cy="1240" r="44" fill="#261310" stroke="#4FA56D" stroke-width="6"/>
+    <circle cx="700" cy="1300" r="44" fill="#261310" stroke="#FF9F43" stroke-width="6"/>
+    <circle cx="520" cy="760" r="56" fill="#8E1E1E" stroke="#E8C56A" stroke-width="8"/>
+  </g>
+  <text x="200" y="2004" fill="#F5E7CF" font-size="22" text-anchor="middle">戰</text>
+  <text x="540" y="2004" fill="#F5E7CF" font-size="22" text-anchor="middle">事</text>
+  <text x="880" y="2004" fill="#F5E7CF" font-size="22" text-anchor="middle">休</text>
+  <text x="520" y="850" fill="#F5E7CF" font-size="24" text-anchor="middle">Boss</text>
+</svg>

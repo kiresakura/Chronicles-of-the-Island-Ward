@@ -1,0 +1,6 @@
+<svg width="720" height="480" viewBox="0 0 720 480" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="708" height="468" rx="24" fill="#261310" stroke="#A47D2A" stroke-width="4"/>
+  <rect x="24" y="24" width="672" height="72" rx="16" fill="#1B0F0D"/>
+  <text x="360" y="69" text-anchor="middle" font-size="28" fill="#E8C56A">Panel Title</text>
+  <rect x="24" y="116" width="672" height="340" rx="16" fill="#FFF8EA" opacity="0.08"/>
+</svg>

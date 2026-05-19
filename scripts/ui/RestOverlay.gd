@@ -1,8 +1,11 @@
 # Overlay for actions at a rest site
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 @onready var rest_action_container: GridContainer = $ScrollContainer/MarginContainer/RestActionContainer
 @onready var continue_button: Button = $ContinueButton
+@onready var backdrop: ColorRect = $Background
 
 @onready var map = $%Map
 
@@ -11,6 +14,8 @@ func _ready():
 
 	Signals.map_location_selected.connect(_on_map_location_selected)
 	continue_button.button_up.connect(_on_continue_button_up)
+	COTIW_UI_THEME.apply_primary_button_style(continue_button)
+	COTIW_UI_THEME.style_overlay_backdrop(backdrop)
 
 func _on_map_location_selected(_location_data: LocationData):
 	if _location_data.location_type == LocationData.LOCATION_TYPES.REST_SITE:

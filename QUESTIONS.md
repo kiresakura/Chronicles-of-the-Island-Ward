@@ -145,6 +145,29 @@
 
 ---
 
+## 2026-05-19 重大決策記錄
+
+### D1: 螢幕方向最終定案 —— 橫向（Landscape）
+
+**背景**：
+- 早期 PRD / 鐵律 2 假設直向 1080×2340；Q2（2026-05-16）僅決定「Sprint 2 才切方向」，未定最終方向。
+- 實際開發 V4 起即切回橫向 R1999 lobby 風；主畫面、向量背景、設計 token 已大量以橫向實裝。
+- design_tokens.json 早期仍寫 portrait、PRD/CLAUDE/AGENTS 仍寫直向，與實裝不一致。
+
+**🟢 憲龍決策 2026-05-19**：**最終定案＝橫向（Landscape）**。
+
+- 基準解析度＝ `project.godot` 1200×700（canvas_items stretch / keep aspect）
+- mobile-first 與觸控優先精神**不變**，僅版面方向定為橫向
+- 早期所有「直向 / portrait / 1080×2340」字樣作廢
+
+**已執行的全面統整（2026-05-19）**：
+- `PRD.md`：§2 鐵律、§5.1 螢幕方向、§5.3、§7.2、§7.7、§10 改橫向
+- `CLAUDE.md` / `AGENTS.md`：鐵律 2、Sprint 2、決策表改橫向；§10 測試指令修正為場景模式
+- `README.md`、`docs/design/*`（art direction banner、AIDA handoff、design_tokens.json）全部對齊橫向
+- 後續待辦（非本次）：`MainMenu.gd` 統一改走 `CotiwUiTheme`（目前自有 StyleBox 工廠，一致性缺口）
+
+---
+
 ## 標記用法
 
 每個問題請以下列三種之一回覆：

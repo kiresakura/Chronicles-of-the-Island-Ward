@@ -1759,11 +1759,18 @@ theme_override_constants/v_separation = 16
 columns = 3
 
 [node name="ContinueButton" type="Button" parent="RunScreen/RestOverlay"]
-layout_mode = 0
-offset_left = 528.0
-offset_top = 624.0
-offset_right = 672.0
-offset_bottom = 655.0
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -124.0
+offset_right = 160.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "繼續"
 
 [node name="ShopOverlay" type="Control" parent="RunScreen"]
@@ -1844,11 +1851,18 @@ grow_vertical = 2
 theme_override_constants/separation = 20
 
 [node name="ContinueButton" type="Button" parent="RunScreen/ShopOverlay"]
-layout_mode = 0
-offset_left = 528.0
-offset_top = 656.0
-offset_right = 672.0
-offset_bottom = 687.0
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -124.0
+offset_right = 160.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "繼續"
 
 [node name="DialogueOverlay" type="Control" parent="RunScreen"]
@@ -2079,11 +2093,18 @@ grow_vertical = 2
 theme_override_constants/separation = 20
 
 [node name="ContinueButton" type="Button" parent="RunScreen/RewardOverlay"]
-layout_mode = 0
-offset_left = 528.0
-offset_top = 544.0
-offset_right = 672.0
-offset_bottom = 575.0
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -124.0
+offset_right = 160.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "繼續"
 
 [node name="CardSelectionOverlay" type="Control" parent="RunScreen"]

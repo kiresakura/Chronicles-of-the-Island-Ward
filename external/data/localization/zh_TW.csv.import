@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bfm5uk2dh3bi2"
+
+[deps]
+
+files=["res://external/data/localization/zh_TW.zh_TW.translation", "res://external/data/localization/zh_TW.zh_CN.translation", "res://external/data/localization/zh_TW.en.translation", "res://external/data/localization/zh_TW.ja.translation"]
+
+source_file="res://external/data/localization/zh_TW.csv"
+dest_files=["res://external/data/localization/zh_TW.zh_TW.translation", "res://external/data/localization/zh_TW.zh_CN.translation", "res://external/data/localization/zh_TW.en.translation", "res://external/data/localization/zh_TW.ja.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
