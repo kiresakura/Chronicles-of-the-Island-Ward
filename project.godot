@@ -45,6 +45,7 @@ ActionHandler="*res://autoload/ActionHandler.gd"
 ActionGenerator="*res://autoload/ActionGenerator.gd"
 DebugLogger="*res://autoload/DebugLogger.gd"
 UIDGenerator="*res://autoload/UIDGenerator.gd"
+Responsive="*res://autoload/Responsive.gd"
 
 [debug]
 
@@ -58,7 +59,7 @@ window/size/viewport_height=700
 window/size/resizable=true
 window/handheld/orientation="landscape"
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
+window/stretch/aspect="expand"
 
 [gui]
 
