@@ -166,6 +166,19 @@
 - `README.md`、`docs/design/*`（art direction banner、AIDA handoff、design_tokens.json）全部對齊橫向
 - ✅ **已結清（commit e5468a4）**：`MainMenu.gd` 統一改走 `CotiwUiTheme`——CotiwUiTheme 新增公用 `make_stylebox()` 為全專案唯一 StyleBox 入口；MainMenu 金色改由 design_tokens 提供、`_sb()` 委派、起駕用 `apply_primary_button_style`。一致性缺口消除。
 
+### D2: 螢幕自適應架構（全機型 / 含 iPad）
+
+**憲龍決策 2026-05-19**：(1) 範圍＝全部畫面含 iPad/平板；(2) stretch `keep`→**`expand`**（填滿無黑邊）；(3) **全套安全區內縮**（瀏海/動態島/home indicator）。
+
+**架構**：
+- `project.godot`：`window/stretch/aspect` = `expand`；新增 autoload `Responsive`。
+- `autoload/Responsive.gd`：全專案唯一可用區真相來源 —— `safe_rect`（裝置安全區換算成邏輯座標）、`screen_rect`（全出血用）、`screen_class`（phone/tablet，橫向 AR<1.6 視為平板）、`changed` 信號（resize/旋轉重算）；桌機/編輯器 fallback = 全螢幕。
+- `scripts/ui/SafeFit.gd`：把固定 1200×700 版面等比置中塞進安全區（鐵律 3 友善，不動 STR scene 內部）。
+
+**Phase 1（已完成，待 commit）**：MainMenu 完整自適應重構（座標全由 `Responsive.safe_rect` 計算、背景全出血、phone/tablet 間距微調）；TitleScreen + Background 撐滿 viewport；NewRunMenu / CodexMenu 套 SafeFit。驗證：import 乾淨、測試 21/21、Root.tscn 於 1200×700 / 2532×1170(Pro Max 2.16) / 1334×750(SE) / 1180×820(iPad 平板級) headless 皆無 script error。⚠️ headless 無法驗證實際視覺/安全區內縮（DisplayServer 安全區僅真機生效），需真機/模擬器目視。
+
+**Phase 2（待辦）**：把 SafeFit（或逐畫面重排）套到戰鬥 / 地圖 / 商店 / 獎勵 / 休息 等 STR/Aida 衍生畫面 + iPad 專屬間距微調。屬獨立里程碑（會動大量 STR scene，回歸風險高）。
+
 ---
 
 ## 標記用法

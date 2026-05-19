@@ -6,10 +6,21 @@ extends Control
 @onready var main_menu = $MainMenu
 @onready var new_run_menu = $NewRunMenu
 @onready var codex_menu = $CodexMenu
+@onready var _background: ColorRect = $Background if has_node("Background") else null
 
 func _ready():
 	Signals.run_started.connect(_on_run_started)
 	Signals.run_ended.connect(_on_run_ended)
+
+	# 自適應地基：TitleScreen 與底色撐滿整個 viewport（expand 下不留空白）
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if _background:
+		_background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	# MainMenu 自己做完整自適應；NewRunMenu/CodexMenu 為固定 1200×700 版面，
+	# 用 SafeFit 等比置中塞進安全區（Phase 1；戰鬥/地圖等留 Phase 2）
+	SafeFit.bind(new_run_menu)
+	SafeFit.bind(codex_menu)
 
 func hide_menus():
 	main_menu.visible = false
