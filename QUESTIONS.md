@@ -164,7 +164,7 @@
 - `PRD.md`：§2 鐵律、§5.1 螢幕方向、§5.3、§7.2、§7.7、§10 改橫向
 - `CLAUDE.md` / `AGENTS.md`：鐵律 2、Sprint 2、決策表改橫向；§10 測試指令修正為場景模式
 - `README.md`、`docs/design/*`（art direction banner、AIDA handoff、design_tokens.json）全部對齊橫向
-- 後續待辦（非本次）：`MainMenu.gd` 統一改走 `CotiwUiTheme`（目前自有 StyleBox 工廠，一致性缺口）
+- ✅ **已結清（commit e5468a4）**：`MainMenu.gd` 統一改走 `CotiwUiTheme`——CotiwUiTheme 新增公用 `make_stylebox()` 為全專案唯一 StyleBox 入口；MainMenu 金色改由 design_tokens 提供、`_sb()` 委派、起駕用 `apply_primary_button_style`。一致性缺口消除。
 
 ---
 
