@@ -113,6 +113,34 @@ func get_files_in_directory(partial_dir_path: String):
 	var dir = DirAccess.open(full_path)
 	return dir.get_files()
 
+# COTIW patch: 遞迴收集子資料夾內的 .json 檔，回傳相對於 partial_dir_path 的路徑
+# （例："tongji/card_tongji_punch.json"）。
+# 原因：STR get_files_in_directory() 不遞迴，但鎮島錄依 PRD 7.3 把內容分在
+# cards/tongji、artifacts/tongji、enemies/act1_mountain 等子資料夾，原版會整批漏載
+# （見 docs/AUDIT_2026-05-18.md）。只回傳 .json，順便濾掉 .gitkeep/.import 雜訊。
+func get_json_files_in_directory_recursive(partial_dir_path: String) -> PackedStringArray:
+	var results: PackedStringArray = PackedStringArray()
+	var full_path: String = _get_modified_filepath(partial_dir_path)
+	if not DirAccess.dir_exists_absolute(full_path):
+		DirAccess.make_dir_recursive_absolute(full_path)
+	_collect_json_files_recursive(full_path, "", results)
+	return results
+
+func _collect_json_files_recursive(base_full_path: String, relative_prefix: String, results: PackedStringArray) -> void:
+	var dir: DirAccess = DirAccess.open(base_full_path + relative_prefix)
+	if dir == null:
+		return
+	dir.list_dir_begin()
+	var entry: String = dir.get_next()
+	while entry != "":
+		var relative_entry: String = relative_prefix + entry
+		if dir.current_is_dir():
+			_collect_json_files_recursive(base_full_path, relative_entry + "/", results)
+		elif entry.ends_with(".json"):
+			results.append(relative_entry)
+		entry = dir.get_next()
+	dir.list_dir_end()
+
 func load_texture(image_partial_path, is_absolute: bool = false) -> ImageTexture:
 	# loads and caches a texture from external images
 	var full_path: String = image_partial_path
@@ -234,7 +262,8 @@ func load_read_only_data() -> void:
 			var data_table: Dictionary = Global.get(table_name) 
 			
 			# load all files from json and populate them into game's stores
-			var file_names: PackedStringArray = get_files_in_directory(mod_sub_directory)
+			# COTIW patch: 改用遞迴掃描，載入 cards/tongji 等子資料夾的 JSON
+			var file_names: PackedStringArray = get_json_files_in_directory_recursive(mod_sub_directory)
 			for file_name: String in file_names:
 				var file_data: Dictionary = load_json(mod_sub_directory, file_name) # json payload
 				# test the payload to see if it has an object id, in which case
