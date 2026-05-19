@@ -86,15 +86,33 @@ xcodebuild -project build/ios_sim/cotiw.xcodeproj -target cotiw \
   build
 ```
 
-## 我修的 5 個 export 障礙（紀錄給未來的我看）
+## 我修的 6 個 export 障礙（紀錄給未來的我看）
 
 | 錯誤 | 修法 |
 |---|---|
-| `Metal renderer require iOS 14+` | `application/min_ios_version=14.0` |
+| `Metal renderer require iOS 14+` | `application/min_ios_version`（見下方第 6 項，已提到 15.0） |
 | `App Store Team ID not specified` | `application/app_store_team_id="B6A4N5Z3Q9"` |
 | `configuration errors:`（空白訊息） | 3 個 `privacy/*_access_reasons=1` + `project.godot` 加 `import_etc2_astc=true` |
 | `provisioning profile required` | `application/export_project_only=true` |
 | `App is iPad-only but device is iPhone` | `application/targeted_device_family=2`（Universal） |
+| **`Undefined symbol: swift_task_isCurrentExecutor / Swift.MainActor / Actor.unownedExecutor`（Run/link 階段）** | **`application/min_ios_version="15.0"`**（2026-05-19） |
+
+### 第 6 項詳解：Swift Concurrency back-deploy 已被新 Xcode 移除
+
+Godot iOS export 用 `dummy.swift` 強制連 Swift runtime。Xcode 26.x 帶
+Swift 6.x toolchain，會引用 Swift Concurrency runtime 符號
+（`swift_task_isCurrentExecutor`、`swift_task_reportUnexpectedExecutor`、
+`Swift.MainActor`、`Swift.Actor.unownedExecutor`…）。
+
+- 這些符號從 **iOS 15.0 起內建在系統 Swift runtime**。
+- 部署目標 < 15 時，舊 Xcode 靠 `libswiftCompatibilityConcurrency.a`
+  back-deployment 靜態庫補上；**新版 Xcode/Swift 6.x 已移除該靜態庫**。
+- 故 `IPHONEOS_DEPLOYMENT_TARGET = 14.0` + 新 Xcode → link 階段 Undefined symbol。
+
+**修法**：`export_presets.cfg` 的 `application/min_ios_version` 設 **`"15.0"`**
+（Godot 會據此寫 `IPHONEOS_DEPLOYMENT_TARGET`）。15.0 亦為 `PRD.md §7.7`
+所定 iOS 最低版本，原本的 14.0 反而低於規格。改後重 export 即解。
+（`export_presets.cfg` 為 .gitignore local-only，故此修正記錄在本文件。）
 
 驗證跑通的指令：
 
