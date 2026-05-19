@@ -86,7 +86,7 @@ xcodebuild -project build/ios_sim/cotiw.xcodeproj -target cotiw \
   build
 ```
 
-## 我修的 6 個 export 障礙（紀錄給未來的我看）
+## 我修的 7 個 export 障礙（紀錄給未來的我看）
 
 | 錯誤 | 修法 |
 |---|---|
@@ -96,6 +96,22 @@ xcodebuild -project build/ios_sim/cotiw.xcodeproj -target cotiw \
 | `provisioning profile required` | `application/export_project_only=true` |
 | `App is iPad-only but device is iPhone` | `application/targeted_device_family=2`（Universal） |
 | **`Undefined symbol: swift_task_isCurrentExecutor / Swift.MainActor / Actor.unownedExecutor`（Run/link 階段）** | **`application/min_ios_version="15.0"`**（2026-05-19） |
+| **真機（iPhone X+）橫向兩側黑邊、整個 app 被 iOS letterbox** | **`storyboard/use_launch_screen_storyboard=true`**（2026-05-19）|
+
+### 第 7 項詳解：必須用 Launch Screen Storyboard 否則 iOS 黑邊
+
+`storyboard/use_launch_screen_storyboard=false` 時 Godot 用舊式 launch image，
+iPhone X 以後（含 iPhone 12）iOS 會以**相容模式 letterbox 整個 app**——黑邊
+畫在 app 繪圖區之外，**任何 Godot stretch（含 expand）都無法消除**。
+
+**修法**：`export_presets.cfg`
+- `storyboard/use_launch_screen_storyboard=true`（關鍵，黑邊根治）
+- `storyboard/custom_image@2x` / `@3x` = `res://assets/ui/boot_splash.png`
+- `storyboard/use_custom_bg_color=true` / `custom_bg_color=Color(0.788,0.125,0.125,1)`
+  → launch storyboard ⇄ Godot boot_splash ⇄ SplashScreen 同圖同紅底，啟動連貫
+
+⚠️ **這是 export 設定，改完必須重 export + 重 build + 重新部署真機才生效**。
+（`export_presets.cfg` 為 .gitignore local-only，故記錄於本文件。）
 
 ### 第 6 項詳解：Swift Concurrency back-deploy 已被新 Xcode 移除
 
