@@ -171,12 +171,17 @@ static func _get_border_value(border_name: String, fallback: int) -> int:
 	var borders: Dictionary = _get_design_tokens().get("borders", {})
 	return int(borders.get(border_name, fallback))
 
-static func _create_button_stylebox(fill_color: Color, border_color: Color, radius: int, border_width: int) -> StyleBoxFlat:
+## 全專案唯一的 StyleBoxFlat 建構入口。任何 UI（含主畫面 MainMenu）
+## 都應透過此函式建立面板/按鈕底框，確保圓角/邊框/陰影語言一致。
+static func make_stylebox(fill_color: Color, border_color: Color, radius: int, border_width: int, shadow_alpha: float = 0.30) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = fill_color
 	style.border_color = border_color
 	style.set_border_width_all(border_width)
 	style.set_corner_radius_all(radius)
-	style.shadow_color = Color(0, 0, 0, 0.3)
+	style.shadow_color = Color(0, 0, 0, shadow_alpha)
 	style.shadow_size = 4
 	return style
+
+static func _create_button_stylebox(fill_color: Color, border_color: Color, radius: int, border_width: int) -> StyleBoxFlat:
+	return make_stylebox(fill_color, border_color, radius, border_width)

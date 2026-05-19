@@ -8,16 +8,16 @@ extends Control
 
 const ICON_DIR := "res://assets/ui/icons/"
 const BACKDROP_SCRIPT := preload("res://scripts/ui/menus/VectorTempleBackdrop.gd")
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
-# 廟會配色
-const GOLD := Color(0.95, 0.82, 0.45)
-const GOLD_DIM := Color(0.62, 0.49, 0.24)
-const INK := Color(0.09, 0.05, 0.05)
+# 廟會配色 —— 品牌主色（金）由 design_tokens.json 透過 CotiwUiTheme 提供，
+# 在 _ready() 賦值，確保與全遊戲一致、可隨 token 換膚。
+# PANEL_* 為主畫面 chrome 專用表面色（設計系統未定義鎖態 token），保留為本地常數。
+var GOLD: Color = Color(0.95, 0.82, 0.45)
+var GOLD_DIM: Color = Color(0.62, 0.49, 0.24)
 const PANEL_BG := Color(0.20, 0.07, 0.06, 0.92)
 const PANEL_BG_HOVER := Color(0.34, 0.11, 0.09, 0.96)
 const PANEL_BG_LOCK := Color(0.13, 0.09, 0.09, 0.80)
-const PRIMARY_BG := Color(0.78, 0.20, 0.12, 0.96)
-const PRIMARY_BG_HOVER := Color(0.92, 0.32, 0.16, 0.98)
 
 # 底部 7 格：id, 中文, icon, 是否已開放（false → 即將推出 toast）
 const SLOTS := [
@@ -49,6 +49,9 @@ var _res_yuanbao: Label
 var _level_fill: ColorRect
 
 func _ready() -> void:
+	# 品牌金色取自 design_tokens.json（與全遊戲 CotiwUiTheme 一致）
+	GOLD = COTIW_UI_THEME.get_color("incense_gold", GOLD)
+	GOLD_DIM = COTIW_UI_THEME.get_color("old_gold", GOLD_DIM)
 	_hide_legacy_nodes()
 	_add_backdrop()
 	_build_avatar()
@@ -88,18 +91,12 @@ func _add_backdrop() -> void:
 	add_child(bg)
 	move_child(bg, 0)
 
-# ---------- StyleBox 工廠（純向量 chrome） ----------
+# ---------- StyleBox：委派全專案共用工廠（CotiwUiTheme） ----------
+# 保留本地 _sb() 簽名（bg, border, bw, radius）以維持呼叫端不變，
+# 但實際建構統一走 CotiwUiTheme.make_stylebox，圓角/邊框/陰影語言全遊戲一致。
 
 func _sb(bg: Color, border: Color, bw: int, radius: int) -> StyleBoxFlat:
-	var s := StyleBoxFlat.new()
-	s.bg_color = bg
-	s.set_border_width_all(bw)
-	s.border_color = border
-	s.set_corner_radius_all(radius)
-	s.set_expand_margin_all(0)
-	s.shadow_color = Color(0, 0, 0, 0.45)
-	s.shadow_size = 4
-	return s
+	return COTIW_UI_THEME.make_stylebox(bg, border, radius, bw)
 
 # ---------- 左上角：玩家頭像框 ----------
 
@@ -277,13 +274,14 @@ func _build_primary() -> void:
 	b.pivot_offset = b.size * 0.5
 	b.focus_mode = Control.FOCUS_NONE
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	b.add_theme_stylebox_override("normal", _sb(PRIMARY_BG, GOLD, 3, 14))
-	b.add_theme_stylebox_override("hover", _sb(PRIMARY_BG_HOVER, Color(1, 0.95, 0.7), 4, 14))
-	b.add_theme_stylebox_override("pressed", _sb(PRIMARY_BG.darkened(0.18), GOLD, 3, 14))
+	# 起駕＝主 CTA：直接套用設計系統 primary 按鈕樣式（token 驅動，全遊戲一致）
+	COTIW_UI_THEME.apply_primary_button_style(b)
 	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	_gold_font(b, 52)
-	b.add_theme_color_override("font_color", Color(1, 0.95, 0.62))
-	b.add_theme_color_override("font_hover_color", Color(1, 1, 0.85))
+	# 僅覆寫字級與陰影；字色沿用設計系統 primary 文字色（paper_warm）
+	b.add_theme_font_size_override("font_size", 52)
+	b.add_theme_constant_override("shadow_offset_x", 2)
+	b.add_theme_constant_override("shadow_offset_y", 2)
+	b.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 
 	var ic := TextureRect.new()
 	ic.name = "Icon"
