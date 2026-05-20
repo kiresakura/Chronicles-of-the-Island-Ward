@@ -78,6 +78,112 @@ func _ready() -> void:
 	# Responsive autoload 以 call_deferred 算 safe_rect；等一幀再首次排版
 	await get_tree().process_frame
 	_relayout()
+	# v2 pixel skin（additive，蓋在 _build_* 之上）
+	_apply_pixel_skin()
+
+# ---------- v2 像素皮（Recraft 美術 additive 層）----------
+# 蓋在程序化向量背景之上：底襯 → 神龕 → 標題匾，UI 元素留在最上層。
+# 鐵律 3 友善：不動 STR 既有節點。
+const PIXEL_BG_PATH := "res://assets/generated/mainmenu_v2/bg_temple_pixel.webp"
+const PIXEL_ALTAR_PATH := "res://assets/generated/mainmenu_v2/altar_shrine.png"
+const PIXEL_TITLE_PATH := "res://assets/generated/mainmenu_v2/title_plaque.png"
+const PIXEL_CTA_PATH := "res://assets/generated/mainmenu_v2/cta_button_frame.png"
+
+var _pixel_bg: TextureRect
+var _pixel_altar: TextureRect
+var _pixel_title: TextureRect
+
+func _apply_pixel_skin() -> void:
+	# 1. 隱藏舊向量 backdrop
+	if is_instance_valid(_backdrop):
+		_backdrop.visible = false
+
+	# 2. 底襯 — 用 CanvasLayer 強制 fullscreen，繞過 MainMenu Control 尺寸限制
+	if ResourceLoader.exists(PIXEL_BG_PATH):
+		var bg_layer := CanvasLayer.new()
+		bg_layer.name = "PixelBgLayer"
+		bg_layer.layer = -10  # 在預設 layer 之下
+		add_child(bg_layer)
+		move_child(bg_layer, 0)
+
+		_pixel_bg = TextureRect.new()
+		_pixel_bg.name = "PixelBackdrop"
+		_pixel_bg.texture = load(PIXEL_BG_PATH)
+		_pixel_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_pixel_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_pixel_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_pixel_bg.anchor_left = 0; _pixel_bg.anchor_top = 0
+		_pixel_bg.anchor_right = 1; _pixel_bg.anchor_bottom = 1
+		bg_layer.add_child(_pixel_bg)
+		# 顯式設定為 viewport 大小
+		var vp := get_viewport()
+		if vp:
+			_pixel_bg.size = vp.get_visible_rect().size
+		else:
+			_pixel_bg.size = Vector2(1200, 700)
+	else:
+		push_warning("PIXEL_BG_PATH not found: " + PIXEL_BG_PATH)
+
+	# 3. 中央神龕（z 在背景之上、UI 之下）
+	if ResourceLoader.exists(PIXEL_ALTAR_PATH):
+		_pixel_altar = TextureRect.new()
+		_pixel_altar.name = "PixelAltar"
+		_pixel_altar.texture = load(PIXEL_ALTAR_PATH)
+		_pixel_altar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_pixel_altar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		_pixel_altar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_pixel_altar.z_index = -50
+		_pixel_altar.z_as_relative = false
+		add_child(_pixel_altar)
+
+	# 4. 標題匾（HUD top area）
+	if ResourceLoader.exists(PIXEL_TITLE_PATH):
+		_pixel_title = TextureRect.new()
+		_pixel_title.name = "PixelTitlePlaque"
+		_pixel_title.texture = load(PIXEL_TITLE_PATH)
+		_pixel_title.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_pixel_title.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		_pixel_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_pixel_title.z_index = -40
+		_pixel_title.z_as_relative = false
+		add_child(_pixel_title)
+
+	# 5. CTA「起駕」按鈕背景（如果存在）
+	if is_instance_valid(qi_jia_button) and ResourceLoader.exists(PIXEL_CTA_PATH):
+		var cta_bg := TextureRect.new()
+		cta_bg.name = "PixelCtaBg"
+		cta_bg.texture = load(PIXEL_CTA_PATH)
+		cta_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		cta_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		cta_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		cta_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cta_bg.show_behind_parent = true
+		qi_jia_button.add_child(cta_bg)
+		qi_jia_button.move_child(cta_bg, 0)
+		# 透明化原 button stylebox 露出底圖
+		qi_jia_button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+		qi_jia_button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
+		qi_jia_button.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
+		qi_jia_button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+
+	_layout_pixel_skin()
+
+func _layout_pixel_skin() -> void:
+	# 神龕：螢幕中央，size 1200×700 邏輯下 width 400
+	if is_instance_valid(_pixel_altar):
+		var stage_size: Vector2 = size
+		var altar_w: float = stage_size.x * 0.36
+		var altar_h: float = stage_size.y * 0.62
+		_pixel_altar.size = Vector2(altar_w, altar_h)
+		_pixel_altar.position = Vector2((stage_size.x - altar_w) * 0.5, stage_size.y * 0.12)
+
+	# 標題匾：頂部置中
+	if is_instance_valid(_pixel_title):
+		var stage_size_t: Vector2 = size
+		var title_w: float = stage_size_t.x * 0.42
+		var title_h: float = title_w * 0.30
+		_pixel_title.size = Vector2(title_w, title_h)
+		_pixel_title.position = Vector2((stage_size_t.x - title_w) * 0.5, stage_size_t.y * 0.02)
 
 # ---------- 清掉舊 V4 / 點陣節點 ----------
 
@@ -328,6 +434,10 @@ func _build_toast() -> void:
 	add_child(_toast)
 
 # ---------- 自適應排版：所有座標由 Responsive.safe_rect 計算 ----------
+
+func _relayout_pixel_skin_safe() -> void:
+	if is_instance_valid(_pixel_altar) or is_instance_valid(_pixel_title):
+		_layout_pixel_skin()
 
 func _relayout() -> void:
 	var screen: Rect2 = Responsive.screen_rect
