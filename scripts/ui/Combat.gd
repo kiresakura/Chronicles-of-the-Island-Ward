@@ -82,6 +82,9 @@ func _ready():
 	Signals.map_location_selected.connect(_on_map_location_selected)
 
 	_apply_vector_skin()
+	# v2 pixel skin（廟前戰場背景，疊在 VectorCombatBackdrop 之下）
+	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
+	PixelSkinCls.apply_background(self, "combat_bg.webp")
 
 func _on_map_location_selected(location_data: LocationData):
 	# determine what to do when the player visits a new location

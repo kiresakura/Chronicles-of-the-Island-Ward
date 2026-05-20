@@ -37,6 +37,9 @@ func _ready():
 	
 	Signals.character_selected.connect(_on_character_selected)
 	Signals.run_ended.connect(_on_run_ended)
+	# v2 pixel skin（角色選擇廟堂內景）
+	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
+	PixelSkinCls.apply_background(self, "newrun_bg.webp")
 
 func _on_seed_input_text_changed(new_text: String):
 	# validate the input of the line edit
