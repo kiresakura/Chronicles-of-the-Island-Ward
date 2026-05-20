@@ -4,7 +4,7 @@
 		"object_id": "card_tongji_evil_curse",
 		"card_name": "邪氣咒",
 		"card_description": "施加 3 層邪氣於目標。",
-		"card_texture_path": "assets/generated/cards_v2/card_tongji_evil_curse_v2.webp",
+		"card_texture_path": "assets/generated/cards_v3/card_tongji_evil_curse.png",
 		"card_color_id": "color_tongji",
 		"card_type": 1,
 		"card_rarity": 1,

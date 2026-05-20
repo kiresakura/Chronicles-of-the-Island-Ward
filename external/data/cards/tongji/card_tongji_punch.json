@@ -4,7 +4,7 @@
 		"object_id": "card_tongji_punch",
 		"card_name": "攻拳",
 		"card_description": "造成 6 點傷害。",
-		"card_texture_path": "assets/generated/cards_v2/card_tongji_punch_v2.webp",
+		"card_texture_path": "assets/generated/cards_v3/card_tongji_punch.png",
 		"card_color_id": "color_tongji",
 		"card_type": 0,
 		"card_rarity": 0,

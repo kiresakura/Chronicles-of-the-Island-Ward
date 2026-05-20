@@ -4,7 +4,7 @@
 		"object_id": "card_tongji_exorcise",
 		"card_name": "驅鬼",
 		"card_description": "造成 5 點傷害，給予目標 2 層驚嚇。",
-		"card_texture_path": "assets/generated/cards_v2/card_tongji_exorcise_v2.webp",
+		"card_texture_path": "assets/generated/cards_v3/card_tongji_exorcise.png",
 		"card_color_id": "color_tongji",
 		"card_type": 0,
 		"card_rarity": 1,

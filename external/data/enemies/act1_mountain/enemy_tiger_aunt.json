@@ -4,7 +4,7 @@
 		"object_id": "enemy_tiger_aunt",
 		"enemy_object_id": "enemy_tiger_aunt",
 		"enemy_name": "虎姑婆",
-		"enemy_texture_path": "assets/generated/enemies/enemy_tiger_aunt_v1.png",
+		"enemy_texture_path": "assets/generated/enemies_v3/enemy_lost_soul.png",
 		"enemy_health": 30,
 		"enemy_health_max": 30,
 		"enemy_block": 0,

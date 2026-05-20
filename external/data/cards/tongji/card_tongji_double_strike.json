@@ -4,7 +4,7 @@
 		"object_id": "card_tongji_double_strike",
 		"card_name": "連環攻擊",
 		"card_description": "造成 4 點傷害兩次。",
-		"card_texture_path": "assets/generated/cards_v2/card_tongji_double_strike_v2.webp",
+		"card_texture_path": "assets/generated/cards_v3/card_tongji_double_strike.png",
 		"card_color_id": "color_tongji",
 		"card_type": 0,
 		"card_rarity": 1,

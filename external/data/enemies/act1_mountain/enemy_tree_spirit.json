@@ -4,7 +4,7 @@
 		"object_id": "enemy_tree_spirit",
 		"enemy_object_id": "enemy_tree_spirit",
 		"enemy_name": "樹靈",
-		"enemy_texture_path": "assets/generated/enemies/enemy_tree_spirit_v1.png",
+		"enemy_texture_path": "assets/generated/enemies_v3/enemy_tree_spirit.png",
 		"enemy_health": 18,
 		"enemy_health_max": 18,
 		"enemy_block": 0,
