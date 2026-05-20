@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bk7hv2udy70xp"
-path="res://.godot/imported/icon_battle.svg-3d71d9d2dfdd6b97e4ad344c5dd669d2.ctex"
+uid="uid://blbhtmyga5esu"
+path="res://.godot/imported/ui_icon_character_default.svg-54577d9277cd1574c74168243c1c4692.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/icons/icon_battle.svg"
-dest_files=["res://.godot/imported/icon_battle.svg-3d71d9d2dfdd6b97e4ad344c5dd669d2.ctex"]
+source_file="res://assets/ui/icons/ui_icon_character_default.svg"
+dest_files=["res://.godot/imported/ui_icon_character_default.svg-54577d9277cd1574c74168243c1c4692.ctex"]
 
 [params]
 

@@ -86,6 +86,7 @@ static func apply_primary_button_style(button: Button) -> void:
 	))
 	button.add_theme_color_override("font_color", get_color("paper_warm", Color.WHITE))
 	button.add_theme_color_override("font_disabled_color", get_color("ash_beige", Color(0.84, 0.77, 0.64)))
+	apply_focus_style(button)
 
 static func apply_secondary_button_style(button: Button) -> void:
 	button.add_theme_stylebox_override("normal", _create_button_stylebox(
@@ -114,6 +115,45 @@ static func apply_secondary_button_style(button: Button) -> void:
 	))
 	button.add_theme_color_override("font_color", get_color("incense_gold", Color.GOLD))
 	button.add_theme_color_override("font_disabled_color", get_color("smoke_gray", Color.GRAY))
+	apply_focus_style(button)
+
+## 共用 focus 樣式：incense_gold 半透明邊+微光暈。
+## 觸控優先畫面可用 button.focus_mode = FOCUS_NONE 或覆寫 StyleBoxEmpty opt-out。
+static func make_focus_stylebox(border_color: Color = Color(0.91, 0.77, 0.42, 0.85), radius: int = 12) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = Color(0, 0, 0, 0)  # 僅邊框與光暈，不蓋背景
+	s.border_color = border_color
+	s.set_border_width_all(2)
+	s.set_corner_radius_all(radius)
+	s.shadow_color = Color(border_color.r, border_color.g, border_color.b, 0.30)
+	s.shadow_size = 6
+	return s
+
+static func apply_focus_style(button: Button) -> void:
+	button.add_theme_stylebox_override("focus", make_focus_stylebox(
+		get_color("incense_gold", Color(0.91, 0.77, 0.42)),
+		_get_radius_value("md", 12)
+	))
+
+## 通用面板樣式：讀 design_tokens.components.panel（fill 可為 hex 或 token 名）
+static func apply_panel_style(target: Control) -> void:
+	var fill := _get_component_color("panel", "fill", Color(0.15, 0.08, 0.07, 0.93))
+	var border := _get_component_color("panel", "border", get_color("old_gold", Color(0.64, 0.49, 0.16)))
+	var radius_name: String = str(_get_component_value("panel", "radius", "lg"))
+	var radius: int = _get_radius_value(radius_name, 16)
+	target.add_theme_stylebox_override("panel",
+		make_stylebox(fill, border, radius, _get_border_value("strong", 3)))
+
+## Tooltip 樣式：讀 design_tokens.components.tooltip + text token
+static func apply_tooltip_style(target: Control) -> void:
+	var fill := _get_component_color("tooltip", "fill", Color(0.10, 0.06, 0.05, 0.95))
+	var border := _get_component_color("tooltip", "border", get_color("incense_gold", Color(0.91, 0.77, 0.42)))
+	var radius_name: String = str(_get_component_value("tooltip", "radius", "md"))
+	var radius: int = _get_radius_value(radius_name, 12)
+	var text_color := _get_component_color("tooltip", "text", get_color("paper_warm", Color(0.96, 0.91, 0.81)))
+	target.add_theme_stylebox_override("panel",
+		make_stylebox(fill, border, radius, _get_border_value("default", 2)))
+	target.add_theme_color_override("font_color", text_color)
 
 static func apply_panel_texture(texture_rect: TextureRect, panel_kind: String) -> void:
 	var panel_path: String = get_panel_asset_path(panel_kind)
@@ -170,6 +210,22 @@ static func _get_component_value(component_name: String, key: String, fallback: 
 static func _get_border_value(border_name: String, fallback: int) -> int:
 	var borders: Dictionary = _get_design_tokens().get("borders", {})
 	return int(borders.get(border_name, fallback))
+
+static func _get_radius_value(radius_name: String, fallback: int) -> int:
+	var radii: Dictionary = _get_design_tokens().get("radii", {})
+	return int(radii.get(radius_name, fallback))
+
+## 讀 components.<name>.<key> 並解析成 Color：
+## - 以 # 開頭視為 hex（支援 #RRGGBBAA）
+## - 否則視為 colors.* token 名，轉發給 get_color()
+static func _get_component_color(component_name: String, key: String, fallback: Color) -> Color:
+	var raw: Variant = _get_component_value(component_name, key, "")
+	if raw is String and not (raw as String).is_empty():
+		var s: String = raw
+		if s.begins_with("#"):
+			return Color.from_string(s, fallback)
+		return get_color(s, fallback)
+	return fallback
 
 ## 全專案唯一的 StyleBoxFlat 建構入口。任何 UI（含主畫面 MainMenu）
 ## 都應透過此函式建立面板/按鈕底框，確保圓角/邊框/陰影語言一致。
