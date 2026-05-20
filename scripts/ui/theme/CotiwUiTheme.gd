@@ -13,13 +13,13 @@ const CARD_FRAME_BY_RARITY: Dictionary = {
 }
 
 const MAP_NODE_BY_LOCATION_TYPE: Dictionary = {
-	LocationData.LOCATION_TYPES.COMBAT: "res://assets/ui/map/ui_node_map_battle_default.svg",
-	LocationData.LOCATION_TYPES.MINIBOSS: "res://assets/ui/map/ui_node_map_elite_default.svg",
-	LocationData.LOCATION_TYPES.BOSS: "res://assets/ui/map/ui_node_map_boss_default.svg",
-	LocationData.LOCATION_TYPES.EVENT: "res://assets/ui/map/ui_node_map_event_default.svg",
-	LocationData.LOCATION_TYPES.TREASURE: "res://assets/ui/map/ui_node_map_event_default.svg",
-	LocationData.LOCATION_TYPES.SHOP: "res://assets/ui/map/ui_node_map_shop_default.svg",
-	LocationData.LOCATION_TYPES.REST_SITE: "res://assets/ui/map/ui_node_map_rest_default.svg",
+	LocationData.LOCATION_TYPES.COMBAT: "res://assets/generated/icons/map_nodes/node_combat.svg",
+	LocationData.LOCATION_TYPES.MINIBOSS: "res://assets/generated/icons/map_nodes/node_elite.svg",
+	LocationData.LOCATION_TYPES.BOSS: "res://assets/generated/icons/map_nodes/node_boss.svg",
+	LocationData.LOCATION_TYPES.EVENT: "res://assets/generated/icons/map_nodes/node_event.svg",
+	LocationData.LOCATION_TYPES.TREASURE: "res://assets/generated/icons/map_nodes/node_event.svg",
+	LocationData.LOCATION_TYPES.SHOP: "res://assets/generated/icons/map_nodes/node_shop.svg",
+	LocationData.LOCATION_TYPES.REST_SITE: "res://assets/generated/icons/map_nodes/node_rest.svg",
 }
 
 const PANEL_ASSET_BY_KIND: Dictionary = {
