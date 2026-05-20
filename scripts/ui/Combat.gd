@@ -1,6 +1,14 @@
 # maintains combat UI
 extends Control
 
+# COTIW 全向量視覺層（additive，不改動以下既有戰鬥邏輯）
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const COMBAT_BACKDROP := preload("res://scripts/ui/VectorCombatBackdrop.gd")
+const _FLAT_DECALS := [
+	"Background", "CombatBackdrop", "CombatVignette",
+	"CombatTopBarBg", "CombatTopBarGold", "CombatBottomBarBg", "CombatBottomBarGold",
+]
+
 @onready var money_label: Label = $%MoneyLabel
 @onready var health_label: Label = $%HealthLabel
 
@@ -72,6 +80,8 @@ func _ready():
 	Signals.run_ended.connect(_on_run_ended)
 	
 	Signals.map_location_selected.connect(_on_map_location_selected)
+
+	_apply_vector_skin()
 
 func _on_map_location_selected(location_data: LocationData):
 	# determine what to do when the player visits a new location
@@ -452,3 +462,61 @@ func end_turn_animation() -> void:
 	
 func start_turn_animation() -> void:
 	combat_animation_player.play("start_turn")
+
+# ---------- COTIW 全向量視覺層（additive；不影響上方戰鬥邏輯） ----------
+# 比照主選單：隱藏 Aida 扁平 ColorRect chrome，疊上程序化向量框/暈影/HUD 帶，
+# HUD 文字/結束回合鈕走 CotiwUiTheme。保留場景圖（BackgroundButton）為底、
+# 全部功能節點與信號不動。隨 RunScreen SafeFit 一起等比進安全區。
+
+func _apply_vector_skin() -> void:
+	# 1. 隱藏 Aida 扁平 ColorRect chrome
+	for decal_name: String in _FLAT_DECALS:
+		var d: Node = get_node_or_null(decal_name)
+		if d != null:
+			(d as CanvasItem).visible = false
+
+	# 2. 疊上向量 chrome（在場景圖之上、HUD 之下）
+	if not has_node("VectorCombatBackdrop"):
+		var bg := Control.new()
+		bg.name = "VectorCombatBackdrop"
+		bg.set_script(COMBAT_BACKDROP)
+		bg.anchor_left = 0.0
+		bg.anchor_top = 0.0
+		bg.anchor_right = 0.0
+		bg.anchor_bottom = 0.0
+		bg.offset_left = 0.0
+		bg.offset_top = 0.0
+		bg.offset_right = 1200.0
+		bg.offset_bottom = 700.0
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(bg)
+		# 置於場景圖（BackgroundButton）之後 → 繪於其上、HUD 之下
+		var anchor_idx: int = 1
+		if is_instance_valid(background_button):
+			anchor_idx = background_button.get_index() + 1
+		move_child(bg, anchor_idx)
+
+	# 3. HUD 文字接通語意色（design_tokens：金幣→incense_gold、血→hp_red、能量→energy_cyan，
+	#    牌堆計數沿用 incense_gold —— 卡片相關無其他語意）
+	_combat_label(money_label, "incense_gold")
+	_combat_label(health_label, "hp_red")
+	_combat_label(energy_count, "energy_cyan")
+	_combat_label(draw_count, "incense_gold")
+	_combat_label(discard_count, "incense_gold")
+	_combat_label(exhaust_count, "incense_gold")
+	if is_instance_valid(end_turn_button):
+		COTIW_UI_THEME.apply_primary_button_style(end_turn_button)
+		end_turn_button.add_theme_color_override("font_shadow_color",
+			COTIW_UI_THEME.get_color("text_shadow_strong", Color(0, 0, 0, 0.9)))
+		end_turn_button.add_theme_constant_override("shadow_offset_x", 2)
+		end_turn_button.add_theme_constant_override("shadow_offset_y", 2)
+
+# 給 HUD 文字套上 token 化的語意色 + 標準陰影
+func _combat_label(c: Control, color_token: String) -> void:
+	if not is_instance_valid(c):
+		return
+	c.add_theme_color_override("font_color", COTIW_UI_THEME.get_color(color_token, Color(0.95, 0.82, 0.45)))
+	c.add_theme_constant_override("shadow_offset_x", 2)
+	c.add_theme_constant_override("shadow_offset_y", 2)
+	c.add_theme_color_override("font_shadow_color",
+		COTIW_UI_THEME.get_color("text_shadow_strong", Color(0, 0, 0, 0.9)))

@@ -63,10 +63,11 @@ func _apply_visual_state() -> void:
 		scale = Vector2.ONE * 1.03
 		map_label.add_theme_color_override("font_color", cyan.lightened(0.1))
 	elif location_data.location_visited:
-		self_modulate = Color(0.92, 0.88, 0.8, 1.0)
+		self_modulate = COTIW_UI_THEME.get_color("paper_warm", Color(0.92, 0.88, 0.8, 1.0))
 		map_label.add_theme_color_override("font_color", paper)
 	elif is_travel_mode:
-		self_modulate = Color(0.48, 0.48, 0.48, 0.82)
+		var smoke_a := COTIW_UI_THEME.get_color("smoke_gray", Color(0.55, 0.49, 0.45, 1.0))
+		self_modulate = Color(smoke_a.r, smoke_a.g, smoke_a.b, 0.82)
 		map_label.add_theme_color_override("font_color", smoke)
 
 func _on_button_up():

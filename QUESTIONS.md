@@ -186,6 +186,25 @@
 - 載入不連貫＝ SplashScreen 進度條/文字為固定 1200 座標、受 letterbox 跑位。修：`SplashScreen.gd` 改用 `Responsive.safe_rect` 定位 + 進度組淡入承接 boot_splash + BgFill 改廟會紅（三段同圖同底連貫）。
 - 已重 export 並 xcodebuild **BUILD SUCCEEDED**、Launch Screen.storyboard 為真全螢幕 storyboard。
 
+### D3: 戰鬥畫面全向量重build（憲龍指示「比照主選單」，2026-05-19）
+
+戰鬥畫面**功能本已完整**（Combat.gd 454 行 STR 回合邏輯 + Aida 廟會 HUD）。
+「實現」＝視覺向量化至與主選單一致，**核心戰鬥邏輯/節點/信號零改動**。
+
+**Phase 1（✅ 完成，待 commit）**：additive 視覺層。
+- `scripts/ui/VectorCombatBackdrop.gd`：程序化戰場 chrome（四角暈影 + 頂/底 HUD
+  漸層帶 + 金邊欞框 + 微弱燈籠光暈），疊在各章節 AI 場景圖（BackgroundButton）之上。
+- `Combat.gd` 末段 additive `_apply_vector_skin()`（_ready 末尾一行呼叫，**不動既有
+  454 行**）：隱藏 Aida 7 個扁平 ColorRect chrome、疊向量 backdrop、HUD 文字/結束
+  回合鈕走 CotiwUiTheme。BackgroundButton 場景圖保留為底。
+- Combat 仍隨 RunScreen SafeFit 等比進安全區（**不破壞核心戰鬥版面**）。
+- 驗證：import 乾淨、測試 21/21、Root.tscn headless 1200×700/2532×1170/1180×820
+  皆無 script error；Combat 全部 @onready 節點與信號保留。
+
+**Phase 2（待辦，獨立里程碑，高風險）**：真正的邊到邊響應式戰鬥 HUD（Combat
+排除於 SafeFit、HUD/手牌/牌堆/能量/結束回合改 Responsive.safe_rect 定位，比照
+主選單），及手牌/卡牌/敵人/意圖 badge/狀態 icon 的 STR-runtime 視覺打磨。
+
 ---
 
 ## 標記用法

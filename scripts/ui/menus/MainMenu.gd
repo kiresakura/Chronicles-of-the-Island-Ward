@@ -10,12 +10,12 @@ const ICON_DIR := "res://assets/ui/icons/"
 const BACKDROP_SCRIPT := preload("res://scripts/ui/menus/VectorTempleBackdrop.gd")
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
-# 廟會配色 —— 品牌金由 design_tokens.json 經 CotiwUiTheme 提供（_ready 賦值）
+# 廟會配色 —— 全部由 design_tokens.json 經 CotiwUiTheme 提供（_ready 賦值）
 var GOLD: Color = Color(0.95, 0.82, 0.45)
 var GOLD_DIM: Color = Color(0.62, 0.49, 0.24)
-const PANEL_BG := Color(0.20, 0.07, 0.06, 0.92)
-const PANEL_BG_HOVER := Color(0.34, 0.11, 0.09, 0.96)
-const PANEL_BG_LOCK := Color(0.13, 0.09, 0.09, 0.80)
+var PANEL_BG: Color = Color(0.20, 0.07, 0.06, 0.53)
+var PANEL_BG_HOVER: Color = Color(0.34, 0.11, 0.09, 0.96)
+var PANEL_BG_LOCK: Color = Color(0.13, 0.09, 0.09, 0.80)
 
 # 底部 6 格：node, 中文, icon, 是否已開放（false → 即將推出 toast）
 const SLOTS := [
@@ -59,6 +59,9 @@ var _level_fill: ColorRect
 func _ready() -> void:
 	GOLD = COTIW_UI_THEME.get_color("incense_gold", GOLD)
 	GOLD_DIM = COTIW_UI_THEME.get_color("old_gold", GOLD_DIM)
+	PANEL_BG = COTIW_UI_THEME.get_color("panel_bg", PANEL_BG)
+	PANEL_BG_HOVER = COTIW_UI_THEME.get_color("panel_bg_hover", PANEL_BG_HOVER)
+	PANEL_BG_LOCK = COTIW_UI_THEME.get_color("panel_bg_lock", PANEL_BG_LOCK)
 	_hide_legacy_nodes()
 	_add_backdrop()
 	_build_avatar()

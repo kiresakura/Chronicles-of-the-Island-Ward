@@ -34,12 +34,14 @@ func _apply_visual_style() -> void:
 	add_theme_color_override("font_hover_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
 	add_theme_color_override("font_pressed_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
 	add_theme_color_override("font_disabled_color", COTIW_UI_THEME.get_color("smoke_gray", Color.GRAY))
-	add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.65))
+	add_theme_color_override("font_shadow_color",
+		COTIW_UI_THEME.get_color("text_shadow_soft", Color(0, 0, 0, 0.65)))
 	add_theme_constant_override("shadow_offset_x", 1)
 	add_theme_constant_override("shadow_offset_y", 1)
 	if panel_background != null:
 		COTIW_UI_THEME.apply_panel_texture(panel_background, "rest")
-		panel_background.modulate = Color.WHITE if not disabled else Color(0.6, 0.6, 0.6, 0.85)
+		panel_background.modulate = Color.WHITE if not disabled else \
+			COTIW_UI_THEME.get_color("disabled_tint", Color(0.6, 0.6, 0.6, 0.85))
 
 func _on_button_up():
 	rest_action_button_up.emit(self)
