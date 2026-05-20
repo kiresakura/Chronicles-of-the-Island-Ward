@@ -207,6 +207,58 @@
 
 ---
 
+## 2026-05-20 Android 匯出環境學習
+
+### L1: Apple Silicon × BlueStacks 不能用 Vulkan 渲染
+
+**現象**：APK install 成功、process 活（PID 4442）、`OnGodotMainLoopStarted` 已觸發，
+但畫面**全黑**。logcat：
+
+```
+godot: Vulkan 1.2.250 - Forward Mobile - Using Device #0: Apple - Apple M4 Pro
+godot: ERROR: QueuePresentKHR failed with error: 5
+       at: command_queue_execute_and_present (vulkan/rendering_device_driver_vulkan.cpp:3064)
+```
+
+**根因**：BlueStacks 在 Apple Silicon 上把 Vulkan 翻譯成 host Metal，但
+`QueuePresentKHR`（呈現 swap chain 影格到螢幕）持續失敗 → swap chain 從未成功
+present，所以畫面是黑底，但遊戲邏輯活著。
+
+**選項評估**：
+- (A) **實機 Redmi 25080RABDG**（採用）：Vulkan 在實機原生，必定可跑；MIUI 需手動
+  開啟「USB 安裝」+「USB 偵錯（安全設定）」。
+- (B) 切 Android 走 GL Compatibility（GL ES 3.0）：BlueStacks GL 翻譯比 Vulkan
+  成熟，但會影響 mobile renderer 統一性，需另開 `rendering_method.mobile` 平台
+  覆蓋。暫不採。
+- (C) qemu AVD：android-cmdline-tools 重裝後 AVD config 路徑壞掉指向不存在的
+  android-34；要再修。暫擱。
+
+**結論**：**Android 測試以實機為主**；BlueStacks 不適用 Apple Silicon + Vulkan 組合。
+
+### L2: Android 匯出 `exported` feature tag 必加
+
+FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
+`OS.has_feature("exported")`，沒有就不會載 `external/data/**/*.json` ——
+亦即整個資料驅動系統（卡片/敵人/事件 JSON）會空。
+
+**已修**：`export_presets.cfg` Android preset `custom_features="exported"`。iOS preset
+（preset.0）原本就空，**待 iOS 真機測試時也需補同樣 feature**（避免相同症狀）。
+
+### L3: Android 工具鏈坑點記錄
+
+- `avdmanager` 要 **JDK 17**，不認 Java 1.8。`export JAVA_HOME=$(brew --prefix
+  openjdk@17)/libexec/openjdk.jdk/Contents/Home`
+- Godot Android export 要的 `~/Library/Application Support/Godot/editor_settings-4.tres`
+  關鍵欄位：`export/android/android_sdk_path`、`debug_keystore`、
+  `debug_keystore_user/pass`
+- debug keystore 自簽：`keytool -genkey -keystore ~/.android/debug.keystore
+  -alias androiddebugkey -storepass android -keypass android -keyalg RSA
+  -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"`
+- 啟動 app 用 `adb shell monkey -p <pkg> -c android.intent.category.LAUNCHER 1`
+  而非 `am start -n <pkg>/<activity>`（activity 名隨 Godot 版本改）
+
+---
+
 ## 標記用法
 
 每個問題請以下列三種之一回覆：
