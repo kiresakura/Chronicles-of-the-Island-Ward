@@ -50,6 +50,9 @@ func _ready() -> void:
 
 	_relayout()
 	Responsive.changed.connect(_relayout)
+	# v2 pixel skin（蓋在 bg_fill 之上）
+	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
+	PixelSkinCls.apply_background(self, "splash_bg.webp")
 
 	# 進度組以淡入承接 boot_splash（同一張背景上自然浮現，連貫不突兀）
 	for n: Control in [title_glow, progress_label, progress_bar]:
