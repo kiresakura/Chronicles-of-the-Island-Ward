@@ -31,6 +31,9 @@ static func apply_background(host: Control, bg_filename: String, hide_node_names
 	layer.layer = -10
 	host.add_child(layer)
 	host.move_child(layer, 0)
+	# 跟隨 host 顯隱（CanvasLayer 不自動承襲 visible）
+	host.visibility_changed.connect(func(): layer.visible = host.visible)
+	layer.visible = host.visible
 
 	var rect := TextureRect.new()
 	rect.name = "PixelBackdrop"
