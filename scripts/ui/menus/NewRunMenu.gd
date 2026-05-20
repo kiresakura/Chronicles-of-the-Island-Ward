@@ -40,6 +40,62 @@ func _ready():
 	# v2 pixel skin（角色選擇廟堂內景）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
 	PixelSkinCls.apply_background(self, "newrun_bg.webp")
+	# v2 三角色立繪 gallery（廟堂 3 基座位置）
+	_apply_portrait_gallery()
+
+func _apply_portrait_gallery() -> void:
+	const PORTRAIT_DIR := "res://assets/generated/portraits_v2/"
+	var chars: Array = [
+		{"file": "tongji.png", "label": "乩童", "locked": false},
+		{"file": "daoshi.png", "label": "道士", "locked": true},
+		{"file": "jiajiang.png", "label": "家將", "locked": true},
+	]
+
+	# 用 Control 而非 CanvasLayer，自動繼承 NewRunMenu visible 狀態
+	var layer := Control.new()
+	layer.name = "PortraitGallery"
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.z_index = 5
+	add_child(layer)
+
+	var vp := get_viewport()
+	var screen_w: float = vp.get_visible_rect().size.x if vp else 1200.0
+	var screen_h: float = vp.get_visible_rect().size.y if vp else 700.0
+	var portrait_w: float = screen_w * 0.18
+	var portrait_h: float = screen_h * 0.72
+	var slot_gap: float = screen_w * 0.03
+	var total_w: float = portrait_w * 3 + slot_gap * 2
+	var start_x: float = (screen_w - total_w) * 0.5
+
+	for i in chars.size():
+		var c: Dictionary = chars[i]
+		var path: String = PORTRAIT_DIR + c.file
+		if not ResourceLoader.exists(path):
+			continue
+		var x: float = start_x + i * (portrait_w + slot_gap)
+		var y: float = (screen_h - portrait_h) * 0.5
+
+		var rect := TextureRect.new()
+		rect.name = "Portrait_" + c.file.get_basename()
+		rect.texture = load(path)
+		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		rect.position = Vector2(x, y)
+		rect.size = Vector2(portrait_w, portrait_h)
+		rect.modulate = Color(0.45, 0.45, 0.45, 0.7) if c.locked else Color(1, 1, 1, 0.95)
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.add_child(rect)
+
+		# 角色名 label
+		var lbl := Label.new()
+		lbl.text = c.label + ("（鎖）" if c.locked else "")
+		lbl.position = Vector2(x, y + portrait_h - 8)
+		lbl.size = Vector2(portrait_w, 32)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.add_theme_font_size_override("font_size", 22)
+		lbl.add_theme_color_override("font_color", Color(0.95, 0.82, 0.45) if not c.locked else Color(0.6, 0.55, 0.5))
+		layer.add_child(lbl)
 
 func _on_seed_input_text_changed(new_text: String):
 	# validate the input of the line edit

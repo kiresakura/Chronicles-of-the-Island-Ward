@@ -6,7 +6,7 @@
 		"character_description": "被神明附體的瘋狂戰士。以自身為代價爆發強大力量。",
 		"character_color_id": "color_tongji",
 		"character_texture_path": "assets/generated/portraits_v2/tongji.png",
-		"character_icon_texture_path": "assets/generated/portraits_v2/tongji.png",
+		"character_icon_texture_path": "assets/generated/characters/tongji_portrait_v1.png",
 		"character_background_texture_path": "assets/generated/scenes/act1_mountain_temple_bg_v1.png",
 		"character_player_id": "player_tongji",
 		"character_starting_artifact_ids": ["artifact_tongji_amulet"],
