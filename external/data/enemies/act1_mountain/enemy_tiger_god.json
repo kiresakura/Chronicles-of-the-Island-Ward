@@ -4,7 +4,7 @@
 		"object_id": "enemy_tiger_god",
 		"enemy_object_id": "enemy_tiger_god",
 		"enemy_name": "百年虎爺",
-		"enemy_texture_path": "assets/generated/enemies/enemy_tiger_god_v1.png",
+		"enemy_texture_path": "assets/generated/enemies_v3/enemy_tiger_god.png",
 		"enemy_health": 120,
 		"enemy_health_max": 120,
 		"enemy_block": 0,

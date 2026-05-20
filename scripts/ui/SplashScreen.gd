@@ -54,12 +54,15 @@ func _ready() -> void:
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
 	PixelSkinCls.apply_background(self, "splash_bg.png")
 
-	# 進度組以淡入承接 boot_splash（同一張背景上自然浮現，連貫不突兀）
-	for n: Control in [title_glow, progress_label, progress_bar]:
-		n.modulate.a = 0.0
+	# 進度組從一開始就出現（用戶反饋：載入動畫應一開始就有）
+	# 標題與文字仍淡入；進度條立即可見並開始動
+	progress_bar.modulate.a = 1.0
+	progress_bar.value = 1  # 起始 1% 給視覺提示「正在載入」
+	title_glow.modulate.a = 0.0
+	progress_label.modulate.a = 0.0
 	var t: Tween = create_tween().set_parallel(true)
-	for n: Control in [title_glow, progress_label, progress_bar]:
-		t.tween_property(n, "modulate:a", 1.0, 0.45)
+	t.tween_property(title_glow, "modulate:a", 1.0, 0.45)
+	t.tween_property(progress_label, "modulate:a", 1.0, 0.45)
 
 	await get_tree().process_frame
 	_relayout()
