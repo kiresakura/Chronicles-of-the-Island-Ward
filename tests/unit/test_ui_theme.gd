@@ -36,6 +36,24 @@ func test_ui_theme_location_short_label_is_compact() -> void:
 	assert_eq(UI_THEME.get_location_short_label(LocationData.LOCATION_TYPES.MINIBOSS), "菁",
 		"地圖節點短標籤應符合 mobile-first 小尺寸需求")
 
+## 2026-05-19 新增的 7 個語意 token 必須可讀，防止下游引用時打錯 token 名
+func test_ui_theme_new_semantic_tokens_resolve() -> void:
+	for token: String in [
+			"panel_bg", "panel_bg_hover", "panel_bg_lock",
+			"text_shadow_strong", "text_shadow_soft",
+			"boot_splash_red", "disabled_tint"]:
+		var sentinel := Color(0.12345, 0.67890, 0.13579, 0.97531)
+		var c: Color = UI_THEME.get_color(token, sentinel)
+		assert_ne(c, sentinel,
+			"token %s 必須能從 design_tokens.json 讀到（避免下游 get_color 拿回 fallback）" % token)
+
+## 戰鬥 HUD 語意色 token 必須存在（Combat._combat_label 依賴）
+func test_ui_theme_combat_semantic_tokens_resolve() -> void:
+	for token: String in ["incense_gold", "hp_red", "energy_cyan", "armor_gold"]:
+		var sentinel := Color(0.99876, 0.54321, 0.13579, 0.86420)
+		var c: Color = UI_THEME.get_color(token, sentinel)
+		assert_ne(c, sentinel, "戰鬥 HUD 語意 token %s 必須存在" % token)
+
 func test_ui_theme_panel_assets_exist() -> void:
 	var reward_panel: String = UI_THEME.get_panel_asset_path("reward")
 	var shop_panel: String = UI_THEME.get_panel_asset_path("shop")

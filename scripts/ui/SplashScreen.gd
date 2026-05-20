@@ -6,6 +6,8 @@
 ## 本畫面三者同圖同紅底 → 啟動連貫，進度組以淡入承接（不再「不連貫」）。
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 @onready var bg_fill: ColorRect = $BgFill
 @onready var title_glow: Label = $TitleGlow
 @onready var progress_bar: ProgressBar = $ProgressBar
@@ -17,7 +19,8 @@ const ROOT_SCENE: String = "res://scenes/Root.tscn"
 const TOTAL_LOAD_DURATION: float = 2.4
 const MIN_DURATION_BEFORE_TAP_ALLOWED: float = 1.0
 # 與 Godot boot_splash / launch storyboard 一致的廟會紅，銜接無跳色
-const SPLASH_BG := Color(0.788, 0.125, 0.125, 1)
+# （由 design_tokens.boot_splash_red 提供；project.godot boot_splash bg 須同步維護）
+var SPLASH_BG: Color = Color(0.788, 0.125, 0.125, 1)
 
 var _elapsed: float = 0.0
 var _can_tap_to_start: bool = false
@@ -35,6 +38,7 @@ const LOADING_TIPS: Array[String] = [
 
 
 func _ready() -> void:
+	SPLASH_BG = COTIW_UI_THEME.get_color("boot_splash_red", SPLASH_BG)
 	# 與 boot_splash 同紅底，避免影像載入前的暗色閃跳
 	bg_fill.color = SPLASH_BG
 	loading_dots.visible = false  # 點點併入 ProgressLabel

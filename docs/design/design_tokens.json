@@ -27,7 +27,14 @@
     "paper_warm": "#F5E7CF",
     "ash_beige": "#D7C4A5",
     "smoke_gray": "#8B7C73",
-    "night_ink": "#120A09"
+    "night_ink": "#120A09",
+    "panel_bg": "#33121088",
+    "panel_bg_hover": "#571C17F5",
+    "panel_bg_lock": "#221717CC",
+    "text_shadow_strong": "#000000E5",
+    "text_shadow_soft": "#000000A6",
+    "boot_splash_red": "#C92020FF",
+    "disabled_tint": "#999999D9"
   },
   "typography": {
     "font_family": "Noto Sans TC",

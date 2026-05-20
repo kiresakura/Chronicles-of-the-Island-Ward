@@ -33,7 +33,8 @@ func _apply_visual_style() -> void:
 	add_theme_color_override("font_disabled_color", COTIW_UI_THEME.get_color("smoke_gray", Color.GRAY))
 	add_theme_constant_override("shadow_offset_x", 1)
 	add_theme_constant_override("shadow_offset_y", 1)
-	add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.65))
+	add_theme_color_override("font_shadow_color",
+		COTIW_UI_THEME.get_color("text_shadow_soft", Color(0, 0, 0, 0.65)))
 	add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	add_theme_stylebox_override("hover", StyleBoxEmpty.new())
 	add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
