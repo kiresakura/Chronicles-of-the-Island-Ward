@@ -4,7 +4,7 @@
 		"object_id": "card_tongji_fury_strike",
 		"card_name": "狂怒一擊",
 		"card_description": "失去 2 點元神，造成 12 點傷害。",
-		"card_texture_path": "assets/generated/cards/card_tongji_fury_strike_art_v1.png",
+		"card_texture_path": "assets/generated/cards_v2/card_tongji_fury_strike_v2.webp",
 		"card_color_id": "color_tongji",
 		"card_type": 0,
 		"card_rarity": 1,
