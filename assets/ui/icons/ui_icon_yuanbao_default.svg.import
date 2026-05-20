@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blbhtmyga5esu"
-path="res://.godot/imported/icon_character.svg-079274f54ff31ea828ae120fca7a37dd.ctex"
+uid="uid://4hnnnjm2mpnf"
+path="res://.godot/imported/ui_icon_yuanbao_default.svg-c92d860122bccd7bb48f82533f5804b8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/icons/icon_character.svg"
-dest_files=["res://.godot/imported/icon_character.svg-079274f54ff31ea828ae120fca7a37dd.ctex"]
+source_file="res://assets/ui/icons/ui_icon_yuanbao_default.svg"
+dest_files=["res://.godot/imported/ui_icon_yuanbao_default.svg-c92d860122bccd7bb48f82533f5804b8.ctex"]
 
 [params]
 

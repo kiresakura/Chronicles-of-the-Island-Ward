@@ -54,6 +54,39 @@ func test_ui_theme_combat_semantic_tokens_resolve() -> void:
 		var c: Color = UI_THEME.get_color(token, sentinel)
 		assert_ne(c, sentinel, "戰鬥 HUD 語意 token %s 必須存在" % token)
 
+## focus 樣式必須回傳有邊框的 StyleBoxFlat（不可被當預設用 StyleBoxEmpty 替）
+func test_ui_theme_make_focus_stylebox_has_border() -> void:
+	var sb: StyleBoxFlat = UI_THEME.make_focus_stylebox()
+	assert_not_null(sb, "make_focus_stylebox 應回傳 StyleBoxFlat")
+	if sb != null:
+		assert_true(sb.border_width_left > 0, "focus 樣式 border 寬必須 > 0（玩家要看得到 focus ring）")
+		assert_true(sb.corner_radius_top_left > 0, "focus 樣式應有圓角")
+
+## apply_panel_style 後 Panel 必須拿到 stylebox，且圓角/邊框讀自 tokens.radii/borders
+func test_ui_theme_apply_panel_style_sets_stylebox() -> void:
+	var p: Panel = Panel.new()
+	UI_THEME.apply_panel_style(p)
+	var sb: StyleBoxFlat = p.get_theme_stylebox("panel", "Panel") as StyleBoxFlat
+	assert_not_null(sb, "apply_panel_style 必須設定 panel stylebox")
+	if sb != null:
+		# tokens.radii.lg=16 / borders.strong=3（design_tokens.json）
+		assert_eq(sb.corner_radius_top_left, 16, "Panel 圓角應為 radii.lg=16")
+		assert_eq(sb.border_width_left, 3, "Panel 邊框寬應為 borders.strong=3")
+	p.queue_free()
+
+## apply_tooltip_style 後文字色為 paper_warm、stylebox 圓角=radii.md=12
+func test_ui_theme_apply_tooltip_style_sets_text_and_box() -> void:
+	var p: Panel = Panel.new()
+	UI_THEME.apply_tooltip_style(p)
+	var sb: StyleBoxFlat = p.get_theme_stylebox("panel", "Panel") as StyleBoxFlat
+	assert_not_null(sb, "apply_tooltip_style 必須設定 panel stylebox")
+	if sb != null:
+		assert_eq(sb.corner_radius_top_left, 12, "Tooltip 圓角應為 radii.md=12")
+	var text_color: Color = p.get_theme_color("font_color", "Panel")
+	var paper_warm: Color = UI_THEME.get_color("paper_warm", Color.BLACK)
+	assert_eq(text_color, paper_warm, "Tooltip 文字色應為 paper_warm token")
+	p.queue_free()
+
 func test_ui_theme_panel_assets_exist() -> void:
 	var reward_panel: String = UI_THEME.get_panel_asset_path("reward")
 	var shop_panel: String = UI_THEME.get_panel_asset_path("shop")

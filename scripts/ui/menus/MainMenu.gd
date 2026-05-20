@@ -19,17 +19,17 @@ var PANEL_BG_LOCK: Color = Color(0.13, 0.09, 0.09, 0.80)
 
 # 底部 6 格：node, 中文, icon, 是否已開放（false → 即將推出 toast）
 const SLOTS := [
-	{"node": "BtnCharacter", "label": "角色", "icon": "icon_character", "ready": false},
-	{"node": "BtnFormation", "label": "陣型", "icon": "icon_formation", "ready": false},
-	{"node": "BtnBattle",    "label": "戰鬥", "icon": "icon_battle",    "ready": true,  "act": "run"},
-	{"node": "BtnShop",      "label": "商店", "icon": "icon_shop",      "ready": false},
-	{"node": "BtnRecruit",   "label": "招募", "icon": "icon_recruit",   "ready": false},
-	{"node": "BtnInventory", "label": "收藏", "icon": "icon_codex",     "ready": true,  "act": "codex"},
+	{"node": "BtnCharacter", "label": "角色", "icon": "character", "ready": false},
+	{"node": "BtnFormation", "label": "陣型", "icon": "formation", "ready": false},
+	{"node": "BtnBattle",    "label": "戰鬥", "icon": "battle",    "ready": true,  "act": "run"},
+	{"node": "BtnShop",      "label": "商店", "icon": "shop",      "ready": false},
+	{"node": "BtnRecruit",   "label": "招募", "icon": "recruit",   "ready": false},
+	{"node": "BtnInventory", "label": "收藏", "icon": "codex",     "ready": true,  "act": "codex"},
 ]
 const UTILS := [
-	{"icon": "icon_settings", "name": "設定"},
-	{"icon": "icon_mail",     "name": "信件"},
-	{"icon": "icon_achieve",  "name": "成就"},
+	{"icon": "settings", "name": "設定"},
+	{"icon": "mail",     "name": "信件"},
+	{"icon": "achieve",  "name": "成就"},
 ]
 
 @onready var title_screen: Control = $%TitleScreen
@@ -114,7 +114,7 @@ func _build_avatar() -> void:
 
 	var ic := TextureRect.new()
 	ic.name = "Icon"
-	ic.texture = _load_icon("icon_avatar_tongji")
+	ic.texture = _load_icon("avatar_tongji")
 	ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	ic.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -260,7 +260,7 @@ func _build_primary() -> void:
 		ic = TextureRect.new()
 		ic.name = "Icon"
 		b.add_child(ic)
-	ic.texture = _load_icon("icon_qijia")
+	ic.texture = _load_icon("qijia")
 	ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	ic.modulate = GOLD
@@ -373,8 +373,10 @@ func _relayout() -> void:
 		r["label"].size = Vector2(pill_w - 12, row_h)
 
 	# 右上：✕ + 3 工具鈕（貼安全區右上）
-	var ex: float = roundf(34.0 * ts)
-	var ux: float = roundf(44.0 * ts)
+	# tokens.touch_targets：min 88 / comfortable 96 / cta 112
+	# ex / ux 屬 "small auxiliary"（角落 ✕ 與右上工具列），不強制 88（見 COMPONENTS.md）
+	var ex: float = roundf(44.0 * ts)
+	var ux: float = roundf(48.0 * ts)
 	var ugap: float = roundf(6.0 * ts)
 	var right: float = safe.position.x + safe.size.x - pad
 	if btn_exit_x:
@@ -390,10 +392,11 @@ func _relayout() -> void:
 		u.pivot_offset = u.size * 0.5
 
 	# 底部：6 格 slot + 中央起駕（貼安全區下緣）
-	var sw: float = roundf(86.0 * ts)
-	var sh: float = roundf(84.0 * ts)
+	# tokens：slot ≥ minimum 88×88；primary CTA = cta_height 112
+	var sw: float = roundf(88.0 * ts)
+	var sh: float = roundf(88.0 * ts)
 	var pw: float = roundf(284.0 * ts)
-	var ph: float = roundf(96.0 * ts)
+	var ph: float = roundf(112.0 * ts)
 	var by: float = safe.position.y + safe.size.y - sh - pad
 	var sgap: float = roundf(10.0 * ts)
 	var cx: float = safe.position.x + safe.size.x * 0.5
@@ -521,7 +524,8 @@ func _gold_font(c: Control, sz: int) -> void:
 	c.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 
 func _load_icon(name: String) -> Texture2D:
-	var path := ICON_DIR + name + ".svg"
+	# 短名（character/battle/...）→ asset_naming 規範路徑 ui_icon_X_default.svg
+	var path := ICON_DIR + "ui_icon_" + name + "_default.svg"
 	if ResourceLoader.exists(path):
 		return load(path)
 	return null

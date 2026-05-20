@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4hnnnjm2mpnf"
-path="res://.godot/imported/icon_yuanbao.svg-817126b2acbaa692311501b7e812fbe1.ctex"
+uid="uid://bkppvbk02hkot"
+path="res://.godot/imported/ui_icon_avatar_tongji_default.svg-897b95622034d7f34f7202f6713a569c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/icons/icon_yuanbao.svg"
-dest_files=["res://.godot/imported/icon_yuanbao.svg-817126b2acbaa692311501b7e812fbe1.ctex"]
+source_file="res://assets/ui/icons/ui_icon_avatar_tongji_default.svg"
+dest_files=["res://.godot/imported/ui_icon_avatar_tongji_default.svg-897b95622034d7f34f7202f6713a569c.ctex"]
 
 [params]
 

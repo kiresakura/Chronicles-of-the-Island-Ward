@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0jqvemrenpqa"
-path="res://.godot/imported/icon_achieve.svg-1fa6cc1faa8b298b6999c10cbe9a8301.ctex"
+uid="uid://ca457ypp83see"
+path="res://.godot/imported/ui_icon_qijia_default.svg-65690b71b6e65d242a552db68e0f097c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/icons/icon_achieve.svg"
-dest_files=["res://.godot/imported/icon_achieve.svg-1fa6cc1faa8b298b6999c10cbe9a8301.ctex"]
+source_file="res://assets/ui/icons/ui_icon_qijia_default.svg"
+dest_files=["res://.godot/imported/ui_icon_qijia_default.svg-65690b71b6e65d242a552db68e0f097c.ctex"]
 
 [params]
 
