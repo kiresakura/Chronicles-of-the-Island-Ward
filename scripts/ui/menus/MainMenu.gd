@@ -265,6 +265,7 @@ func _make_resource_row(idx: int, icon: String, tint: Color) -> Label:
 
 	var lbl := Label.new()
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_gold_font(lbl, 16)
 	add_child(lbl)
 
