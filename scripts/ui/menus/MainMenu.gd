@@ -86,8 +86,8 @@ func _ready() -> void:
 # 鐵律 3 友善：不動 STR 既有節點。
 const PIXEL_BG_PATH := "res://assets/generated/mainmenu_v2/bg_temple_pixel.png"
 const PIXEL_ALTAR_PATH := "res://assets/generated/mainmenu_v2/altar_shrine.png"
-const PIXEL_TITLE_PATH := "res://assets/generated/mainmenu_v2/title_plaque.png"
-const PIXEL_CTA_PATH := "res://assets/generated/mainmenu_v2/cta_button_frame.png"
+const PIXEL_TITLE_PATH := "res://assets/generated/ui_v3/title_plaque.png"
+const PIXEL_CTA_PATH := "res://assets/generated/ui_v3/cta_button_frame.png"
 
 var _pixel_bg: TextureRect
 var _pixel_altar: TextureRect

@@ -3,6 +3,7 @@
 	"properties": {
 		"object_id": "artifact_retain_hand",
 		"artifact_name": "存手符",
-		"artifact_description": "手牌結束回合不丟棄"
+		"artifact_description": "手牌結束回合不丟棄",
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_retain_hand.png"
 	}
 }

@@ -3,6 +3,7 @@
 	"properties": {
 		"object_id": "artifact_full_heal",
 		"artifact_name": "回元符",
-		"artifact_description": "獲得時全滿元神"
+		"artifact_description": "獲得時全滿元神",
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_full_heal.png"
 	}
 }

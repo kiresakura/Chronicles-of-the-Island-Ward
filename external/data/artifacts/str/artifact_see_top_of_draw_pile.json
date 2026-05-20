@@ -3,6 +3,7 @@
 	"properties": {
 		"object_id": "artifact_see_top_of_draw_pile",
 		"artifact_name": "見牌符",
-		"artifact_description": "可看見抽牌堆頂部卡牌"
+		"artifact_description": "可看見抽牌堆頂部卡牌",
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_see_top_of_draw_pile.png"
 	}
 }

@@ -17,6 +17,7 @@
 					"target_override": 2
 				}
 			}
-		]
+		],
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_tiger_token.png"
 	}
 }
