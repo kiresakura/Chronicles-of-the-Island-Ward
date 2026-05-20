@@ -53,3 +53,4 @@ scripts/Gemfile.lock
 scripts/.bundle/
 scripts/vendor/bundle/
 
+external/saves/save.json
