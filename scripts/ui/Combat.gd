@@ -84,7 +84,7 @@ func _ready():
 	_apply_vector_skin()
 	# v2 pixel skin（廟前戰場背景，疊在 VectorCombatBackdrop 之下）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "combat_bg.webp")
+	PixelSkinCls.apply_background(self, "combat_bg.png")
 	# v2 HUD overlay：3 神明 affinity badges + 八卦 energy ring
 	const CombatHudOverlayCls = preload("res://scripts/ui/theme/CombatHudOverlay.gd")
 	CombatHudOverlayCls.apply(self)

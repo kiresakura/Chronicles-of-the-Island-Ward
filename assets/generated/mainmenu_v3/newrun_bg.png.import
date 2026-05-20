@@ -2,16 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7xtpe8qv0bcw"
-path="res://.godot/imported/newrun_bg.webp-17de6f9da56a73a1f27725a1eb958d47.ctex"
-metadata={
-"vram_texture": false
-}
+uid="uid://c80pdoesndjs"
+valid=false
 
 [deps]
 
-source_file="res://assets/generated/mainmenu_v2/newrun_bg.webp"
-dest_files=["res://.godot/imported/newrun_bg.webp-17de6f9da56a73a1f27725a1eb958d47.ctex"]
+source_file="res://assets/generated/mainmenu_v3/newrun_bg.png"
 
 [params]
 

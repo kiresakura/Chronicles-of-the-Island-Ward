@@ -2,16 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhddly2rg3he4"
-path="res://.godot/imported/map_bg.webp-187926f8698bb597d65b419689448c9e.ctex"
-metadata={
-"vram_texture": false
-}
+uid="uid://b3gdl2pk5dbrw"
+valid=false
 
 [deps]
 
-source_file="res://assets/generated/mainmenu_v2/map_bg.webp"
-dest_files=["res://.godot/imported/map_bg.webp-187926f8698bb597d65b419689448c9e.ctex"]
+source_file="res://assets/generated/portraits_v3/jiajiang.png"
 
 [params]
 
