@@ -3,6 +3,7 @@
 	"properties": {
 		"object_id": "artifact_add_money",
 		"artifact_name": "進財符",
-		"artifact_description": "獲得時加銀兩"
+		"artifact_description": "獲得時加銀兩",
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_add_money.png"
 	}
 }

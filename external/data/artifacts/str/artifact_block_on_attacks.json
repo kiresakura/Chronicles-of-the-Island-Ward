@@ -3,6 +3,7 @@
 	"properties": {
 		"object_id": "artifact_block_on_attacks",
 		"artifact_name": "頻護符",
-		"artifact_description": "每 3 次攻擊獲得 5 點護身符"
+		"artifact_description": "每 3 次攻擊獲得 5 點護身符",
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_block_on_attacks.png"
 	}
 }

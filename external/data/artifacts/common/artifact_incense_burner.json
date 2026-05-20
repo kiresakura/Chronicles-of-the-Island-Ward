@@ -15,6 +15,7 @@
 					"draw_amount": 1
 				}
 			}
-		]
+		],
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_incense_burner.png"
 	}
 }
