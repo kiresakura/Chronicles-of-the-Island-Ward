@@ -84,7 +84,7 @@ func _ready() -> void:
 # ---------- v2 像素皮（Recraft 美術 additive 層）----------
 # 蓋在程序化向量背景之上：底襯 → 神龕 → 標題匾，UI 元素留在最上層。
 # 鐵律 3 友善：不動 STR 既有節點。
-const PIXEL_BG_PATH := "res://assets/generated/mainmenu_v2/bg_temple_pixel.webp"
+const PIXEL_BG_PATH := "res://assets/generated/mainmenu_v2/bg_temple_pixel.png"
 const PIXEL_ALTAR_PATH := "res://assets/generated/mainmenu_v2/altar_shrine.png"
 const PIXEL_TITLE_PATH := "res://assets/generated/mainmenu_v2/title_plaque.png"
 const PIXEL_CTA_PATH := "res://assets/generated/mainmenu_v2/cta_button_frame.png"

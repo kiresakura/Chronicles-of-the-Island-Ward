@@ -2,16 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8sa8el08ywwo"
-path="res://.godot/imported/bg_temple_pixel.webp-5170056a35f57e3ec83ef3626a4947bf.ctex"
-metadata={
-"vram_texture": false
-}
+uid="uid://1r1nhvh3hh5p"
+valid=false
 
 [deps]
 
-source_file="res://assets/generated/mainmenu_v2/bg_temple_pixel.webp"
-dest_files=["res://.godot/imported/bg_temple_pixel.webp-5170056a35f57e3ec83ef3626a4947bf.ctex"]
+source_file="res://assets/generated/mainmenu_v3/bg_temple.png"
 
 [params]
 

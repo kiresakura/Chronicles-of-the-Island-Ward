@@ -2,16 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d31gwewd71yca"
-path="res://.godot/imported/splash_bg.webp-ae26e5fcafd6a0b1840c57f3578aeb68.ctex"
-metadata={
-"vram_texture": false
-}
+uid="uid://djkormaeb4h7g"
+valid=false
 
 [deps]
 
-source_file="res://assets/generated/mainmenu_v2/splash_bg.webp"
-dest_files=["res://.godot/imported/splash_bg.webp-ae26e5fcafd6a0b1840c57f3578aeb68.ctex"]
+source_file="res://assets/generated/mainmenu_v3/combat_bg.png"
 
 [params]
 
