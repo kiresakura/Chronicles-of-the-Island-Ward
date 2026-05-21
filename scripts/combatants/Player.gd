@@ -108,10 +108,10 @@ func update_incoming_damage_amount(recalculate_enemy_intent: bool = true) -> voi
 func is_alive() -> bool:
 	return Global.player_data.player_health > 0
 
-func create_artifact_fade(artifact_id: String) -> void:
+func create_artifact_fade(artifact_data: ArtifactData) -> void:
 	var artifact_fade: ArtifactFade = Scenes.ARTIFACT_FADE.instantiate()
 	fade_container.add_child(artifact_fade)
-	artifact_fade.init(artifact_id)
+	artifact_fade.init(artifact_data)
 
 ### Run Modifiers
 
@@ -175,7 +175,7 @@ func _on_player_health_changed():
 			Signals.player_killed.emit(self)
 
 func _on_artifact_proc(artifact_data: ArtifactData):
-	create_artifact_fade(artifact_data.object_id)
+	create_artifact_fade(artifact_data)
 
 func _on_death_animtation_finished():
 	# called from animation player
