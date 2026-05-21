@@ -10,7 +10,7 @@ const SPEED: float = 340.0
 const JUMP_VELOCITY: float = -820.0
 const GRAVITY: float = 1900.0
 const ATTACK_DAMAGE: int = 25
-const ATTACK_REACH: float = 90.0
+const ATTACK_REACH: float = 130.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var attack_area: Area2D = $AttackArea
