@@ -2344,13 +2344,13 @@ layout_mode = 2
 shortcut = SubResource("Shortcut_elxq6")
 shortcut_feedback = false
 shortcut_in_tooltip = false
-text = "Resume"
+text = "繼續遊戲"
 
 [node name="ReturnToTitleButton" type="Button" parent="RunScreen/PauseOverlay/Background2/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-text = "Return to Title"
+text = "返回主選單"
 
 [node name="ForfeitRunButton" type="Button" parent="RunScreen/PauseOverlay/Background2/VBoxContainer"]
 unique_name_in_owner = true
