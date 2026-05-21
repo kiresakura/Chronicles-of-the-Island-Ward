@@ -25,13 +25,35 @@ const COMBATANT_SPRITE_MAX_HEIGHT: int = 200
 var status_id_to_status_effects: Dictionary = {}	# maps status id to the array of ui element(s) it matches
 var custom_ui_object_id_to_custom_ui: Dictionary = {} # maps a custom ui id to the ui component it matches. Duplicate registrations will be ignored
 
+## 程序化精靈動畫 — 待機呼吸 / 出手前刺 / 受擊抖動（squash & stretch）。
+## 只寫 sprite 的 position / scale / rotation，與 AnimationPlayer 走的
+## offset / modulate 互不衝突。
+var _proc_anim: SpriteProcAnim
+var _facing: int = 1	# 1 = 朝右（玩家）, -1 = 朝左（敵人）
+
 func _ready():
 	Signals.combat_started.connect(_on_combat_started)
 	Signals.combat_ended.connect(_on_combat_ended)
 	Signals.player_turn_started.connect(_on_player_turn_started)
 	Signals.player_turn_ended.connect(_on_player_turn_ended)
-	
+	Signals.combatant_damaged.connect(_on_combatant_damaged)
+
 	selection_button.button_up.connect(_on_selection_button_up)
+
+	# 程序化動畫：戰鬥員待機呼吸 + 出手 / 受擊變形
+	_facing = -1 if is_in_group("enemies") else 1
+	_proc_anim = SpriteProcAnim.new()
+	_proc_anim.setup(sprite)
+
+## 每幀推進程序化動畫 — 呼吸持續、出手 / 受擊殘量衰減。
+func _process(delta: float) -> void:
+	if _proc_anim != null:
+		_proc_anim.update(delta, false, false, _facing)
+
+## 此戰鬥員受到血量傷害時抖一下（格擋不觸發）。
+func _on_combatant_damaged(base_combatant: BaseCombatant, _unblocked_damage: int) -> void:
+	if base_combatant == self and _proc_anim != null:
+		_proc_anim.trigger_hurt()
 
 func _on_selection_button_up():
 	pass
@@ -42,6 +64,8 @@ func set_combatant_sprite(texture_path: String) -> void:
 	var tex: Texture2D = _resolve_combatant_texture(texture_path)
 	if tex != null:
 		sprite.texture = tex
+		if _proc_anim != null:
+			_proc_anim.refresh_texture()	# 貼圖換新 → 重算踏地補正半高
 
 
 func _resolve_combatant_texture(texture_path: String) -> Texture2D:
@@ -76,8 +100,13 @@ func _resolve_combatant_texture(texture_path: String) -> Texture2D:
 	return tex
 
 
+## 出手動畫 — 改走程序化前刺（拉後 → 衝刺 → 收，含旋轉與拉伸），
+## 比舊版 AnimationPlayer offset 平移更有勁。_proc_anim 未就緒時退回舊動畫。
 func play_attack_animation() -> void:
-	animation_player.play("attack")
+	if _proc_anim != null:
+		_proc_anim.trigger_attack()
+	else:
+		animation_player.play("attack")
 
 #region Block
 func set_block(_amount: int) -> void:
