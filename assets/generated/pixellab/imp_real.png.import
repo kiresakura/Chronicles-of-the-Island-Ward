@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bsdppkxdyvprf"
-path="res://.godot/imported/test_tongji.png-4c35fddac5367fe84383ef74bbd137bf.ctex"
+uid="uid://bmts5ykap0rpi"
+path="res://.godot/imported/imp_real.png-0940cb2c2a3f066a51b2811ae624cd64.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/generated/pixellab/test_tongji.png"
-dest_files=["res://.godot/imported/test_tongji.png-4c35fddac5367fe84383ef74bbd137bf.ctex"]
+source_file="res://assets/generated/pixellab/imp_real.png"
+dest_files=["res://.godot/imported/imp_real.png-0940cb2c2a3f066a51b2811ae624cd64.ctex"]
 
 [params]
 

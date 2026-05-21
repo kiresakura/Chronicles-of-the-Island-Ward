@@ -3,17 +3,17 @@
 [ext_resource type="Script" path="res://scripts/action/ActionStage.gd" id="1_stage"]
 [ext_resource type="Texture2D" path="res://assets/generated/scenes_v3/act1_mountain_temple.png" id="2_bg"]
 [ext_resource type="Script" path="res://scripts/action/ActionPlayer.gd" id="3_player"]
-[ext_resource type="Texture2D" path="res://assets/generated/pixellab/test_tongji.png" id="4_tongji"]
+[ext_resource type="Texture2D" path="res://assets/generated/pixellab/tongji_real.png" id="4_tongji"]
 [ext_resource type="PackedScene" uid="uid://cotiwactenemy01" path="res://scenes/action/ActionEnemy.tscn" id="5_enemy"]
 
 [sub_resource type="RectangleShape2D" id="GroundShape"]
 size = Vector2(2600, 240)
 
 [sub_resource type="RectangleShape2D" id="PlayerShape"]
-size = Vector2(66, 188)
+size = Vector2(110, 270)
 
 [sub_resource type="RectangleShape2D" id="AttackShape"]
-size = Vector2(128, 150)
+size = Vector2(170, 250)
 
 [node name="ActionStage" type="Node2D"]
 script = ExtResource("1_stage")
@@ -39,16 +39,16 @@ script = ExtResource("3_player")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 texture_filter = 1
-position = Vector2(0, -128)
-scale = Vector2(2.5, 2.5)
+position = Vector2(0, -143)
+scale = Vector2(0.85, 0.85)
 texture = ExtResource("4_tongji")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2(0, -94)
+position = Vector2(0, -135)
 shape = SubResource("PlayerShape")
 
 [node name="AttackArea" type="Area2D" parent="Player"]
-position = Vector2(90, -94)
+position = Vector2(110, -150)
 collision_layer = 0
 collision_mask = 4
 
