@@ -7,17 +7,18 @@
 extends Object
 class_name CombatFxOverlay
 
-const FX_DIR := "res://assets/generated/fx_v3/"
 const FX_DURATION: float = 0.6
 
-# 簡 sprite 容器：事件 → fx 檔名 mapping
+# 事件 → fx texture mapping。用 preload 直接持資源參照：
+# (1) 保證 export 一定打包進 APK（字串引用會被 export 掃漏，cards_v3 已踩過坑）
+# (2) runtime 直拿，不必 ResourceLoader.exists / load by path
 const FX_BY_EVENT: Dictionary = {
-	"damage": "fx_slash_red.png",
-	"block": "fx_shield.png",
-	"heal": "fx_heal_green.png",
-	"holy": "fx_holy_burst.png",
-	"curse": "fx_curse_black.png",
-	"lightning": "fx_lightning.png",
+	"damage": preload("res://assets/generated/fx_v3/fx_slash_red.png"),
+	"block": preload("res://assets/generated/fx_v3/fx_shield.png"),
+	"heal": preload("res://assets/generated/fx_v3/fx_heal_green.png"),
+	"holy": preload("res://assets/generated/fx_v3/fx_holy_burst.png"),
+	"curse": preload("res://assets/generated/fx_v3/fx_curse_black.png"),
+	"lightning": preload("res://assets/generated/fx_v3/fx_lightning.png"),
 }
 
 static var _layer: CanvasLayer = null
@@ -97,12 +98,12 @@ static func _get_target_pos(target: Node) -> Vector2:
 static func _spawn_fx(event_kind: String, world_pos: Vector2) -> void:
 	if not is_instance_valid(_layer):
 		return
-	var path: String = FX_DIR + FX_BY_EVENT.get(event_kind, "fx_slash_red.png")
-	if not ResourceLoader.exists(path):
+	var fx_texture: Texture2D = FX_BY_EVENT.get(event_kind, FX_BY_EVENT["damage"])
+	if fx_texture == null:
 		return
 
 	var fx := TextureRect.new()
-	fx.texture = load(path)
+	fx.texture = fx_texture
 	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	fx.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	fx.size = Vector2(140, 140)
