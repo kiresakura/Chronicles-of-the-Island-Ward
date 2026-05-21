@@ -65,6 +65,10 @@ func _ready():
 	draw_pile_button.button_up.connect(_on_draw_pile_button_up)
 	discard_pile_button.button_up.connect(_on_discard_pile_button_up)
 	exhaust_pile_button.button_up.connect(_on_exhaust_pile_button_up)
+
+	# 戰鬥上排 3 鈕 icon（返回鍵 PauseButton 自帶 ui_back）：牌組 / 地圖
+	_apply_top_button_icon(deck_button, "res://assets/generated/icons/ui_v2/ui_deck.svg")
+	_apply_top_button_icon(get_node_or_null("MapButton") as TextureButton, "res://assets/generated/icons/ui_v2/ui_map.svg")
 	
 	# updating pile counts when cards do things
 	Signals.card_played.connect(_on_card_played)	# player is playing card
@@ -91,6 +95,18 @@ func _ready():
 	# v3 FX overlay：技能特效（damage/block/heal）自動連 Signals
 	const CombatFxOverlayCls = preload("res://scripts/ui/theme/CombatFxOverlay.gd")
 	CombatFxOverlayCls.apply(self)
+
+
+## 套用戰鬥上排 TextureButton 的 icon（取代 icon.svg placeholder）
+func _apply_top_button_icon(btn: TextureButton, icon_path: String) -> void:
+	if btn == null or not ResourceLoader.exists(icon_path):
+		return
+	var tex: Texture2D = load(icon_path)
+	btn.texture_normal = tex
+	btn.texture_hover = tex
+	btn.texture_pressed = tex
+	btn.texture_disabled = tex
+
 
 func _on_map_location_selected(location_data: LocationData):
 	# determine what to do when the player visits a new location
