@@ -27,7 +27,12 @@ func init(_location_data: LocationData, _is_reachable: bool = false, _is_current
 	texture_hover = texture_normal
 	texture_pressed = texture_normal
 	texture_disabled = texture_normal
-	ignore_texture_size = false
+	# 鐵律：map node 圖示是 1024px 大圖；ignore_texture_size=true + 固定 88×88
+	# 才不會讓 button 撐成 1024×1024 互相重疊蓋滿整個地圖（爆版 bug）。
+	ignore_texture_size = true
+	stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	custom_minimum_size = Vector2(88, 88)
+	size = Vector2(88, 88)
 	disabled = is_travel_mode and not is_reachable
 	
 	if location_data.location_obfuscated and not location_data.location_visited:

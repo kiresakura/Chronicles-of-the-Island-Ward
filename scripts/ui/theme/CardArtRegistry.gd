@@ -53,6 +53,15 @@ const DEITIES: Dictionary = {
 	"huye": preload("res://assets/generated/deities_v3/huye.png"),
 }
 
+const ENEMIES: Dictionary = {
+	"enemy_chair_girl": preload("res://assets/generated/enemies_v3/enemy_chair_girl.png"),
+	"enemy_lost_soul": preload("res://assets/generated/enemies_v3/enemy_lost_soul.png"),
+	"enemy_mountain_boar": preload("res://assets/generated/enemies_v3/enemy_mountain_boar.png"),
+	"enemy_tiger_god": preload("res://assets/generated/enemies_v3/enemy_tiger_god.png"),
+	"enemy_tree_spirit": preload("res://assets/generated/enemies_v3/enemy_tree_spirit.png"),
+	"enemy_white_snake": preload("res://assets/generated/enemies_v3/enemy_white_snake.png"),
+}
+
 
 static func get_card_art(card_object_id: String) -> Texture2D:
 	return TONGJI_CARDS.get(card_object_id, null)
@@ -72,3 +81,18 @@ static func get_jiajiang(jiajiang_id: String) -> Texture2D:
 
 static func get_deity(deity_id: String) -> Texture2D:
 	return DEITIES.get(deity_id, null)
+
+
+static func get_enemy(enemy_id: String) -> Texture2D:
+	return ENEMIES.get(enemy_id, null)
+
+
+## 由 texture_path 反查（取檔名去副檔名當 key）— 給 Player/Enemy 用 path 載圖時走 registry。
+static func get_by_texture_path(texture_path: String) -> Texture2D:
+	if texture_path.is_empty():
+		return null
+	var key: String = texture_path.get_file().get_basename()
+	for d in [TONGJI_CARDS, PORTRAITS, SCENES, JIAJIANG, DEITIES, ENEMIES]:
+		if d.has(key):
+			return d[key]
+	return null

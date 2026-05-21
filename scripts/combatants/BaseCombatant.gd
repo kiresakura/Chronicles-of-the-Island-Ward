@@ -2,6 +2,12 @@
 extends Control
 class_name BaseCombatant
 
+const CARD_ART_REGISTRY := preload("res://scripts/ui/theme/CardArtRegistry.gd")
+## v3 NBP 戰鬥員立繪是 1024px+ 大圖；Sprite2D 無 scale 會以原生尺寸繪製、
+## 爆版蓋住整個戰鬥畫面。set_combatant_sprite() 載圖後把「圖」縮到此高度
+## （Sprite2D scale 維持 1，子節點 LayeredHealthBar / SelectionButton 不受影響）。
+const COMBATANT_SPRITE_MAX_HEIGHT: int = 200
+
 @onready var block: Sprite2D = $Visible/Block
 @onready var block_amount: Label = $Visible/Block/BlockAmount
 
@@ -29,6 +35,46 @@ func _ready():
 
 func _on_selection_button_up():
 	pass
+
+## 設定戰鬥員 sprite — 解析 texture（res:// 打包資源走 load()，外部圖走 FileLoader），
+## 大圖縮到 COMBATANT_SPRITE_MAX_HEIGHT 後指派。Player / Enemy 共用。
+func set_combatant_sprite(texture_path: String) -> void:
+	var tex: Texture2D = _resolve_combatant_texture(texture_path)
+	if tex != null:
+		sprite.texture = tex
+
+
+func _resolve_combatant_texture(texture_path: String) -> Texture2D:
+	if texture_path == null or texture_path.is_empty():
+		return null
+	# 先走 CardArtRegistry（preload 保證打包進 APK）
+	var tex: Texture2D = CARD_ART_REGISTRY.get_by_texture_path(texture_path)
+	if tex == null:
+		# res:// 打包資源直載
+		var res_path: String = texture_path
+		if not res_path.begins_with("res://"):
+			res_path = "res://" + res_path.trim_prefix("/")
+		if ResourceLoader.exists(res_path):
+			var packed: Resource = load(res_path)
+			if packed is Texture2D:
+				tex = packed
+	if tex == null:
+		# fallback：外部 external/ 圖經 FileLoader
+		tex = FileLoader.load_texture(texture_path)
+	if tex == null:
+		return null
+	# 大圖縮到合理戰鬥尺寸（避免 1024px 原生繪製爆版）
+	if tex.get_height() > COMBATANT_SPRITE_MAX_HEIGHT:
+		var img: Image = tex.get_image()
+		if img != null:
+			if img.is_compressed():
+				img.decompress()
+			var scale_f: float = float(COMBATANT_SPRITE_MAX_HEIGHT) / float(tex.get_height())
+			var new_w: int = maxi(1, int(round(tex.get_width() * scale_f)))
+			img.resize(new_w, COMBATANT_SPRITE_MAX_HEIGHT, Image.INTERPOLATE_LANCZOS)
+			tex = ImageTexture.create_from_image(img)
+	return tex
+
 
 func play_attack_animation() -> void:
 	animation_player.play("attack")
