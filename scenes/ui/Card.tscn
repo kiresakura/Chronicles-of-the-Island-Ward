@@ -128,6 +128,7 @@ color = Color(0.956863, 0.905882, 0.811765, 1)
 
 [node name="CardFrame" type="TextureRect" parent="Pivot/CardVisual"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 offset_right = 144.0
 offset_bottom = 184.0
@@ -152,15 +153,52 @@ offset_right = 139.0
 offset_bottom = 179.0
 color = Color(0.169, 0.075, 0.055, 1)
 
+[node name="CardTexture" type="TextureRect" parent="Pivot/CardVisual"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 140.0
+offset_bottom = 110.0
+texture = ExtResource("1_7f6u3")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CardName" type="RichTextLabel" parent="Pivot/CardVisual/CardTexture"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 132.0
+offset_bottom = 20.0
+theme_override_font_sizes/normal_font_size = 13
+theme_override_colors/default_color = Color(1, 0.953, 0.498, 1)
+bbcode_enabled = true
+text = "卡牌名"
+scroll_active = false
+script = ExtResource("3_8gkbw")
+_max_size = 14
+_current_font_size = 13
+_editor_defaults_set = true
+
+[node name="DescriptionBg" type="ColorRect" parent="Pivot/CardVisual"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 122.0
+offset_right = 140.0
+offset_bottom = 180.0
+color = Color(0.078, 0.063, 0.055, 0.92)
+mouse_filter = 2
+
 [node name="CardDescription" type="RichTextLabel" parent="Pivot/CardVisual"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 8.0
-offset_top = 112.0
+offset_top = 124.0
 offset_right = 136.0
-offset_bottom = 184.0
+offset_bottom = 180.0
 theme_override_font_sizes/normal_font_size = 12
-theme_override_colors/default_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_colors/default_color = Color(1, 0.953, 0.749, 1)
 bbcode_enabled = true
 text = "100/100
 "
@@ -203,43 +241,19 @@ text = "3"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CardTexture" type="TextureRect" parent="Pivot/CardVisual"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 24.0
-offset_top = 12.0
-offset_right = 120.0
-offset_bottom = 108.0
-texture = ExtResource("1_7f6u3")
-expand_mode = 1
-
-[node name="CardName" type="RichTextLabel" parent="Pivot/CardVisual/CardTexture"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = -16.0
-offset_top = -4.0
-offset_right = 112.0
-offset_bottom = 12.0
-theme_override_font_sizes/normal_font_size = 13
-theme_override_colors/default_color = Color(1, 0.953, 0.498, 1)
-bbcode_enabled = true
-text = "卡牌名"
-scroll_active = false
-script = ExtResource("3_8gkbw")
-_max_size = 14
-_current_font_size = 13
-_editor_defaults_set = true
-
 [node name="CardType" type="Label" parent="Pivot/CardVisual"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 8.0
-offset_top = 95.0
+offset_top = 110.0
 offset_right = 136.0
-offset_bottom = 112.0
+offset_bottom = 122.0
 theme_override_constants/line_spacing = -3
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.831, 0.686, 0.216, 1)
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.957, 0.839, 0.498, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
 text = "攻擊"
 horizontal_alignment = 1
 

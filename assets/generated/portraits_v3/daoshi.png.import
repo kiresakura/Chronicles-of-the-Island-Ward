@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clv26u7ojm6do"
-valid=false
+uid="uid://c3g2cixxm1tsb"
+path="res://.godot/imported/daoshi.png-caf9910695ddbf4356a0b2007452e3a0.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/portraits_v3/daoshi.png"
+dest_files=["res://.godot/imported/daoshi.png-caf9910695ddbf4356a0b2007452e3a0.ctex"]
 
 [params]
 

@@ -169,13 +169,21 @@ static func style_overlay_backdrop(scrim: ColorRect, panel: ColorRect = null) ->
 		panel.color = get_color("panel", Color(0.15, 0.08, 0.07, 0.93))
 
 static func get_mobile_safe_card_art_path(original_path: String) -> String:
-	var normalized_path: String = normalize_resource_path(original_path)
-	if normalized_path.is_empty():
-		return normalized_path
-	if normalized_path.contains("/cards/mobile_safe/"):
-		return normalized_path
+	# Returns either:
+	#   - "res://assets/generated/cards/mobile_safe/<file>_mobile_safe_v1.png" if mobile_safe variant exists
+	#   - the ORIGINAL path unmodified (so caller's downstream FileLoader/load() behavior is preserved)
+	# 鐵律：不要對外部 sprites/* 路徑強制加 res:// — FileLoader 需要 raw relative 才能正確 prepend user://。
+	if original_path.is_empty():
+		return original_path
+	if original_path.contains("/cards/mobile_safe/"):
+		return original_path
+	# v3 NBP 卡圖：assets/generated/cards_v3/* — 用 load() 走 res://（已 import 成 ctex 不會 ship 的話 caller fallback 處理）
+	if original_path.contains("/cards_v3/"):
+		if original_path.begins_with("res://"):
+			return original_path
+		return "res://" + original_path.trim_prefix("/")
 
-	var file_name: String = normalized_path.get_file()
+	var file_name: String = original_path.get_file()
 	var candidate_file_name: String = file_name.replace("_art_v1.", "_mobile_safe_v1.")
 	if candidate_file_name == file_name:
 		candidate_file_name = file_name.get_basename() + "_mobile_safe_v1." + file_name.get_extension()
@@ -183,7 +191,7 @@ static func get_mobile_safe_card_art_path(original_path: String) -> String:
 	var candidate_path: String = MOBILE_SAFE_CARD_DIR.path_join(candidate_file_name)
 	if ResourceLoader.exists(candidate_path):
 		return candidate_path
-	return normalized_path
+	return original_path
 
 static func normalize_resource_path(resource_path: String) -> String:
 	if resource_path.is_empty():
