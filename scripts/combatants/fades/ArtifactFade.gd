@@ -1,4 +1,4 @@
-# provides a basic text which fades over a combatant
+# provides an artifact icon which fades over a combatant
 extends Node2D
 class_name ArtifactFade
 
@@ -9,9 +9,12 @@ class_name ArtifactFade
 func _ready():
 	animation_player.animation_finished.connect(_on_fade_animation_finished)
 
-func init(artifact_id: String) -> void:
-	var artifact_data: ArtifactData = Global.get_artifact_data(artifact_id)
-	sprite.texture = FileLoader.load_texture(artifact_data.artifact_texture_path)
+## artifact_data 由呼叫端（_on_artifact_proc）直接傳入 —— 不再以 object_id
+## 反查 Global.get_artifact_data()，該反查對執行期生成 / 未註冊的 artifact
+## 會回 null 而於此崩潰。
+func init(artifact_data: ArtifactData) -> void:
+	if artifact_data != null:
+		sprite.texture = FileLoader.load_texture(artifact_data.artifact_texture_path)
 
 	animation_player.play("fade")
 
