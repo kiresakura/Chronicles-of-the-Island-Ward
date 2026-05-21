@@ -1,0 +1,141 @@
+[gd_scene load_steps=8 format=3 uid="uid://cotiwactstage01"]
+
+[ext_resource type="Script" path="res://scripts/action/ActionStage.gd" id="1_stage"]
+[ext_resource type="Texture2D" path="res://assets/generated/scenes_v3/act1_mountain_temple.png" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/action/ActionPlayer.gd" id="3_player"]
+[ext_resource type="Texture2D" path="res://assets/generated/pixellab/test_tongji.png" id="4_tongji"]
+[ext_resource type="PackedScene" uid="uid://cotiwactenemy01" path="res://scenes/action/ActionEnemy.tscn" id="5_enemy"]
+
+[sub_resource type="RectangleShape2D" id="GroundShape"]
+size = Vector2(2600, 240)
+
+[sub_resource type="RectangleShape2D" id="PlayerShape"]
+size = Vector2(66, 188)
+
+[sub_resource type="RectangleShape2D" id="AttackShape"]
+size = Vector2(128, 150)
+
+[node name="ActionStage" type="Node2D"]
+script = ExtResource("1_stage")
+
+[node name="BG" type="Sprite2D" parent="."]
+position = Vector2(1200, 360)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_bg")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(1200, 680)
+shape = SubResource("GroundShape")
+
+[node name="Player" type="CharacterBody2D" parent="." groups=["action_player"]]
+position = Vector2(320, 560)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("3_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture_filter = 1
+position = Vector2(0, -128)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("4_tongji")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(0, -94)
+shape = SubResource("PlayerShape")
+
+[node name="AttackArea" type="Area2D" parent="Player"]
+position = Vector2(90, -94)
+collision_layer = 0
+collision_mask = 4
+
+[node name="AttackShape" type="CollisionShape2D" parent="Player/AttackArea"]
+shape = SubResource("AttackShape")
+disabled = true
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(0, -150)
+limit_left = 0
+limit_top = 0
+limit_right = 2400
+limit_bottom = 700
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Enemy1" parent="Enemies" instance=ExtResource("5_enemy")]
+position = Vector2(1000, 560)
+
+[node name="Enemy2" parent="Enemies" instance=ExtResource("5_enemy")]
+position = Vector2(1340, 560)
+
+[node name="Enemy3" parent="Enemies" instance=ExtResource("5_enemy")]
+position = Vector2(1850, 560)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="PlayerHP" type="Label" parent="HUD"]
+offset_left = 32.0
+offset_top = 22.0
+offset_right = 480.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 0.86, 0.5, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+text = "乩童  HP  100 / 100"
+
+[node name="HintLabel" type="Label" parent="HUD"]
+offset_top = 24.0
+offset_right = 1200.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.95, 0.93, 0.82, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+text = "← → 移動    跳    攻擊"
+horizontal_alignment = 1
+
+[node name="Touch" type="Control" parent="HUD"]
+anchors_preset = 0
+offset_right = 1200.0
+offset_bottom = 700.0
+mouse_filter = 2
+
+[node name="BtnLeft" type="Button" parent="HUD/Touch"]
+offset_left = 36.0
+offset_top = 548.0
+offset_right = 156.0
+offset_bottom = 668.0
+theme_override_font_sizes/font_size = 44
+text = "◀"
+
+[node name="BtnRight" type="Button" parent="HUD/Touch"]
+offset_left = 176.0
+offset_top = 548.0
+offset_right = 296.0
+offset_bottom = 668.0
+theme_override_font_sizes/font_size = 44
+text = "▶"
+
+[node name="BtnJump" type="Button" parent="HUD/Touch"]
+offset_left = 904.0
+offset_top = 548.0
+offset_right = 1024.0
+offset_bottom = 668.0
+theme_override_font_sizes/font_size = 32
+text = "跳"
+
+[node name="BtnAttack" type="Button" parent="HUD/Touch"]
+offset_left = 1044.0
+offset_top = 548.0
+offset_right = 1164.0
+offset_bottom = 668.0
+theme_override_font_sizes/font_size = 32
+text = "攻"
