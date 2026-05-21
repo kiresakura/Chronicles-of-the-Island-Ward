@@ -148,23 +148,9 @@ func _apply_pixel_skin() -> void:
 		_pixel_title.z_as_relative = false
 		add_child(_pixel_title)
 
-	# 5. CTA「起駕」按鈕背景（如果存在）
-	if is_instance_valid(qi_jia_button) and ResourceLoader.exists(PIXEL_CTA_PATH):
-		var cta_bg := TextureRect.new()
-		cta_bg.name = "PixelCtaBg"
-		cta_bg.texture = load(PIXEL_CTA_PATH)
-		cta_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		cta_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
-		cta_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		cta_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		cta_bg.show_behind_parent = true
-		qi_jia_button.add_child(cta_bg)
-		qi_jia_button.move_child(cta_bg, 0)
-		# 透明化原 button stylebox 露出底圖
-		qi_jia_button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
-		qi_jia_button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
-		qi_jia_button.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
-		qi_jia_button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	# 5. CTA「起駕」按鈕 — 改用 CotiwUiTheme 程序化 StyleBox（紅金圓角）。
+	# 原 cta_button_frame.png 是 NBP「去背圖」，實際把透明格紋畫進圖裡（非真 alpha），
+	# 套上去會帶灰格背景。程序化 StyleBox 無底圖 → 零去背問題，_build_primary 已套。
 
 	_layout_pixel_skin()
 
@@ -662,7 +648,7 @@ func _on_exit_button_up() -> void:
 func update_continue_button_visibility() -> void:
 	var has_save: bool = FileLoader.has_save_file()
 	if qi_jia_button:
-		qi_jia_button.text = "繼　續" if has_save else "起　駕"
+		qi_jia_button.text = "繼續" if has_save else "起駕"
 	if continue_button: continue_button.visible = has_save
 	if forfeit_run_button: forfeit_run_button.visible = has_save
 	if new_run_button: new_run_button.visible = not has_save
