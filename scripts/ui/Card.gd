@@ -3,6 +3,7 @@ extends Control
 class_name Card
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const CARD_ART_REGISTRY := preload("res://scripts/ui/theme/CardArtRegistry.gd")
 
 var card_data: CardData = null
 var card_listeners: Array[BaseCardListener] = []
@@ -76,10 +77,18 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 		await get_tree().process_frame
 		_card_is_rerendering = false
 	
-	# update visuals
-	var card_art_path: String = COTIW_UI_THEME.get_mobile_safe_card_art_path(card_data.card_texture_path)
-	if card_art_path != "":
-		card_texture.texture = FileLoader.load_texture(card_art_path)
+	# update visuals - v3 NBP cards first, fallback to legacy path
+	var v3_tex: Texture2D = CARD_ART_REGISTRY.get_card_art(card_data.object_id)
+	if v3_tex != null:
+		card_texture.texture = v3_tex
+	else:
+		var card_art_path: String = COTIW_UI_THEME.get_mobile_safe_card_art_path(card_data.card_texture_path)
+		if card_art_path != "":
+			# v3 NBP refined pixel art lives at res:// (packed in APK)；用 load() 直拿，跳過 FileLoader user:// prefix
+			if card_art_path.begins_with("res://") and ResourceLoader.exists(card_art_path):
+				card_texture.texture = load(card_art_path)
+			else:
+				card_texture.texture = FileLoader.load_texture(card_art_path)
 	
 	var frame_path: String = COTIW_UI_THEME.get_card_frame_path(card_data.card_rarity)
 	if frame_path != "" and ResourceLoader.exists(frame_path):

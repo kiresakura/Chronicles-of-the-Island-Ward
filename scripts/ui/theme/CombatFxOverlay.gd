@@ -32,22 +32,21 @@ static func apply(host: Control) -> CanvasLayer:
 	layer.visible = host.visible
 	_layer = layer
 
-	# 連 STR signals — 用 lambda 包 deferred 避免 race
-	if Engine.has_singleton("Signals") or "Signals" in Engine.get_main_loop().root.get_children().map(func(c): return c.name):
+	# 連 STR signals — 嘗試 autoload Signals
+	var signals_node: Node = host.get_node_or_null("/root/Signals")
+	if signals_node != null:
 		_connect_signals()
-	else:
-		# fallback: 透過 host script 找
-		var signals = host.get_node_or_null("/root/Signals")
-		if signals:
-			_connect_signals()
 	return layer
 
 
 static func _connect_signals() -> void:
 	# 透過 autoload Signals 連事件
 	var signals: Node = null
-	var root := Engine.get_main_loop().root
-	for c in root.get_children():
+	var main_loop: MainLoop = Engine.get_main_loop()
+	if main_loop == null or not (main_loop is SceneTree):
+		return
+	var scene_root: Node = (main_loop as SceneTree).root
+	for c in scene_root.get_children():
 		if c.name == "Signals":
 			signals = c
 			break

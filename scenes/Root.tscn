@@ -1182,15 +1182,28 @@ theme = ExtResource("2_bi5lp")
 text = "返回"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TitleScreen/CodexMenu"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 24.0
 offset_top = 88.0
 offset_right = 136.0
 offset_bottom = 584.0
+theme_override_constants/separation = 8
 
-[node name="Button" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
+[node name="TabCards" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "卡牌"
+
+[node name="TabJiajiang" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "家將"
+
+[node name="TabDeities" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "神明"
 
 [node name="Button2" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 layout_mode = 2
