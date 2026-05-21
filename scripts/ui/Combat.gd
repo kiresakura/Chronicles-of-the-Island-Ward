@@ -88,6 +88,9 @@ func _ready():
 	# v2 HUD overlay：3 神明 affinity badges + 八卦 energy ring
 	const CombatHudOverlayCls = preload("res://scripts/ui/theme/CombatHudOverlay.gd")
 	CombatHudOverlayCls.apply(self)
+	# v3 FX overlay：技能特效（damage/block/heal）自動連 Signals
+	const CombatFxOverlayCls = preload("res://scripts/ui/theme/CombatFxOverlay.gd")
+	CombatFxOverlayCls.apply(self)
 
 func _on_map_location_selected(location_data: LocationData):
 	# determine what to do when the player visits a new location

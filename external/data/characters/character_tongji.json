@@ -7,7 +7,7 @@
 		"character_color_id": "color_tongji",
 		"character_texture_path": "assets/generated/portraits_v3/tongji.png",
 		"character_icon_texture_path": "assets/generated/characters/tongji_portrait_v1.png",
-		"character_background_texture_path": "assets/generated/scenes/act1_mountain_temple_bg_v1.png",
+		"character_background_texture_path": "assets/generated/scenes_v3/act1_mountain_temple.png",
 		"character_player_id": "player_tongji",
 		"character_starting_artifact_ids": ["artifact_tongji_amulet"],
 		"character_starting_artifact_pack_ids": ["artifact_pack_neutral", "artifact_pack_tongji"],
