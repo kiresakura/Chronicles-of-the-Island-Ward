@@ -5,6 +5,11 @@
 ##   Layer 2 — Ken Burns：緩慢縮放偏移（FIREWORKS 場景停用，背景靜止以突顯煙火粒子）
 ##   Layer 3 — 粒子特效：每個場景專屬大氣粒子
 ##
+## FIREWORKS 專用 z 分層：
+##   z = -5  SkyFill ColorRect  → 深夜藍底色（填補透明天空）
+##   z =  0  _FireworksManager + embers → 煙火粒子
+##   z = 10  PixelBackdrop（天空區 alpha=0，建築區 alpha=1）→ 廟宇壓在煙火之上
+##
 ## 用法（在各畫面 _ready 最後）：
 ##   const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
 ##   const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
@@ -57,6 +62,8 @@ static func apply(layer: CanvasLayer, preset: Preset) -> void:
 		if is_instance_valid(backdrop):
 			backdrop.size     = sz
 			backdrop.position = Vector2.ZERO
+		# FIREWORKS：建立夜空底色 + 廟宇壓層，讓煙火顯現在廟宇「後面」
+		_setup_fireworks_layers(layer, backdrop, sz)
 
 	# ── Layer 3：場景粒子 ─────────────────────────
 	match preset:
@@ -103,11 +110,42 @@ void fragment() {
 }
 """
 
+## FIREWORKS 專用：呼吸 + 天空遮罩（上方天空透明，讓後層煙火透出；下方建築不透明）
+const _FIREWORKS_SKY_SHADER := """
+shader_type canvas_item;
+uniform float breathe_speed : hint_range(0.05, 3.0)  = 0.38;
+uniform float breathe_amp   : hint_range(0.0,  0.25) = 0.06;
+uniform float vignette_str  : hint_range(0.0,  2.0)  = 0.60;
+// 天空遮罩：UV.y 靠上（接近 0）→ alpha=0 透明，廟宇建築區（靠下）→ alpha=1 不透明
+uniform float sky_fade_low  : hint_range(0.0,  0.5)  = 0.30;
+uniform float sky_fade_high : hint_range(0.1,  0.8)  = 0.46;
+
+void fragment() {
+	vec4 col = texture(TEXTURE, UV);
+
+	// 亮度呼吸
+	float b = sin(TIME * breathe_speed) * breathe_amp;
+	col.rgb = clamp(col.rgb + b, 0.0, 1.0);
+
+	// 四角暗角
+	vec2  c   = UV - 0.5;
+	float vig = 1.0 - dot(c, c) * vignette_str * 2.0;
+	col.rgb  *= clamp(vig, 0.0, 1.0);
+
+	// 天空區漸透：上方露出後層煙火，建築區完整保留
+	float sky_alpha = smoothstep(sky_fade_low, sky_fade_high, UV.y);
+	col.a *= sky_alpha;
+
+	COLOR = col;
+}
+"""
+
 static func _apply_shader(rect: TextureRect, preset: Preset) -> void:
 	if not is_instance_valid(rect):
 		return
 	var shader := Shader.new()
-	shader.code = _SHADER_SRC
+	# FIREWORKS 使用含天空遮罩的特殊 shader
+	shader.code = _FIREWORKS_SKY_SHADER if preset == Preset.FIREWORKS else _SHADER_SRC
 	var mat := ShaderMaterial.new()
 	mat.shader = shader
 	match preset:
@@ -115,6 +153,8 @@ static func _apply_shader(rect: TextureRect, preset: Preset) -> void:
 			mat.set_shader_parameter("breathe_speed", 0.38)
 			mat.set_shader_parameter("breathe_amp",   0.06)
 			mat.set_shader_parameter("vignette_str",  0.60)
+			mat.set_shader_parameter("sky_fade_low",  0.30)
+			mat.set_shader_parameter("sky_fade_high", 0.46)
 		Preset.EMBERS:
 			mat.set_shader_parameter("breathe_speed", 0.65)
 			mat.set_shader_parameter("breathe_amp",   0.09)
@@ -132,6 +172,29 @@ static func _apply_shader(rect: TextureRect, preset: Preset) -> void:
 			mat.set_shader_parameter("breathe_amp",   0.038)
 			mat.set_shader_parameter("vignette_str",  0.50)
 	rect.material = mat
+
+# ═══════════════════════════════════════════════════
+# FIREWORKS 專用 — 深度分層（廟宇後方天空煙火）
+# ═══════════════════════════════════════════════════
+
+## 建立三層 z-order：夜空底色（z=-5）→ 煙火粒子（z=0）→ 廟宇背景（z=10）
+## PixelBackdrop 天空區透明（由 _FIREWORKS_SKY_SHADER 處理），
+## 只有建築體遮住粒子 → 視覺上煙火在廟宇「後面」炸開
+static func _setup_fireworks_layers(layer: CanvasLayer, backdrop: TextureRect, sz: Vector2) -> void:
+	if not is_instance_valid(backdrop):
+		return
+	# ── 夜空底色（在所有粒子之後）──────────────────
+	var sky := ColorRect.new()
+	sky.name = "SkyFill"
+	sky.color = Color(0.03, 0.04, 0.14, 1.0)   # 深夜藍，近似廟宇圖天空色
+	sky.size  = sz
+	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sky.z_index = -5
+	layer.add_child(sky)
+	layer.move_child(sky, 0)   # 確保在 tree 最前（z_index 才是渲染決定因素）
+	# ── 廟宇背景壓在粒子之上 ────────────────────────
+	# 天空區 alpha=0 → 夜空底色 + 煙火透出；建築區 alpha=1 → 廟宇不透明
+	backdrop.z_index = 10
 
 # ═══════════════════════════════════════════════════
 # Layer 2 — Ken Burns 緩移效果
