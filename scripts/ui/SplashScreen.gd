@@ -50,10 +50,11 @@ func _ready() -> void:
 
 	_relayout()
 	Responsive.changed.connect(_relayout)
-	# v4 Recraft pixel_art 背景 + PixelFX 動畫（星點閃爍 + 呼吸 + Ken Burns）
+	# v5 NBP pixel_art 背景 + PixelFX 動畫（星點閃爍 + 呼吸）
+	# boot_splash_v5.png 同時作為 Godot 引擎 boot splash 及本畫面背景（只留一張）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
 	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
-	var _splash_layer = PixelSkinCls.apply_background(self, "splash_bg_v5.png")
+	var _splash_layer = PixelSkinCls.apply_background(self, "boot_splash_v5.png")
 	if _splash_layer:
 		PixelFXCls.apply(_splash_layer, PixelFXCls.Preset.SPARKLE)
 
