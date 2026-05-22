@@ -203,14 +203,52 @@ static func match_preset_duration(p: Preset) -> float:
 # ═══════════════════════════════════════════════════
 
 ## 掛在 CanvasLayer 上的 Node，用 _process 驅動定期煙火
+## Route B：爆炸主體改用 AnimatedSprite2D 精靈動畫（firework_burst_sheet.png）
+## 若精靈表載入失敗則自動 fallback 至原 CPUParticles2D 爆炸
 class _FireworksManager extends Node:
 	var _t:    float = 0.0
 	var _next: float = 1.2
 	var _sz:   Vector2
+	var _burst_frames: SpriteFrames = null  ## 8 幀爆炸精靈表（快取）
+	var _sparkle_tex:  Texture2D    = null  ## 星形粒子材質（快取）
+
+	const _BURST_PATH   := "res://assets/generated/pixellab/firework_burst_sheet.png"
+	const _SPARKLE_PATH := "res://assets/generated/pixellab/firework_sparkle.png"
+	const _BURST_FRAMES := 8
+	const _FRAME_PX     := 128
+	const _BURST_FPS    := 12.0
 
 	func _ready() -> void:
 		var vp := get_viewport()
 		_sz = vp.get_visible_rect().size if vp else Vector2(1200, 700)
+		_burst_frames = _build_burst_frames()
+		_sparkle_tex  = _load_tex(_SPARKLE_PATH)
+
+	## 從 1024×128 橫排精靈表建立 SpriteFrames（8 幀 × 128px）
+	func _build_burst_frames() -> SpriteFrames:
+		var img := Image.new()
+		if img.load(_BURST_PATH) != OK:
+			push_warning("PixelFX: 找不到 firework_burst_sheet.png，降級至 CPUParticles2D")
+			return null
+		var sheet := ImageTexture.create_from_image(img)
+		var sf := SpriteFrames.new()
+		sf.add_animation("burst")
+		sf.set_animation_speed("burst", _BURST_FPS)
+		sf.set_animation_loop("burst", false)
+		for i in _BURST_FRAMES:
+			var at := AtlasTexture.new()
+			at.atlas  = sheet
+			at.region = Rect2(i * _FRAME_PX, 0, _FRAME_PX, _FRAME_PX)
+			sf.add_frame("burst", at)
+		return sf
+
+	## 從 res:// 路徑載入 PNG → Texture2D（用於粒子材質）
+	func _load_tex(path: String) -> Texture2D:
+		var img := Image.new()
+		if img.load(path) != OK:
+			push_warning("PixelFX: 找不到 " + path.get_file())
+			return null
+		return ImageTexture.create_from_image(img)
 
 	func _process(delta: float) -> void:
 		_t += delta
@@ -256,49 +294,70 @@ class _FireworksManager extends Node:
 		add_child(trail)
 		get_tree().create_timer(0.70).timeout.connect(trail.queue_free)
 
-		# ── 主爆炸花火 ────────────────────────────
-		var burst := CPUParticles2D.new()
-		burst.position              = Vector2(bx, by)
-		burst.emitting              = true
-		burst.one_shot              = true
-		burst.amount                = randi_range(80, 120)
-		burst.lifetime              = randf_range(1.10, 1.65)
-		burst.explosiveness         = 0.97
-		burst.spread                = 180.0
-		burst.gravity               = Vector2(0, 55)
-		burst.initial_velocity_min  = 80.0
-		burst.initial_velocity_max  = 220.0
-		burst.scale_amount_min      = 5.0
-		burst.scale_amount_max      = 11.0
-		var bg := Gradient.new()
-		bg.set_color(0, col)
-		bg.set_color(1, Color(col.r, col.g, col.b, 0.0))
-		burst.color_ramp = bg
-		add_child(burst)
-		get_tree().create_timer(burst.lifetime + 0.9).timeout.connect(burst.queue_free)
+		# ── 主爆炸：AnimatedSprite2D 精靈動畫 ────────
+		if _burst_frames != null:
+			var sc := randf_range(2.2, 3.5)
+			# 主爆炸（彩色 modulate = 調色盤色）
+			var burst_anim := AnimatedSprite2D.new()
+			burst_anim.position      = Vector2(bx, by)
+			burst_anim.sprite_frames = _burst_frames
+			burst_anim.modulate      = col
+			burst_anim.scale         = Vector2(sc, sc)
+			burst_anim.animation_finished.connect(burst_anim.queue_free)
+			add_child(burst_anim)
+			burst_anim.play("burst")
+			# 中心白閃光（較小，疊在主爆炸上）
+			var flash_anim := AnimatedSprite2D.new()
+			flash_anim.position      = Vector2(bx, by)
+			flash_anim.sprite_frames = _burst_frames
+			flash_anim.modulate      = Color(1.0, 1.0, 1.0, 0.85)
+			flash_anim.scale         = Vector2(sc * 0.45, sc * 0.45)
+			flash_anim.animation_finished.connect(flash_anim.queue_free)
+			add_child(flash_anim)
+			flash_anim.play("burst")
+		else:
+			# ── Fallback：原 CPUParticles2D 爆炸 + 閃光 ─
+			var burst := CPUParticles2D.new()
+			burst.position              = Vector2(bx, by)
+			burst.emitting              = true
+			burst.one_shot              = true
+			burst.amount                = randi_range(80, 120)
+			burst.lifetime              = randf_range(1.10, 1.65)
+			burst.explosiveness         = 0.97
+			burst.spread                = 180.0
+			burst.gravity               = Vector2(0, 55)
+			burst.initial_velocity_min  = 80.0
+			burst.initial_velocity_max  = 220.0
+			burst.scale_amount_min      = 5.0
+			burst.scale_amount_max      = 11.0
+			var bg := Gradient.new()
+			bg.set_color(0, col)
+			bg.set_color(1, Color(col.r, col.g, col.b, 0.0))
+			burst.color_ramp = bg
+			add_child(burst)
+			get_tree().create_timer(burst.lifetime + 0.9).timeout.connect(burst.queue_free)
 
-		# ── 中心閃光 ──────────────────────────────
-		var flash := CPUParticles2D.new()
-		flash.position              = Vector2(bx, by)
-		flash.emitting              = true
-		flash.one_shot              = true
-		flash.amount                = 22
-		flash.lifetime              = 0.32
-		flash.explosiveness         = 0.99
-		flash.spread                = 180.0
-		flash.gravity               = Vector2.ZERO
-		flash.initial_velocity_min  = 10.0
-		flash.initial_velocity_max  = 35.0
-		flash.scale_amount_min      = 8.0
-		flash.scale_amount_max      = 18.0
-		var fg := Gradient.new()
-		fg.set_color(0, Color(1, 1, 1, 1))
-		fg.set_color(1, Color(1, 1, 0.6, 0))
-		flash.color_ramp = fg
-		add_child(flash)
-		get_tree().create_timer(0.50).timeout.connect(flash.queue_free)
+			var flash := CPUParticles2D.new()
+			flash.position              = Vector2(bx, by)
+			flash.emitting              = true
+			flash.one_shot              = true
+			flash.amount                = 22
+			flash.lifetime              = 0.32
+			flash.explosiveness         = 0.99
+			flash.spread                = 180.0
+			flash.gravity               = Vector2.ZERO
+			flash.initial_velocity_min  = 10.0
+			flash.initial_velocity_max  = 35.0
+			flash.scale_amount_min      = 8.0
+			flash.scale_amount_max      = 18.0
+			var fg := Gradient.new()
+			fg.set_color(0, Color(1, 1, 1, 1))
+			fg.set_color(1, Color(1, 1, 0.6, 0))
+			flash.color_ramp = fg
+			add_child(flash)
+			get_tree().create_timer(0.50).timeout.connect(flash.queue_free)
 
-		# ── 金色尾星（加強視覺殘像）─────────────
+		# ── 金色尾星（星形粒子材質 + 重力下墜）─────
 		var glitter := CPUParticles2D.new()
 		glitter.position             = Vector2(bx, by)
 		glitter.emitting             = true
@@ -312,6 +371,8 @@ class _FireworksManager extends Node:
 		glitter.initial_velocity_max = 90.0
 		glitter.scale_amount_min     = 3.0
 		glitter.scale_amount_max     = 6.0
+		if _sparkle_tex != null:
+			glitter.texture = _sparkle_tex
 		var gg := Gradient.new()
 		gg.set_color(0, Color(1.0, 0.95, 0.55, 0.90))
 		gg.set_color(1, Color(1.0, 0.80, 0.30, 0.00))
