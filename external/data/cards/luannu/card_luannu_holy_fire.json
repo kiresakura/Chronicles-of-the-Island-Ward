@@ -1,0 +1,22 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_luannu_holy_fire",
+		"card_name": "聖火焚邪",
+		"card_description": "造成 4 點傷害兩次。",
+		"card_texture_path": "assets/generated/cards_v3/card_luannu_holy_fire.png",
+		"card_color_id": "color_luannu",
+		"card_type": 0,
+		"card_rarity": 1,
+		"card_energy_cost": 1,
+		"card_requires_target": true,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 4,
+					"number_of_attacks": 2
+				}
+			}
+		]
+	}
+}

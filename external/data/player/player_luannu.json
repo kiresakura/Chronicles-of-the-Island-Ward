@@ -1,0 +1,14 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "player_luannu",
+		"player_character_object_id": "character_luannu",
+		"player_health": 70,
+		"player_health_max": 70,
+		"player_money": 0,
+		"player_energy_max": 3,
+		"player_act": 1,
+		"player_act_max": 3,
+		"player_act_id": "act_1"
+	}
+}

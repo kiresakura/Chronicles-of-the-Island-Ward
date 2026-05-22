@@ -1,0 +1,26 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_luannu_blessing",
+		"card_name": "天降祥瑞",
+		"card_description": "回復 12 點生命值，獲得 6 點護身符。",
+		"card_texture_path": "assets/generated/cards_v3/card_luannu_blessing.png",
+		"card_color_id": "color_luannu",
+		"card_type": 1,
+		"card_rarity": 2,
+		"card_energy_cost": 2,
+		"card_requires_target": false,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/ActionAddHealth.gd": {
+					"health_amount": 12
+				}
+			},
+			{
+				"res://scripts/actions/ActionBlock.gd": {
+					"block": 6
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "artifact_luannu_jiaobei",
+		"artifact_name": "乩筊",
+		"artifact_description": "戰鬥開始時獲得 1 點能量。",
+		"artifact_script_path": "res://scripts/artifacts/BaseArtifact.gd",
+		"artifact_color_id": "color_luannu",
+		"artifact_rarity": 0,
+		"artifact_counter_max": 1,
+		"artifact_counter_wraparound": true,
+		"artifact_appears_in_artifact_packs": false,
+		"artifact_first_turn_actions": [
+			{
+				"res://scripts/actions/ActionAddEnergy.gd": {
+					"energy_amount": 1
+				}
+			}
+		],
+		"artifact_texture_path": "assets/generated/artifacts_v3/artifact_luannu_jiaobei.png"
+	}
+}
