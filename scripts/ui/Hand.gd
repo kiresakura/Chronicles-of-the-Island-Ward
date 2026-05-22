@@ -245,20 +245,22 @@ func _on_card_right_clicked(card: Card):
 ### Targeting
 
 func _on_background_button_up():
+	# BackgroundButton only fires during non-targeting mode (STOP) or when
+	# MOUSE_FILTER_IGNORE is NOT set.  With IGNORE during targeting this never fires.
+	# Keep as immediate cancel (no deferred) since SelectionButton blocks propagation.
 	current_selected_card = null
 	_unprompt_target()
 
 func _on_enemy_clicked(enemy: Enemy):
 	if current_selected_card != null:
 		_unprompt_target()
-		
+
 		# generate the card play request and enqueue it
 		var card_play_request: CardPlayRequest = CardPlayRequest.new()
 		card_play_request.card_data = current_selected_card.card_data
 		card_play_request.selected_target = enemy
 		card_play_request.card_values = current_selected_card.card_data.card_values.duplicate(true)	# copy the card's values into the card play request
-	
-		
+
 		add_card_to_play_queue(card_play_request, true, false)
 		current_selected_card = null
 
@@ -268,9 +270,17 @@ func _on_enemy_hovered(enemy: Enemy):
 
 func _prompt_target(_card: Card):
 	select_target_label.visible = true
+	# MOUSE_FILTER_IGNORE makes BackgroundButton completely transparent to events,
+	# so enemy SelectionButtons can receive touches directly without interference.
+	# MOUSE_FILTER_PASS (former value) still fires button_up on BackgroundButton AND
+	# only propagates UP to the parent — it does NOT let lower-priority siblings fire
+	# when BackgroundButton is above them in z-order, so PASS was silently eating clicks.
+	background_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _unprompt_target():
 	select_target_label.visible = false
+	# Restore to STOP so background taps are intercepted normally outside targeting mode.
+	background_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 ### Playing Cards
 

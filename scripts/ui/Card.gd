@@ -75,6 +75,9 @@ func init(_card_data: CardData, angular_offset: float, connect_combat_signals: b
 	# flag to disable cards so they're not interactable by player
 	if connect_ui_signals:
 		card_button.gui_input.connect(_on_button_gui_input)
+		# button_up handles card selection on both desktop and mobile (touch)
+		# gui_input's left_click is unreliable on Android (InputEventScreenTouch ≠ InputEventMouseButton)
+		card_button.button_up.connect(_on_card_button_up)
 		card_button.mouse_entered.connect(_on_mouse_entered)
 		card_button.mouse_exited.connect(_on_mouse_exited)
 		keyword_timer.timeout.connect(_on_keyword_timeout)
@@ -279,9 +282,13 @@ func _attempt_hand_glow() -> void:
 	if _is_card_in_hand():
 		set_card_glow(_glow_validation())
 
+func _on_card_button_up():
+	# fires on both mouse-left-release (desktop) and touch-release (mobile)
+	card_selected.emit(self)
+
 func _on_button_gui_input(event: InputEvent):
-	if event.is_action_pressed("left_click"):
-		card_selected.emit(self)
+	# left_click is handled by button_up (cross-platform)
+	# keep gui_input only for right_click
 	if event.is_action_pressed("right_click"):
 		card_right_clicked.emit(self)
 
