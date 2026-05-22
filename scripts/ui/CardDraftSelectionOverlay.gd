@@ -1,19 +1,24 @@
 # Provides an overlay to add cards to the player's deck
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 @onready var card_container: HBoxContainer = $CardContainer
 @onready var skip_button: Button = $SkipButton
+@onready var header_label: Label = %HeaderLabel
+@onready var subtitle_label: Label = %SubtitleLabel
 
 var current_card_pick_action: ActionBasePickCards = null	# an action currently requesting cards from the player to select. If null clicking cards plays them
 
 func _ready():
 	Signals.card_pick_requested.connect(_on_card_pick_requested)
 	Signals.card_pick_confirmed.connect(_on_card_pick_confirmed)
-	
+
 	Signals.run_started.connect(_on_run_started)
 	Signals.run_ended.connect(_on_run_ended)
-	
+
 	skip_button.button_up.connect(_on_skip_button_up)
+	COTIW_UI_THEME.apply_secondary_button_style(skip_button)
 
 func _on_card_pick_requested(card_pick_action: ActionBasePickCards):
 	if card_pick_action != null:
@@ -34,7 +39,9 @@ func populate_cards(cards: Array[CardData]) -> void:
 		var card: Card = Scenes.CARD.instantiate()
 		card_container.add_child(card)
 		card.init(card_data, 0, false, true)
-		
+		# Figma 草圖：卡牌在選擇 overlay 中放大顯示（原始 144×184 → 放大 1.9×）
+		card.scale = Vector2(1.9, 1.9)
+
 		# bind signals
 		card.card_hovered.connect(_on_card_hovered)
 		card.card_unhovered.connect(_on_card_unhovered)

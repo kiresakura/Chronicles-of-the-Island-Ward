@@ -14,7 +14,7 @@ func init(_action_on_click: BaseAction) -> void:
 	action_on_click = _action_on_click
 	
 	var price: int = action_on_click.get_action_value("money_amount", 0)
-	price_label.text = str(price)
+	price_label.text = "購買  金" + str(price)
 	_apply_shop_visual_style(price > Global.player_data.player_money)
 
 func _apply_shop_visual_style(is_unaffordable: bool = false) -> void:

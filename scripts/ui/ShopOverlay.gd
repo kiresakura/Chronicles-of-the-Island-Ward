@@ -3,6 +3,14 @@ extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
+# NPC 報價台詞池 — 隨機挑一條顯示於頂部資訊欄
+const _NPC_QUOTES: Array[String] = [
+	"🏮 城隍廟口雜貨鋪  —  「好物不怕無緣客，緣到自然留」",
+	"🏮 城隍廟口雜貨鋪  —  「神明庇佑，出入平安，買賣順利」",
+	"🏮 城隍廟口雜貨鋪  —  「香火鼎盛，老闆開心，價錢好說」",
+	"🏮 城隍廟口雜貨鋪  —  「有緣千里來相逢，無緣空袋走一趟」",
+]
+
 @onready var card_container: HBoxContainer = $CardContainer
 @onready var artifact_container: VBoxContainer = $ArtifactContainer
 @onready var consumable_container: VBoxContainer = $ConsumableContainer
@@ -10,19 +18,24 @@ const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 @onready var continue_button: Button = $ContinueButton
 @onready var backdrop: ColorRect = $Background
 @onready var panel_fill: ColorRect = $Background2
+@onready var npc_info_bar: Label = %NPCInfoBar
 
 @onready var map = $%Map
 
 func _ready():
 	Signals.combat_started.connect(_on_combat_started)
-	
+
 	Signals.map_location_selected.connect(_on_map_location_selected)
 	Signals.shop_opened.connect(_on_shop_opened)
-	
+
 	Signals.card_purchased.connect(_on_card_purchased)
 	Signals.artifact_purchased.connect(_on_artifact_purchased)
 	Signals.consumable_purchased.connect(_on_consumable_purchased)
-	
+
+	# 隨機 NPC 報價台詞
+	npc_info_bar.text = _NPC_QUOTES[randi() % _NPC_QUOTES.size()]
+
+	continue_button.text = "離開  Leave"
 	continue_button.button_up.connect(_on_continue_button_up)
 	COTIW_UI_THEME.apply_primary_button_style(continue_button)
 	COTIW_UI_THEME.style_overlay_backdrop(backdrop, panel_fill)

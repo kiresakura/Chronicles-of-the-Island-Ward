@@ -1,6 +1,8 @@
 # Displays run start options
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+
 var _option_type_to_option_ids: Dictionary = {}
 const MIXED_OPTION_COUNT: int = 3	# number of options to populate that have both an upside and downside
 const COMPLETE_OPTION_COUNT: int = 1	# number of unique options to populate
@@ -62,24 +64,26 @@ func populate_run_start_options() -> void:
 		var run_start_option_button: DialogueOption = Scenes.DIALOGUE_OPTION.instantiate()
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
-		
+		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
+
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
-	
+
 	# populate complete options
 	for i in min(COMPLETE_OPTION_COUNT, len(complete_option_ids)):
 		# get option
 		var complete_option_id: String = complete_option_ids.pop_back()
 		var complete_run_start_option_data: RunStartOptionData = Global.get_run_start_option_data(complete_option_id)
-		
+
 		# get actions and bbcode
 		var option_bbcode: String = complete_run_start_option_data.run_start_option_bb_code
 		var option_actions: Array[Dictionary] = complete_run_start_option_data.run_start_option_actions
-		
+
 		# create a dialogue button for the option
 		var run_start_option_button: DialogueOption = Scenes.DIALOGUE_OPTION.instantiate()
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
-		
+		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
+
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
 	
 func clear_run_start_options() -> void:
