@@ -5,10 +5,11 @@
 ##   Layer 2 — Ken Burns：緩慢縮放偏移（FIREWORKS 場景停用，背景靜止以突顯煙火粒子）
 ##   Layer 3 — 粒子特效：每個場景專屬大氣粒子
 ##
-## FIREWORKS 專用 z 分層：
-##   z = -5  SkyFill ColorRect  → 深夜藍底色（填補透明天空）
-##   z =  0  _FireworksManager + embers → 煙火粒子
-##   z = 10  PixelBackdrop（天空區 alpha=0，建築區 alpha=1）→ 廟宇壓在煙火之上
+## FIREWORKS 專用 z 分層（mainmenu_temple_v5.png 天空已去背）：
+##   z = -5  SkyFill ColorRect  → 深夜藍底色 RGB(24,42,91)
+##   z =  0  _FireworksManager + embers → 煙火粒子（在夜空中爆炸）
+##   z = 10  PixelBackdrop（mainmenu_temple_v5.png）→ 廟宇建築不透明，天空透明
+##           煙火只在廟宇建築之間的天空縫隙/上方可見
 ##
 ## 用法（在各畫面 _ready 最後）：
 ##   const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
@@ -110,42 +111,11 @@ void fragment() {
 }
 """
 
-## FIREWORKS 專用：呼吸 + 天空遮罩（上方天空透明，讓後層煙火透出；下方建築不透明）
-const _FIREWORKS_SKY_SHADER := """
-shader_type canvas_item;
-uniform float breathe_speed : hint_range(0.05, 3.0)  = 0.38;
-uniform float breathe_amp   : hint_range(0.0,  0.25) = 0.06;
-uniform float vignette_str  : hint_range(0.0,  2.0)  = 0.60;
-// 天空遮罩：UV.y 靠上（接近 0）→ alpha=0 透明，廟宇建築區（靠下）→ alpha=1 不透明
-uniform float sky_fade_low  : hint_range(0.0,  0.5)  = 0.30;
-uniform float sky_fade_high : hint_range(0.1,  0.8)  = 0.46;
-
-void fragment() {
-	vec4 col = texture(TEXTURE, UV);
-
-	// 亮度呼吸
-	float b = sin(TIME * breathe_speed) * breathe_amp;
-	col.rgb = clamp(col.rgb + b, 0.0, 1.0);
-
-	// 四角暗角
-	vec2  c   = UV - 0.5;
-	float vig = 1.0 - dot(c, c) * vignette_str * 2.0;
-	col.rgb  *= clamp(vig, 0.0, 1.0);
-
-	// 天空區漸透：上方露出後層煙火，建築區完整保留
-	float sky_alpha = smoothstep(sky_fade_low, sky_fade_high, UV.y);
-	col.a *= sky_alpha;
-
-	COLOR = col;
-}
-"""
-
 static func _apply_shader(rect: TextureRect, preset: Preset) -> void:
 	if not is_instance_valid(rect):
 		return
 	var shader := Shader.new()
-	# FIREWORKS 使用含天空遮罩的特殊 shader
-	shader.code = _FIREWORKS_SKY_SHADER if preset == Preset.FIREWORKS else _SHADER_SRC
+	shader.code = _SHADER_SRC
 	var mat := ShaderMaterial.new()
 	mat.shader = shader
 	match preset:
@@ -153,8 +123,6 @@ static func _apply_shader(rect: TextureRect, preset: Preset) -> void:
 			mat.set_shader_parameter("breathe_speed", 0.38)
 			mat.set_shader_parameter("breathe_amp",   0.06)
 			mat.set_shader_parameter("vignette_str",  0.60)
-			mat.set_shader_parameter("sky_fade_low",  0.30)
-			mat.set_shader_parameter("sky_fade_high", 0.46)
 		Preset.EMBERS:
 			mat.set_shader_parameter("breathe_speed", 0.65)
 			mat.set_shader_parameter("breathe_amp",   0.09)
@@ -186,7 +154,7 @@ static func _setup_fireworks_layers(layer: CanvasLayer, backdrop: TextureRect, s
 	# ── 夜空底色（在所有粒子之後）──────────────────
 	var sky := ColorRect.new()
 	sky.name = "SkyFill"
-	sky.color = Color(0.03, 0.04, 0.14, 1.0)   # 深夜藍，近似廟宇圖天空色
+	sky.color = Color(0.094, 0.165, 0.357, 1.0)  # 廟宇圖天空採樣色 RGB(24,42,91)
 	sky.size  = sz
 	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sky.z_index = -5
@@ -237,7 +205,7 @@ static func match_preset_duration(p: Preset) -> float:
 ## 掛在 CanvasLayer 上的 Node，用 _process 驅動定期煙火
 class _FireworksManager extends Node:
 	var _t:    float = 0.0
-	var _next: float = 1.5
+	var _next: float = 1.2
 	var _sz:   Vector2
 
 	func _ready() -> void:
@@ -248,7 +216,7 @@ class _FireworksManager extends Node:
 		_t += delta
 		if _t >= _next:
 			_t    = 0.0
-			_next = randf_range(1.1, 3.8)
+			_next = randf_range(0.9, 2.8)
 			_launch()
 
 	func _launch() -> void:
@@ -271,37 +239,37 @@ class _FireworksManager extends Node:
 		trail.position = Vector2(bx + randf_range(-25, 25), _sz.y * 0.94)
 		trail.emitting              = true
 		trail.one_shot              = true
-		trail.amount                = 22
-		trail.lifetime              = 0.30
+		trail.amount                = 28
+		trail.lifetime              = 0.32
 		trail.explosiveness         = 0.0
 		trail.spread                = 5.0
 		trail.direction             = Vector2((bx - _sz.x * 0.5) * 0.0008, -1.0).normalized()
 		trail.gravity               = Vector2.ZERO
-		trail.initial_velocity_min  = 360.0
-		trail.initial_velocity_max  = 430.0
-		trail.scale_amount_min      = 2.0
-		trail.scale_amount_max      = 3.5
+		trail.initial_velocity_min  = 380.0
+		trail.initial_velocity_max  = 460.0
+		trail.scale_amount_min      = 4.0
+		trail.scale_amount_max      = 7.0
 		var tg := Gradient.new()
 		tg.set_color(0, Color(1.0, 0.92, 0.50, 0.90))
 		tg.set_color(1, Color(1.0, 0.40, 0.10, 0.00))
 		trail.color_ramp = tg
 		add_child(trail)
-		get_tree().create_timer(0.65).timeout.connect(trail.queue_free)
+		get_tree().create_timer(0.70).timeout.connect(trail.queue_free)
 
 		# ── 主爆炸花火 ────────────────────────────
 		var burst := CPUParticles2D.new()
 		burst.position              = Vector2(bx, by)
 		burst.emitting              = true
 		burst.one_shot              = true
-		burst.amount                = randi_range(68, 105)
-		burst.lifetime              = randf_range(1.05, 1.55)
-		burst.explosiveness         = 0.96
+		burst.amount                = randi_range(80, 120)
+		burst.lifetime              = randf_range(1.10, 1.65)
+		burst.explosiveness         = 0.97
 		burst.spread                = 180.0
-		burst.gravity               = Vector2(0, 68)
-		burst.initial_velocity_min  = 52.0
-		burst.initial_velocity_max  = 148.0
-		burst.scale_amount_min      = 2.5
-		burst.scale_amount_max      = 5.5
+		burst.gravity               = Vector2(0, 55)
+		burst.initial_velocity_min  = 80.0
+		burst.initial_velocity_max  = 220.0
+		burst.scale_amount_min      = 5.0
+		burst.scale_amount_max      = 11.0
 		var bg := Gradient.new()
 		bg.set_color(0, col)
 		bg.set_color(1, Color(col.r, col.g, col.b, 0.0))
@@ -314,42 +282,42 @@ class _FireworksManager extends Node:
 		flash.position              = Vector2(bx, by)
 		flash.emitting              = true
 		flash.one_shot              = true
-		flash.amount                = 16
-		flash.lifetime              = 0.28
+		flash.amount                = 22
+		flash.lifetime              = 0.32
 		flash.explosiveness         = 0.99
 		flash.spread                = 180.0
 		flash.gravity               = Vector2.ZERO
-		flash.initial_velocity_min  = 8.0
-		flash.initial_velocity_max  = 25.0
-		flash.scale_amount_min      = 4.0
-		flash.scale_amount_max      = 8.5
+		flash.initial_velocity_min  = 10.0
+		flash.initial_velocity_max  = 35.0
+		flash.scale_amount_min      = 8.0
+		flash.scale_amount_max      = 18.0
 		var fg := Gradient.new()
 		fg.set_color(0, Color(1, 1, 1, 1))
 		fg.set_color(1, Color(1, 1, 0.6, 0))
 		flash.color_ramp = fg
 		add_child(flash)
-		get_tree().create_timer(0.45).timeout.connect(flash.queue_free)
+		get_tree().create_timer(0.50).timeout.connect(flash.queue_free)
 
 		# ── 金色尾星（加強視覺殘像）─────────────
 		var glitter := CPUParticles2D.new()
 		glitter.position             = Vector2(bx, by)
 		glitter.emitting             = true
 		glitter.one_shot             = true
-		glitter.amount               = 30
-		glitter.lifetime             = 0.85
+		glitter.amount               = 40
+		glitter.lifetime             = 1.0
 		glitter.explosiveness        = 0.95
 		glitter.spread               = 180.0
-		glitter.gravity              = Vector2(0, 120)
-		glitter.initial_velocity_min = 20.0
-		glitter.initial_velocity_max = 60.0
-		glitter.scale_amount_min     = 1.5
-		glitter.scale_amount_max     = 3.0
+		glitter.gravity              = Vector2(0, 100)
+		glitter.initial_velocity_min = 30.0
+		glitter.initial_velocity_max = 90.0
+		glitter.scale_amount_min     = 3.0
+		glitter.scale_amount_max     = 6.0
 		var gg := Gradient.new()
-		gg.set_color(0, Color(1.0, 0.95, 0.55, 0.85))
+		gg.set_color(0, Color(1.0, 0.95, 0.55, 0.90))
 		gg.set_color(1, Color(1.0, 0.80, 0.30, 0.00))
 		glitter.color_ramp = gg
 		add_child(glitter)
-		get_tree().create_timer(1.0).timeout.connect(glitter.queue_free)
+		get_tree().create_timer(1.1).timeout.connect(glitter.queue_free)
 
 static func _spawn_fireworks_manager(layer: CanvasLayer, _sz: Vector2) -> void:
 	var mgr := _FireworksManager.new()
