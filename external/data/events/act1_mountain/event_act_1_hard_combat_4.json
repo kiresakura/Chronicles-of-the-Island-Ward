@@ -1,0 +1,11 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "event_act_1_hard_combat_4",
+		"event_weighted_enemy_object_ids": [
+			{"enemy_hungry_ghost": 1},
+			{"enemy_wandering_soul": 1}
+		],
+		"event_enemy_placement_is_automatic": true
+	}
+}
