@@ -37,9 +37,12 @@ func _ready():
 	
 	Signals.character_selected.connect(_on_character_selected)
 	Signals.run_ended.connect(_on_run_ended)
-	# v2 pixel skin（角色選擇廟堂內景）
+	# v4 Recraft pixel_art 背景 + PixelFX 動畫（香爐煙霧 + 呼吸 + Ken Burns）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "newrun_bg_v3.png")
+	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
+	var _newrun_layer = PixelSkinCls.apply_background(self, "newrun_bg_v5.png")
+	if _newrun_layer:
+		PixelFXCls.apply(_newrun_layer, PixelFXCls.Preset.SMOKE)
 	# v2 三角色立繪 gallery（廟堂 3 基座位置）
 	_apply_portrait_gallery()
 

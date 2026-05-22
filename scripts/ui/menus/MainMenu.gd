@@ -84,7 +84,7 @@ func _ready() -> void:
 # ---------- v2 像素皮（Recraft 美術 additive 層）----------
 # 蓋在程序化向量背景之上：底襯 → 神龕 → 標題匾，UI 元素留在最上層。
 # 鐵律 3 友善：不動 STR 既有節點。
-const PIXEL_BG_PATH := "res://assets/generated/pixellab/mainmenu_bg_v3.png"
+const PIXEL_BG_PATH := "res://assets/generated/pixellab/mainmenu_bg_v5.png"
 const PIXEL_ALTAR_PATH := "res://assets/generated/pixellab/altar_shrine_v3.png"
 const PIXEL_TITLE_PATH := "res://assets/generated/ui_v3/title_plaque.png"
 const PIXEL_CTA_PATH := "res://assets/generated/ui_v3/cta_button_frame.png"
@@ -121,6 +121,9 @@ func _apply_pixel_skin() -> void:
 			_pixel_bg.size = vp.get_visible_rect().size
 		else:
 			_pixel_bg.size = Vector2(1200, 700)
+		# PixelFX：煙火 + 火星 + 呼吸 shader + Ken Burns
+		const PixelFXCls = preload("res://scripts/ui/fx/PixelFX.gd")
+		PixelFXCls.apply(bg_layer, PixelFXCls.Preset.FIREWORKS)
 	else:
 		push_warning("PIXEL_BG_PATH not found: " + PIXEL_BG_PATH)
 
