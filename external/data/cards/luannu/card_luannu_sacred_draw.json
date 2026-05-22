@@ -1,0 +1,26 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_luannu_sacred_draw",
+		"card_name": "神符降靈",
+		"card_description": "抽 2 張牌，回復 2 點生命值。",
+		"card_texture_path": "assets/generated/cards_v3/card_luannu_sacred_draw.png",
+		"card_color_id": "color_luannu",
+		"card_type": 1,
+		"card_rarity": 1,
+		"card_energy_cost": 1,
+		"card_requires_target": false,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionDrawGenerator.gd": {
+					"number_of_draws": 2
+				}
+			},
+			{
+				"res://scripts/actions/ActionAddHealth.gd": {
+					"health_amount": 2
+				}
+			}
+		]
+	}
+}

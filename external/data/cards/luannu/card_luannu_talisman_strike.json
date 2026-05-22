@@ -1,0 +1,27 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_luannu_talisman_strike",
+		"card_name": "靈符擊",
+		"card_description": "造成 4 點傷害，獲得 3 點護身符。",
+		"card_texture_path": "assets/generated/cards_v3/card_luannu_talisman_strike.png",
+		"card_color_id": "color_luannu",
+		"card_type": 0,
+		"card_rarity": 0,
+		"card_energy_cost": 1,
+		"card_requires_target": true,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 4,
+					"number_of_attacks": 1
+				}
+			},
+			{
+				"res://scripts/actions/ActionBlock.gd": {
+					"block": 3
+				}
+			}
+		]
+	}
+}

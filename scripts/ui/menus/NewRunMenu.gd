@@ -50,6 +50,7 @@ func _apply_portrait_gallery() -> void:
 	const PORTRAIT_DIR := "res://assets/generated/portraits_v3/"
 	var chars: Array = [
 		{"file": "tongji.png", "label": "乩童", "locked": false},
+		{"file": "luannu.png", "label": "鸞女", "locked": false},
 		{"file": "daoshi.png", "label": "道士", "locked": true},
 		{"file": "jiajiang.png", "label": "家將", "locked": true},
 	]
@@ -65,10 +66,11 @@ func _apply_portrait_gallery() -> void:
 	var vp := get_viewport()
 	var screen_w: float = vp.get_visible_rect().size.x if vp else 1200.0
 	var screen_h: float = vp.get_visible_rect().size.y if vp else 700.0
-	var portrait_w: float = screen_w * 0.18
+	var n: int = chars.size()
+	var portrait_w: float = screen_w * (0.18 if n <= 3 else 0.14)
 	var portrait_h: float = screen_h * 0.72
-	var slot_gap: float = screen_w * 0.03
-	var total_w: float = portrait_w * 3 + slot_gap * 2
+	var slot_gap: float = screen_w * (0.03 if n <= 3 else 0.02)
+	var total_w: float = portrait_w * n + slot_gap * (n - 1)
 	var start_x: float = (screen_w - total_w) * 0.5
 
 	for i in chars.size():

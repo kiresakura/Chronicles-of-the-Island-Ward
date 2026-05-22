@@ -1,0 +1,22 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_luannu_spirit_brush",
+		"card_name": "靈筆",
+		"card_description": "造成 6 點傷害。",
+		"card_texture_path": "assets/generated/cards_v3/card_luannu_spirit_brush.png",
+		"card_color_id": "color_luannu",
+		"card_type": 0,
+		"card_rarity": 0,
+		"card_energy_cost": 1,
+		"card_requires_target": true,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 6,
+					"number_of_attacks": 1
+				}
+			}
+		]
+	}
+}
