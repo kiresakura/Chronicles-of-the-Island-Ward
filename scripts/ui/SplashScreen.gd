@@ -52,7 +52,7 @@ func _ready() -> void:
 	Responsive.changed.connect(_relayout)
 	# v2 pixel skin（蓋在 bg_fill 之上）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "splash_bg_v3.webp")
+	PixelSkinCls.apply_background(self, "splash_bg_v3.png")
 
 	# 進度組從一開始就出現（用戶反饋：載入動畫應一開始就有）
 	# 標題與文字仍淡入；進度條立即可見並開始動
