@@ -1,0 +1,53 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_hungry_ghost",
+		"enemy_object_id": "enemy_hungry_ghost",
+		"enemy_name": "餓鬼",
+		"enemy_texture_path": "assets/generated/enemies_v3/enemy_lost_soul.png",
+		"enemy_health": 20,
+		"enemy_health_max": 20,
+		"enemy_block": 0,
+		"enemy_type": 0,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"devour": 2,
+					"lunge": 1
+				}
+			},
+			"devour": {
+				"attack_damage": 4,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_weak",
+							"status_charge_amount": 1,
+							"target_override": 2
+						}
+					}
+				],
+				"next_attack_weights": {
+					"lunge": 1,
+					"devour": 1
+				}
+			},
+			"lunge": {
+				"attack_damage": 7,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"devour": 2,
+					"lunge": 1
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,62 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_paper_soldier",
+		"enemy_object_id": "enemy_paper_soldier",
+		"enemy_name": "紙紮兵",
+		"enemy_texture_path": "assets/generated/enemies_v3/enemy_tree_spirit.png",
+		"enemy_health": 25,
+		"enemy_health_max": 25,
+		"enemy_block": 0,
+		"enemy_type": 0,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"march": 1
+				}
+			},
+			"march": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 8,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_damage_increase",
+							"status_charge_amount": 2,
+							"target_override": 1
+						}
+					}
+				],
+				"next_attack_weights": {
+					"slash": 2,
+					"stomp": 1
+				}
+			},
+			"slash": {
+				"attack_damage": 9,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"stomp": 1,
+					"march": 1
+				}
+			},
+			"stomp": {
+				"attack_damage": 5,
+				"number_of_attacks": 2,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"slash": 1,
+					"march": 1
+				}
+			}
+		}
+	}
+}

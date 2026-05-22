@@ -1,0 +1,63 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "enemy_wandering_soul",
+		"enemy_object_id": "enemy_wandering_soul",
+		"enemy_name": "孤魂",
+		"enemy_texture_path": "assets/generated/enemies_v3/enemy_lost_soul.png",
+		"enemy_health": 16,
+		"enemy_health_max": 16,
+		"enemy_block": 0,
+		"enemy_type": 0,
+		"enemy_attack_states": {
+			"initial": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"wail": 1,
+					"drift": 1
+				}
+			},
+			"wail": {
+				"attack_damage": 3,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_vulnerable",
+							"status_charge_amount": 2,
+							"target_override": 2
+						}
+					}
+				],
+				"next_attack_weights": {
+					"possess": 2,
+					"drift": 1
+				}
+			},
+			"possess": {
+				"attack_damage": 6,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"wail": 1,
+					"drift": 1
+				}
+			},
+			"drift": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 6,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"wail": 1,
+					"possess": 1
+				}
+			}
+		}
+	}
+}
