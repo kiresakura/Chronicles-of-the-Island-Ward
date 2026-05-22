@@ -34,6 +34,23 @@ const ENERGY_ICON_KEYWORD: String = "[energy_icon]"	# tells description to displ
 
 const KEYWORD_HOVER_DELAY: float = 0.5
 
+## Figma 規格：卡牌主色依 card_type 決定（鮮豔飽和，不再 lerp 到 paper_warm）
+const CARD_TYPE_COLORS: Dictionary = {
+	CardData.CARD_TYPES.ATTACK: Color(0.79, 0.13, 0.13),   # 攻擊 — 朱紅
+	CardData.CARD_TYPES.SKILL:  Color(0.18, 0.56, 0.72),   # 技能 — 海青
+	CardData.CARD_TYPES.POWER:  Color(0.16, 0.52, 0.28),   # 能力 — 翠綠
+	CardData.CARD_TYPES.STATUS: Color(0.55, 0.38, 0.12),   # 狀態 — 琥珀
+	CardData.CARD_TYPES.CURSE:  Color(0.40, 0.13, 0.52),   # 詛咒 — 深紫
+}
+## 中文卡牌類型標籤（Figma 頂右 pill badge 顯示）
+const CARD_TYPE_LABELS: Dictionary = {
+	CardData.CARD_TYPES.ATTACK: "攻擊",
+	CardData.CARD_TYPES.SKILL:  "技能",
+	CardData.CARD_TYPES.POWER:  "能力",
+	CardData.CARD_TYPES.STATUS: "狀態",
+	CardData.CARD_TYPES.CURSE:  "詛咒",
+}
+
 signal card_selected(Card)
 signal card_right_clicked(Card)
 signal card_hovered(Card)
@@ -93,21 +110,49 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 	var frame_path: String = COTIW_UI_THEME.get_card_frame_path(card_data.card_rarity)
 	if frame_path != "" and ResourceLoader.exists(frame_path):
 		card_frame.texture = load(frame_path)
-	
-	# updates the card's display
+		card_frame.visible = true  # 啟用金框 SVG 疊圖
+
+	# ── Figma 排版：卡名移至描述區，類型 pill 移至右上角 ─────────────────────────────
+	# 卡名：在 CardTexture 座標系下 offset_top=102 = 卡片 y≈106，落在暗色描述區頂部
+	card_name.offset_top    = 102.0
+	card_name.offset_bottom = 118.0
+	# 描述區背景延伸覆蓋 y=107 以下（原 y=122，補齊與色塊分界對齊）
+	var desc_bg := $Pivot/CardVisual/DescriptionBg
+	desc_bg.offset_top    = 107.0
+	desc_bg.offset_bottom = 180.0
+	desc_bg.color         = Color(0.08, 0.03, 0.03, 0.95)
+	# 描述文字下移，避免與卡名重疊
+	card_description.offset_top = 122.0
+	# 類型 pill：移至右上角，套用暗底圓角 StyleBox
+	card_type.offset_left  = 82.0
+	card_type.offset_top   = 3.0
+	card_type.offset_right = 140.0
+	card_type.offset_bottom = 14.0
+	var _pill := StyleBoxFlat.new()
+	_pill.bg_color = Color(0.04, 0.01, 0.01, 0.86)
+	_pill.set_corner_radius_all(4)
+	_pill.content_margin_left   = 3.0
+	_pill.content_margin_right  = 3.0
+	_pill.content_margin_top    = 0.0
+	_pill.content_margin_bottom = 0.0
+	card_type.add_theme_stylebox_override("normal", _pill)
+
+	# ── 文字內容 ─────────────────────────────────────────────────────────────────────
 	card_name.set_bbcode("[center]" + card_data.get_card_name() + "[/center]")
 	card_description.set_bbcode(get_card_description(selected_enemy))
-	card_type.text = CardData.CARD_RARITIES.keys()[card_data.card_rarity] + " " + CardData.CARD_TYPES.keys()[card_data.card_type]
-	card_name.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
-	card_type.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color.GOLD))
-	card_description.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("lacquer_black", Color.BLACK))
+	card_type.text = CARD_TYPE_LABELS.get(card_data.card_type, "？")
+	card_name.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("incense_gold", Color.GOLD))
+	card_type.add_theme_color_override("font_color", Color(0.96, 0.90, 0.80, 1.0))
+	card_description.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("paper_warm", Color(0.96, 0.90, 0.80)))
 	card_glow.color = COTIW_UI_THEME.get_color("neon_cyan", Color(0.909804, 0.901961, 0.992157, 0.392157))
-	
-	var color_data: ColorData = Global.get_color_data(card_data.card_color_id)
-	if color_data != null:
-		card_color.color = color_data.color.lerp(COTIW_UI_THEME.get_color("paper_warm", Color.WHITE), 0.82)
-	else:
-		card_color.color = COTIW_UI_THEME.get_color("paper_warm", Color(0.957, 0.905, 0.811))
+
+	# ── 卡片主色：依類型飽和色，限縮至頂部美術區（高度 107 px）─────────────────────
+	card_color.offset_top    = 0.0
+	card_color.offset_left   = 0.0
+	card_color.offset_right  = 144.0
+	card_color.offset_bottom = 107.0
+	card_color.color = CARD_TYPE_COLORS.get(card_data.card_type,
+		Color(0.79, 0.13, 0.13))  # 預設朱紅
 	
 	$Pivot/CardVisual/EnergySprite.visible = card_data.card_is_playable
 	

@@ -1193,17 +1193,17 @@ theme_override_constants/separation = 8
 [node name="TabCards" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "卡牌"
+text = "卡圖收藏"
 
 [node name="TabJiajiang" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "家將"
+text = "家將圖鑑"
 
 [node name="TabDeities" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "神明"
+text = "神明好感"
 
 [node name="Button2" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer"]
 layout_mode = 2
@@ -1801,7 +1801,7 @@ script = ExtResource("17_stqr4")
 layout_mode = 0
 offset_right = 1200.0
 offset_bottom = 700.0
-color = Color(0.203922, 0.188235, 0.215686, 0.635294)
+color = Color(0.08, 0.035, 0.025, 0.88)
 
 [node name="Background2" type="ColorRect" parent="RunScreen/ShopOverlay"]
 layout_mode = 1
@@ -1816,7 +1816,26 @@ offset_right = 568.0
 offset_bottom = 290.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0941176, 0.0862745, 0.101961, 0.67451)
+color = Color(0.075, 0.03, 0.03, 0.92)
+
+[node name="NPCInfoBar" type="Label" parent="RunScreen/ShopOverlay"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -528.0
+offset_top = -282.0
+offset_right = 528.0
+offset_bottom = -228.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "🏮 城隍廟口雜貨鋪  —  「好物不怕無緣客，緣到自然留」"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.96, 0.82, 0.48, 0.92)
 
 [node name="CardContainer" type="HBoxContainer" parent="RunScreen/ShopOverlay"]
 layout_mode = 1
@@ -1826,9 +1845,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -528.0
-offset_top = -278.0
+offset_top = -222.0
 offset_right = 536.0
-offset_bottom = 18.0
+offset_bottom = 74.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
@@ -1865,18 +1884,18 @@ theme_override_constants/separation = 20
 
 [node name="ContinueButton" type="Button" parent="RunScreen/ShopOverlay"]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -160.0
-offset_top = -124.0
-offset_right = 160.0
-offset_bottom = -28.0
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = 224.0
+offset_right = 180.0
+offset_bottom = 278.0
 grow_horizontal = 2
-grow_vertical = 0
-text = "繼續"
+grow_vertical = 2
+text = "離開  Leave"
 
 [node name="DialogueOverlay" type="Control" parent="RunScreen"]
 unique_name_in_owner = true
@@ -2038,9 +2057,9 @@ mouse_filter = 2
 [node name="RSOTitle" type="Label" parent="RunScreen/RunStartOptions"]
 layout_mode = 0
 offset_left = 250.0
-offset_top = 130.0
+offset_top = 110.0
 offset_right = 950.0
-offset_bottom = 190.0
+offset_bottom = 175.0
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 40
 theme_override_colors/font_color = Color(1, 0.953, 0.498, 1)
@@ -2051,13 +2070,25 @@ text = "選一個起手選項"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="RSOSubtitle" type="Label" parent="RunScreen/RunStartOptions"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 250.0
+offset_top = 178.0
+offset_right = 950.0
+offset_bottom = 208.0
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.83, 0.69, 0.42, 0.80)
+text = "願擲筊問神，得吉凶起手"
+horizontal_alignment = 1
+
 [node name="StartingOptionContainer" type="VBoxContainer" parent="RunScreen/RunStartOptions"]
 layout_mode = 0
 offset_left = 280.0
-offset_top = 210.0
+offset_top = 218.0
 offset_right = 920.0
-offset_bottom = 610.0
-theme_override_constants/separation = 12
+offset_bottom = 620.0
+theme_override_constants/separation = 14
 
 [node name="RewardOverlay" type="Control" parent="RunScreen"]
 unique_name_in_owner = true
@@ -2209,7 +2240,48 @@ script = ExtResource("11_yys3c")
 layout_mode = 0
 offset_right = 1200.0
 offset_bottom = 700.0
-color = Color(0.203922, 0.188235, 0.215686, 0.631373)
+color = Color(0.08, 0.035, 0.025, 0.88)
+
+[node name="HeaderLabel" type="Label" parent="RunScreen/CardDraftSelectionOverlay"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -305.0
+offset_right = 450.0
+offset_bottom = -250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 38
+theme_override_colors/font_color = Color(0.91, 0.77, 0.42, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.75)
+text = "媽祖賜禮  選一張入牌組"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="RunScreen/CardDraftSelectionOverlay"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -248.0
+offset_right = 450.0
+offset_bottom = -214.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.83, 0.69, 0.42, 0.80)
+text = "「神明應允汝之誠心，賜此一卡」"
+horizontal_alignment = 1
 
 [node name="CardContainer" type="HBoxContainer" parent="RunScreen/CardDraftSelectionOverlay"]
 layout_mode = 1
@@ -2219,21 +2291,28 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -400.0
-offset_top = -120.0
+offset_top = -175.0
 offset_right = 400.0
-offset_bottom = 74.0
+offset_bottom = 165.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 24
 alignment = 1
 
 [node name="SkipButton" type="Button" parent="RunScreen/CardDraftSelectionOverlay"]
-layout_mode = 0
-offset_left = 528.0
-offset_top = 432.0
-offset_right = 672.0
-offset_bottom = 463.0
-text = "Skip"
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = 222.0
+offset_right = 160.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "謝禮  Skip"
 
 [node name="Map" type="Control" parent="RunScreen"]
 unique_name_in_owner = true
