@@ -62,6 +62,24 @@ const ENEMIES: Dictionary = {
 	"enemy_white_snake": preload("res://assets/generated/enemies_v3/enemy_white_snake.png"),
 }
 
+const ARTIFACTS: Dictionary = {
+	"artifact_add_money": preload("res://assets/generated/artifacts_v3/artifact_add_money.png"),
+	"artifact_block_on_attacks": preload("res://assets/generated/artifacts_v3/artifact_block_on_attacks.png"),
+	"artifact_draw_on_combat_start": preload("res://assets/generated/artifacts_v3/artifact_draw_on_combat_start.png"),
+	"artifact_draw_on_kill": preload("res://assets/generated/artifacts_v3/artifact_draw_on_kill.png"),
+	"artifact_full_heal": preload("res://assets/generated/artifacts_v3/artifact_full_heal.png"),
+	"artifact_heal_on_combat_ended": preload("res://assets/generated/artifacts_v3/artifact_heal_on_combat_ended.png"),
+	"artifact_incense_burner": preload("res://assets/generated/artifacts_v3/artifact_incense_burner.png"),
+	"artifact_increase_attack_on_rest": preload("res://assets/generated/artifacts_v3/artifact_increase_attack_on_rest.png"),
+	"artifact_red_string": preload("res://assets/generated/artifacts_v3/artifact_red_string.png"),
+	"artifact_retain_hand": preload("res://assets/generated/artifacts_v3/artifact_retain_hand.png"),
+	"artifact_right_click_shuffle_deck": preload("res://assets/generated/artifacts_v3/artifact_right_click_shuffle_deck.png"),
+	"artifact_see_top_of_draw_pile": preload("res://assets/generated/artifacts_v3/artifact_see_top_of_draw_pile.png"),
+	"artifact_temple_drum": preload("res://assets/generated/artifacts_v3/artifact_temple_drum.png"),
+	"artifact_tiger_token": preload("res://assets/generated/artifacts_v3/artifact_tiger_token.png"),
+	"artifact_tongji_amulet": preload("res://assets/generated/artifacts_v3/artifact_tongji_amulet.png"),
+}
+
 
 static func get_card_art(card_object_id: String) -> Texture2D:
 	return TONGJI_CARDS.get(card_object_id, null)
@@ -87,12 +105,27 @@ static func get_enemy(enemy_id: String) -> Texture2D:
 	return ENEMIES.get(enemy_id, null)
 
 
+static func get_artifact(artifact_object_id: String) -> Texture2D:
+	return ARTIFACTS.get(artifact_object_id, null)
+
+
+## 解析 artifact 貼圖：先查 registry（res:// 打包素材，含本批去背圖），
+## 找不到再退回 FileLoader（external/ 圖）。artifact_data 為 null 時回 null。
+static func resolve_artifact_texture(artifact_data: ArtifactData) -> Texture2D:
+	if artifact_data == null:
+		return null
+	var tex: Texture2D = get_artifact(artifact_data.object_id)
+	if tex == null:
+		tex = FileLoader.load_texture(artifact_data.artifact_texture_path)
+	return tex
+
+
 ## 由 texture_path 反查（取檔名去副檔名當 key）— 給 Player/Enemy 用 path 載圖時走 registry。
 static func get_by_texture_path(texture_path: String) -> Texture2D:
 	if texture_path.is_empty():
 		return null
 	var key: String = texture_path.get_file().get_basename()
-	for d in [TONGJI_CARDS, PORTRAITS, SCENES, JIAJIANG, DEITIES, ENEMIES]:
+	for d in [TONGJI_CARDS, PORTRAITS, SCENES, JIAJIANG, DEITIES, ENEMIES, ARTIFACTS]:
 		if d.has(key):
 			return d[key]
 	return null
