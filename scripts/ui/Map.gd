@@ -26,7 +26,7 @@ func _ready():
 	Signals.map_location_selected.connect(_on_map_location_selected)
 	# v2 pixel skin（廟前山景地圖背景）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "map_bg_v3.webp")
+	PixelSkinCls.apply_background(self, "map_bg_v3.png")
 
 func populate_locations(locations: Array[LocationData] = Global.get_all_act_locations()):
 	clear_locations()
