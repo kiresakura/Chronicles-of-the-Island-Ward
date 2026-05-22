@@ -86,9 +86,12 @@ func _ready():
 	Signals.map_location_selected.connect(_on_map_location_selected)
 
 	_apply_vector_skin()
-	# v2 pixel skin（廟前戰場背景，疊在 VectorCombatBackdrop 之下）
+	# v4 Recraft pixel_art 背景 + PixelFX 動畫（火星漫天 + 緊張呼吸 + Ken Burns）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "combat_bg_v3.png")
+	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
+	var _combat_layer = PixelSkinCls.apply_background(self, "combat_bg_v5.png")
+	if _combat_layer:
+		PixelFXCls.apply(_combat_layer, PixelFXCls.Preset.EMBERS)
 	# v2 HUD overlay：3 神明 affinity badges + 八卦 energy ring
 	const CombatHudOverlayCls = preload("res://scripts/ui/theme/CombatHudOverlay.gd")
 	CombatHudOverlayCls.apply(self)

@@ -50,9 +50,12 @@ func _ready() -> void:
 
 	_relayout()
 	Responsive.changed.connect(_relayout)
-	# v2 pixel skin（蓋在 bg_fill 之上）
+	# v4 Recraft pixel_art 背景 + PixelFX 動畫（星點閃爍 + 呼吸 + Ken Burns）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "splash_bg_v3.png")
+	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
+	var _splash_layer = PixelSkinCls.apply_background(self, "splash_bg_v5.png")
+	if _splash_layer:
+		PixelFXCls.apply(_splash_layer, PixelFXCls.Preset.SPARKLE)
 
 	# 進度組從一開始就出現（用戶反饋：載入動畫應一開始就有）
 	# 標題與文字仍淡入；進度條立即可見並開始動

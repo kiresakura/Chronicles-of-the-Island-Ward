@@ -24,9 +24,12 @@ func _ready():
 	Signals.shop_opened.connect(_on_shop_opened)
 	
 	Signals.map_location_selected.connect(_on_map_location_selected)
-	# v2 pixel skin（廟前山景地圖背景）
+	# v4 Recraft pixel_art 背景 + PixelFX 動畫（山間薄霧 + Ken Burns）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "map_bg_v3.png")
+	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
+	var _map_layer = PixelSkinCls.apply_background(self, "map_bg_v5.png")
+	if _map_layer:
+		PixelFXCls.apply(_map_layer, PixelFXCls.Preset.MIST)
 
 func populate_locations(locations: Array[LocationData] = Global.get_all_act_locations()):
 	clear_locations()

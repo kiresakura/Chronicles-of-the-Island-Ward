@@ -22,10 +22,10 @@ run/main_scene="res://scenes/SplashScreen.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="uid://8kopj5luv8dc"
 boot_splash/bg_color=Color(0.788, 0.125, 0.125, 1)
-boot_splash/image="res://assets/ui/boot_splash.png"
+boot_splash/image="res://assets/ui/boot_splash_v5.png"
 boot_splash/show_image=true
+boot_splash/minimum_display_time=0
 boot_splash/fullsize=true
-boot_splash/use_filter=true
 
 [internationalization]
 
