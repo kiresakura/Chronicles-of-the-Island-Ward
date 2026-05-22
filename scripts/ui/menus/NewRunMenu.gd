@@ -39,7 +39,7 @@ func _ready():
 	Signals.run_ended.connect(_on_run_ended)
 	# v2 pixel skin（角色選擇廟堂內景）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	PixelSkinCls.apply_background(self, "newrun_bg.png")
+	PixelSkinCls.apply_background(self, "newrun_bg_v3.webp")
 	# v2 三角色立繪 gallery（廟堂 3 基座位置）
 	_apply_portrait_gallery()
 

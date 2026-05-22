@@ -1,16 +1,17 @@
-# 共用 pixel art 背景皮（v2 美術 additive 層）
+# 共用 pixel art 背景皮（v3 Recraft pixel_art 統一風格）
 #
 # 各畫面 _ready 結尾呼叫 `PixelSkin.apply_background(self, path)`，
 # 會用 CanvasLayer (layer=-10) 強制全螢幕背景，繞過 Control 尺寸限制。
 # additive 不破壞既有 UI（鐵律 3 友善）。
+# v3：全部背景改用 assets/generated/pixellab/ 統一像素風格素材。
 extends Object
 class_name PixelSkin
 
-const BG_DIR := "res://assets/generated/mainmenu_v2/"
+const BG_DIR := "res://assets/generated/pixellab/"
 
 ## 套用全螢幕像素背景到指定 Control。
 ## - host: 寄宿 Control 節點（畫面根，e.g. SplashScreen / Combat / NewRunMenu）
-## - bg_filename: 背景檔名（已在 BG_DIR 內），e.g. "splash_bg.webp"
+## - bg_filename: 背景檔名（已在 BG_DIR 內），e.g. "splash_bg_v3.webp"
 ## - hide_node_names: 額外要隱藏的 legacy 背景節點名陣列（可選）
 static func apply_background(host: Control, bg_filename: String, hide_node_names: Array = []) -> CanvasLayer:
 	var path: String = BG_DIR + bg_filename
