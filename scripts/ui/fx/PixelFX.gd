@@ -2,7 +2,7 @@
 ##
 ## 讓靜態背景「活起來」的三層動畫：
 ##   Layer 1 — 呼吸 Shader：背景亮度輕微振盪 + 暗角脈衝
-##   Layer 2 — Ken Burns：緩慢縮放偏移，賦予鏡頭生命感
+##   Layer 2 — Ken Burns：緩慢縮放偏移（FIREWORKS 場景停用，背景靜止以突顯煙火粒子）
 ##   Layer 3 — 粒子特效：每個場景專屬大氣粒子
 ##
 ## 用法（在各畫面 _ready 最後）：
@@ -50,7 +50,13 @@ static func apply(layer: CanvasLayer, preset: Preset) -> void:
 	_apply_shader(backdrop, preset)
 
 	# ── Layer 2：Ken Burns 緩移 ───────────────────
-	_apply_ken_burns(backdrop, preset, sz)
+	# FIREWORKS 停用：背景靜止，讓煙火粒子成為唯一動態主角
+	if preset != Preset.FIREWORKS:
+		_apply_ken_burns(backdrop, preset, sz)
+	else:
+		if is_instance_valid(backdrop):
+			backdrop.size     = sz
+			backdrop.position = Vector2.ZERO
 
 	# ── Layer 3：場景粒子 ─────────────────────────
 	match preset:
