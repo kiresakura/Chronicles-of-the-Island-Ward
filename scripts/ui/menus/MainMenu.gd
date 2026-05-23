@@ -19,7 +19,7 @@ var PANEL_BG_LOCK: Color = Color(0.13, 0.09, 0.09, 0.80)
 
 # 底部 6 格：node, 中文, icon, 是否已開放（false → 即將推出 toast）
 const SLOTS := [
-	{"node": "BtnCharacter", "label": "角色", "icon": "character", "ready": false},
+	{"node": "BtnCharacter", "label": "角色", "icon": "character", "ready": true, "act": "character"},
 	{"node": "BtnFormation", "label": "陣型", "icon": "formation", "ready": false},
 	{"node": "BtnBattle",    "label": "戰鬥", "icon": "battle",    "ready": true,  "act": "run"},
 	{"node": "BtnShop",      "label": "商店", "icon": "shop",      "ready": false},
@@ -283,6 +283,8 @@ func _build_slots() -> void:
 				btn.button_up.connect(_on_new_run_button_up)
 			elif act == "codex":
 				btn.button_up.connect(_on_codex_button_up)
+			elif act == "character":
+				btn.button_up.connect(_on_character_button_up)
 		else:
 			btn.button_up.connect(_show_coming_soon.bind(data["label"]))
 		_slot_btns.append(btn)
@@ -644,6 +646,9 @@ func _on_new_run_button_up() -> void:
 
 func _on_codex_button_up() -> void:
 	title_screen.show_codex_menu()
+
+func _on_character_button_up() -> void:
+	title_screen.show_character_panel()
 
 func _on_exit_button_up() -> void:
 	get_tree().quit()
