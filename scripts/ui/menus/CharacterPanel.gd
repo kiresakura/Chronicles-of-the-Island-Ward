@@ -6,6 +6,7 @@ class_name CharacterPanel
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const PORTRAIT_DIR    := "res://assets/generated/portraits_v3/"
+const PORTRAIT_DIR_V2 := "res://assets/generated/characters_v2/"
 const BG_IMG          := "res://assets/generated/pixellab/mainmenu_temple_v5.png"
 
 var GOLD:          Color = Color(0.95, 0.82, 0.45)
@@ -14,12 +15,13 @@ var PANEL_BG:      Color = Color(0.14, 0.05, 0.04, 0.93)
 var PANEL_BG_LOCK: Color = Color(0.10, 0.08, 0.08, 0.80)
 
 # 角色清單：已解鎖者有 id；鎖定者 id 為空
+# v2_card 為 Recraft bold_fantasy 新世代立繪（characters_v2/）；空字串則 fallback 到 portraits_v3/file
 const CHARS: Array = [
-	{"id": "character_tongji",  "file": "tongji.png",  "locked": false},
-	{"id": "character_luannu",  "file": "luannu.png",  "locked": false},
-	{"id": "",                  "file": "daoshi.png",  "locked": true,
+	{"id": "character_tongji",  "file": "tongji.png",  "locked": false, "v2_card": "tongji_card.png"},
+	{"id": "character_luannu",  "file": "luannu.png",  "locked": false, "v2_card": "luannu_card.png"},
+	{"id": "",                  "file": "daoshi.png",  "locked": true,  "v2_card": "",
 	 "name": "道士", "desc": "（尚未解鎖）"},
-	{"id": "",                  "file": "jiajiang.png","locked": true,
+	{"id": "",                  "file": "jiajiang.png","locked": true,  "v2_card": "",
 	 "name": "家將", "desc": "（尚未解鎖）"},
 ]
 
@@ -108,7 +110,11 @@ func _build_cards() -> void:
 		# 立繪
 		var portrait := TextureRect.new()
 		portrait.name        = "Portrait"
-		var p_path: String   = PORTRAIT_DIR + c["file"]
+		# 優先讀 v2 card（Recraft 新立繪）；不存在則 fallback 到 v3 pixel
+		var v2_card: String = c.get("v2_card", "")
+		var p_path: String  = PORTRAIT_DIR_V2 + v2_card if v2_card != "" else PORTRAIT_DIR + c["file"]
+		if not ResourceLoader.exists(p_path):
+			p_path = PORTRAIT_DIR + c["file"]
 		if ResourceLoader.exists(p_path):
 			portrait.texture = load(p_path)
 		portrait.expand_mode  = TextureRect.EXPAND_IGNORE_SIZE
