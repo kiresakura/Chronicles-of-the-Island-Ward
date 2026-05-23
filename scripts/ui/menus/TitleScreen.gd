@@ -3,10 +3,14 @@
 # does nothing except control sub menu display logic
 extends Control
 
+const CharacterPanelScript := preload("res://scripts/ui/menus/CharacterPanel.gd")
+
 @onready var main_menu = $MainMenu
 @onready var new_run_menu = $NewRunMenu
 @onready var codex_menu = $CodexMenu
 @onready var _background: ColorRect = $Background if has_node("Background") else null
+
+var _character_panel: Control
 
 func _ready():
 	Signals.run_started.connect(_on_run_started)
@@ -22,10 +26,19 @@ func _ready():
 	SafeFit.bind(new_run_menu)
 	SafeFit.bind(codex_menu)
 
+	# 角色面板：程序化建構，動態 add_child（不需要 .tscn 節點）
+	_character_panel = Control.new()
+	_character_panel.set_script(CharacterPanelScript)
+	_character_panel.name    = "CharacterPanel"
+	_character_panel.visible = false
+	add_child(_character_panel)
+
 func hide_menus():
 	main_menu.visible = false
 	new_run_menu.visible = false
 	codex_menu.visible = false
+	if is_instance_valid(_character_panel):
+		_character_panel.visible = false
 
 func show_main_menu():
 	hide_menus()
@@ -40,6 +53,11 @@ func show_codex_menu():
 	hide_menus()
 	codex_menu.visible = true
 	codex_menu.populate_codex_menu()
+
+func show_character_panel():
+	hide_menus()
+	if is_instance_valid(_character_panel):
+		_character_panel.visible = true
 
 func _on_run_started():
 	visible = false
