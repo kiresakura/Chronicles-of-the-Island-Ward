@@ -31,6 +31,34 @@ var custom_ui_object_id_to_custom_ui: Dictionary = {} # maps a custom ui id to t
 var _proc_anim: SpriteProcAnim
 var _facing: int = 1	# 1 = 朝右（玩家）, -1 = 朝左（敵人）
 
+## PixelLab 戰鬥動畫條（idle/attack/defend/hit/death，4 幀/條）。
+## set_combatant_sprite() 收到 texture_path 時若能映射到 actor_id 就載入
+## anim sheet 並啟動 idle 迴圈；找不到 anim 則退回靜態貼圖。
+const ANIM_DIR: String = "res://assets/generated/pixellab/anim/"
+## texture_path basename → actor_id 對應表
+const ANIM_LOOKUP: Dictionary = {
+	"tongji.png":              "character_tongji",
+	"luannu.png":              "character_luannu",
+	"enemy_mountain_boar.png": "enemy_mountain_boar",
+	"enemy_tree_spirit.png":   "enemy_tree_spirit",
+	"enemy_lost_soul.png":     "enemy_wandering_soul",
+	"enemy_chair_girl.png":    "enemy_chair_girl",
+	"enemy_tiger_god.png":     "enemy_tiger_god",
+	"enemy_makanai_v1.png":    "enemy_makanai",
+	"enemy_tiger_aunt_v1.png": "enemy_tiger_aunt",
+	"enemy_hungry_ghost.png":  "enemy_hungry_ghost",
+	"enemy_paper_soldier.png": "enemy_paper_soldier",
+}
+const ANIM_FRAME_COUNT: int = 4
+const ANIM_IDLE_FPS: float = 4.0     # idle 慢循環
+const ANIM_ACTION_FPS: float = 8.0   # attack/hit/death 較快
+var _anim_frames: Array[Texture2D] = []
+var _anim_actor_id: String = ""
+var _anim_state: String = ""
+var _anim_frame_idx: int = 0
+var _anim_time: float = 0.0
+var _anim_one_shot: bool = false  # death/attack/hit 播完不循環
+
 func _ready():
 	Signals.combat_started.connect(_on_combat_started)
 	Signals.combat_ended.connect(_on_combat_ended)
@@ -49,23 +77,99 @@ func _ready():
 func _process(delta: float) -> void:
 	if _proc_anim != null:
 		_proc_anim.update(delta, false, false, _facing)
+	_advance_anim_frames(delta)
+
+## 推進 anim 條的當前幀（state 機）。one-shot state 結束時自動回 idle。
+func _advance_anim_frames(delta: float) -> void:
+	if _anim_frames.is_empty():
+		return
+	var fps: float = ANIM_ACTION_FPS if _anim_one_shot else ANIM_IDLE_FPS
+	_anim_time += delta
+	var step: float = 1.0 / fps
+	if _anim_time < step:
+		return
+	_anim_time -= step
+	var next_idx: int = _anim_frame_idx + 1
+	if next_idx >= _anim_frames.size():
+		if _anim_one_shot:
+			# 動作條播完 → 回 idle 條
+			_play_anim_state("idle", false)
+			return
+		next_idx = 0
+	_anim_frame_idx = next_idx
+	sprite.texture = _anim_frames[_anim_frame_idx]
 
 ## 此戰鬥員受到血量傷害時抖一下（格擋不觸發）。
 func _on_combatant_damaged(base_combatant: BaseCombatant, _unblocked_damage: int) -> void:
-	if base_combatant == self and _proc_anim != null:
+	if base_combatant != self:
+		return
+	if _proc_anim != null:
 		_proc_anim.trigger_hurt()
+	# 如果有 anim 條，播 hit 動作（one-shot，播完自動回 idle）
+	if not _anim_actor_id.is_empty():
+		_play_anim_state("hit", true)
 
 func _on_selection_button_up():
 	pass
 
 ## 設定戰鬥員 sprite — 解析 texture（res:// 打包資源走 load()，外部圖走 FileLoader），
 ## 大圖縮到 COMBATANT_SPRITE_MAX_HEIGHT 後指派。Player / Enemy 共用。
+## 同名 actor 若有 PixelLab anim 條會優先載入 idle 循環，否則退回靜態貼圖。
 func set_combatant_sprite(texture_path: String) -> void:
+	# 先試 anim 條（PixelLab 4-幀條）
+	if _try_load_anim_from_texture_path(texture_path):
+		return
+	# fallback 靜態貼圖
+	_anim_frames.clear()
+	_anim_actor_id = ""
+	_anim_state = ""
 	var tex: Texture2D = _resolve_combatant_texture(texture_path)
 	if tex != null:
 		sprite.texture = tex
 		if _proc_anim != null:
 			_proc_anim.refresh_texture()	# 貼圖換新 → 重算踏地補正半高
+
+
+## 嘗試由 texture_path basename 映射 actor_id，找到就載入 idle 動畫條。
+## 返回是否成功（成功時 sprite 已套第一幀，後續 _process 推進循環）。
+func _try_load_anim_from_texture_path(texture_path: String) -> bool:
+	if texture_path == null or texture_path.is_empty():
+		return false
+	var basename: String = texture_path.get_file()
+	var actor_id: String = ANIM_LOOKUP.get(basename, "")
+	if actor_id == "":
+		return false
+	_anim_actor_id = actor_id
+	return _play_anim_state("idle", false)
+
+
+## 載入指定 actor + state 的動畫條到 _anim_frames，立即套第一幀。
+## one_shot=true：death/attack/hit 播完自動回 idle；one_shot=false：循環。
+func _play_anim_state(state: String, one_shot: bool) -> bool:
+	if _anim_actor_id.is_empty():
+		return false
+	var sheet_path: String = ANIM_DIR + _anim_actor_id + "/" + state + ".png"
+	if not ResourceLoader.exists(sheet_path):
+		return false
+	var sheet_tex: Texture2D = load(sheet_path)
+	if sheet_tex == null:
+		return false
+	var frame_w: int = int(sheet_tex.get_width() / ANIM_FRAME_COUNT)
+	var frame_h: int = sheet_tex.get_height()
+	_anim_frames.clear()
+	for i in ANIM_FRAME_COUNT:
+		var at: AtlasTexture = AtlasTexture.new()
+		at.atlas = sheet_tex
+		at.region = Rect2(i * frame_w, 0, frame_w, frame_h)
+		_anim_frames.append(at)
+	_anim_state = state
+	_anim_one_shot = one_shot
+	_anim_frame_idx = 0
+	_anim_time = 0.0
+	sprite.texture = _anim_frames[0]
+	if _proc_anim != null:
+		_proc_anim.refresh_texture()
+	return true
 
 
 func _resolve_combatant_texture(texture_path: String) -> Texture2D:
@@ -102,11 +206,14 @@ func _resolve_combatant_texture(texture_path: String) -> Texture2D:
 
 ## 出手動畫 — 改走程序化前刺（拉後 → 衝刺 → 收，含旋轉與拉伸），
 ## 比舊版 AnimationPlayer offset 平移更有勁。_proc_anim 未就緒時退回舊動畫。
+## 同時若有 anim 條會播 attack 動作條（one-shot，播完自動回 idle）。
 func play_attack_animation() -> void:
 	if _proc_anim != null:
 		_proc_anim.trigger_attack()
 	else:
 		animation_player.play("attack")
+	if not _anim_actor_id.is_empty():
+		_play_anim_state("attack", true)
 
 #region Block
 func set_block(_amount: int) -> void:

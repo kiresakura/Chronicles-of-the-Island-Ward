@@ -148,6 +148,15 @@ STATE_ACTIONS = {
     "death":  "collapse and fade away",
 }
 
+# 個別 actor + state 的覆寫 prompt（若需要更強動感才覆寫）
+STATE_ACTIONS_OVERRIDES: dict[tuple[str, str], str] = {
+    ("character_luannu", "attack"): (
+        "swing spirit brush forward in dramatic arc, robe and sash billowing wildly, "
+        "embers and sacred fire trailing from brush tip, large stride forward, "
+        "each frame radically different pose"
+    ),
+}
+
 STATES = ["idle", "attack", "defend", "hit", "death"]
 ACTORS = list(ACTOR_SOURCES.keys())
 
@@ -232,8 +241,10 @@ def phase_firework(api_key: str) -> None:
          "exploding red firework: tiny bright dot, then expanding crimson rays radiating outward, "
          "peak burst with white-gold core and red trails, fading with embers, final spark"),
         ("blue",  "firework_burst_sheet_blue.png",  "vivid cyan azure and royal blue",
-         "exploding blue firework: tiny bright cyan dot, then expanding azure rays, "
-         "peak burst with white core and indigo trails, fading with starry sparks, final spark"),
+         "massive blue firework explosion sequence: small ignition flash, then rapidly expanding "
+         "bright cyan and electric blue rays radiating outward across the entire frame, peak burst "
+         "filling frame with white-hot center and indigo trails, then dissipating into scattered blue "
+         "sparks. Each frame must show clear progression and dramatic change."),
         ("green", "firework_burst_sheet_green.png", "vivid emerald and jade green",
          "exploding green firework: tiny bright lime dot, then expanding emerald rays, "
          "peak burst with white-yellow core and jade trails, fading with mint embers, final spark"),
@@ -252,6 +263,10 @@ def phase_firework(api_key: str) -> None:
     color_rgb = {"red": (255, 60, 30), "blue": (60, 140, 255), "green": (80, 230, 120)}
 
     for color, fname, palette_hint, action in color_specs:
+        out = PIXELLAB_DIR / fname
+        if out.exists():
+            print(f"  {fname} → already exists, skip")
+            continue
         ref_b64 = _make_ref(color_rgb[color])
         print(f"  {fname}…")
         payload = {
@@ -336,7 +351,7 @@ def phase_animations(api_key: str, actors: list[str] | None = None) -> None:
             if out.exists():
                 print(f"[{call_i}/{total}] {actor_id}/{state} → already exists, skip")
                 continue
-            action = STATE_ACTIONS[state]
+            action = STATE_ACTIONS_OVERRIDES.get((actor_id, state), STATE_ACTIONS[state])
             print(f"[{call_i}/{total}] {actor_id}/{state}: {action[:40]}…")
             payload = {
                 "description": desc,
