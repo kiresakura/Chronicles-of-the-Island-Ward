@@ -1,0 +1,263 @@
+{
+  "version": "1.0.0",
+  "date": "2026-05-23",
+  "generator": "manual planning scaffold",
+  "target_tool": "PixelLab / pixflux (external, not installed in current environment)",
+  "canvas": {
+    "width": 512,
+    "height": 512
+  },
+  "output_guidelines": {
+    "format": "PNG with transparent background",
+    "naming": "<actor_id>__<state>__fNN.png",
+    "fps_preview": 10,
+    "states_required": [
+      "idle",
+      "attack",
+      "defend",
+      "hit",
+      "death"
+    ],
+    "frames_default": {
+      "idle": 6,
+      "attack": 6,
+      "defend": 4,
+      "hit": 4,
+      "death": 6
+    },
+    "style": "HD-2D Taiwanese temple pixel art, readable silhouette, no baked text, consistent light from upper front"
+  },
+  "actors": [
+    {
+      "id": "character_tongji",
+      "name": "乩童",
+      "type": "player",
+      "source_texture": "assets/generated/portraits_v3/tongji.png",
+      "theme": "神明附體、爆發、近戰、狂烈",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "低重心站姿，神轎步預備感，符紙與神威微微飄動",
+        "attack": "爆發前衝揮擊，帶廟會神威與殘影",
+        "defend": "護身符展開，身體縮防，重心壓低",
+        "hit": "上半身後仰受擊，保留角色辨識輪廓",
+        "death": "神威散去、膝落地、力量崩解"
+      }
+    },
+    {
+      "id": "character_luannu",
+      "name": "鸞女",
+      "type": "player",
+      "source_texture": "assets/generated/portraits_v3/luannu.png",
+      "theme": "靈符、聖火、穩定、神聖",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "端正站姿，靈符與火光微動，神聖冷靜",
+        "attack": "筆勢或符火前送，帶神火拖尾",
+        "defend": "符陣或火盾展開，手勢明確",
+        "hit": "受擊後退半步，衣袖與符紙被震開",
+        "death": "靈光熄落，姿態仍需優雅莊重"
+      }
+    },
+    {
+      "id": "enemy_mountain_boar",
+      "name": "山豬精",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_mountain_boar.png",
+      "theme": "衝撞、厚重、野性",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "前蹄踏地、鼻息粗重",
+        "attack": "低頭衝鋒獠牙前頂",
+        "defend": "前身側縮、硬皮抵擋",
+        "hit": "頭部偏斜、身軀震動",
+        "death": "重重倒地、塵土揚起"
+      }
+    },
+    {
+      "id": "enemy_tree_spirit",
+      "name": "樹靈",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_tree_spirit.png",
+      "theme": "木質、陰森、根鬚詛咒",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "枝葉微晃、根鬚蠕動",
+        "attack": "樹根刺擊或枝幹猛抽",
+        "defend": "樹皮閉合成護甲",
+        "hit": "木屑飛散、枝體扭曲",
+        "death": "枝幹裂解、靈氣散落"
+      }
+    },
+    {
+      "id": "enemy_wandering_soul",
+      "name": "孤魂",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_lost_soul.png",
+      "theme": "漂浮、虛弱、幽冷",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "半透明飄浮、邊緣抖動",
+        "attack": "伸手撲咬或哀號突進",
+        "defend": "魂體回縮、陰氣聚攏",
+        "hit": "魂火被打散後回聚",
+        "death": "整體崩散成煙霧"
+      }
+    },
+    {
+      "id": "enemy_hungry_ghost",
+      "name": "餓鬼",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_lost_soul.png",
+      "theme": "飢餓、扭曲、撲食",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "腹部空癟、口部張裂",
+        "attack": "前撲吞噬姿態",
+        "defend": "雙臂護首、軀體蜷縮",
+        "hit": "身形抽搐、飢餓怨氣外洩",
+        "death": "軀體乾癟崩塌"
+      }
+    },
+    {
+      "id": "enemy_paper_soldier",
+      "name": "紙紮兵",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_tree_spirit.png",
+      "theme": "紙紮、軍列、僵硬",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "紙身微晃、站姿僵直",
+        "attack": "直線揮砍、步伐機械",
+        "defend": "紙甲交疊擋前",
+        "hit": "紙片撕裂翻飛",
+        "death": "整體塌縮成紙灰"
+      }
+    },
+    {
+      "id": "enemy_chair_girl",
+      "name": "椅仔姑",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_chair_girl.png",
+      "theme": "怨靈、家具異變、詭異",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "椅體細顫、長髮垂落",
+        "attack": "拋椅或扭身撲擊",
+        "defend": "椅腳交疊形成遮擋",
+        "hit": "椅面傾斜、鬼氣震散",
+        "death": "家具斷裂、殘魂消散"
+      }
+    },
+    {
+      "id": "enemy_makanai",
+      "name": "魔神仔",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_white_snake.png",
+      "theme": "狡詐、誘引、迅捷",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "身形矮小、鬼魅探頭",
+        "attack": "迅速側閃後撲擊",
+        "defend": "縮入陰影、姿勢低伏",
+        "hit": "身體被震出原形",
+        "death": "化作小片鬼火逃散"
+      }
+    },
+    {
+      "id": "enemy_tiger_aunt",
+      "name": "虎姑婆",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_lost_soul.png",
+      "theme": "妖婦、利爪、童話恐怖",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "佝僂站姿、爪尖顫動",
+        "attack": "前撲抓咬、嘴部張裂",
+        "defend": "長袖與爪臂遮面",
+        "hit": "頭部扭偏、妖氣外散",
+        "death": "身體塌縮回怪影"
+      }
+    },
+    {
+      "id": "enemy_tiger_god",
+      "name": "百年虎爺",
+      "type": "enemy",
+      "source_texture": "assets/generated/enemies_v3/enemy_tiger_god.png",
+      "theme": "神威、虎煞、Boss",
+      "states": [
+        "idle",
+        "attack",
+        "defend",
+        "hit",
+        "death"
+      ],
+      "prompt_focus": {
+        "idle": "威嚴踞坐或低伏、神像呼吸感",
+        "attack": "虎爪撲殺或咆哮震波",
+        "defend": "神威護體、前肢沉穩壓地",
+        "hit": "大體量受震但不失威嚴",
+        "death": "神像崩裂、金光散盡"
+      }
+    }
+  ]
+}
