@@ -394,7 +394,8 @@ static func _spawn(layer: CanvasLayer, cfg: Dictionary) -> void:
 	p.position         = cfg.get("pos",           Vector2(600, 700))
 	p.emission_shape   = cfg.get("shape",          _SHAPE_POINT)
 	if p.emission_shape == _SHAPE_BOX:
-		p.emission_box_extents = cfg.get("box", Vector3(600, 5, 0))
+		# CPUParticles2D.emission_box_extents 在 Godot 4 是 Vector2（非 Vector3）。
+		p.emission_box_extents = cfg.get("box", Vector2(600, 5))
 
 	p.amount           = cfg.get("amount",         40)
 	p.lifetime         = cfg.get("lifetime",       4.5)
@@ -432,7 +433,7 @@ static func _ember_cfg(cnt: int, col: Color, sz: Vector2) -> Dictionary:
 	return {
 		"pos":    Vector2(sz.x * 0.5, sz.y + 8),
 		"shape":  _SHAPE_BOX,
-		"box":    Vector3(sz.x * 0.5, 6, 0),
+		"box":    Vector2(sz.x * 0.5, 6),
 		"amount": cnt,
 		"lifetime": 5.8,
 		"dir":    Vector2(0, -1),
@@ -475,7 +476,7 @@ static func _mist_cfg(sz: Vector2) -> Dictionary:
 	return {
 		"pos":    Vector2(0, sz.y * 0.56),
 		"shape":  _SHAPE_BOX,
-		"box":    Vector3(18, sz.y * 0.20, 0),
+		"box":    Vector2(18, sz.y * 0.20),
 		"amount": 11,
 		"lifetime": 9.5,
 		"dir":    Vector2(1, 0),
@@ -497,7 +498,7 @@ static func _sparkle_cfg(cnt: int, sz: Vector2) -> Dictionary:
 	return {
 		"pos":    Vector2(sz.x * 0.5, sz.y * 0.5),
 		"shape":  _SHAPE_BOX,
-		"box":    Vector3(sz.x * 0.5, sz.y * 0.46, 0),
+		"box":    Vector2(sz.x * 0.5, sz.y * 0.46),
 		"amount": cnt,
 		"lifetime": 2.6,
 		"dir":    Vector2(0, 0),
