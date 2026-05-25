@@ -36,5 +36,10 @@ func set_dialogue_bb_code(bb_code: String) -> void:
 
 func _on_gui_input(event: InputEvent):
 	if option_enabled:
+		# 跨平台：滑鼠左鍵 + 觸控釋放都算 click。
+		# Godot 的觸控→滑鼠 emulation 預設 ON，所以 Android 觸控通常會走 left_click；
+		# 此處保留 InputEventScreenTouch fallback 作為 defense-in-depth，避免某些設定下 emulation 失效。
 		if event.is_action_pressed("left_click"):
+			dialogue_option_clicked.emit(self)
+		elif event is InputEventScreenTouch and not event.pressed:
 			dialogue_option_clicked.emit(self)
