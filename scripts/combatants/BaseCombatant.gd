@@ -65,6 +65,9 @@ func _ready():
 	Signals.player_turn_started.connect(_on_player_turn_started)
 	Signals.player_turn_ended.connect(_on_player_turn_ended)
 	Signals.combatant_damaged.connect(_on_combatant_damaged)
+	# 死亡 signals — 跟 AnimationPlayer 的 "death" 平行觸發 anim 條 death 狀態
+	Signals.enemy_killed.connect(_on_combatant_killed)
+	Signals.player_killed.connect(_on_combatant_killed)
 
 	selection_button.button_up.connect(_on_selection_button_up)
 
@@ -79,7 +82,8 @@ func _process(delta: float) -> void:
 		_proc_anim.update(delta, false, false, _facing)
 	_advance_anim_frames(delta)
 
-## 推進 anim 條的當前幀（state 機）。one-shot state 結束時自動回 idle。
+## 推進 anim 條的當前幀（state 機）。one-shot state 結束時自動回 idle，
+## 但 death 例外 — 停在最後一幀（屍體姿態）。
 func _advance_anim_frames(delta: float) -> void:
 	if _anim_frames.is_empty():
 		return
@@ -91,6 +95,10 @@ func _advance_anim_frames(delta: float) -> void:
 	_anim_time -= step
 	var next_idx: int = _anim_frame_idx + 1
 	if next_idx >= _anim_frames.size():
+		if _anim_state == "death":
+			# 死亡播完 → 停在最後一幀（屍體姿態，等待 AnimationPlayer 的 fade）
+			_anim_frames.clear()
+			return
 		if _anim_one_shot:
 			# 動作條播完 → 回 idle 條
 			_play_anim_state("idle", false)
@@ -108,6 +116,15 @@ func _on_combatant_damaged(base_combatant: BaseCombatant, _unblocked_damage: int
 	# 如果有 anim 條，播 hit 動作（one-shot，播完自動回 idle）
 	if not _anim_actor_id.is_empty():
 		_play_anim_state("hit", true)
+
+## 死亡 signal handler — 跟 Player.gd / Enemy.gd 的 animation_player.play("death")
+## 同步觸發 anim 條 death 狀態（fallback：anim 條沒 death 條時無動作）。
+## one_shot=true 但 death 不回 idle（is_dead 後 _advance_anim_frames 不再切幀）。
+func _on_combatant_killed(killed: BaseCombatant) -> void:
+	if killed != self:
+		return
+	if not _anim_actor_id.is_empty():
+		_play_anim_state("death", true)
 
 func _on_selection_button_up():
 	pass
@@ -167,6 +184,8 @@ func _play_anim_state(state: String, one_shot: bool) -> bool:
 	_anim_frame_idx = 0
 	_anim_time = 0.0
 	sprite.texture = _anim_frames[0]
+	# anim 條一律朝右畫，敵人 _facing=-1 時水平鏡像
+	sprite.flip_h = (_facing == -1)
 	if _proc_anim != null:
 		_proc_anim.refresh_texture()
 	return true
