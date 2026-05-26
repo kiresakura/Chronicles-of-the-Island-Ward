@@ -18,6 +18,8 @@ const BREATH_AMP: float = 0.008
 # 半身像在 MascotPanel 內水平位移百分比（負值往左、正值往右）
 # 0.0 = 正中，-0.20 = 偏左 20%
 const HORIZONTAL_BIAS: float = -0.18
+# 垂直高度倍率：1.0 = 剛好碰底；> 1.0 = 角色超出螢幕底（避免「腰斬」）
+const HEIGHT_OVERSCAN: float = 1.15
 
 signal mascot_tapped()
 
@@ -55,17 +57,20 @@ func _process(delta: float) -> void:
 	if _bust_rect == null or _bust_rect.texture == null:
 		return
 
-	# 半身像由高度撐滿（aspect 2:3），底邊對齊 MascotPanel 底邊
+	# 半身像由高度 ×HEIGHT_OVERSCAN 撐起，底邊對齊 MascotPanel 底邊，
+	# 超出部分延伸到螢幕外（避免「腰斬」感）。
+	# bust 圖已 PIL auto-crop 過，character 100% 填滿圖；fit-by-height 後角色
+	# 底剛好碰螢幕底；再加 overscan 讓角色身體繼續延伸超出底邊。
 	var tex_size: Vector2 = _bust_rect.texture.get_size()
 	if tex_size.y <= 0:
 		return
 	var aspect: float = tex_size.x / tex_size.y
-	var dst_h: float = size.y
+	var dst_h: float = size.y * HEIGHT_OVERSCAN
 	var dst_w: float = dst_h * aspect
 	# 水平：以 HORIZONTAL_BIAS 偏移
 	var center_x: float = size.x * 0.5 + size.x * HORIZONTAL_BIAS
 	var dst_x: float = center_x - dst_w * 0.5
-	# 垂直：底邊對齊 MascotPanel 底邊（character 站到畫面底）
+	# 垂直：底邊對齊 MascotPanel 底邊（其餘超出部分在底外不可見）
 	var dst_y: float = size.y - dst_h
 	_bust_rect.position = Vector2(dst_x, dst_y)
 	_bust_rect.size = Vector2(dst_w, dst_h)
