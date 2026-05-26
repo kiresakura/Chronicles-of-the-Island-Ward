@@ -394,8 +394,10 @@ static func _spawn(layer: CanvasLayer, cfg: Dictionary) -> void:
 	p.position         = cfg.get("pos",           Vector2(600, 700))
 	p.emission_shape   = cfg.get("shape",          _SHAPE_POINT)
 	if p.emission_shape == _SHAPE_BOX:
-		# CPUParticles2D.emission_box_extents 在 Godot 4 是 Vector2（非 Vector3）。
-		p.emission_box_extents = cfg.get("box", Vector2(600, 5))
+		# CPUParticles2D 的矩形 emission 屬性是 emission_rect_extents (Vector2)，
+		# 不是 3D 的 emission_box_extents (Vector3)。_SHAPE_BOX=3 對應
+		# EMISSION_SHAPE_RECTANGLE。
+		p.emission_rect_extents = cfg.get("box", Vector2(600, 5))
 
 	p.amount           = cfg.get("amount",         40)
 	p.lifetime         = cfg.get("lifetime",       4.5)

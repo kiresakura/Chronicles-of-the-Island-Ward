@@ -12,6 +12,10 @@ class_name ProfileData
 
 @export var profile_character_object_id_to_highest_difficulty: Dictionary[String, int] = {}
 
+## 看板娘：玩家選定的展示角色（在 MainMenu 中央 idle 動畫顯示）。
+## 預設 character_tongji（首次啟動時）。
+@export var profile_mascot_character_id: String = "character_tongji"
+
 func win_run(character_object_id: String) -> void:
 	profile_total_wins += 1
 	var character_wins: int = profile_character_object_id_to_wins.get(character_object_id, 0)

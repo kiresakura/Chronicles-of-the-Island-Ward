@@ -85,6 +85,30 @@ var user_settings_data: UserSettingsData = UserSettingsData.new() # the user's s
 var profile_data: ProfileData = ProfileData.new()
 var is_run: bool = false # simple flag to check if a run is currently happening
 
+## 看板娘 (mascot) — 玩家選定的展示角色，存在 ProfileData。
+signal mascot_changed(character_id: String)
+## 預設角色清單 — 必須是 unlocked 並有 anim 資產的角色
+const MASCOT_DEFAULT_ID: String = "character_tongji"
+const MASCOT_AVAILABLE_IDS: Array[String] = ["character_tongji", "character_luannu"]
+
+func get_mascot_character_id() -> String:
+	if profile_data == null:
+		return MASCOT_DEFAULT_ID
+	var id: String = profile_data.profile_mascot_character_id
+	if id.is_empty() or id not in MASCOT_AVAILABLE_IDS:
+		return MASCOT_DEFAULT_ID
+	return id
+
+func set_mascot_character_id(character_id: String) -> void:
+	if profile_data == null:
+		return
+	if character_id not in MASCOT_AVAILABLE_IDS:
+		push_warning("Mascot id not available: " + character_id)
+		return
+	profile_data.profile_mascot_character_id = character_id
+	mascot_changed.emit(character_id)
+	FileLoader.save_profile()
+
 # cached objects
 ## Stores caches of card filter results, making complicated repeated searches across
 ## potentially thousands of cards more performant and organized
