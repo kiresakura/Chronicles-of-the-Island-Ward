@@ -166,21 +166,21 @@ func _apply_pixel_skin() -> void:
 
 	_layout_pixel_skin()
 
-## 看板娘：直接加為 MainMenu 子節點（MainMenu 為 40×40 Control 但子節點不被
-## clip）。位置 / 尺寸由 _layout_pixel_skin 用 viewport size 計算。
+## 看板娘 v3：全螢幕 MascotPanel，bust 高度撐滿，底邊接觸畫面下緣。
+## move_child 到第一順位 → 渲染在所有 UI 之下（slot bar / CTA 浮在上面，
+## bust 透過去背在 UI 後方延伸到螢幕底部）。
 func _build_mascot() -> void:
 	_mascot_panel = MascotPanel.new()
 	_mascot_panel.name = "MascotPanel"
-	_mascot_panel.z_index = 1   # 蓋在 background CanvasLayer 之上
-	_mascot_panel.z_as_relative = false
 	_mascot_panel.mascot_tapped.connect(_on_mascot_tapped)
-	# 預設尺寸（_layout_pixel_skin 立即覆寫，這裡只是先避開 0×0）
+	# 全螢幕 size（_layout_pixel_skin 會覆寫，但先給 vp size 避開 0×0）
 	var vp := get_viewport()
 	var vp_size: Vector2 = vp.get_visible_rect().size if vp else Vector2(1200, 700)
-	_mascot_panel.size = Vector2(vp_size.x * 0.30, vp_size.y * 0.58)
-	_mascot_panel.position = Vector2((vp_size.x - _mascot_panel.size.x) * 0.5,
-									 vp_size.y * 0.18)
+	_mascot_panel.position = Vector2.ZERO
+	_mascot_panel.size = vp_size
 	add_child(_mascot_panel)
+	# 移到 MainMenu 子節點最前（draw 順序最早 → render 在最底，UI 蓋在上面）
+	move_child(_mascot_panel, 0)
 
 	# Selector overlay — 預設隱藏，點擊看板娘 / 角色卡時顯示
 	_mascot_selector = MascotSelector.new()
@@ -207,15 +207,10 @@ func _layout_pixel_skin() -> void:
 		_pixel_altar.size = Vector2(altar_w, altar_h)
 		_pixel_altar.position = Vector2((stage_size.x - altar_w) * 0.5, stage_size.y * 0.12)
 
-	# 看板娘：偏左側，全身像 ~22% 寬 × 60% 高，垂直置中偏下
+	# 看板娘 v3：全螢幕。bust 內部由 _process 動態 fit 高度 + 底對齊。
 	if is_instance_valid(_mascot_panel):
-		var mascot_w: float = stage_size.x * 0.22
-		var mascot_h: float = stage_size.y * 0.60
-		_mascot_panel.size = Vector2(mascot_w, mascot_h)
-		# x：靠左約 12% screen，留 avatar HUD 空間（avatar 在頂端不影響）
-		# y：垂直中央偏下，避開頂部 HUD 與底部 slot bar
-		_mascot_panel.position = Vector2(stage_size.x * 0.06,
-										 stage_size.y * 0.22)
+		_mascot_panel.position = Vector2.ZERO
+		_mascot_panel.size = stage_size
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):
