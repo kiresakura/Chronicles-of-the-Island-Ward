@@ -89,7 +89,22 @@ func _ready() -> void:
 # ---------- v2 像素皮（Recraft 美術 additive 層）----------
 # 蓋在程序化向量背景之上：底襯 → 神龕 → 標題匾，UI 元素留在最上層。
 # 鐵律 3 友善：不動 STR 既有節點。
-const PIXEL_BG_PATH := "res://assets/generated/pixellab/mainmenu_temple_v6.png"
+## BG 時段變體 — 由 _pick_bg_for_time_of_day() 依系統時間挑選
+const PIXEL_BG_DAY   := "res://assets/generated/pixellab/mainmenu_temple_day.png"
+const PIXEL_BG_DUSK  := "res://assets/generated/pixellab/mainmenu_temple_dusk.png"
+const PIXEL_BG_NIGHT := "res://assets/generated/pixellab/mainmenu_temple_night.png"
+const PIXEL_BG_V6    := "res://assets/generated/pixellab/mainmenu_temple_v6.png"   # fallback dusk
+const PIXEL_BG_PATH  := PIXEL_BG_V6   # 保留向後相容，但實際走 _pick
+
+## 系統時間決定 bg：05-10=day, 10-17=day, 17-19=dusk, 19-05=night
+static func _pick_bg_for_time_of_day() -> String:
+	var hour: int = Time.get_time_dict_from_system().get("hour", 18)
+	if hour >= 5 and hour < 17:
+		return PIXEL_BG_DAY
+	elif hour >= 17 and hour < 19:
+		return PIXEL_BG_DUSK
+	else:
+		return PIXEL_BG_NIGHT
 const PIXEL_ALTAR_PATH := "res://assets/generated/pixellab/altar_shrine_v3.png"
 const PIXEL_TITLE_PATH := "res://assets/generated/ui_v3/title_plaque.png"
 const PIXEL_CTA_PATH := "res://assets/generated/ui_v3/cta_button_frame.png"
@@ -104,7 +119,11 @@ func _apply_pixel_skin() -> void:
 		_backdrop.visible = false
 
 	# 2. 底襯 — 用 CanvasLayer 強制 fullscreen，繞過 MainMenu Control 尺寸限制
-	if ResourceLoader.exists(PIXEL_BG_PATH):
+	# 依系統時間選 day/dusk/night 變體（pick fallback chain）
+	var bg_picked: String = _pick_bg_for_time_of_day()
+	if not ResourceLoader.exists(bg_picked):
+		bg_picked = PIXEL_BG_V6
+	if ResourceLoader.exists(bg_picked):
 		var bg_layer := CanvasLayer.new()
 		bg_layer.name = "PixelBgLayer"
 		bg_layer.layer = -10  # 在預設 layer 之下
@@ -113,7 +132,7 @@ func _apply_pixel_skin() -> void:
 
 		_pixel_bg = TextureRect.new()
 		_pixel_bg.name = "PixelBackdrop"
-		_pixel_bg.texture = load(PIXEL_BG_PATH)
+		_pixel_bg.texture = load(bg_picked)
 		_pixel_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_pixel_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		_pixel_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -191,6 +210,13 @@ func _build_mascot() -> void:
 	add_child(_mascot_selector)
 
 func _on_mascot_tapped() -> void:
+	# v5：tap mascot 不再開 selector，只看 mascot 自己的 bounce + dialog
+	# 切換看板娘改走 _on_character_button_up → CharacterPanel（後續加 "設為
+	# 看板娘" 按鈕）or MascotSelector keyboard shortcut
+	pass
+
+## 暫時保留：showMascotSelector 可由外部呼叫（如 CharacterPanel 內按鈕）
+func show_mascot_selector() -> void:
 	if is_instance_valid(_mascot_selector):
 		_mascot_selector.visible = true
 
