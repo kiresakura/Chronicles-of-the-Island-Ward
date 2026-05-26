@@ -186,7 +186,36 @@ func _apply_pixel_skin() -> void:
 	# 7. 活動 banner — 右側中部，1999-style 大型橫幅
 	_build_activity_banner()
 
+	# 8. 前景物件 hot zones — 香爐 / 燈籠 隱形 hit-area，tap → toast (MVP)
+	_build_foreground_hotspots()
+
 	_layout_pixel_skin()
+
+# ────────────────────────────────────────────────
+# 前景物件 hot zones（MVP — Phase 3B）
+# ────────────────────────────────────────────────
+var _hotspot_censer: Button = null
+var _hotspot_lantern: Button = null
+
+func _build_foreground_hotspots() -> void:
+	# 香爐 hot zone（右下，廟宇前空地）
+	_hotspot_censer = _make_invisible_hotspot("CenserHot")
+	_hotspot_censer.button_up.connect(func(): _show_coming_soon("香爐 — 還燒著呢"))
+	add_child(_hotspot_censer)
+
+	# 燈籠 hot zone（右上方紅燈籠群）
+	_hotspot_lantern = _make_invisible_hotspot("LanternHot")
+	_hotspot_lantern.button_up.connect(func(): _show_coming_soon("紅燈籠 — 招運招福"))
+	add_child(_hotspot_lantern)
+
+func _make_invisible_hotspot(node_name: String) -> Button:
+	var b := Button.new()
+	b.name = node_name
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	b.self_modulate = Color(1, 1, 1, 0)   # 透明 hit area
+	return b
 
 # ────────────────────────────────────────────────
 # 活動 banner（HUD 4 區「活動區」）
@@ -285,6 +314,14 @@ func _layout_pixel_skin() -> void:
 	if is_instance_valid(_mascot_panel):
 		_mascot_panel.position = Vector2.ZERO
 		_mascot_panel.size = stage_size
+
+	# 前景 hot zones（位置 / 大小）
+	if is_instance_valid(_hotspot_censer):
+		_hotspot_censer.position = Vector2(stage_size.x * 0.55, stage_size.y * 0.72)
+		_hotspot_censer.size = Vector2(stage_size.x * 0.10, stage_size.y * 0.14)
+	if is_instance_valid(_hotspot_lantern):
+		_hotspot_lantern.position = Vector2(stage_size.x * 0.72, stage_size.y * 0.06)
+		_hotspot_lantern.size = Vector2(stage_size.x * 0.08, stage_size.y * 0.12)
 
 	# 活動 banner：右側中部，~18% 寬 × 28% 高，避免擋 mascot
 	if is_instance_valid(_activity_banner):
@@ -503,8 +540,14 @@ func _build_primary() -> void:
 	for c in b.button_up.get_connections():
 		b.button_up.disconnect(c["callable"])
 	b.button_up.connect(_on_primary_pressed)
+	# 同時觸發 mascot 反應（user spec：tap 起駕 → 看板娘也對話）
+	b.button_up.connect(_on_qi_jia_mascot_react)
 	_hook_hover(b)
 	_start_qi_jia_pulse()
+
+func _on_qi_jia_mascot_react() -> void:
+	if is_instance_valid(_mascot_panel) and _mascot_panel.has_method("_play_tap_reaction"):
+		_mascot_panel._play_tap_reaction()
 
 func _on_primary_pressed() -> void:
 	if FileLoader.has_save_file():

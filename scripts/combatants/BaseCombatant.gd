@@ -131,9 +131,15 @@ func _on_selection_button_up():
 
 ## 設定戰鬥員 sprite — 解析 texture（res:// 打包資源走 load()，外部圖走 FileLoader），
 ## 大圖縮到 COMBATANT_SPRITE_MAX_HEIGHT 後指派。Player / Enemy 共用。
-## 同名 actor 若有 PixelLab anim 條會優先載入 idle 循環，否則退回靜態貼圖。
+## 載入優先序：
+##   1) Recraft SVG vector character（characters_svg/<id>.svg）— 高品質
+##   2) PixelLab 4-幀 anim 條（pixel art 切幀）
+##   3) 靜態 texture (portraits_v3 等)
 func set_combatant_sprite(texture_path: String) -> void:
-	# 先試 anim 條（PixelLab 4-幀條）
+	# v6 優先：SVG vector character
+	if _try_load_svg_from_texture_path(texture_path):
+		return
+	# 次優先：PixelLab anim 條
 	if _try_load_anim_from_texture_path(texture_path):
 		return
 	# fallback 靜態貼圖
@@ -145,6 +151,45 @@ func set_combatant_sprite(texture_path: String) -> void:
 		sprite.texture = tex
 		if _proc_anim != null:
 			_proc_anim.refresh_texture()	# 貼圖換新 → 重算踏地補正半高
+
+## v6：SVG vector character 對應表（取自 MascotPanel.ACTOR_TO_BUST）
+const SVG_DIR: String = "res://assets/generated/characters_svg/"
+const SVG_LOOKUP: Dictionary = {
+	"tongji.png": "tongji_v3.svg",
+	"luannu.png": "luannu_v3.svg",
+}
+
+## 嘗試載 SVG vector character（取代 pixel）。返回是否成功。
+func _try_load_svg_from_texture_path(texture_path: String) -> bool:
+	if texture_path == null or texture_path.is_empty():
+		return false
+	var basename: String = texture_path.get_file()
+	var svg_name: String = SVG_LOOKUP.get(basename, "")
+	if svg_name.is_empty():
+		return false
+	var svg_path: String = SVG_DIR + svg_name
+	if not ResourceLoader.exists(svg_path):
+		return false
+	var tex: Texture2D = load(svg_path)
+	if tex == null:
+		return false
+	# 縮到 COMBATANT_SPRITE_MAX_HEIGHT，避免 1500+ 高的 SVG 爆版
+	if tex.get_height() > COMBATANT_SPRITE_MAX_HEIGHT:
+		var img: Image = tex.get_image()
+		if img != null:
+			if img.is_compressed():
+				img.decompress()
+			var scale_f: float = float(COMBATANT_SPRITE_MAX_HEIGHT) / float(tex.get_height())
+			var new_w: int = maxi(1, int(round(tex.get_width() * scale_f)))
+			img.resize(new_w, COMBATANT_SPRITE_MAX_HEIGHT, Image.INTERPOLATE_LANCZOS)
+			tex = ImageTexture.create_from_image(img)
+	sprite.texture = tex
+	_anim_frames.clear()
+	_anim_actor_id = ""
+	_anim_state = ""
+	if _proc_anim != null:
+		_proc_anim.refresh_texture()
+	return true
 
 
 ## 嘗試由 texture_path basename 映射 actor_id，找到就載入 idle 動畫條。

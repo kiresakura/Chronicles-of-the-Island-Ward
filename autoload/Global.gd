@@ -91,6 +91,30 @@ signal mascot_changed(character_id: String)
 const MASCOT_DEFAULT_ID: String = "character_tongji"
 const MASCOT_AVAILABLE_IDS: Array[String] = ["character_tongji", "character_luannu"]
 
+## 角色解鎖規則：character_id → 所需總勝場數
+## 0 = 預設解鎖；>0 = profile_total_wins 達該數才解鎖
+const CHARACTER_UNLOCK_REQUIREMENTS: Dictionary = {
+	"character_tongji":   0,    # 預設解鎖
+	"character_luannu":   0,    # 預設解鎖
+	"character_daoshi":   3,    # 解鎖：累計 3 勝
+	"character_jiajiang": 8,    # 解鎖：累計 8 勝
+}
+
+func is_character_unlocked(character_id: String) -> bool:
+	var req: int = CHARACTER_UNLOCK_REQUIREMENTS.get(character_id, 0)
+	if req <= 0:
+		return true
+	if profile_data == null:
+		return false
+	return profile_data.profile_total_wins >= req
+
+func get_unlock_hint(character_id: String) -> String:
+	var req: int = CHARACTER_UNLOCK_REQUIREMENTS.get(character_id, 0)
+	if req <= 0 or is_character_unlocked(character_id):
+		return ""
+	var wins: int = profile_data.profile_total_wins if profile_data != null else 0
+	return "%d / %d 勝場" % [wins, req]
+
 func get_mascot_character_id() -> String:
 	if profile_data == null:
 		return MASCOT_DEFAULT_ID

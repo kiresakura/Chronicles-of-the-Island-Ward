@@ -26,8 +26,11 @@ const BREATH_AMP: float = 0.008
 # 半身像在 MascotPanel 內水平位移百分比（負值往左、正值往右）
 # 0.0 = 正中，-0.20 = 偏左 20%
 const HORIZONTAL_BIAS: float = -0.18
-# 垂直高度倍率：1.0 = 剛好碰底；> 1.0 = 角色超出螢幕底（避免「腰斬」）
-const HEIGHT_OVERSCAN: float = 1.15
+# 垂直高度倍率：放大角色讓下半身超出螢幕底（user spec）
+# 1.0 = 全身剛好；1.4 = 下半身約 40% 在螢幕外
+const HEIGHT_OVERSCAN: float = 1.4
+# Y 偏移：正值往下，讓頭頂留更多上方空間
+const VERTICAL_BIAS: float = 0.08
 
 signal mascot_tapped()
 signal mascot_change_requested()  # 長按或專屬切換 button 才開 selector
@@ -40,21 +43,16 @@ var _idle_time: float = 0.0
 var _bounce_tween: Tween = null
 var _dialog_tween: Tween = null
 
-# 隨機台詞（依角色不同）
-const QUOTES: Dictionary = {
+# 隨機台詞（依角色不同）— v6 改用 i18n keys → tr() 解析
+# 對應 assets/translations/cotiw_main.csv 中 mascot.<id>.qN
+const QUOTE_KEYS: Dictionary = {
 	"character_tongji": [
-		"神明附體中…別吵我。",
-		"今日香火旺，諸神皆喜。",
-		"打架的事，交給我！",
-		"七星劍出鞘，邪祟莫近！",
-		"擲筊問問再說。",
+		"mascot.tongji.q1", "mascot.tongji.q2", "mascot.tongji.q3",
+		"mascot.tongji.q4", "mascot.tongji.q5",
 	],
 	"character_luannu": [
-		"願鸞神庇佑你今日順遂。",
-		"靈符已備，可去除邪祟。",
-		"鸞堂之事，皆有定數。",
-		"再寫一張符，需要些時間。",
-		"今日香爐還旺，可祈福。",
+		"mascot.luannu.q1", "mascot.luannu.q2", "mascot.luannu.q3",
+		"mascot.luannu.q4", "mascot.luannu.q5",
 	],
 }
 
@@ -106,8 +104,9 @@ func _process(delta: float) -> void:
 	# 水平：以 HORIZONTAL_BIAS 偏移
 	var center_x: float = size.x * 0.5 + size.x * HORIZONTAL_BIAS
 	var dst_x: float = center_x - dst_w * 0.5
-	# 垂直：底邊對齊 MascotPanel 底邊（其餘超出部分在底外不可見）
-	var dst_y: float = size.y - dst_h
+	# 垂直：底邊對齊 MascotPanel 底邊 + VERTICAL_BIAS 往下推
+	# 結果：character 上半身置中偏下、下半身超出螢幕底（user spec：下半身遮住）
+	var dst_y: float = size.y - dst_h + size.y * VERTICAL_BIAS
 	_bust_rect.position = Vector2(dst_x, dst_y)
 	_bust_rect.size = Vector2(dst_w, dst_h)
 	_bust_rect.pivot_offset = Vector2(dst_w * 0.5, dst_h)   # 以底中為支點
@@ -198,10 +197,12 @@ func _show_random_dialog() -> void:
 	if _dialog_panel == null or _dialog_label == null:
 		return
 	var id: String = Global.get_mascot_character_id()
-	var quotes: Array = QUOTES.get(id, ["..."])
-	if quotes.is_empty():
-		return
-	_dialog_label.text = quotes[randi() % quotes.size()]
+	var keys: Array = QUOTE_KEYS.get(id, [])
+	if keys.is_empty():
+		_dialog_label.text = "..."
+	else:
+		var k: String = keys[randi() % keys.size()]
+		_dialog_label.text = tr(k)   # i18n: 自動依 locale 解析
 	if _dialog_tween != null and _dialog_tween.is_valid():
 		_dialog_tween.kill()
 	_dialog_panel.modulate = Color(1, 1, 1, 0)

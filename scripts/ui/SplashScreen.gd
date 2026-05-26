@@ -38,6 +38,10 @@ const LOADING_TIPS: Array[String] = [
 
 
 func _ready() -> void:
+	# v6 user spec：移除所有載入畫面 — 直接跳到 Root.tscn
+	get_tree().change_scene_to_file(ROOT_SCENE)
+	return
+	# ── 以下舊邏輯保留作不啟用 (return 之後不會執行) ──
 	SPLASH_BG = COTIW_UI_THEME.get_color("boot_splash_red", SPLASH_BG)
 	# 與 boot_splash 同紅底，避免影像載入前的暗色閃跳
 	bg_fill.color = SPLASH_BG
