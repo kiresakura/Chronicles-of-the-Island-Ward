@@ -183,7 +183,55 @@ func _apply_pixel_skin() -> void:
 	# 6. 看板娘 — 動畫角色 sprite，覆蓋在神龕中央上方
 	_build_mascot()
 
+	# 7. 活動 banner — 右側中部，1999-style 大型橫幅
+	_build_activity_banner()
+
 	_layout_pixel_skin()
+
+# ────────────────────────────────────────────────
+# 活動 banner（HUD 4 區「活動區」）
+# ────────────────────────────────────────────────
+var _activity_banner: Panel = null
+var _activity_banner_label: Label = null
+
+func _build_activity_banner() -> void:
+	_activity_banner = Panel.new()
+	_activity_banner.name = "ActivityBanner"
+	# 漸層 / 金邊 stylebox
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.32, 0.07, 0.05, 0.92)
+	sb.border_color = GOLD
+	sb.border_width_left = 3
+	sb.border_width_top = 3
+	sb.border_width_right = 3
+	sb.border_width_bottom = 3
+	sb.corner_radius_top_left = 16
+	sb.corner_radius_top_right = 16
+	sb.corner_radius_bottom_left = 16
+	sb.corner_radius_bottom_right = 16
+	sb.shadow_color = Color(0, 0, 0, 0.5)
+	sb.shadow_size = 8
+	_activity_banner.add_theme_stylebox_override("panel", sb)
+	_activity_banner.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	add_child(_activity_banner)
+
+	_activity_banner_label = Label.new()
+	_activity_banner_label.text = "限時擲筊\n三選一賜禮"
+	_activity_banner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_activity_banner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_gold_font(_activity_banner_label, 26)
+	_activity_banner_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_activity_banner.add_child(_activity_banner_label)
+
+	# 點擊→toast「即將推出」
+	var btn := Button.new()
+	btn.flat = true
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn.self_modulate = Color(1, 1, 1, 0)
+	_activity_banner.add_child(btn)
+	btn.button_up.connect(func(): _show_coming_soon("活動"))
+	# btn size 在 _layout_activity_banner 內同步
 
 ## 看板娘 v3：全螢幕 MascotPanel，bust 高度撐滿，底邊接觸畫面下緣。
 ## move_child 到第一順位 → 渲染在所有 UI 之下（slot bar / CTA 浮在上面，
@@ -237,6 +285,22 @@ func _layout_pixel_skin() -> void:
 	if is_instance_valid(_mascot_panel):
 		_mascot_panel.position = Vector2.ZERO
 		_mascot_panel.size = stage_size
+
+	# 活動 banner：右側中部，~18% 寬 × 28% 高，避免擋 mascot
+	if is_instance_valid(_activity_banner):
+		var bw: float = clampf(stage_size.x * 0.16, 220.0, 320.0)
+		var bh: float = clampf(stage_size.y * 0.28, 200.0, 280.0)
+		_activity_banner.size = Vector2(bw, bh)
+		_activity_banner.position = Vector2(stage_size.x - bw - 40,
+											stage_size.y * 0.34)
+		# 內部 label + button 同步
+		if is_instance_valid(_activity_banner_label):
+			_activity_banner_label.size = Vector2(bw, bh)
+			_activity_banner_label.position = Vector2.ZERO
+		for child in _activity_banner.get_children():
+			if child is Button:
+				child.size = Vector2(bw, bh)
+				child.position = Vector2.ZERO
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):
@@ -526,24 +590,27 @@ func _relayout() -> void:
 		_avatar_lv.position = Vector2(ax - 4, ay + av + 2)
 		_avatar_lv.size = Vector2(av + 8, 20)
 
-	# 左上：3 條資源列（在頭像右側）
-	var rx: float = ax + av + roundf(12.0 * ts)
-	var icon_sz: float = roundf(24.0 * ts)
-	var row_h: float = roundf(24.0 * ts)
-	var row_gap: float = roundf(10.0 * ts)
-	var pill_w: float = clampf(safe.size.x * 0.18, 150.0, 230.0) * ts
+	# 上中：3 條資源列（水平排列，置中於螢幕頂部，HUD 4 區「資源區」）
+	var icon_sz: float = roundf(28.0 * ts)
+	var row_h: float = roundf(28.0 * ts)
+	var pill_w: float = clampf(safe.size.x * 0.13, 130.0, 200.0) * ts
+	var pill_gap: float = roundf(14.0 * ts)
+	var group_w: float = pill_w + icon_sz + roundf(6.0 * ts)  # 單組（icon + pill）寬度
+	var pills_total_w: float = group_w * _res_rows.size() + pill_gap * (_res_rows.size() - 1)
+	var pills_start_x: float = safe.position.x + (safe.size.x - pills_total_w) * 0.5
+	var pills_y: float = safe.position.y + roundf(pad * 0.5)
 	for i in _res_rows.size():
 		var r: Dictionary = _res_rows[i]
-		var ry: float = ay + i * (row_h + row_gap)
-		r["icon"].position = Vector2(rx, ry)
+		var gx: float = pills_start_x + i * (group_w + pill_gap)
+		r["icon"].position = Vector2(gx, pills_y)
 		r["icon"].size = Vector2(icon_sz, icon_sz)
-		var px: float = rx + icon_sz + roundf(6.0 * ts)
-		r["pill"].position = Vector2(px, ry)
+		var px: float = gx + icon_sz + roundf(6.0 * ts)
+		r["pill"].position = Vector2(px, pills_y)
 		r["pill"].size = Vector2(pill_w, row_h)
 		if r["fill"] != null:
-			r["fill"].position = Vector2(px + 3, ry + 3)
+			r["fill"].position = Vector2(px + 3, pills_y + 3)
 			r["fill"].size = Vector2(maxf(4.0, (pill_w - 6) * _level_ratio()), row_h - 6)
-		r["label"].position = Vector2(px + 8, ry)
+		r["label"].position = Vector2(px + 8, pills_y)
 		r["label"].size = Vector2(pill_w - 12, row_h)
 
 	# 右上：✕ + 3 工具鈕（貼安全區右上）
@@ -700,11 +767,17 @@ func _gold_font(c: Control, sz: int) -> void:
 	c.add_theme_constant_override("shadow_offset_y", 2)
 	c.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 
+const ICON_DIR_V2 := "res://assets/generated/icons_v2/"
+
 func _load_icon(name: String) -> Texture2D:
-	# 短名（character/battle/...）→ asset_naming 規範路徑 ui_icon_X_default.svg
-	var path := ICON_DIR + "ui_icon_" + name + "_default.svg"
-	if ResourceLoader.exists(path):
-		return load(path)
+	# v2 優先：Recraft 生彩色 flat icon (icons_v2/icon_<name>.svg)
+	var v2_path := ICON_DIR_V2 + "icon_" + name + ".svg"
+	if ResourceLoader.exists(v2_path):
+		return load(v2_path)
+	# fallback v1：白色線條 SVG
+	var v1_path := ICON_DIR + "ui_icon_" + name + "_default.svg"
+	if ResourceLoader.exists(v1_path):
+		return load(v1_path)
 	return null
 
 # ---------- 既有導航邏輯（保留） ----------
