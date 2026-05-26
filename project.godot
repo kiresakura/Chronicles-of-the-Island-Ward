@@ -18,12 +18,12 @@ config/name_localized={
 "zh_TW": "鎮島錄"
 }
 config/description="台灣民俗主題肉鴿卡牌戰鬥手機遊戲。Fork from Slay The Robot framework (MIT)."
-run/main_scene="res://scenes/SplashScreen.tscn"
+run/main_scene="res://scenes/Root.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="uid://8kopj5luv8dc"
-boot_splash/bg_color=Color(0.788, 0.125, 0.125, 1)
+boot_splash/bg_color=Color(0.06, 0.03, 0.03, 1)
 boot_splash/image="res://assets/ui/boot_splash_v5.png"
-boot_splash/show_image=true
+boot_splash/show_image=false
 boot_splash/minimum_display_time=0
 boot_splash/fullsize=true
 

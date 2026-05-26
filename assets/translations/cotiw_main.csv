@@ -31,3 +31,13 @@ map.node.shop,夜市攤,夜市摊,Night Market,夜市
 map.node.rest,廟宇,庙宇,Temple Rest,休息
 map.node.event,民俗遭遇,民俗遭遇,Folk Event,イベント
 map.node.boss,章節王,章节王,Boss,ボス
+mascot.tongji.q1,"神明附體中…別吵我。","神明附体中…别吵我。","Possessed by gods… don't disturb me.","神の依り代だ…邪魔するな。"
+mascot.tongji.q2,"今日香火旺，諸神皆喜。","今日香火旺，诸神皆喜。","The incense burns strong today; the gods are pleased.","今日は香の煙が濃く、神々もご機嫌だ。"
+mascot.tongji.q3,"打架的事，交給我！","打架的事，交给我！","Leave the fighting to me!","戦いは俺に任せろ！"
+mascot.tongji.q4,"七星劍出鞘，邪祟莫近！","七星剑出鞘，邪祟莫近！","Seven-Star Sword drawn—evil keep away!","七星剣を抜く、邪はくるな！"
+mascot.tongji.q5,"擲筊問問再說。","掷筊问问再说。","Let's ask the jiaobei first.","擲筊で占ってみよう。"
+mascot.luannu.q1,"願鸞神庇佑你今日順遂。","愿鸾神庇佑你今日顺遂。","May the Luan spirits bless your day.","鸞神のご加護を、今日もあなたに。"
+mascot.luannu.q2,"靈符已備，可去除邪祟。","灵符已备，可去除邪祟。","Talismans are ready, to ward off evil.","霊符は整った、邪を祓いましょう。"
+mascot.luannu.q3,"鸞堂之事，皆有定數。","鸾堂之事，皆有定数。","All things in Luan-tang follow destiny.","鸞堂のことは、すべて天命です。"
+mascot.luannu.q4,"再寫一張符，需要些時間。","再写一张符，需要些时间。","Drawing another talisman takes time.","もう一枚、符を書くには時間が要る。"
+mascot.luannu.q5,"今日香爐還旺，可祈福。","今日香炉还旺，可祈福。","The censer still glows—good for prayer.","香炉はまだ燃えている、祈りに好ましい。"

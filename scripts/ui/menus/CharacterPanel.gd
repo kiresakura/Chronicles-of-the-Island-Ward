@@ -16,13 +16,14 @@ var PANEL_BG_LOCK: Color = Color(0.10, 0.08, 0.08, 0.80)
 
 # 角色清單：已解鎖者有 id；鎖定者 id 為空
 # v2_card 為 Recraft bold_fantasy 新世代立繪（characters_v2/）；空字串則 fallback 到 portraits_v3/file
+## locked 由 Global.is_character_unlocked() 動態判定（取代寫死 true/false）
 const CHARS: Array = [
-	{"id": "character_tongji",  "file": "tongji.png",  "locked": false, "v2_card": "tongji_card.png"},
-	{"id": "character_luannu",  "file": "luannu.png",  "locked": false, "v2_card": "luannu_card.png"},
-	{"id": "",                  "file": "daoshi.png",  "locked": true,  "v2_card": "",
-	 "name": "道士", "desc": "（尚未解鎖）"},
-	{"id": "",                  "file": "jiajiang.png","locked": true,  "v2_card": "",
-	 "name": "家將", "desc": "（尚未解鎖）"},
+	{"id": "character_tongji",   "file": "tongji.png",   "v2_card": "tongji_card.png"},
+	{"id": "character_luannu",   "file": "luannu.png",   "v2_card": "luannu_card.png"},
+	{"id": "character_daoshi",   "file": "daoshi.png",   "v2_card": "",
+	 "name": "道士", "desc": "（修煉中…）"},
+	{"id": "character_jiajiang", "file": "jiajiang.png", "v2_card": "",
+	 "name": "家將", "desc": "（鎮島之師…）"},
 ]
 
 var _title_lbl: Label
@@ -79,7 +80,9 @@ func _build_title() -> void:
 
 func _build_cards() -> void:
 	for c in CHARS:
-		var locked: bool = c["locked"]
+		# v6：解鎖狀態由 Global.is_character_unlocked() 動態判定
+		var actor_id: String = c["id"]
+		var locked: bool = (actor_id == "") or (not Global.is_character_unlocked(actor_id))
 
 		# 取得角色資料（只有已解鎖且有 id 才查）
 		var cd = null
@@ -97,6 +100,11 @@ func _build_cards() -> void:
 			char_name = c.get("name", "???")
 			char_desc = c.get("desc", "")
 			char_hp   = 0
+			# 附上解鎖 hint（如 "0 / 3 勝場"）
+			if actor_id != "":
+				var hint: String = Global.get_unlock_hint(actor_id)
+				if not hint.is_empty():
+					char_desc += "\n" + hint
 
 		# 外框 Panel
 		var panel := Panel.new()
