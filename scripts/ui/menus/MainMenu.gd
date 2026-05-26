@@ -207,13 +207,15 @@ func _layout_pixel_skin() -> void:
 		_pixel_altar.size = Vector2(altar_w, altar_h)
 		_pixel_altar.position = Vector2((stage_size.x - altar_w) * 0.5, stage_size.y * 0.12)
 
-	# 看板娘：螢幕中央偏下，動漫立繪 ~30% 寬 × 58% 高
+	# 看板娘：偏左側，全身像 ~22% 寬 × 60% 高，垂直置中偏下
 	if is_instance_valid(_mascot_panel):
-		var mascot_w: float = stage_size.x * 0.30
-		var mascot_h: float = stage_size.y * 0.58
+		var mascot_w: float = stage_size.x * 0.22
+		var mascot_h: float = stage_size.y * 0.60
 		_mascot_panel.size = Vector2(mascot_w, mascot_h)
-		_mascot_panel.position = Vector2((stage_size.x - mascot_w) * 0.5,
-										 stage_size.y * 0.18)
+		# x：靠左約 12% screen，留 avatar HUD 空間（avatar 在頂端不影響）
+		# y：垂直中央偏下，避開頂部 HUD 與底部 slot bar
+		_mascot_panel.position = Vector2(stage_size.x * 0.06,
+										 stage_size.y * 0.22)
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):

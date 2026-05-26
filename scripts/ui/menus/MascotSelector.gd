@@ -6,11 +6,9 @@ extends Control
 class_name MascotSelector
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
-const CHARS_V2_DIR: String = "res://assets/generated/characters_v2/"
-const ACTOR_TO_FILE: Dictionary = {
-	"character_tongji": "tongji",
-	"character_luannu": "luannu",
-}
+const ANIM_DIR: String = "res://assets/generated/pixellab/anim/"
+const ANIM_FRAME_COUNT: int = 4
+const ANIM_IDLE_FPS: float = 4.0
 
 var GOLD:           Color = Color(0.95, 0.82, 0.45)
 var GOLD_DIM:       Color = Color(0.62, 0.49, 0.24)
@@ -48,9 +46,18 @@ func _ready() -> void:
 	_relayout()
 	Responsive.changed.connect(_relayout)
 
-func _process(_delta: float) -> void:
-	# 立繪靜態，不切幀。保留 _process hook 給未來呼吸效果。
-	pass
+func _process(delta: float) -> void:
+	# 4-frame pixel art idle cycling，每張卡內 sprite 獨立 ticking
+	for c in _cards:
+		if not c.has("frames") or c["frames"].is_empty():
+			continue
+		c["time"] += delta
+		var step: float = 1.0 / ANIM_IDLE_FPS
+		if c["time"] < step:
+			continue
+		c["time"] -= step
+		c["frame_idx"] = (c["frame_idx"] + 1) % c["frames"].size()
+		c["sprite"].texture = c["frames"][c["frame_idx"]]
 
 func _build_backdrop() -> void:
 	var bg := ColorRect.new()
@@ -94,11 +101,13 @@ func _build_cards() -> void:
 			sprite.modulate = Color(0.45, 0.45, 0.45, 0.75)
 		panel.add_child(sprite)
 
-		# 載入 Recraft anime 動漫立繪
+		# 載入 PixelLab idle 動畫條（4 幀，pixel art 透明 BG）
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST  # 保 pixel 感
+		var frames: Array[Texture2D] = []
 		if not locked and c_id != "":
-			var tex: Texture2D = _load_anime_portrait(c_id)
-			if tex != null:
-				sprite.texture = tex
+			frames = _load_anim_frames(c_id)
+			if frames.size() > 0:
+				sprite.texture = frames[0]
 
 		# 名稱
 		var name_lbl := Label.new()
@@ -135,6 +144,7 @@ func _build_cards() -> void:
 			"panel": panel, "sprite": sprite, "name_lbl": name_lbl,
 			"active_lbl": active_lbl, "button": btn,
 			"id": c_id, "locked": locked,
+			"frames": frames, "frame_idx": 0, "time": 0.0,
 		})
 
 func _build_back_button() -> void:
@@ -216,18 +226,23 @@ func _relayout() -> void:
 
 # ── helpers ──────────────────────────────────────────────────────────
 
-## 載入 Recraft anime 動漫立繪（優先 idle，fallback standee → card）
-func _load_anime_portrait(actor_id: String) -> Texture2D:
-	var base_name: String = ACTOR_TO_FILE.get(actor_id, "")
-	if base_name.is_empty():
-		return null
-	for suffix in ["_anim_idle.png", "_standee.png", "_card.png"]:
-		var p: String = CHARS_V2_DIR + base_name + suffix
-		if ResourceLoader.exists(p):
-			var tex: Texture2D = load(p)
-			if tex != null:
-				return tex
-	return null
+## 載入 PixelLab idle 動畫條（4 幀 pixel art 透明 BG）
+func _load_anim_frames(actor_id: String) -> Array[Texture2D]:
+	var frames: Array[Texture2D] = []
+	var sheet_path: String = ANIM_DIR + actor_id + "/idle.png"
+	if not ResourceLoader.exists(sheet_path):
+		return frames
+	var sheet: Texture2D = load(sheet_path)
+	if sheet == null:
+		return frames
+	var fw: int = int(sheet.get_width() / ANIM_FRAME_COUNT)
+	var fh: int = sheet.get_height()
+	for i in ANIM_FRAME_COUNT:
+		var at := AtlasTexture.new()
+		at.atlas = sheet
+		at.region = Rect2(i * fw, 0, fw, fh)
+		frames.append(at)
+	return frames
 
 func _sb(bg: Color, border: Color, bw: int, radius: int) -> StyleBoxFlat:
 	return COTIW_UI_THEME.make_stylebox(bg, border, radius, bw)
