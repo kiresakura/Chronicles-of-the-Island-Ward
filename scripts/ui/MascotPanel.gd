@@ -6,12 +6,18 @@ extends Control
 class_name MascotPanel
 
 ## v5：改用 Recraft SVG vector 動漫立繪（無解析度上限 + 真透明）
-## 取代 v4 pixel art bust。SVG 由 Godot 自動 import 為 Texture2D。
+## v7：加表情 variants（idle/happy/surprised）— tap 時隨機切換 1.5s
 const BUST_DIR: String = "res://assets/generated/characters_svg/"
 const ACTOR_TO_BUST: Dictionary = {
 	"character_tongji": "tongji_v3.svg",
 	"character_luannu": "luannu_v3.svg",
 }
+## 表情變體 → filename，tap 反應時隨機選一個
+const ACTOR_TO_EXPRESSION_VARIANTS: Dictionary = {
+	"character_tongji": ["tongji_happy.svg", "tongji_surprised.svg"],
+	"character_luannu": ["luannu_happy.svg", "luannu_surprised.svg"],
+}
+const EXPRESSION_HOLD_SEC: float = 1.6   # 表情切換後維持時間，到時間回 idle
 # 舊 pixel bust fallback（萬一 SVG 載失敗）
 const PIXEL_BUST_DIR: String = "res://assets/generated/pixellab/"
 const PIXEL_BUST_FALLBACK: Dictionary = {
@@ -35,6 +41,9 @@ const VERTICAL_BIAS: float = 0.08
 signal mascot_tapped()
 signal mascot_change_requested()  # 長按或專屬切換 button 才開 selector
 
+const DROP_SHADOW_PATH: String = "res://assets/generated/pixellab/mascot_drop_shadow.png"
+
+var _shadow_rect: TextureRect    # 地面投影
 var _bust_rect: TextureRect
 var _button: Button
 var _dialog_label: Label
@@ -42,6 +51,7 @@ var _dialog_panel: Panel
 var _idle_time: float = 0.0
 var _bounce_tween: Tween = null
 var _dialog_tween: Tween = null
+var _expression_timer: float = -1.0   # >0 = 表情倒數，到 0 回 idle
 
 # 隨機台詞（依角色不同）— v6 改用 i18n keys → tr() 解析
 # 對應 assets/translations/cotiw_main.csv 中 mascot.<id>.qN
@@ -58,6 +68,16 @@ const QUOTE_KEYS: Dictionary = {
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE   # 容器透明擋
+
+	# 地面投影（在 bust 之前 add → 渲染在 bust 之後）
+	_shadow_rect = TextureRect.new()
+	_shadow_rect.name = "DropShadow"
+	_shadow_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_shadow_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_shadow_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if ResourceLoader.exists(DROP_SHADOW_PATH):
+		_shadow_rect.texture = load(DROP_SHADOW_PATH)
+	add_child(_shadow_rect)
 
 	# 半身像 — 由 _process 動態定位，這裡只設模式
 	_bust_rect = TextureRect.new()
@@ -116,11 +136,31 @@ func _process(delta: float) -> void:
 		_button.position = _bust_rect.position
 		_button.size = _bust_rect.size
 
+	# 表情倒數：到 0 切回 idle bust
+	if _expression_timer > 0:
+		_expression_timer -= delta
+		if _expression_timer <= 0:
+			_expression_timer = -1.0
+			refresh_mascot()  # 還原 idle texture
+
 	# 極微呼吸（在 bounce tween 進行時不疊加，避免衝突）
 	_idle_time += delta
 	if _bounce_tween == null or not _bounce_tween.is_running():
 		var breath: float = 1.0 + sin(_idle_time * BREATH_FREQ * TAU) * BREATH_AMP
 		_bust_rect.scale = Vector2(breath, breath)
+
+	# 地面投影：跟著 bust 水平位置，垂直放在螢幕底部下緣（character 腳下）
+	# 寬度約 character 身體寬，呼吸時 shadow 也跟著縮放（更小的振幅）
+	if _shadow_rect != null:
+		var shadow_w: float = dst_w * 0.65          # 比 character 窄
+		var shadow_h: float = shadow_w * 0.22       # 扁橢圓比例 ~22%
+		var shadow_x: float = dst_x + (dst_w - shadow_w) * 0.5
+		# 垂直：放在螢幕底部稍上方（character 腳「踏地」處）
+		var shadow_y: float = size.y - shadow_h * 0.5
+		_shadow_rect.position = Vector2(shadow_x, shadow_y)
+		_shadow_rect.size = Vector2(shadow_w, shadow_h)
+		# shadow 跟呼吸同步縮放（反向，呼氣時 shadow 縮）
+		_shadow_rect.modulate = Color(1, 1, 1, 0.7)  # 整體半透
 
 	# 對話泡：浮在 character 頭頂附近右側
 	if _dialog_panel != null and _dialog_panel.visible:
@@ -176,10 +216,24 @@ func _on_button_up() -> void:
 	mascot_tapped.emit()
 	_play_tap_reaction()
 
-## tap 反應：彈跳 tween + 對話泡（隨機台詞）
+## tap 反應：彈跳 + 對話泡 + 隨機切換表情 variant
 func _play_tap_reaction() -> void:
 	_bounce_bust()
 	_show_random_dialog()
+	_play_random_expression()
+
+## 隨機切到 happy/surprised variant，EXPRESSION_HOLD_SEC 後回 idle
+func _play_random_expression() -> void:
+	var id: String = Global.get_mascot_character_id()
+	var variants: Array = ACTOR_TO_EXPRESSION_VARIANTS.get(id, [])
+	if variants.is_empty():
+		return
+	var fname: String = variants[randi() % variants.size()]
+	var p: String = BUST_DIR + fname
+	if not ResourceLoader.exists(p):
+		return
+	_bust_rect.texture = load(p)
+	_expression_timer = EXPRESSION_HOLD_SEC
 
 ## 彈跳：scale up 1.1× → 回 1.0
 func _bounce_bust() -> void:

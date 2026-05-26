@@ -9,10 +9,11 @@ const PORTRAIT_DIR    := "res://assets/generated/portraits_v3/"
 const PORTRAIT_DIR_V2 := "res://assets/generated/characters_v2/"
 const BG_IMG          := "res://assets/generated/pixellab/mainmenu_temple_v5.png"
 
-var GOLD:          Color = Color(0.95, 0.82, 0.45)
-var GOLD_DIM:      Color = Color(0.62, 0.49, 0.24)
-var PANEL_BG:      Color = Color(0.14, 0.05, 0.04, 0.93)
-var PANEL_BG_LOCK: Color = Color(0.10, 0.08, 0.08, 0.80)
+var GOLD:           Color = Color(0.95, 0.82, 0.45)
+var GOLD_DIM:       Color = Color(0.62, 0.49, 0.24)
+var PANEL_BG:       Color = Color(0.14, 0.05, 0.04, 0.93)
+var PANEL_BG_LOCK:  Color = Color(0.10, 0.08, 0.08, 0.80)
+const PANEL_BG_ACTIVE: Color = Color(0.36, 0.10, 0.08, 0.96)
 
 # 角色清單：已解鎖者有 id；鎖定者 id 為空
 # v2_card 為 Recraft bold_fantasy 新世代立繪（characters_v2/）；空字串則 fallback 到 portraits_v3/file
@@ -163,13 +164,52 @@ func _build_cards() -> void:
 			Color(0.88, 0.80, 0.64) if not locked else Color(0.52, 0.48, 0.42))
 		panel.add_child(desc_lbl)
 
+		# v6：每張 unlocked 卡加「設為看板娘」按鈕（取代 MascotSelector）
+		var set_mascot_btn: Button = null
+		var current_mascot: String = Global.get_mascot_character_id() if Global.has_method("get_mascot_character_id") else ""
+		var is_current_mascot: bool = (actor_id != "") and (actor_id == current_mascot)
+		if not locked and actor_id != "":
+			set_mascot_btn = Button.new()
+			set_mascot_btn.name = "SetMascotBtn"
+			set_mascot_btn.focus_mode = Control.FOCUS_NONE
+			set_mascot_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			set_mascot_btn.text = "★ 看板娘中" if is_current_mascot else "設為看板娘"
+			set_mascot_btn.disabled = is_current_mascot
+			_gold_font(set_mascot_btn, 14)
+			set_mascot_btn.add_theme_stylebox_override("normal",
+				_sb(PANEL_BG_ACTIVE if is_current_mascot else Color(0.12, 0.05, 0.04, 0.94),
+					GOLD, 2, 8))
+			set_mascot_btn.add_theme_stylebox_override("hover",
+				_sb(Color(0.28, 0.10, 0.08, 0.96), GOLD, 3, 8))
+			set_mascot_btn.add_theme_stylebox_override("pressed",
+				_sb(Color(0.08, 0.03, 0.03, 0.90), GOLD, 2, 8))
+			set_mascot_btn.add_theme_stylebox_override("disabled",
+				_sb(PANEL_BG_ACTIVE, GOLD, 2, 8))
+			set_mascot_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+			panel.add_child(set_mascot_btn)
+			var pick_id: String = actor_id
+			set_mascot_btn.button_up.connect(func(): _on_set_mascot_pressed(pick_id))
+
 		_cards.append({
 			"panel":    panel,
 			"portrait": portrait,
 			"name_lbl": name_lbl,
 			"hp_lbl":   hp_lbl,
 			"desc_lbl": desc_lbl,
+			"set_mascot_btn": set_mascot_btn,
 		})
+
+func _on_set_mascot_pressed(character_id: String) -> void:
+	if Global.has_method("set_mascot_character_id"):
+		Global.set_mascot_character_id(character_id)
+	# 簡單 feedback：rebuild cards 反映新 ★ 看板娘中 狀態
+	for c in _cards:
+		if is_instance_valid(c["panel"]):
+			c["panel"].queue_free()
+	_cards.clear()
+	_build_cards()
+	await get_tree().process_frame
+	_relayout()
 
 # ── 返回按鈕 ─────────────────────────────────────────────────────────
 
@@ -258,7 +298,14 @@ func _relayout() -> void:
 
 		var desc_lbl: Label = cd_dict["desc_lbl"]
 		desc_lbl.position = Vector2(6, info_start + info_h * 0.44)
-		desc_lbl.size     = Vector2(card_w - 12, info_h * 0.54)
+		desc_lbl.size     = Vector2(card_w - 12, info_h * 0.40)
+
+		# 「設為看板娘」按鈕在 desc 下方
+		if cd_dict.has("set_mascot_btn"):
+			var smb = cd_dict["set_mascot_btn"]
+			if smb != null and is_instance_valid(smb):
+				smb.position = Vector2(8, card_h - 44)
+				smb.size = Vector2(card_w - 16, 36)
 
 # ── Helpers ──────────────────────────────────────────────────────────
 
