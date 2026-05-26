@@ -85,6 +85,7 @@ func _ready() -> void:
 	_build_dialog_bubble()
 
 	refresh_mascot()
+	_apply_ambient_tint()
 	if Global.has_signal("mascot_changed") and not Global.mascot_changed.is_connected(_on_mascot_changed):
 		Global.mascot_changed.connect(_on_mascot_changed)
 
@@ -134,6 +135,20 @@ func _process(delta: float) -> void:
 		if _dialog_label != null:
 			_dialog_label.size = _dialog_panel.size
 			_dialog_label.position = Vector2.ZERO
+
+## 依系統時間給 mascot 加 ambient tint（光照融合）
+func _apply_ambient_tint() -> void:
+	if _bust_rect == null:
+		return
+	var hour: int = Time.get_time_dict_from_system().get("hour", 12)
+	var tint: Color
+	if hour >= 5 and hour < 17:
+		tint = Color(1.0, 1.0, 1.0)              # day：自然白
+	elif hour >= 17 and hour < 19:
+		tint = Color(1.08, 0.92, 0.78)           # dusk：暖橘黃
+	else:
+		tint = Color(0.78, 0.85, 1.05)           # night：冷藍
+	_bust_rect.modulate = tint
 
 func refresh_mascot() -> void:
 	var id: String = Global.get_mascot_character_id()
