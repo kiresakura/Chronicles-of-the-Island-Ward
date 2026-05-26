@@ -42,6 +42,11 @@ const UTILS := [
 @onready var qi_jia_button: Button = $QiJiaButton if has_node("QiJiaButton") else null
 @onready var btn_exit_x: Button = $BtnExit if has_node("BtnExit") else null
 
+const MascotPanelScript := preload("res://scripts/ui/MascotPanel.gd")
+const MascotSelectorScript := preload("res://scripts/ui/menus/MascotSelector.gd")
+var _mascot_panel: MascotPanel = null
+var _mascot_selector: MascotSelector = null
+
 # 自適應重排用的節點參照
 var _backdrop: Control
 var _avatar_frame: Panel
@@ -127,17 +132,18 @@ func _apply_pixel_skin() -> void:
 	else:
 		push_warning("PIXEL_BG_PATH not found: " + PIXEL_BG_PATH)
 
-	# 3. 中央神龕（z 在背景之上、UI 之下）
-	if ResourceLoader.exists(PIXEL_ALTAR_PATH):
-		_pixel_altar = TextureRect.new()
-		_pixel_altar.name = "PixelAltar"
-		_pixel_altar.texture = load(PIXEL_ALTAR_PATH)
-		_pixel_altar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		_pixel_altar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_pixel_altar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_pixel_altar.z_index = -50
-		_pixel_altar.z_as_relative = false
-		add_child(_pixel_altar)
+	# 3. 中央神龕 — 已被看板娘取代（_build_mascot 在中央），不再 instantiate。
+	# 若日後想恢復可把這段 uncomment。
+	# if ResourceLoader.exists(PIXEL_ALTAR_PATH):
+	# 	_pixel_altar = TextureRect.new()
+	# 	_pixel_altar.name = "PixelAltar"
+	# 	_pixel_altar.texture = load(PIXEL_ALTAR_PATH)
+	# 	_pixel_altar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	# 	_pixel_altar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	# 	_pixel_altar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 	_pixel_altar.z_index = -50
+	# 	_pixel_altar.z_as_relative = false
+	# 	add_child(_pixel_altar)
 
 	# 4. 標題匾（HUD top area）
 	if ResourceLoader.exists(PIXEL_TITLE_PATH):
@@ -155,16 +161,59 @@ func _apply_pixel_skin() -> void:
 	# 原 cta_button_frame.png 是 NBP「去背圖」，實際把透明格紋畫進圖裡（非真 alpha），
 	# 套上去會帶灰格背景。程序化 StyleBox 無底圖 → 零去背問題，_build_primary 已套。
 
+	# 6. 看板娘 — 動畫角色 sprite，覆蓋在神龕中央上方
+	_build_mascot()
+
 	_layout_pixel_skin()
 
+## 看板娘：直接加為 MainMenu 子節點（MainMenu 為 40×40 Control 但子節點不被
+## clip）。位置 / 尺寸由 _layout_pixel_skin 用 viewport size 計算。
+func _build_mascot() -> void:
+	_mascot_panel = MascotPanel.new()
+	_mascot_panel.name = "MascotPanel"
+	_mascot_panel.z_index = 1   # 蓋在 background CanvasLayer 之上
+	_mascot_panel.z_as_relative = false
+	_mascot_panel.mascot_tapped.connect(_on_mascot_tapped)
+	# 預設尺寸（_layout_pixel_skin 立即覆寫，這裡只是先避開 0×0）
+	var vp := get_viewport()
+	var vp_size: Vector2 = vp.get_visible_rect().size if vp else Vector2(1200, 700)
+	_mascot_panel.size = Vector2(vp_size.x * 0.30, vp_size.y * 0.58)
+	_mascot_panel.position = Vector2((vp_size.x - _mascot_panel.size.x) * 0.5,
+									 vp_size.y * 0.18)
+	add_child(_mascot_panel)
+
+	# Selector overlay — 預設隱藏，點擊看板娘 / 角色卡時顯示
+	_mascot_selector = MascotSelector.new()
+	_mascot_selector.name = "MascotSelector"
+	_mascot_selector.visible = false
+	_mascot_selector.z_index = 50  # 蓋在所有 UI 之上
+	_mascot_selector.z_as_relative = false
+	add_child(_mascot_selector)
+
+func _on_mascot_tapped() -> void:
+	if is_instance_valid(_mascot_selector):
+		_mascot_selector.visible = true
+
 func _layout_pixel_skin() -> void:
-	# 神龕：螢幕中央，size 1200×700 邏輯下 width 400
+	# MainMenu Control 在 Root.tscn 是 40×40（offset_right=40,offset_bottom=40），
+	# self.size 不能當「畫面尺寸」用 → 改讀 viewport 的可視 rect。
+	var vp := get_viewport()
+	var stage_size: Vector2 = vp.get_visible_rect().size if vp != null else Vector2(1200, 700)
+
+	# 神龕：螢幕中央（已 disabled，留代碼方便回復）
 	if is_instance_valid(_pixel_altar):
-		var stage_size: Vector2 = size
 		var altar_w: float = stage_size.x * 0.36
 		var altar_h: float = stage_size.y * 0.62
 		_pixel_altar.size = Vector2(altar_w, altar_h)
 		_pixel_altar.position = Vector2((stage_size.x - altar_w) * 0.5, stage_size.y * 0.12)
+
+	# 看板娘：螢幕中央偏下，動漫立繪 ~30% 寬 × 58% 高
+	if is_instance_valid(_mascot_panel):
+		var mascot_w: float = stage_size.x * 0.30
+		var mascot_h: float = stage_size.y * 0.58
+		_mascot_panel.size = Vector2(mascot_w, mascot_h)
+		_mascot_panel.position = Vector2((stage_size.x - mascot_w) * 0.5,
+										 stage_size.y * 0.18)
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):
@@ -428,7 +477,7 @@ func _build_toast() -> void:
 # ---------- 自適應排版：所有座標由 Responsive.safe_rect 計算 ----------
 
 func _relayout_pixel_skin_safe() -> void:
-	if is_instance_valid(_pixel_altar) or is_instance_valid(_pixel_title):
+	if is_instance_valid(_pixel_altar) or is_instance_valid(_pixel_title) or is_instance_valid(_mascot_panel):
 		_layout_pixel_skin()
 
 func _relayout() -> void:
@@ -530,6 +579,9 @@ func _relayout() -> void:
 		var tw: float = clampf(safe.size.x * 0.34, 300.0, 460.0)
 		_toast.size = Vector2(tw, roundf(52 * ts))
 		_toast.position = Vector2(cx - tw * 0.5, safe.position.y + safe.size.y * 0.62)
+
+	# Pixel skin (altar + title plaque + 看板娘) 也要重排
+	_relayout_pixel_skin_safe()
 
 func _layout_slot_content(btn: Button, sw: float, sh: float) -> void:
 	var ic := btn.get_node_or_null("Icon") as TextureRect
