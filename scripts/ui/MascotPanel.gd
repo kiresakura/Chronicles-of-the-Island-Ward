@@ -1,47 +1,34 @@
-# 鎮島錄 — 看板娘 (mascot) v2
-# 主畫面偏左：sky 天空背景 + 角色高解析半身像 + 極微 idle 呼吸動畫。
-# 不再 frame cycling（避免「過動」），讓畫面寧靜。
+# 鎮島錄 — 看板娘 (mascot) v3
+# 全螢幕半身像：bust 由螢幕高度撐滿，底部接觸畫面下緣（不被 slot bar
+# 阻斷），無內建背景（PIL 已去白底成透明）。主畫面廟宇 + 既有天空 bg
+# 在 mascot 後方自然透出。
 extends Control
 class_name MascotPanel
 
-# v2 高解析半身素材（256×384 PixFlux × 4 nearest upscale = 1024×1536）
 const BUST_DIR: String = "res://assets/generated/pixellab/"
-const SKY_PATH: String = "res://assets/generated/pixellab/mascot_sky_bg.png"
-
 const ACTOR_TO_BUST: Dictionary = {
 	"character_tongji": "mascot_tongji_bust_v2.png",
 	"character_luannu": "mascot_luannu_bust_v2.png",
 }
 
-# 極微 idle 呼吸（不再 bobbing — 過動傾向）
-const BREATH_FREQ: float = 0.4          # Hz，慢呼吸
-const BREATH_AMP: float = 0.008         # ±0.8% scale，幾乎不察覺
+# 極微 idle 呼吸（不過動）
+const BREATH_FREQ: float = 0.4
+const BREATH_AMP: float = 0.008
+
+# 半身像在 MascotPanel 內水平位移百分比（負值往左、正值往右）
+# 0.0 = 正中，-0.20 = 偏左 20%
+const HORIZONTAL_BIAS: float = -0.18
 
 signal mascot_tapped()
 
-var _sky_rect: TextureRect              # 天空背景層
-var _bust_rect: TextureRect             # 角色半身像
-var _name_label: Label
+var _bust_rect: TextureRect
 var _button: Button
-
 var _idle_time: float = 0.0
 
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	clip_contents = true   # 限制 sky 不擴出 MascotPanel 邊界
+	mouse_filter = Control.MOUSE_FILTER_IGNORE   # 容器透明擋
 
-	# 天空：背後層
-	_sky_rect = TextureRect.new()
-	_sky_rect.name = "SkyBackdrop"
-	_sky_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_sky_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_sky_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_sky_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if ResourceLoader.exists(SKY_PATH):
-		_sky_rect.texture = load(SKY_PATH)
-	add_child(_sky_rect)
-
-	# 角色半身像（前景）
+	# 半身像 — 由 _process 動態定位，這裡只設模式
 	_bust_rect = TextureRect.new()
 	_bust_rect.name = "MascotBust"
 	_bust_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -50,7 +37,7 @@ func _ready() -> void:
 	_bust_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_bust_rect)
 
-	# 透明 Button 接點擊
+	# 透明 Button 蓋在 bust 上接點擊（不擋下層 UI，因為僅覆蓋 bust 範圍）
 	_button = Button.new()
 	_button.name = "MascotButton"
 	_button.flat = true
@@ -60,74 +47,55 @@ func _ready() -> void:
 	_button.button_up.connect(_on_button_up)
 	add_child(_button)
 
-	# 名稱標籤
-	_name_label = Label.new()
-	_name_label.name = "MascotName"
-	_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_name_label.add_theme_font_size_override("font_size", 32)
-	_name_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.62))
-	_name_label.add_theme_constant_override("shadow_offset_x", 2)
-	_name_label.add_theme_constant_override("shadow_offset_y", 2)
-	_name_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.95))
-	_name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_name_label)
-
 	refresh_mascot()
 	if Global.has_signal("mascot_changed") and not Global.mascot_changed.is_connected(_on_mascot_changed):
 		Global.mascot_changed.connect(_on_mascot_changed)
 
 func _process(delta: float) -> void:
-	# 同步 child layout 給 parent size
-	if _sky_rect != null:
-		_sky_rect.size = size
-		_sky_rect.position = Vector2.ZERO
-	if _bust_rect != null:
-		_bust_rect.size = size
-		_bust_rect.pivot_offset = size * 0.5
-	if _button != null:
-		_button.size = size
-		_button.position = Vector2.ZERO
-	if _name_label != null:
-		var lh: float = 44.0
-		_name_label.size = Vector2(size.x, lh)
-		_name_label.position = Vector2(0, size.y - lh - 8)
+	if _bust_rect == null or _bust_rect.texture == null:
+		return
 
-	# 極微 idle 呼吸（只 scale，不 bobbing 不切幀）
+	# 半身像由高度撐滿（aspect 2:3），底邊對齊 MascotPanel 底邊
+	var tex_size: Vector2 = _bust_rect.texture.get_size()
+	if tex_size.y <= 0:
+		return
+	var aspect: float = tex_size.x / tex_size.y
+	var dst_h: float = size.y
+	var dst_w: float = dst_h * aspect
+	# 水平：以 HORIZONTAL_BIAS 偏移
+	var center_x: float = size.x * 0.5 + size.x * HORIZONTAL_BIAS
+	var dst_x: float = center_x - dst_w * 0.5
+	# 垂直：底邊對齊 MascotPanel 底邊（character 站到畫面底）
+	var dst_y: float = size.y - dst_h
+	_bust_rect.position = Vector2(dst_x, dst_y)
+	_bust_rect.size = Vector2(dst_w, dst_h)
+	_bust_rect.pivot_offset = Vector2(dst_w * 0.5, dst_h)   # 以底中為支點
+
+	# Button hit-area 跟 bust 同步
+	if _button != null:
+		_button.position = _bust_rect.position
+		_button.size = _bust_rect.size
+
+	# 極微呼吸
 	_idle_time += delta
 	var breath: float = 1.0 + sin(_idle_time * BREATH_FREQ * TAU) * BREATH_AMP
-	if _bust_rect != null:
-		_bust_rect.scale = Vector2(breath, breath)
+	_bust_rect.scale = Vector2(breath, breath)
 
 func refresh_mascot() -> void:
 	var id: String = Global.get_mascot_character_id()
-	_load_bust_for_id(id)
-	_name_label.text = _display_name_for_id(id)
+	var filename: String = ACTOR_TO_BUST.get(id, "")
+	if filename.is_empty():
+		_bust_rect.texture = null
+		return
+	var p: String = BUST_DIR + filename
+	if not ResourceLoader.exists(p):
+		_bust_rect.texture = null
+		push_warning("[MascotPanel] bust missing: " + p)
+		return
+	_bust_rect.texture = load(p)
 
 func _on_mascot_changed(_character_id: String) -> void:
 	refresh_mascot()
 
 func _on_button_up() -> void:
 	mascot_tapped.emit()
-
-func _load_bust_for_id(actor_id: String) -> void:
-	var filename: String = ACTOR_TO_BUST.get(actor_id, "")
-	if filename.is_empty():
-		_bust_rect.texture = null
-		push_warning("[MascotPanel] no bust for id " + actor_id)
-		return
-	var p: String = BUST_DIR + filename
-	if not ResourceLoader.exists(p):
-		_bust_rect.texture = null
-		push_warning("[MascotPanel] bust file missing: " + p)
-		return
-	_bust_rect.texture = load(p)
-
-func _display_name_for_id(actor_id: String) -> String:
-	var character_data = Global.get_character_data(actor_id) if Global.has_method("get_character_data") else null
-	if character_data != null and "character_name" in character_data:
-		return character_data.character_name
-	const FALLBACK := {
-		"character_tongji": "乩童",
-		"character_luannu": "鸞女",
-	}
-	return FALLBACK.get(actor_id, actor_id)
