@@ -6,9 +6,12 @@ extends Control
 class_name MascotSelector
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
-const ANIM_DIR: String = "res://assets/generated/pixellab/anim/"
-const ANIM_FRAME_COUNT: int = 4
-const ANIM_IDLE_FPS: float = 4.0
+# v2：用 PixelLab 高解析 bust 半身像（256×384 ×4 upscale = 1024×1536，pixel art）
+const BUST_DIR: String = "res://assets/generated/pixellab/"
+const ACTOR_TO_BUST: Dictionary = {
+	"character_tongji": "mascot_tongji_bust_v2.png",
+	"character_luannu": "mascot_luannu_bust_v2.png",
+}
 
 var GOLD:           Color = Color(0.95, 0.82, 0.45)
 var GOLD_DIM:       Color = Color(0.62, 0.49, 0.24)
@@ -46,18 +49,9 @@ func _ready() -> void:
 	_relayout()
 	Responsive.changed.connect(_relayout)
 
-func _process(delta: float) -> void:
-	# 4-frame pixel art idle cycling，每張卡內 sprite 獨立 ticking
-	for c in _cards:
-		if not c.has("frames") or c["frames"].is_empty():
-			continue
-		c["time"] += delta
-		var step: float = 1.0 / ANIM_IDLE_FPS
-		if c["time"] < step:
-			continue
-		c["time"] -= step
-		c["frame_idx"] = (c["frame_idx"] + 1) % c["frames"].size()
-		c["sprite"].texture = c["frames"][c["frame_idx"]]
+func _process(_delta: float) -> void:
+	# v2：靜態 bust，不切幀（呼應主面板不過動）
+	pass
 
 func _build_backdrop() -> void:
 	var bg := ColorRect.new()
@@ -101,13 +95,12 @@ func _build_cards() -> void:
 			sprite.modulate = Color(0.45, 0.45, 0.45, 0.75)
 		panel.add_child(sprite)
 
-		# 載入 PixelLab idle 動畫條（4 幀，pixel art 透明 BG）
+		# v2：靜態 bust 半身像
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST  # 保 pixel 感
-		var frames: Array[Texture2D] = []
 		if not locked and c_id != "":
-			frames = _load_anim_frames(c_id)
-			if frames.size() > 0:
-				sprite.texture = frames[0]
+			var bust_tex: Texture2D = _load_bust(c_id)
+			if bust_tex != null:
+				sprite.texture = bust_tex
 
 		# 名稱
 		var name_lbl := Label.new()
@@ -144,7 +137,6 @@ func _build_cards() -> void:
 			"panel": panel, "sprite": sprite, "name_lbl": name_lbl,
 			"active_lbl": active_lbl, "button": btn,
 			"id": c_id, "locked": locked,
-			"frames": frames, "frame_idx": 0, "time": 0.0,
 		})
 
 func _build_back_button() -> void:
@@ -226,23 +218,15 @@ func _relayout() -> void:
 
 # ── helpers ──────────────────────────────────────────────────────────
 
-## 載入 PixelLab idle 動畫條（4 幀 pixel art 透明 BG）
-func _load_anim_frames(actor_id: String) -> Array[Texture2D]:
-	var frames: Array[Texture2D] = []
-	var sheet_path: String = ANIM_DIR + actor_id + "/idle.png"
-	if not ResourceLoader.exists(sheet_path):
-		return frames
-	var sheet: Texture2D = load(sheet_path)
-	if sheet == null:
-		return frames
-	var fw: int = int(sheet.get_width() / ANIM_FRAME_COUNT)
-	var fh: int = sheet.get_height()
-	for i in ANIM_FRAME_COUNT:
-		var at := AtlasTexture.new()
-		at.atlas = sheet
-		at.region = Rect2(i * fw, 0, fw, fh)
-		frames.append(at)
-	return frames
+## 載入 v2 高解析 bust 半身像
+func _load_bust(actor_id: String) -> Texture2D:
+	var filename: String = ACTOR_TO_BUST.get(actor_id, "")
+	if filename.is_empty():
+		return null
+	var p: String = BUST_DIR + filename
+	if not ResourceLoader.exists(p):
+		return null
+	return load(p)
 
 func _sb(bg: Color, border: Color, bw: int, radius: int) -> StyleBoxFlat:
 	return COTIW_UI_THEME.make_stylebox(bg, border, radius, bw)
