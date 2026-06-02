@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""NBP v5b 局部重生：mainmenu_bg（去除靜態煙火）+ boot_splash（清晰乩童角色）。
+"""NBP v5b 局部重生：mainmenu_bg（去除靜態煙火）+ engine boot splash（清晰乩童角色）。
 
 mainmenu_bg_v5.png — 廟前夜景，純夜空無煙火；動態煙火由 PixelFX 粒子提供。
-boot_splash_v5.png — 乩童角色全身正面像，清晰可辨，同時作為：
+boot_splash_v5.png — 乩童角色全身正面像，清晰可辨，目前用途為：
                      (1) Godot 引擎 boot_splash  → assets/ui/boot_splash_v5.png
-                     (2) 遊戲 SplashScreen 背景  → assets/generated/pixellab/boot_splash_v5.png
+                     (2) iOS / export 啟動畫面素材（與 Root 內建 loading overlay 做視覺承接）
+
+現況：runtime 已不再使用獨立 SplashScreen scene/script。
 """
 import subprocess
 import shutil

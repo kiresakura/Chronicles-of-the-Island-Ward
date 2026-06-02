@@ -24,15 +24,15 @@
 ❌ 不可以這樣寫：
 ```gdscript
 func play_card_attack():
-    enemy.hp -= 6
-    enemy.add_status("poison", 3)
+	enemy.hp -= 6
+	enemy.add_status("poison", 3)
 ```
 
 ✅ 要這樣寫：
 ```gdscript
 func play_card(card_data: CardData):
-    for action in card_data.actions:
-        ActionSystem.execute(action, card_data.target)
+	for action in card_data.actions:
+		ActionSystem.execute(action, card_data.target)
 ```
 
 卡牌、敵人、事件、文字**全部走 JSON / CSV**。理由：日後做平衡調整、本地化、Mod 都靠這個。

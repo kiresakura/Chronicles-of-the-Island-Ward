@@ -1,7 +1,7 @@
 # COTIW UI/UX 素材清單（給 Aida）
 
 ## A. 已存在可沿用
-- `assets/ui/boot_splash.png`
+- `assets/ui/boot_splash_v5.png`（僅 Godot engine boot splash / export 啟動畫面素材；非獨立 SplashScreen runtime 背景）
 - `assets/ui/main_menu_bg.png`
 - `assets/ui/icons/*.svg`（14 個系統 icon）
 - `assets/ui/smoke_puff.png`

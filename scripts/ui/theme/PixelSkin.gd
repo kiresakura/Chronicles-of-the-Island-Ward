@@ -42,14 +42,24 @@ static func apply_background(host: Control, bg_filename: String, hide_node_names
 	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rect.anchor_left = 0
-	rect.anchor_top = 0
-	rect.anchor_right = 1
-	rect.anchor_bottom = 1
+	# anchors 改為 TOP_LEFT（全部 0）— CanvasLayer 父節點下 anchors 並非「相對 viewport」自動套用，
+	# 反而是 (0,0,1,1) 會讓引擎在 _ready 後依 anchors 反覆覆寫我們設定的 size，
+	# 觸發「Nodes with non-equal opposite anchors will have their size overridden」警告。
+	# 改以 size 絕對值控制即可（PixelFX Ken Burns 也依賴 size 直設）。
+	rect.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	layer.add_child(rect)
-	var vp := host.get_viewport()
-	if vp:
-		rect.size = vp.get_visible_rect().size
-	else:
-		rect.size = Vector2(1200, 700)
+	_sync_backdrop_to_viewport(host, rect)
 	return layer
+
+static func _sync_backdrop_to_viewport(host: Control, rect: TextureRect) -> void:
+	var update_rect := func() -> void:
+		if not is_instance_valid(rect):
+			return
+		var vp := host.get_viewport()
+		rect.position = Vector2.ZERO
+		rect.size = vp.get_visible_rect().size if vp else Vector2(1200, 700)
+
+	update_rect.call()
+	var vp := host.get_viewport()
+	if vp != null and not vp.size_changed.is_connected(update_rect):
+		vp.size_changed.connect(update_rect)

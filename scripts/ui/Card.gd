@@ -4,6 +4,7 @@ class_name Card
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const CARD_ART_REGISTRY := preload("res://scripts/ui/theme/CardArtRegistry.gd")
+const TOUCH_FEEDBACK := preload("res://scripts/ui/theme/TouchFeedback.gd")
 
 var card_data: CardData = null
 var card_listeners: Array[BaseCardListener] = []
@@ -78,6 +79,8 @@ func init(_card_data: CardData, angular_offset: float, connect_combat_signals: b
 		# button_up handles card selection on both desktop and mobile (touch)
 		# gui_input's left_click is unreliable on Android (InputEventScreenTouch ≠ InputEventMouseButton)
 		card_button.button_up.connect(_on_card_button_up)
+		card_button.button_down.connect(func(): TOUCH_FEEDBACK.apply_state(card_button, TOUCH_FEEDBACK.TouchState.PRESSED))
+		TOUCH_FEEDBACK.install_long_press_detail(card_button, _make_card_detail_payload())
 		card_button.mouse_entered.connect(_on_mouse_entered)
 		card_button.mouse_exited.connect(_on_mouse_exited)
 		keyword_timer.timeout.connect(_on_keyword_timeout)
@@ -154,8 +157,8 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 	card_color.offset_left   = 0.0
 	card_color.offset_right  = 144.0
 	card_color.offset_bottom = 107.0
-	card_color.color = CARD_TYPE_COLORS.get(card_data.card_type,
-		Color(0.79, 0.13, 0.13))  # 預設朱紅
+	# P0：卡類色彩統一走 design token 語意，不在 Card 內各自硬編孤立色。
+	card_color.color = COTIW_UI_THEME.get_card_type_accent(card_data.card_type)
 	
 	$Pivot/CardVisual/EnergySprite.visible = card_data.card_is_playable
 	
@@ -247,6 +250,17 @@ func get_card_description(selected_target: BaseCombatant = null) -> String:
 			modified_description_bb_code = modified_description_bb_code.replace(ENERGY_ICON_KEYWORD, image_bb_code)
 	
 	return modified_description_bb_code
+
+func _make_card_detail_payload() -> Dictionary:
+	if card_data == null:
+		return {"type": "card", "label": "未知卡牌"}
+	return {
+		"type": "card",
+		"id": card_data.object_id,
+		"name": card_data.get_card_name(),
+		"cost": card_data.get_card_energy_cost(),
+		"description": get_card_description(),
+	}
 
 func _generate_card_listeners(listener_data: Array[Dictionary]) -> Array[BaseCardListener]:
 	var generated_card_listeners: Array[BaseCardListener] = []

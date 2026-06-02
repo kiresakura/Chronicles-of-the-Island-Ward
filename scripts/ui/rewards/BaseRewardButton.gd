@@ -2,46 +2,42 @@ extends Button
 class_name BaseRewardButton
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const TOUCH_FEEDBACK := preload("res://scripts/ui/theme/TouchFeedback.gd")
 
 var action_on_click: BaseAction = null
 var reward_group: int = 0
+var reward_kind: String = "reward"
+var reward_rarity: int = CardData.CARD_RARITIES.COMMON
 
 @onready var panel_background: TextureRect = $PanelBackground if has_node("PanelBackground") else null
 
 func _ready():
 	button_up.connect(_on_button_up)
+	button_down.connect(func(): TOUCH_FEEDBACK.apply_state(self, TOUCH_FEEDBACK.TouchState.PRESSED))
 	_apply_visual_style()
+	TOUCH_FEEDBACK.install_long_press_detail(self, _make_reward_detail_payload())
 
 func init(_action_on_click: BaseAction, _reward_group: int) -> void:
 	action_on_click = _action_on_click
 	reward_group = _reward_group
 	_apply_visual_style()
+	set_meta("long_press_detail_payload", _make_reward_detail_payload())
 
 func _apply_visual_style() -> void:
-	flat = true
-	custom_minimum_size = Vector2(320, 112)
-	text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	clip_text = true
-	expand_icon = true
-	icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	add_theme_font_size_override("font_size", 24)
-	add_theme_constant_override("h_separation", 16)
-	add_theme_constant_override("icon_max_width", 40)
-	add_theme_color_override("font_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
-	add_theme_color_override("font_hover_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
-	add_theme_color_override("font_pressed_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
-	add_theme_color_override("font_disabled_color", COTIW_UI_THEME.get_color("smoke_gray", Color.GRAY))
-	add_theme_constant_override("shadow_offset_x", 1)
-	add_theme_constant_override("shadow_offset_y", 1)
-	add_theme_color_override("font_shadow_color",
-		COTIW_UI_THEME.get_color("text_shadow_soft", Color(0, 0, 0, 0.65)))
-	add_theme_stylebox_override("normal", StyleBoxEmpty.new())
-	add_theme_stylebox_override("hover", StyleBoxEmpty.new())
-	add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
-	add_theme_stylebox_override("disabled", StyleBoxEmpty.new())
-	if panel_background != null:
-		COTIW_UI_THEME.apply_panel_texture(panel_background, "reward")
-		panel_background.modulate = Color.WHITE if not disabled else Color(0.6, 0.6, 0.6, 0.85)
+	COTIW_UI_THEME.style_reward_button(self, reward_kind, reward_rarity)
+	TOUCH_FEEDBACK.mark_disabled(self, disabled)
+
+func _make_reward_detail_payload() -> Dictionary:
+	var payload := {
+		"type": "reward",
+		"label": text,
+		"reward_group": reward_group,
+	}
+	if action_on_click != null:
+		payload["action"] = action_on_click.get_script().resource_path if action_on_click.get_script() != null else str(action_on_click)
+		var action_values: Variant = action_on_click.get("values")
+		payload["values"] = action_values if action_values != null else {}
+	return payload
 
 func _on_button_up():
 	if action_on_click != null:

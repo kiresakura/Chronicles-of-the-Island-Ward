@@ -45,10 +45,10 @@ echo $?   # 0 = 全過，1 = 有失敗
 2. 方法名以 `test_` 開頭；用 `assert_*` 斷言（失敗會收集，不中斷）。
 3. runner 自動發現，無需註冊。
 
-## 涵蓋重點（截至 2026-05-18）
+## 涵蓋重點（截至 2026-05-26）
 
-- P1 回歸：只有乩童被註冊，STR 測試角色不再外漏。
+- P1 回歸：只有鎮島錄角色（乩童、鸞女）被註冊，STR 測試角色不再外漏。
 - P2 回歸：run_modifier i18n patch（object_id 對齊 STR）已套用。
-- 關鍵回歸：FileLoader 遞迴載入子資料夾（cards/tongji 等）—— 防止整批內容漏載重演。
+- 關鍵回歸：FileLoader 遞迴載入子資料夾（cards/tongji、cards/luannu 等）—— 防止整批內容漏載重演。
 - B3 類：敵人攻擊狀態的 status 引用必須存在。
 - Schema：所有 JSON 內 `res://*.gd` action 路徑必須是存在的資源。

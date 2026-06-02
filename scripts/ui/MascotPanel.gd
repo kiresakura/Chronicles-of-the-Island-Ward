@@ -8,15 +8,11 @@ class_name MascotPanel
 ## v5：改用 Recraft SVG vector 動漫立繪（無解析度上限 + 真透明）
 ## v7：加表情 variants（idle/happy/surprised）— tap 時隨機切換 1.5s
 const BUST_DIR: String = "res://assets/generated/characters_svg/"
-const ACTOR_TO_BUST: Dictionary = {
-	"character_tongji": "tongji_v3.svg",
-	"character_luannu": "luannu_v3.svg",
-}
+const ACTOR_TO_BUST: Dictionary = {}
+# v8：角色素材已替換為 Recraft/Pixellab PNG chain；此處先讓看板娘走
+# PIXEL_BUST_FALLBACK，避免舊 SVG 立繪蓋過新圖。
 ## 表情變體 → filename，tap 反應時隨機選一個
-const ACTOR_TO_EXPRESSION_VARIANTS: Dictionary = {
-	"character_tongji": ["tongji_happy.svg", "tongji_surprised.svg"],
-	"character_luannu": ["luannu_happy.svg", "luannu_surprised.svg"],
-}
+const ACTOR_TO_EXPRESSION_VARIANTS: Dictionary = {}
 const EXPRESSION_HOLD_SEC: float = 1.6   # 表情切換後維持時間，到時間回 idle
 # 舊 pixel bust fallback（萬一 SVG 載失敗）
 const PIXEL_BUST_DIR: String = "res://assets/generated/pixellab/"

@@ -1,0 +1,47 @@
+[
+  {
+    "node": "BtnCharacter",
+    "label": "角色",
+    "icon": "character",
+    "ready": true,
+    "act": "character",
+    "priority": "high"
+  },
+  {
+    "node": "BtnBattle",
+    "label": "新局",
+    "icon": "battle",
+    "ready": true,
+    "act": "run",
+    "priority": "high"
+  },
+  {
+    "node": "BtnInventory",
+    "label": "收藏",
+    "icon": "codex",
+    "ready": true,
+    "act": "codex",
+    "priority": "high"
+  },
+  {
+    "node": "BtnFormation",
+    "label": "陣型",
+    "icon": "formation",
+    "ready": false,
+    "priority": "low"
+  },
+  {
+    "node": "BtnShop",
+    "label": "商店",
+    "icon": "shop",
+    "ready": false,
+    "priority": "low"
+  },
+  {
+    "node": "BtnRecruit",
+    "label": "招募",
+    "icon": "recruit",
+    "ready": false,
+    "priority": "low"
+  }
+]

@@ -38,12 +38,36 @@
   },
   "typography": {
     "font_family": "Noto Sans TC",
-    "display": {"size": 48, "weight": 700, "line_height": 1.1},
-    "h1": {"size": 36, "weight": 700, "line_height": 1.15},
-    "h2": {"size": 28, "weight": 700, "line_height": 1.2},
-    "body": {"size": 22, "weight": 400, "line_height": 1.35},
-    "caption": {"size": 18, "weight": 500, "line_height": 1.3},
-    "micro": {"size": 16, "weight": 500, "line_height": 1.2},
+    "display": {
+      "size": 48,
+      "weight": 700,
+      "line_height": 1.1
+    },
+    "h1": {
+      "size": 36,
+      "weight": 700,
+      "line_height": 1.15
+    },
+    "h2": {
+      "size": 28,
+      "weight": 700,
+      "line_height": 1.2
+    },
+    "body": {
+      "size": 22,
+      "weight": 400,
+      "line_height": 1.35
+    },
+    "caption": {
+      "size": 18,
+      "weight": 500,
+      "line_height": 1.3
+    },
+    "micro": {
+      "size": 16,
+      "weight": 500,
+      "line_height": 1.2
+    },
     "numeric_shadow": true
   },
   "spacing": {
@@ -102,9 +126,39 @@
       "text": "paper_warm",
       "radius": "md"
     },
-    "resource_hp": {"fill": "hp_red", "track": "#3B1616"},
-    "resource_armor": {"fill": "armor_gold", "track": "#41331A"},
-    "resource_energy": {"fill": "energy_cyan", "track": "#17353C"}
+    "hud_badge": {
+      "fill": "panel_bg",
+      "border": "old_gold",
+      "text": "paper_warm",
+      "radius": "md"
+    },
+    "reward_button": {
+      "panel_material": "svg_texture",
+      "text": "paper_warm",
+      "radius": "lg"
+    },
+    "shop_button": {
+      "panel_material": "svg_texture",
+      "price_text": "incense_gold",
+      "unaffordable_text": "warning_orange"
+    },
+    "map_node": {
+      "panel_material": "svg_icon",
+      "size": 88,
+      "label": "micro"
+    },
+    "resource_hp": {
+      "fill": "hp_red",
+      "track": "#3B1616"
+    },
+    "resource_armor": {
+      "fill": "armor_gold",
+      "track": "#41331A"
+    },
+    "resource_energy": {
+      "fill": "energy_cyan",
+      "track": "#17353C"
+    }
   },
   "layers": {
     "background": 0,
@@ -114,5 +168,40 @@
     "overlay": 40,
     "modal": 50,
     "toast": 60
+  },
+  "semantic_roles": {
+    "primary_action": {
+      "fill": "festival_red",
+      "border": "incense_gold",
+      "text": "paper_warm"
+    },
+    "available_path": {
+      "accent": "neon_cyan",
+      "fill": "sign_blue",
+      "text": "paper_warm"
+    },
+    "sacred_reward": {
+      "accent": "incense_gold",
+      "fill": "mystic_purple",
+      "text": "paper_warm"
+    },
+    "danger_choice": {
+      "fill": "danger_crimson",
+      "border": "warning_orange",
+      "text": "paper_warm"
+    },
+    "disabled_or_locked": {
+      "fill": "panel_bg_lock",
+      "border": "smoke_gray",
+      "text": "ash_beige"
+    }
+  },
+  "motion": {
+    "tap_press_ms": 100,
+    "card_drag_lift_ms": 120,
+    "reward_reveal_ms": 260,
+    "combat_hit_flash_ms": 80,
+    "combat_hit_recover_ms": 160,
+    "screen_transition_ms": 420
   }
 }

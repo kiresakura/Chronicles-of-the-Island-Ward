@@ -39,6 +39,8 @@ const ANIM_DIR: String = "res://assets/generated/pixellab/anim/"
 const ANIM_LOOKUP: Dictionary = {
 	"tongji.png":              "character_tongji",
 	"luannu.png":              "character_luannu",
+	"daoshi.png":              "character_daoshi",
+	"jiajiang.png":            "character_jiajiang",
 	"enemy_mountain_boar.png": "enemy_mountain_boar",
 	"enemy_tree_spirit.png":   "enemy_tree_spirit",
 	"enemy_lost_soul.png":     "enemy_wandering_soul",
@@ -154,10 +156,7 @@ func set_combatant_sprite(texture_path: String) -> void:
 
 ## v6：SVG vector character 對應表（取自 MascotPanel.ACTOR_TO_BUST）
 const SVG_DIR: String = "res://assets/generated/characters_svg/"
-const SVG_LOOKUP: Dictionary = {
-	"tongji.png": "tongji_v3.svg",
-	"luannu.png": "luannu_v3.svg",
-}
+const SVG_LOOKUP: Dictionary = {}
 
 ## 嘗試載 SVG vector character（取代 pixel）。返回是否成功。
 func _try_load_svg_from_texture_path(texture_path: String) -> bool:

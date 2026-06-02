@@ -2,6 +2,7 @@ extends TextureButton
 class_name MapLocation
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const TOUCH_FEEDBACK := preload("res://scripts/ui/theme/TouchFeedback.gd")
 
 var location_data: LocationData = null
 var is_reachable: bool = false
@@ -16,6 +17,7 @@ signal map_location_button_up(map_location: MapLocation)
 
 func _ready():
 	button_up.connect(_on_button_up)
+	button_down.connect(func(): TOUCH_FEEDBACK.apply_state(self, TOUCH_FEEDBACK.TouchState.PRESSED))
 
 func init(_location_data: LocationData, _is_reachable: bool = false, _is_current: bool = false, _is_travel_mode: bool = false):
 	location_data = _location_data
@@ -23,16 +25,6 @@ func init(_location_data: LocationData, _is_reachable: bool = false, _is_current
 	is_current = _is_current
 	is_travel_mode = _is_travel_mode
 	position = location_data.location_position
-	texture_normal = load(COTIW_UI_THEME.get_map_node_path(location_data.location_type))
-	texture_hover = texture_normal
-	texture_pressed = texture_normal
-	texture_disabled = texture_normal
-	# 鐵律：map node 圖示是 1024px 大圖；ignore_texture_size=true + 固定 88×88
-	# 才不會讓 button 撐成 1024×1024 互相重疊蓋滿整個地圖（爆版 bug）。
-	ignore_texture_size = true
-	stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	custom_minimum_size = Vector2(88, 88)
-	size = Vector2(88, 88)
 	disabled = is_travel_mode and not is_reachable
 	
 	if location_data.location_obfuscated and not location_data.location_visited:
@@ -41,39 +33,41 @@ func init(_location_data: LocationData, _is_reachable: bool = false, _is_current
 		map_label.text = COTIW_UI_THEME.get_location_short_label(location_data.location_type)
 	
 	_apply_visual_state()
+	TOUCH_FEEDBACK.install_long_press_detail(self, {
+		"type": "map_location",
+		"label": map_label.text,
+		"reachable": is_reachable,
+		"current": is_current,
+		"travel_mode": is_travel_mode,
+	})
 
 func flash_location() -> void:
 	animation_player.play("flash_map_location")
 
+func get_anchor_position() -> Vector2:
+	return position + size * 0.5
+
 func _apply_visual_state() -> void:
-	var gold: Color = COTIW_UI_THEME.get_color("incense_gold", Color.GOLD)
-	var cyan: Color = COTIW_UI_THEME.get_color("neon_cyan", Color.DEEP_SKY_BLUE)
-	var paper: Color = COTIW_UI_THEME.get_color("paper_warm", Color.WHITE)
-	var smoke: Color = COTIW_UI_THEME.get_color("smoke_gray", Color.GRAY)
-	
-	state_glow.visible = false
-	state_glow.color = Color.TRANSPARENT
-	scale = Vector2.ONE
-	self_modulate = Color.WHITE
-	map_label.add_theme_color_override("font_color", paper)
-	
+	COTIW_UI_THEME.style_map_node(
+		self,
+		location_data.location_type,
+		map_label,
+		state_glow,
+		is_reachable,
+		is_current,
+		is_travel_mode,
+		location_data.location_visited
+	)
+
+	# icon 才是主角，文字只是輔助節奏提示；因此 label 故意退一階，不跟圖示搶戲。
+	map_label.modulate = Color(1.0, 1.0, 1.0, 0.96 if is_current else (0.88 if is_reachable else 0.72))
+
 	if is_current:
-		state_glow.visible = true
-		state_glow.color = gold
-		scale = Vector2.ONE * 1.08
-		map_label.add_theme_color_override("font_color", gold)
+		TOUCH_FEEDBACK.apply_state(self, TOUCH_FEEDBACK.TouchState.SELECTED)
 	elif is_reachable:
-		state_glow.visible = true
-		state_glow.color = cyan
-		scale = Vector2.ONE * 1.03
-		map_label.add_theme_color_override("font_color", cyan.lightened(0.1))
-	elif location_data.location_visited:
-		self_modulate = COTIW_UI_THEME.get_color("paper_warm", Color(0.92, 0.88, 0.8, 1.0))
-		map_label.add_theme_color_override("font_color", paper)
+		TOUCH_FEEDBACK.apply_state(self, TOUCH_FEEDBACK.TouchState.SELECTED)
 	elif is_travel_mode:
-		var smoke_a := COTIW_UI_THEME.get_color("smoke_gray", Color(0.55, 0.49, 0.45, 1.0))
-		self_modulate = Color(smoke_a.r, smoke_a.g, smoke_a.b, 0.82)
-		map_label.add_theme_color_override("font_color", smoke)
+		TOUCH_FEEDBACK.apply_state(self, TOUCH_FEEDBACK.TouchState.DISABLED)
 
 func _on_button_up():
 	location_data.location_visited = true

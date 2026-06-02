@@ -97,3 +97,49 @@ func test_ui_theme_panel_assets_exist() -> void:
 	assert_true(ResourceLoader.exists(reward_panel), "reward panel 資產必須存在")
 	assert_true(ResourceLoader.exists(shop_panel), "shop panel 資產必須存在")
 	assert_true(ResourceLoader.exists(rest_panel), "rest panel 資產必須存在")
+
+func test_ui_theme_exposes_unified_component_api() -> void:
+	var theme := UI_THEME.new()
+	for method_name: String in ["style_reward_button", "style_shop_button", "style_hud_badge", "style_map_node"]:
+		assert_true(theme.has_method(method_name), "CotiwUiTheme 必須提供 component API：%s" % method_name)
+
+func test_ui_theme_panel_material_rules_are_explicit() -> void:
+	assert_eq(UI_THEME.get_panel_material_rule("reward"), "svg_texture", "reward 必須用 SVG panel texture，避免和 StyleBoxFlat 混語言")
+	assert_eq(UI_THEME.get_panel_material_rule("shop"), "svg_texture", "shop item 必須用 SVG panel texture")
+	assert_eq(UI_THEME.get_panel_material_rule("hud_badge"), "stylebox_flat", "HUD badge 是資料徽章，必須用 StyleBoxFlat")
+	assert_eq(UI_THEME.get_panel_material_rule("tooltip"), "stylebox_flat", "tooltip 必須用 StyleBoxFlat")
+
+func test_ui_theme_component_api_applies_metadata_and_tokens() -> void:
+	var reward := Button.new()
+	UI_THEME.style_reward_button(reward, "card", CardData.CARD_RARITIES.RARE)
+	assert_eq(reward.get_meta("cotiw_component"), "reward_button", "reward button 必須標記元件來源")
+	assert_eq(reward.get_meta("panel_material_rule"), "svg_texture", "reward button 必須宣告 panel 材質規則")
+	assert_true(reward.has_theme_stylebox_override("normal"), "reward button 必須由 theme API 給 stylebox")
+	reward.queue_free()
+
+	var shop := Control.new()
+	var price := Label.new()
+	price.name = "PriceLabel"
+	shop.add_child(price)
+	UI_THEME.style_shop_button(shop, false)
+	assert_eq(shop.get_meta("cotiw_component"), "shop_button", "shop item 必須標記元件來源")
+	assert_eq(price.get_theme_font_size("font_size", "Label"), 18, "shop price 字級必須由 theme API 管")
+	shop.queue_free()
+
+	var badge := Panel.new()
+	UI_THEME.style_hud_badge(badge, "energy_cyan")
+	assert_eq(badge.get_meta("panel_material_rule"), "stylebox_flat", "HUD badge 必須宣告 StyleBoxFlat 規則")
+	assert_true(badge.has_theme_stylebox_override("panel"), "HUD badge 必須有 theme stylebox")
+	badge.queue_free()
+
+func test_ui_component_gallery_scene_exists_and_covers_core_components() -> void:
+	var path := "res://scenes/dev/UIComponentGallery.tscn"
+	assert_true(ResourceLoader.exists(path), "必須建立 UI 元件圖鑑測試場景")
+	var packed := load(path) as PackedScene
+	assert_not_null(packed, "UI 元件圖鑑必須可載入")
+	if packed == null:
+		return
+	var scene := packed.instantiate()
+	for node_name: String in ["ButtonSamples", "PanelSamples", "BadgeSamples", "TooltipSample", "RewardSamples", "ShopItemSamples", "MapNodeSamples"]:
+		assert_not_null(scene.get_node_or_null(node_name), "UI 元件圖鑑缺少區塊：%s" % node_name)
+	scene.queue_free()

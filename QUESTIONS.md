@@ -182,9 +182,9 @@
 驗證（Phase 1+2）：import 乾淨、測試 21/21、Root.tscn headless 於 1200×700 / 2532×1170(Pro Max 2.16) / 1334×750(SE) / 1180×820(iPad 平板級) 皆無 script error。⚠️ headless 無法 render 且 DisplayServer 安全區僅真機生效；實際視覺/安全區內縮/戰鬥中版面需真機或模擬器目視確認。
 
 **真機回饋修正（iPhone 12，2026-05-19）**：
-- 兩側黑邊根因＝ iOS 相容模式 letterbox（export_presets `storyboard/use_launch_screen_storyboard=false`），**非 Godot stretch**。修：啟用 launch storyboard + 同 boot_splash 圖/紅底（詳 `docs/IOS_EXPORT_SETUP.md` 第 7 障礙）。⚠️ export 設定，須**重 export+重 build+重新部署真機**才生效。
-- 載入不連貫＝ SplashScreen 進度條/文字為固定 1200 座標、受 letterbox 跑位。修：`SplashScreen.gd` 改用 `Responsive.safe_rect` 定位 + 進度組淡入承接 boot_splash + BgFill 改廟會紅（三段同圖同底連貫）。
-- 已重 export 並 xcodebuild **BUILD SUCCEEDED**、Launch Screen.storyboard 為真全螢幕 storyboard。
+- 兩側黑邊根因＝ iOS 相容模式 letterbox（export_presets `storyboard/use_launch_screen_storyboard=false`），**非 Godot stretch**。修：啟用 launch storyboard + 同 boot splash 圖/紅底（詳 `docs/IOS_EXPORT_SETUP.md` 第 7 障礙）。⚠️ export 設定，須**重 export+重 build+重新部署真機**才生效。
+- 載入不連貫（歷史流程）＝ 舊版獨立 `SplashScreen` 的進度條/文字使用固定 1200 座標、受 letterbox 跑位。當時修法是 `SplashScreen.gd` 改用 `Responsive.safe_rect` 定位 + 進度組淡入承接 boot_splash + BgFill 改廟會紅（三段同圖同底連貫）。
+- **現況補註（2026-05-28）**：runtime 已改為 `Root.tscn` 啟動後直接顯示 Root 內建 loading overlay；獨立 `SplashScreen` scene / script 已移除，`boot_splash_v5.png` 僅保留給引擎 boot splash / export 素材。
 
 ### D3: 戰鬥畫面全向量重build（憲龍指示「比照主選單」，2026-05-19）
 

@@ -1,0 +1,86 @@
+{
+  "version": "3.0.0",
+  "timestamp": "20260602-181151",
+  "backup_dir": "assets/generated/_backup_before_character_replace/cohesive-v3-20260602-181151",
+  "design_rule": "same canvas, same foot baseline, same target height, same pixel density, same outline, same shadow",
+  "roles": {
+    "tongji": {
+      "source": "assets/generated/recraft/character_previews_v2/cutouts/tongji_a_cutout.png",
+      "targets": [
+        "assets/generated/portraits_v3/tongji.png",
+        "assets/generated/characters_v2/tongji_card.png",
+        "assets/generated/characters_v2/tongji_standee.png",
+        "assets/generated/characters_v2/tongji_anim_idle.png",
+        "assets/generated/characters_v2/tongji_anim_alert.png",
+        "assets/generated/characters_v2/tongji_anim_cast.png",
+        "assets/generated/characters_v2/tongji_anim_hit.png",
+        "assets/generated/characters_v2/tongji_anim_death.png",
+        "assets/generated/characters_v2/tongji_anim_victory.png",
+        "assets/generated/pixellab/anim/character_tongji/idle.png",
+        "assets/generated/pixellab/anim/character_tongji/attack.png",
+        "assets/generated/pixellab/anim/character_tongji/defend.png",
+        "assets/generated/pixellab/anim/character_tongji/hit.png",
+        "assets/generated/pixellab/anim/character_tongji/death.png",
+        "assets/generated/pixellab/mascot_tongji_bust_v2.png"
+      ]
+    },
+    "luannu": {
+      "source": "assets/generated/recraft/character_previews_v2/cutouts/luannu_b_cutout.png",
+      "targets": [
+        "assets/generated/portraits_v3/luannu.png",
+        "assets/generated/characters_v2/luannu_card.png",
+        "assets/generated/characters_v2/luannu_standee.png",
+        "assets/generated/characters_v2/luannu_anim_idle.png",
+        "assets/generated/characters_v2/luannu_anim_alert.png",
+        "assets/generated/characters_v2/luannu_anim_cast.png",
+        "assets/generated/characters_v2/luannu_anim_hit.png",
+        "assets/generated/characters_v2/luannu_anim_death.png",
+        "assets/generated/characters_v2/luannu_anim_victory.png",
+        "assets/generated/pixellab/anim/character_luannu/idle.png",
+        "assets/generated/pixellab/anim/character_luannu/attack.png",
+        "assets/generated/pixellab/anim/character_luannu/defend.png",
+        "assets/generated/pixellab/anim/character_luannu/hit.png",
+        "assets/generated/pixellab/anim/character_luannu/death.png",
+        "assets/generated/pixellab/mascot_luannu_bust_v2.png"
+      ]
+    },
+    "daoshi": {
+      "source": "assets/generated/recraft/character_previews_v2/cutouts/daoshi_a_cutout.png",
+      "targets": [
+        "assets/generated/portraits_v3/daoshi.png",
+        "assets/generated/characters_v2/daoshi_card.png",
+        "assets/generated/characters_v2/daoshi_standee.png",
+        "assets/generated/characters_v2/daoshi_anim_idle.png",
+        "assets/generated/characters_v2/daoshi_anim_alert.png",
+        "assets/generated/characters_v2/daoshi_anim_cast.png",
+        "assets/generated/characters_v2/daoshi_anim_hit.png",
+        "assets/generated/characters_v2/daoshi_anim_death.png",
+        "assets/generated/characters_v2/daoshi_anim_victory.png",
+        "assets/generated/pixellab/anim/character_daoshi/idle.png",
+        "assets/generated/pixellab/anim/character_daoshi/attack.png",
+        "assets/generated/pixellab/anim/character_daoshi/defend.png",
+        "assets/generated/pixellab/anim/character_daoshi/hit.png",
+        "assets/generated/pixellab/anim/character_daoshi/death.png"
+      ]
+    },
+    "jiajiang": {
+      "source": "assets/generated/recraft/character_previews_v2/cutouts/jiajiang_b_cutout.png",
+      "targets": [
+        "assets/generated/portraits_v3/jiajiang.png",
+        "assets/generated/characters_v2/jiajiang_card.png",
+        "assets/generated/characters_v2/jiajiang_standee.png",
+        "assets/generated/characters_v2/jiajiang_anim_idle.png",
+        "assets/generated/characters_v2/jiajiang_anim_alert.png",
+        "assets/generated/characters_v2/jiajiang_anim_cast.png",
+        "assets/generated/characters_v2/jiajiang_anim_hit.png",
+        "assets/generated/characters_v2/jiajiang_anim_death.png",
+        "assets/generated/characters_v2/jiajiang_anim_victory.png",
+        "assets/generated/pixellab/anim/character_jiajiang/idle.png",
+        "assets/generated/pixellab/anim/character_jiajiang/attack.png",
+        "assets/generated/pixellab/anim/character_jiajiang/defend.png",
+        "assets/generated/pixellab/anim/character_jiajiang/hit.png",
+        "assets/generated/pixellab/anim/character_jiajiang/death.png"
+      ]
+    }
+  }
+}

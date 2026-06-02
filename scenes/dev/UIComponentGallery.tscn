@@ -1,0 +1,213 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/dev/UIComponentGallery.gd" id="1_gallery"]
+
+[node name="UIComponentGallery" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gallery")
+
+[node name="ButtonSamples" type="VBoxContainer" parent="."]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 344.0
+offset_bottom = 200.0
+
+[node name="PrimaryButton" type="Button" parent="ButtonSamples"]
+custom_minimum_size = Vector2(300, 72)
+
+[node name="SecondaryButton" type="Button" parent="ButtonSamples"]
+custom_minimum_size = Vector2(300, 64)
+
+[node name="PanelSamples" type="VBoxContainer" parent="."]
+offset_left = 376.0
+offset_top = 24.0
+offset_right = 696.0
+offset_bottom = 220.0
+
+[node name="StyleBoxPanel" type="Panel" parent="PanelSamples"]
+custom_minimum_size = Vector2(300, 80)
+
+[node name="SvgTexturePanel" type="TextureRect" parent="PanelSamples"]
+custom_minimum_size = Vector2(300, 80)
+
+[node name="BadgeSamples" type="HBoxContainer" parent="."]
+offset_left = 728.0
+offset_top = 24.0
+offset_right = 1080.0
+offset_bottom = 100.0
+
+[node name="GoldBadge" type="Panel" parent="BadgeSamples"]
+custom_minimum_size = Vector2(82, 44)
+metadata/accent_token = "incense_gold"
+
+[node name="EnergyBadge" type="Panel" parent="BadgeSamples"]
+custom_minimum_size = Vector2(82, 44)
+metadata/accent_token = "energy_cyan"
+
+[node name="DangerBadge" type="Panel" parent="BadgeSamples"]
+custom_minimum_size = Vector2(82, 44)
+metadata/accent_token = "warning_orange"
+
+[node name="TooltipSample" type="Panel" parent="."]
+offset_left = 728.0
+offset_top = 128.0
+offset_right = 1088.0
+offset_bottom = 248.0
+
+[node name="TooltipText" type="Label" parent="TooltipSample"]
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 340.0
+offset_bottom = 104.0
+text = "Tooltip / 長按細節：符紙、廟燈、資訊密度測試"
+autowrap_mode = 3
+
+[node name="RewardSamples" type="VBoxContainer" parent="."]
+offset_left = 24.0
+offset_top = 252.0
+offset_right = 376.0
+offset_bottom = 520.0
+
+[node name="RewardCommon" type="Button" parent="RewardSamples"]
+custom_minimum_size = Vector2(320, 112)
+
+[node name="PanelBackground" type="TextureRect" parent="RewardSamples/RewardCommon"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RewardRare" type="Button" parent="RewardSamples"]
+custom_minimum_size = Vector2(320, 112)
+
+[node name="PanelBackground" type="TextureRect" parent="RewardSamples/RewardRare"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ShopItemSamples" type="VBoxContainer" parent="."]
+offset_left = 408.0
+offset_top = 252.0
+offset_right = 728.0
+offset_bottom = 520.0
+
+[node name="ShopAffordable" type="Control" parent="ShopItemSamples"]
+custom_minimum_size = Vector2(300, 92)
+
+[node name="PanelBackground" type="TextureRect" parent="ShopItemSamples/ShopAffordable"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PriceLabel" type="Label" parent="ShopItemSamples/ShopAffordable"]
+offset_left = 18.0
+offset_top = 28.0
+offset_right = 282.0
+offset_bottom = 64.0
+text = "購買  金45"
+
+[node name="ShopLocked" type="Control" parent="ShopItemSamples"]
+custom_minimum_size = Vector2(300, 92)
+metadata/unaffordable = true
+
+[node name="PanelBackground" type="TextureRect" parent="ShopItemSamples/ShopLocked"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PriceLabel" type="Label" parent="ShopItemSamples/ShopLocked"]
+offset_left = 18.0
+offset_top = 28.0
+offset_right = 282.0
+offset_bottom = 64.0
+text = "購買  金999"
+
+[node name="MapNodeSamples" type="HBoxContainer" parent="."]
+offset_left = 760.0
+offset_top = 300.0
+offset_right = 1136.0
+offset_bottom = 420.0
+
+[node name="MapNodeCombat" type="TextureButton" parent="MapNodeSamples"]
+custom_minimum_size = Vector2(88, 88)
+
+[node name="StateGlow" type="ColorRect" parent="MapNodeSamples/MapNodeCombat"]
+show_behind_parent = true
+offset_right = 88.0
+offset_bottom = 88.0
+
+[node name="MapLabel" type="Label" parent="MapNodeSamples/MapNodeCombat"]
+offset_top = 56.0
+offset_right = 88.0
+offset_bottom = 88.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MapNodeEvent" type="TextureButton" parent="MapNodeSamples"]
+custom_minimum_size = Vector2(88, 88)
+
+[node name="StateGlow" type="ColorRect" parent="MapNodeSamples/MapNodeEvent"]
+show_behind_parent = true
+offset_right = 88.0
+offset_bottom = 88.0
+
+[node name="MapLabel" type="Label" parent="MapNodeSamples/MapNodeEvent"]
+offset_top = 56.0
+offset_right = 88.0
+offset_bottom = 88.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MapNodeShop" type="TextureButton" parent="MapNodeSamples"]
+custom_minimum_size = Vector2(88, 88)
+
+[node name="StateGlow" type="ColorRect" parent="MapNodeSamples/MapNodeShop"]
+show_behind_parent = true
+offset_right = 88.0
+offset_bottom = 88.0
+
+[node name="MapLabel" type="Label" parent="MapNodeSamples/MapNodeShop"]
+offset_top = 56.0
+offset_right = 88.0
+offset_bottom = 88.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MapNodeBoss" type="TextureButton" parent="MapNodeSamples"]
+custom_minimum_size = Vector2(88, 88)
+
+[node name="StateGlow" type="ColorRect" parent="MapNodeSamples/MapNodeBoss"]
+show_behind_parent = true
+offset_right = 88.0
+offset_bottom = 88.0
+
+[node name="MapLabel" type="Label" parent="MapNodeSamples/MapNodeBoss"]
+offset_top = 56.0
+offset_right = 88.0
+offset_bottom = 88.0
+horizontal_alignment = 1
+vertical_alignment = 1
