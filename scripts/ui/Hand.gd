@@ -1,6 +1,10 @@
 ## UI component that serves as a container for Card objects and provides card playing interface
 extends Control
 
+# P0 戰鬥流程 UI：選敵取消鈕 + 不可出牌 feedback 需要主題與 TouchFeedback
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const TOUCH_FEEDBACK := preload("res://scripts/ui/theme/TouchFeedback.gd")
+
 ## Controls the movement speed (time) of cards, making them tween faster or slower around the hand
 const CARD_TWEEN_TIME: float = 0.2
 
@@ -25,6 +29,7 @@ var current_card_pick_action: ActionBasePickCards = null	# an action currently r
 @onready var background_button: TextureButton = $%BackgroundButton
 @onready var select_target_label: Label = $%SelectTargetLabel
 var current_selected_card: Card = null	# used for cards with targeting
+var _cancel_target_button: Button = null	# P0：選敵模式可見的「取消」鈕（mobile 友善）
 
 ### Card Play Queue
 var card_play_queue: Array[CardPlayRequest] = []	# array of cards to play
@@ -205,8 +210,15 @@ func _on_card_selected(card: Card):
 		# cannot play while right click actions happening
 		if performing_card_right_click:
 			return
+		# P0：再點同一張（已進入選敵）→ 取消選敵（mobile 取消手段之一）
+		if current_selected_card == card:
+			current_selected_card = null
+			_unprompt_target()
+			return
 		# check if card is generally playable
+		# P0：不可出牌（神力不足 / validator 未過）→ 給可見 feedback，不再靜默無反應
 		if not card.can_play_card():
+			_feedback_card_unplayable(card)
 			return
 		# cannot play cards already queued
 		for card_play_request in card_play_queue:
@@ -276,11 +288,67 @@ func _prompt_target(_card: Card):
 	# only propagates UP to the parent — it does NOT let lower-priority siblings fire
 	# when BackgroundButton is above them in z-order, so PASS was silently eating clicks.
 	background_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# P0：顯示可見「取消」鈕 + 頂部狀態提示「選擇目標」
+	_ensure_cancel_target_button()
+	if is_instance_valid(_cancel_target_button):
+		_cancel_target_button.visible = true
+	if is_instance_valid(combat) and combat.has_method("set_targeting_status"):
+		combat.set_targeting_status(true)
 
 func _unprompt_target():
 	select_target_label.visible = false
 	# Restore to STOP so background taps are intercepted normally outside targeting mode.
 	background_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	# P0：收起「取消」鈕 + 還原頂部回合狀態
+	if is_instance_valid(_cancel_target_button):
+		_cancel_target_button.visible = false
+	if is_instance_valid(combat) and combat.has_method("set_targeting_status"):
+		combat.set_targeting_status(false)
+
+## P0：延遲建構選敵「取消」鈕。掛在 SelectTargetLabel 的父層（= Combat），
+## 不被處於 IGNORE 的 BackgroundButton 攔截，且 STOP 確保自身可被點到。
+func _ensure_cancel_target_button() -> void:
+	if is_instance_valid(_cancel_target_button):
+		return
+	_cancel_target_button = Button.new()
+	_cancel_target_button.name = "CancelTargetButton"
+	_cancel_target_button.text = "取消"
+	_cancel_target_button.focus_mode = Control.FOCUS_NONE
+	_cancel_target_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_cancel_target_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	_cancel_target_button.visible = false
+	_cancel_target_button.size = Vector2(160, 54)
+	COTIW_UI_THEME.apply_secondary_button_style(_cancel_target_button)
+	_cancel_target_button.add_theme_font_size_override("font_size", 26)
+	# SelectTargetLabel 在 y≈192–240（頂部置中）；取消鈕擺其正下方置中（1200 寬 → x=520）
+	var anchor_parent: Node = select_target_label.get_parent() if is_instance_valid(select_target_label) else self
+	anchor_parent.add_child(_cancel_target_button)
+	_cancel_target_button.position = Vector2(520, 250)
+	_cancel_target_button.button_up.connect(_on_cancel_target_button_up)
+
+func _on_cancel_target_button_up() -> void:
+	current_selected_card = null
+	_unprompt_target()
+
+## P0：不可出牌 feedback —— TouchFeedback ash/disabled + 灰燼粒子 + Combat toast 文案
+func _feedback_card_unplayable(card: Card) -> void:
+	# 判斷原因：神力不足 vs 其他（validator 未過）
+	var reason: String = "此牌暫不可用"
+	if card != null and card.card_data != null:
+		if Global.player_data.player_energy < card.card_data.get_card_energy_cost():
+			reason = "神力不足"
+	# 卡牌本體 ash/disabled 視覺 + 悶聲 sfx + 灰燼粒子
+	var btn: Control = card.card_button if (card != null and is_instance_valid(card.card_button)) else card
+	if is_instance_valid(btn):
+		TOUCH_FEEDBACK.apply_state(btn, TOUCH_FEEDBACK.TouchState.DISABLED)
+		TOUCH_FEEDBACK.spawn_particle_hook(self, "disabled_ash", btn.get_global_rect().get_center())
+		# 短暫後還原外觀，避免卡在 disabled 灰
+		get_tree().create_timer(0.28).timeout.connect(func() -> void:
+			if is_instance_valid(btn):
+				TOUCH_FEEDBACK.apply_state(btn, TOUCH_FEEDBACK.TouchState.NORMAL))
+	# 頂部 toast 文案
+	if is_instance_valid(combat) and combat.has_method("show_combat_toast"):
+		combat.show_combat_toast(reason)
 
 ### Playing Cards
 

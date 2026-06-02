@@ -38,6 +38,16 @@ const _FLAT_DECALS := [
 @onready var end_turn_button: Button = $EndTurnButton
 var end_turn_object: CombatEndTurn = null
 
+# ── P0 戰鬥狀態提示 + 不可出牌 toast（additive；不改既有 signal flow） ──
+const COMBAT_STATUS_PLAYER: String = "我方回合"
+const COMBAT_STATUS_TARGETING: String = "選擇目標"
+const COMBAT_STATUS_PROCESSING: String = "行動處理中"
+const COMBAT_STATUS_ENEMY: String = "敵方回合"
+var _combat_status_label: Label = null
+var _combat_status_base_text: String = ""	# 記住非選敵時的回合狀態，選敵取消後還原
+var _combat_toast: Label = null
+var _combat_toast_tween: Tween = null
+
 func _ready():
 	Signals.player_money_changed.connect(_on_player_money_changed)
 	Signals.player_health_changed.connect(_on_player_health_changed)
@@ -98,6 +108,10 @@ func _ready():
 	# v3 FX overlay：技能特效（damage/block/heal）自動連 Signals
 	const CombatFxOverlayCls = preload("res://scripts/ui/theme/CombatFxOverlay.gd")
 	CombatFxOverlayCls.apply(self)
+
+	# P0：頂部回合狀態提示 Label + 不可出牌短訊 toast（additive）
+	_build_combat_status_label()
+	_build_combat_toast()
 
 
 ## 套用戰鬥上排 TextureButton 的 icon（取代 icon.svg placeholder）
@@ -247,7 +261,8 @@ func _on_combat_started(event_id: String):
 	Global.player_data.player_energy = Global.player_data.player_energy_max
 	set_combat_display_visibility(true)
 	update_combat_display()
-	
+	set_combat_status(COMBAT_STATUS_PROCESSING)	# P0：戰鬥開場，回合即將開始
+
 func _on_combat_ended():
 	set_combat_display_visibility(false)
 	
@@ -338,6 +353,7 @@ func perform_enemy_turn():
 func _on_player_turn_started():
 	# prevent player from playing cards manually
 	hand.hand_disabled = true
+	set_combat_status(COMBAT_STATUS_PROCESSING)	# P0：抽牌/開場結算中
 	
 	# first turn actions
 	if Global.get_combat_stats().turn_count == 1:
@@ -399,10 +415,12 @@ func _on_player_turn_started():
 	# unlock and update hand
 	hand.hand_disabled = false
 	hand.update_hand_card_display()
+	set_combat_status(COMBAT_STATUS_PLAYER)	# P0：手牌就緒，輪到玩家
 
 func _on_player_turn_ended():
 	# prevent player from playing cards
 	hand.hand_disabled = true
+	set_combat_status(COMBAT_STATUS_PROCESSING)	# P0：回合結束結算中
 	# discard non retained cards and perform card actions
 	hand.perform_end_of_turn_hand_actions()
 	if ActionHandler.actions_being_performed:
@@ -431,9 +449,11 @@ func _on_player_end_turn_animation_finished():
 		Signals.enemy_turn_started.emit()
 
 func _on_enemy_turn_started():
+	set_combat_status(COMBAT_STATUS_ENEMY)	# P0：敵方回合
 	perform_enemy_turn()
-	
+
 func _on_enemy_turn_ended():
+	set_combat_status(COMBAT_STATUS_PROCESSING)	# P0：敵方結束，準備換我方
 	start_turn_animation()
 	
 func _on_end_turn_button_up():
@@ -548,3 +568,70 @@ func _combat_label(c: Control, color_token: String) -> void:
 	c.add_theme_constant_override("shadow_offset_y", 2)
 	c.add_theme_color_override("font_shadow_color",
 		COTIW_UI_THEME.get_color("text_shadow_strong", Color(0, 0, 0, 0.9)))
+
+# ---------- P0 戰鬥狀態提示 + 不可出牌 toast（additive；不影響上方戰鬥邏輯） ----------
+
+## 頂部中央小型回合狀態 Label（我方回合 / 選擇目標 / 行動處理中 / 敵方回合）
+func _build_combat_status_label() -> void:
+	if _combat_status_label != null:
+		return
+	_combat_status_label = Label.new()
+	_combat_status_label.name = "CombatStatusLabel"
+	_combat_status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_combat_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_combat_status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_combat_status_label.position = Vector2(420.0, 8.0)
+	_combat_status_label.size = Vector2(360.0, 34.0)
+	_combat_status_label.add_theme_font_size_override("font_size", 24)
+	_combat_status_label.add_theme_color_override("font_color",
+		COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
+	_combat_status_label.add_theme_color_override("font_shadow_color",
+		COTIW_UI_THEME.get_color("text_shadow_strong", Color(0, 0, 0, 0.9)))
+	_combat_status_label.add_theme_constant_override("shadow_offset_x", 2)
+	_combat_status_label.add_theme_constant_override("shadow_offset_y", 2)
+	add_child(_combat_status_label)
+
+## 設定回合狀態文字，並記為 base（供選敵取消後還原）
+func set_combat_status(text: String) -> void:
+	_combat_status_base_text = text
+	if is_instance_valid(_combat_status_label):
+		_combat_status_label.text = text
+
+## Hand 於進入/離開選敵時呼叫：顯示「選擇目標」，取消後還原回合狀態
+func set_targeting_status(active: bool) -> void:
+	if not is_instance_valid(_combat_status_label):
+		return
+	_combat_status_label.text = COMBAT_STATUS_TARGETING if active else _combat_status_base_text
+
+## 戰鬥短訊 toast（預設透明，呼叫時 fade in → 停留 → fade out）
+func _build_combat_toast() -> void:
+	if _combat_toast != null:
+		return
+	_combat_toast = Label.new()
+	_combat_toast.name = "CombatToast"
+	_combat_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_combat_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_combat_toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_combat_toast.position = Vector2(400.0, 300.0)
+	_combat_toast.size = Vector2(400.0, 50.0)
+	_combat_toast.add_theme_font_size_override("font_size", 30)
+	_combat_toast.add_theme_color_override("font_color",
+		COTIW_UI_THEME.get_color("hp_red", Color(0.86, 0.30, 0.24)))
+	_combat_toast.add_theme_color_override("font_shadow_color",
+		COTIW_UI_THEME.get_color("text_shadow_strong", Color(0, 0, 0, 0.9)))
+	_combat_toast.add_theme_constant_override("shadow_offset_x", 2)
+	_combat_toast.add_theme_constant_override("shadow_offset_y", 2)
+	_combat_toast.modulate = Color(1, 1, 1, 0)
+	add_child(_combat_toast)
+
+## 顯示一則短訊（例如「神力不足」）。由 Hand 在不可出牌時呼叫。
+func show_combat_toast(text: String) -> void:
+	if _combat_toast == null:
+		_build_combat_toast()
+	_combat_toast.text = text
+	if _combat_toast_tween != null and _combat_toast_tween.is_valid():
+		_combat_toast_tween.kill()
+	_combat_toast.modulate = Color(1, 1, 1, 1)
+	_combat_toast_tween = create_tween()
+	_combat_toast_tween.tween_interval(0.7)
+	_combat_toast_tween.tween_property(_combat_toast, "modulate:a", 0.0, 0.4)
