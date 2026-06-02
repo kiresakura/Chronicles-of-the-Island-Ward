@@ -54,3 +54,15 @@ scripts/.bundle/
 scripts/vendor/bundle/
 
 external/saves/save.json
+
+# Local agent/runtime artifacts
+.hermes/
+__pycache__/
+*.pyc
+qa_logs/
+qa_artifacts/
+qa_gate1.log
+qa_root.log
+
+# Temporary generated backups
+assets/generated/_backup_before_character_replace/

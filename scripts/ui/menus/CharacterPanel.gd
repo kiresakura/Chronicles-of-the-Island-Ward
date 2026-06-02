@@ -21,9 +21,9 @@ const PANEL_BG_ACTIVE: Color = Color(0.36, 0.10, 0.08, 0.96)
 const CHARS: Array = [
 	{"id": "character_tongji",   "file": "tongji.png",   "v2_card": "tongji_card.png"},
 	{"id": "character_luannu",   "file": "luannu.png",   "v2_card": "luannu_card.png"},
-	{"id": "character_daoshi",   "file": "daoshi.png",   "v2_card": "",
+	{"id": "character_daoshi",   "file": "daoshi.png",   "v2_card": "daoshi_card.png",
 	 "name": "道士", "desc": "（修煉中…）"},
-	{"id": "character_jiajiang", "file": "jiajiang.png", "v2_card": "",
+	{"id": "character_jiajiang", "file": "jiajiang.png", "v2_card": "jiajiang_card.png",
 	 "name": "家將", "desc": "（鎮島之師…）"},
 ]
 

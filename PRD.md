@@ -137,18 +137,18 @@
 **結構**：每章節一張地圖，分 15 層、分支路線
 
 ```
-        Boss (Layer 15)
-       /
-      休 ← 升級卡牌
-      |
-      事
-     /|
-    戰 戰
-    |  |
-    菁 商
-    |  |
-    戰 戰
-       (Layer 1, 起點)
+		Boss (Layer 15)
+	   /
+	  休 ← 升級卡牌
+	  |
+	  事
+	 /|
+	戰 戰
+	|  |
+	菁 商
+	|  |
+	戰 戰
+	   (Layer 1, 起點)
 ```
 
 **節點密度**（每章 15 層平均分配）：
@@ -438,7 +438,7 @@ COTIW/
   "cost": 1,
   "upgrade_of": null,
   "actions": [
-    { "type": "deal_damage", "amount": 6, "target": "selected" }
+	{ "type": "deal_damage", "amount": 6, "target": "selected" }
   ],
   "art": "tongji_attack_001.png"
 }

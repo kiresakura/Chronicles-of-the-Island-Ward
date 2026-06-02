@@ -9,6 +9,8 @@ extends Control
 const ICON_DIR := "res://assets/ui/icons/"
 const BACKDROP_SCRIPT := preload("res://scripts/ui/menus/VectorTempleBackdrop.gd")
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const LOBBY_ACTIONS_PATH := "res://external/data/ui/lobby_actions.json"
+const LOBBY_UTILITIES_PATH := "res://external/data/ui/lobby_utilities.json"
 
 # 廟會配色 —— 全部由 design_tokens.json 經 CotiwUiTheme 提供（_ready 賦值）
 var GOLD: Color = Color(0.95, 0.82, 0.45)
@@ -16,21 +18,6 @@ var GOLD_DIM: Color = Color(0.62, 0.49, 0.24)
 var PANEL_BG: Color = Color(0.20, 0.07, 0.06, 0.53)
 var PANEL_BG_HOVER: Color = Color(0.34, 0.11, 0.09, 0.96)
 var PANEL_BG_LOCK: Color = Color(0.13, 0.09, 0.09, 0.80)
-
-# 底部 6 格：node, 中文, icon, 是否已開放（false → 即將推出 toast）
-const SLOTS := [
-	{"node": "BtnCharacter", "label": "角色", "icon": "character", "ready": true, "act": "character"},
-	{"node": "BtnFormation", "label": "陣型", "icon": "formation", "ready": false},
-	{"node": "BtnBattle",    "label": "戰鬥", "icon": "battle",    "ready": true,  "act": "run"},
-	{"node": "BtnShop",      "label": "商店", "icon": "shop",      "ready": false},
-	{"node": "BtnRecruit",   "label": "招募", "icon": "recruit",   "ready": false},
-	{"node": "BtnInventory", "label": "收藏", "icon": "codex",     "ready": true,  "act": "codex"},
-]
-const UTILS := [
-	{"icon": "settings", "name": "設定"},
-	{"icon": "mail",     "name": "信件"},
-	{"icon": "achieve",  "name": "成就"},
-]
 
 @onready var title_screen: Control = $%TitleScreen
 @onready var continue_button: Button = $VBoxContainer/ContinueButton
@@ -52,6 +39,7 @@ var _backdrop: Control
 var _avatar_frame: Panel
 var _avatar_lv: Label
 var _res_rows: Array = []          # 每列 {icon,pill,label,fill}
+var _resource_tray: Panel
 var _slot_btns: Array[Button] = []
 var _util_btns: Array[Button] = []
 var _toast: Label
@@ -60,6 +48,8 @@ var _res_incense: Label
 var _res_level: Label
 var _res_yuanbao: Label
 var _level_fill: ColorRect
+var _slot_definitions: Array = []
+var _utility_definitions: Array = []
 
 func _ready() -> void:
 	GOLD = COTIW_UI_THEME.get_color("incense_gold", GOLD)
@@ -67,6 +57,8 @@ func _ready() -> void:
 	PANEL_BG = COTIW_UI_THEME.get_color("panel_bg", PANEL_BG)
 	PANEL_BG_HOVER = COTIW_UI_THEME.get_color("panel_bg_hover", PANEL_BG_HOVER)
 	PANEL_BG_LOCK = COTIW_UI_THEME.get_color("panel_bg_lock", PANEL_BG_LOCK)
+	_slot_definitions = _load_ui_definition_array(LOBBY_ACTIONS_PATH)
+	_utility_definitions = _load_ui_definition_array(LOBBY_UTILITIES_PATH)
 	_hide_legacy_nodes()
 	_add_backdrop()
 	_build_avatar()
@@ -136,8 +128,9 @@ func _apply_pixel_skin() -> void:
 		_pixel_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_pixel_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		_pixel_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_pixel_bg.anchor_left = 0; _pixel_bg.anchor_top = 0
-		_pixel_bg.anchor_right = 1; _pixel_bg.anchor_bottom = 1
+		# 與 PixelSkin 相同：在 CanvasLayer 下改用絕對 size 控制，不用 (0,0,1,1) anchors，
+		# 避免引擎於 _ready 後回寫尺寸而觸發 Control anchor warning。
+		_pixel_bg.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 		bg_layer.add_child(_pixel_bg)
 		# 顯式設定為 viewport 大小
 		var vp := get_viewport()
@@ -303,6 +296,11 @@ func _layout_pixel_skin() -> void:
 	var vp := get_viewport()
 	var stage_size: Vector2 = vp.get_visible_rect().size if vp != null else Vector2(1200, 700)
 
+	# 背景底圖：跟隨 viewport 尺寸變化，避免改成 TOP_LEFT anchors 後失去自動伸展。
+	if is_instance_valid(_pixel_bg):
+		_pixel_bg.position = Vector2.ZERO
+		_pixel_bg.size = stage_size
+
 	# 神龕：螢幕中央（已 disabled，留代碼方便回復）
 	if is_instance_valid(_pixel_altar):
 		var altar_w: float = stage_size.x * 0.36
@@ -399,6 +397,14 @@ func _build_avatar() -> void:
 	add_child(_avatar_lv)
 
 func _build_resource_bars() -> void:
+	_resource_tray = Panel.new()
+	_resource_tray.name = "ResourceOfferingTray"
+	_resource_tray.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_resource_tray.set_meta("p0_role", "resource_offering_tray")
+	_resource_tray.add_theme_stylebox_override("panel", _sb(Color(0.07, 0.035, 0.025, 0.72), GOLD_DIM, 2, 16))
+	add_child(_resource_tray)
+	_resource_tray.z_index = -1
+
 	_res_incense = _make_resource_row(0, "icon_incense", GOLD)
 	_res_level = _make_resource_row(1, "icon_level", Color(0.96, 0.78, 0.40))
 	_res_yuanbao = _make_resource_row(2, "icon_yuanbao", Color(0.55, 0.78, 0.95))
@@ -435,8 +441,8 @@ func _make_resource_row(idx: int, icon: String, tint: Color) -> Label:
 	return lbl
 
 func _build_slots() -> void:
-	for i in SLOTS.size():
-		var data: Dictionary = SLOTS[i]
+	for i in _slot_definitions.size():
+		var data: Dictionary = _slot_definitions[i]
 		if not has_node(data["node"]):
 			_slot_btns.append(null)
 			continue
@@ -556,7 +562,7 @@ func _on_primary_pressed() -> void:
 		_on_new_run_button_up()
 
 func _build_utilities() -> void:
-	for i in UTILS.size():
+	for i in _utility_definitions.size():
 		var u := Button.new()
 		u.name = "Util%d" % i
 		u.flat = false
@@ -569,7 +575,7 @@ func _build_utilities() -> void:
 		add_child(u)
 		var ic := TextureRect.new()
 		ic.name = "Icon"
-		ic.texture = _load_icon(UTILS[i]["icon"])
+		ic.texture = _load_icon(str(_utility_definitions[i].get("icon", "")))
 		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		ic.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -577,7 +583,7 @@ func _build_utilities() -> void:
 		ic.modulate = GOLD
 		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		u.add_child(ic)
-		u.button_up.connect(_show_coming_soon.bind(UTILS[i]["name"]))
+		u.button_up.connect(_show_coming_soon.bind(str(_utility_definitions[i].get("name", "功能"))))
 		_hook_hover(u)
 		_util_btns.append(u)
 
@@ -603,6 +609,24 @@ func _build_toast() -> void:
 	_toast.modulate = Color(1, 1, 1, 0)
 	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_toast)
+
+func _load_ui_definition_array(path: String) -> Array:
+	if not FileAccess.file_exists(path):
+		push_error("MainMenu: missing UI definition data: " + path)
+		return []
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		push_error("MainMenu: cannot open UI definition data: " + path)
+		return []
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_ARRAY:
+		push_error("MainMenu: UI definition data must be an array: " + path)
+		return []
+	var entries: Array = []
+	for item in parsed:
+		if typeof(item) == TYPE_DICTIONARY:
+			entries.append((item as Dictionary).duplicate(true))
+	return entries
 
 # ---------- 自適應排版：所有座標由 Responsive.safe_rect 計算 ----------
 
@@ -642,6 +666,9 @@ func _relayout() -> void:
 	var pills_total_w: float = group_w * _res_rows.size() + pill_gap * (_res_rows.size() - 1)
 	var pills_start_x: float = safe.position.x + (safe.size.x - pills_total_w) * 0.5
 	var pills_y: float = safe.position.y + roundf(pad * 0.5)
+	if is_instance_valid(_resource_tray):
+		_resource_tray.position = Vector2(pills_start_x - roundf(18.0 * ts), pills_y - roundf(8.0 * ts))
+		_resource_tray.size = Vector2(pills_total_w + roundf(36.0 * ts), row_h + roundf(16.0 * ts))
 	for i in _res_rows.size():
 		var r: Dictionary = _res_rows[i]
 		var gx: float = pills_start_x + i * (group_w + pill_gap)

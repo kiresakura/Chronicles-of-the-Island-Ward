@@ -9,17 +9,26 @@ const DATA_ROOT: String = "res://external/data/"
 
 # ---------- P1 回歸：只有鎮島錄角色被註冊 ----------
 
+## 鎮島錄目前可遊玩角色：乩童、鸞女（兩者皆預設解鎖，
+## 詳見 Global.MASCOT_AVAILABLE_IDS）
+const COTIW_CHARACTER_IDS: Array[String] = ["character_tongji", "character_luannu"]
+
 func test_only_cotiw_characters_registered() -> void:
-	assert_has(Global._id_to_character_data, "character_tongji",
-		"乩童必須存在於角色表")
+	for cotiw_id: String in COTIW_CHARACTER_IDS:
+		assert_has(Global._id_to_character_data, cotiw_id,
+			"鎮島錄角色 %s 必須存在於角色表" % cotiw_id)
 	for str_test_id: String in ["character_red", "character_blue", "character_green", "character_orange"]:
 		assert_not_has(Global._id_to_character_data, str_test_id,
 			"STR 測試角色 %s 不應再被註冊（add_test_characters 已停用）" % str_test_id)
 
-func test_tongji_is_sole_character() -> void:
-	# 角色選單預設選第一個 key，唯一角色保證乩童成為預設
-	assert_eq(Global._id_to_character_data.size(), 1,
-		"Phase 1 角色表應只有乩童")
+func test_cotiw_character_roster_matches_expected() -> void:
+	# 鎮島錄目前的可遊玩角色清單必須與 Global.MASCOT_AVAILABLE_IDS 一致
+	# （若日後新增角色，請同步更新 COTIW_CHARACTER_IDS 與 Global 兩處）
+	assert_eq(Global._id_to_character_data.size(), COTIW_CHARACTER_IDS.size(),
+		"鎮島錄角色表大小應為 %d（目前為乩童 + 鸞女）" % COTIW_CHARACTER_IDS.size())
+	for registered_id: String in Global._id_to_character_data.keys():
+		assert_true(COTIW_CHARACTER_IDS.has(registered_id),
+			"角色表中出現非鎮島錄角色：%s" % registered_id)
 
 # ---------- 角色 → 玩家原型 / 卡牌 / 遺物 交叉引用 ----------
 
@@ -31,22 +40,24 @@ func test_character_player_prototypes_resolve() -> void:
 		assert_has(Global._id_to_player_data, cd.character_player_id,
 			"%s 的 player 原型 %s 不存在（SCHEMA player/ 應載入）" % [char_id, cd.character_player_id])
 
-func test_tongji_starting_content_resolves() -> void:
-	var cd: CharacterData = Global._id_to_character_data.get("character_tongji")
-	assert_not_null(cd, "乩童角色資料缺失")
-	if cd == null:
-		return
-	for card_id: String in cd.character_starting_card_object_ids:
-		assert_has(Global._id_to_card_data, card_id,
-			"乩童起手卡 %s 未定義" % card_id)
-	for artifact_id: String in cd.character_starting_artifact_ids:
-		assert_has(Global._id_to_artifact_data, artifact_id,
-			"乩童起手遺物 %s 未定義" % artifact_id)
-	for pack_id: String in cd.character_starting_artifact_pack_ids:
-		assert_has(Global._id_to_artifact_pack_data, pack_id,
-			"乩童遺物包 %s 未定義" % pack_id)
-	assert_has(Global._id_to_color_data, cd.character_color_id,
-		"乩童顏色 %s 未定義" % cd.character_color_id)
+## 通用起手內容檢查：對所有鎮島錄角色驗證 起手卡/遺物/遺物包/顏色 都能在 Global 解析。
+func test_cotiw_character_starting_content_resolves() -> void:
+	for char_id: String in COTIW_CHARACTER_IDS:
+		var cd: CharacterData = Global._id_to_character_data.get(char_id)
+		assert_not_null(cd, "%s 角色資料缺失" % char_id)
+		if cd == null:
+			continue
+		for card_id: String in cd.character_starting_card_object_ids:
+			assert_has(Global._id_to_card_data, card_id,
+				"%s 起手卡 %s 未定義" % [char_id, card_id])
+		for artifact_id: String in cd.character_starting_artifact_ids:
+			assert_has(Global._id_to_artifact_data, artifact_id,
+				"%s 起手遺物 %s 未定義" % [char_id, artifact_id])
+		for pack_id: String in cd.character_starting_artifact_pack_ids:
+			assert_has(Global._id_to_artifact_pack_data, pack_id,
+				"%s 遺物包 %s 未定義" % [char_id, pack_id])
+		assert_has(Global._id_to_color_data, cd.character_color_id,
+			"%s 顏色 %s 未定義" % [char_id, cd.character_color_id])
 
 # ---------- P2 回歸：run_modifier i18n patch 已套用 ----------
 

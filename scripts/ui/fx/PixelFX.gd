@@ -225,12 +225,17 @@ class _FireworksManager extends Node:
 		_sparkle_tex  = _load_tex(_SPARKLE_PATH)
 
 	## 從 1024×128 橫排精靈表建立 SpriteFrames（8 幀 × 128px）
+	## 用 load() 走 .import 流程（CompressedTexture2D）— Image.load(res://png) 在 export
+	## 後讀不到原始 PNG，Godot 會印 "Loaded resource as image file, this will not work
+	## on export" 警告；改用 load() 取已 import 的 Texture2D 即可。
 	func _build_burst_frames() -> SpriteFrames:
-		var img := Image.new()
-		if img.load(_BURST_PATH) != OK:
+		if not ResourceLoader.exists(_BURST_PATH):
 			push_warning("PixelFX: 找不到 firework_burst_sheet.png，降級至 CPUParticles2D")
 			return null
-		var sheet := ImageTexture.create_from_image(img)
+		var sheet: Texture2D = load(_BURST_PATH) as Texture2D
+		if sheet == null:
+			push_warning("PixelFX: firework_burst_sheet.png 載入失敗，降級至 CPUParticles2D")
+			return null
 		var sf := SpriteFrames.new()
 		sf.add_animation("burst")
 		sf.set_animation_speed("burst", _BURST_FPS)
@@ -242,13 +247,13 @@ class _FireworksManager extends Node:
 			sf.add_frame("burst", at)
 		return sf
 
-	## 從 res:// 路徑載入 PNG → Texture2D（用於粒子材質）
+	## 從 res:// 路徑載入 .import 的 Texture2D（用於粒子材質）
+	## 同上不再用 Image.load — 避免 export 警告且能直接拿 GPU 壓縮紋理。
 	func _load_tex(path: String) -> Texture2D:
-		var img := Image.new()
-		if img.load(path) != OK:
+		if not ResourceLoader.exists(path):
 			push_warning("PixelFX: 找不到 " + path.get_file())
 			return null
-		return ImageTexture.create_from_image(img)
+		return load(path) as Texture2D
 
 	func _process(delta: float) -> void:
 		_t += delta

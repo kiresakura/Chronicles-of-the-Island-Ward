@@ -4,6 +4,8 @@
 > **commit**：見下方 SHA
 > **驗證**：Redmi 25080RABDG 實機完整走通 SplashScreen → MainMenu → NewRunMenu → RunStartOptions → CardReward
 
+> **歷史註記（2026-05-28）**：本文件描述的是當時接線驗證路徑。專案現況已改為 **`Root.tscn` 內建 loading overlay**；獨立 `SplashScreen` scene/script 已移除，`boot_splash_v5.png` 僅保留作 engine boot splash / export 啟動畫面素材。
+
 ---
 
 ## 1. TL;DR

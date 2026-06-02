@@ -106,9 +106,9 @@ iPhone X 以後（含 iPhone 12）iOS 會以**相容模式 letterbox 整個 app*
 
 **修法**：`export_presets.cfg`
 - `storyboard/use_launch_screen_storyboard=true`（關鍵，黑邊根治）
-- `storyboard/custom_image@2x` / `@3x` = `res://assets/ui/boot_splash.png`
+- `storyboard/custom_image@2x` / `@3x` = `res://assets/ui/boot_splash_v5.png`
 - `storyboard/use_custom_bg_color=true` / `custom_bg_color=Color(0.788,0.125,0.125,1)`
-  → launch storyboard ⇄ Godot boot_splash ⇄ SplashScreen 同圖同紅底，啟動連貫
+  → launch storyboard ⇄ Godot boot_splash ⇄ Root 內建 loading overlay 視覺連貫（現況已無獨立 SplashScreen runtime）
 
 ⚠️ **這是 export 設定，改完必須重 export + 重 build + 重新部署真機才生效**。
 （`export_presets.cfg` 為 .gitignore local-only，故記錄於本文件。）

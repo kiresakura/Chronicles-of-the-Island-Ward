@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="3300" viewBox="0 0 1500 3300">
+<rect width="1500" height="3300" fill="#120A09"/>
+<text x="60" y="78" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="46" fill="#E8C56A" font-weight="700">鎮島錄 COTIW — PixelLab 角色 Prompt Sheet v1</text>
+<text x="62" y="124" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="22" fill="#D7C4A5">Temple Neon Pixel：Q版廟會像素 × 夜市霓光 × 神壇金漆 / 512×512 transparent combat sprites</text>
+<rect x="60" y="170" width="1380" height="720" rx="30" fill="#261814" stroke="#A47D2A" stroke-width="5"/>
+<text x="92" y="228" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="35" fill="#F5E7CF" font-weight="700">乩童 / Tongji / Spirit Medium</text>
+<rect x="92" y="272" width="410" height="540" rx="18" fill="#1B0F0D" stroke="#57C7D4" stroke-width="3"/>
+<image href="file:///Users/crimson/Developer/COTIW/assets/generated/portraits_v3/tongji.png" x="127" y="300" width="340" height="485" preserveAspectRatio="xMidYMid meet"/>
+<text x="540" y="282" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#E8C56A" font-weight="700">身份鎖 / Identity lock</text>
+<text x="540" y="318" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">red headband, bare torso or open ritual vest, red-gold ritual sash, temple</text>
+<text x="540" y="345" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">talismans, possessed warrior eyes, explosive low-center stance</text>
+<text x="540" y="386" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#57C7D4" font-weight="700">核心動作 / Actions</text>
+<text x="540" y="424" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">idle: Low ritual stance, feet planted like a temple palanquin step, chest breathing,</text>
+<text x="540" y="448" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">talismans and red sash subtly flutter, divine aura pulsing around fists.</text>
+<text x="540" y="476" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">attack: Explosive short dash punch or elbow strike, red-gold divine afterimage, talismans</text>
+<text x="540" y="500" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">streak backward, impact arc clear and readable.</text>
+<text x="540" y="528" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">defend: Crouched bracing stance, crossed forearms, paper talisman shield blooming in</text>
+<text x="540" y="552" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">front, body compact but silhouette still recognizable.</text>
+<text x="540" y="580" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">hit: Upper body snaps back from impact, sash and talismans thrown upward, one foot</text>
+<text x="540" y="604" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">sliding, expression strained but not comedic.</text>
+<text x="540" y="632" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">death: Divine possession leaves the body, knees drop to ground, red-gold aura extinguishes</text>
+<text x="540" y="656" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">into incense ash, still dignified not grotesque.</text>
+<text x="540" y="836" font-family="Menlo, sans-serif" font-size="17" fill="#8B7C73">ref: assets/generated/portraits_v3/tongji.png</text>
+<rect x="60" y="950" width="1380" height="720" rx="30" fill="#261814" stroke="#A47D2A" stroke-width="5"/>
+<text x="92" y="1008" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="35" fill="#F5E7CF" font-weight="700">鸞女 / Luannu / Oracle Maiden</text>
+<rect x="92" y="1052" width="410" height="540" rx="18" fill="#1B0F0D" stroke="#57C7D4" stroke-width="3"/>
+<image href="file:///Users/crimson/Developer/COTIW/assets/generated/portraits_v3/luannu.png" x="127" y="1080" width="340" height="485" preserveAspectRatio="xMidYMid meet"/>
+<text x="540" y="1062" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#E8C56A" font-weight="700">身份鎖 / Identity lock</text>
+<text x="540" y="1098" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">black hair, red-gold ceremonial crown, jade accent, oracle maiden silhouette,</text>
+<text x="540" y="1125" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">spirit brush, talisman sleeves, sacred flame</text>
+<text x="540" y="1166" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#57C7D4" font-weight="700">核心動作 / Actions</text>
+<text x="540" y="1204" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">idle: Upright calm stance, spirit brush held near chest, talismans and small holy flames</text>
+<text x="540" y="1228" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">orbit slowly, robe hem breathing gently.</text>
+<text x="540" y="1256" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">attack: Brush stroke sends a talisman flame forward, clear sweeping arm motion,</text>
+<text x="540" y="1280" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">golden-orange fire trail, composed face and readable casting silhouette.</text>
+<text x="540" y="1308" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">defend: Circular talisman array opens like a protective fire shield, both hands guiding</text>
+<text x="540" y="1332" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">the ward, jade-gold light rim around her body.</text>
+<text x="540" y="1360" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">hit: Steps back half a pace, sleeves and talismans jolted open, sacred flame flickers but</text>
+<text x="540" y="1384" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">does not vanish, expression briefly shocked.</text>
+<text x="540" y="1412" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">death: Holy fire dims, brush lowers, she kneels or folds gracefully as talismans fall like</text>
+<text x="540" y="1436" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">ash, solemn and elegant.</text>
+<text x="540" y="1616" font-family="Menlo, sans-serif" font-size="17" fill="#8B7C73">ref: assets/generated/portraits_v3/luannu.png</text>
+<rect x="60" y="1730" width="1380" height="720" rx="30" fill="#261814" stroke="#A47D2A" stroke-width="5"/>
+<text x="92" y="1788" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="35" fill="#F5E7CF" font-weight="700">道士 / Daoshi / Taoist Priest</text>
+<rect x="92" y="1832" width="410" height="540" rx="18" fill="#1B0F0D" stroke="#57C7D4" stroke-width="3"/>
+<image href="file:///Users/crimson/Developer/COTIW/assets/generated/portraits_v3/daoshi.png" x="127" y="1860" width="340" height="485" preserveAspectRatio="xMidYMid meet"/>
+<text x="540" y="1842" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#E8C56A" font-weight="700">身份鎖 / Identity lock</text>
+<text x="540" y="1878" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">Taoist hat, blue-white robe, wooden sword or staff, yellow talismans, bagua</text>
+<text x="540" y="1905" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">charm, ritual authority, scholar-warlock posture</text>
+<text x="540" y="1946" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#57C7D4" font-weight="700">核心動作 / Actions</text>
+<text x="540" y="1984" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">idle: Balanced spellcaster stance, wooden sword angled downward, talismans floating in a</text>
+<text x="540" y="2008" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">small orbit, bagua glow breathing under feet.</text>
+<text x="540" y="2036" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">attack: Snaps a talisman forward with wooden sword guidance, cyan-gold spell line shoots</text>
+<text x="540" y="2060" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">outward, robe sleeve creates clean diagonal motion.</text>
+<text x="540" y="2088" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">defend: Raises wooden sword and forms a bagua ward, yellow talismans lock into octagon</text>
+<text x="540" y="2112" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">shield, posture disciplined and compact.</text>
+<text x="540" y="2140" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">hit: Robe and hat jolt, one talisman burns out, body slides back while sword remains in</text>
+<text x="540" y="2164" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">hand, silhouette stays readable.</text>
+<text x="540" y="2192" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">death: Bagua formation collapses, talismans fall unlit, priest sinks to one knee with</text>
+<text x="540" y="2216" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">wooden sword touching ground, quiet ritual failure.</text>
+<text x="540" y="2396" font-family="Menlo, sans-serif" font-size="17" fill="#8B7C73">ref: assets/generated/portraits_v3/daoshi.png</text>
+<rect x="60" y="2510" width="1380" height="720" rx="30" fill="#261814" stroke="#A47D2A" stroke-width="5"/>
+<text x="92" y="2568" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="35" fill="#F5E7CF" font-weight="700">家將 / Jiajiang / Family General</text>
+<rect x="92" y="2612" width="410" height="540" rx="18" fill="#1B0F0D" stroke="#57C7D4" stroke-width="3"/>
+<image href="file:///Users/crimson/Developer/COTIW/assets/generated/portraits_v3/jiajiang.png" x="127" y="2640" width="340" height="485" preserveAspectRatio="xMidYMid meet"/>
+<text x="540" y="2622" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#E8C56A" font-weight="700">身份鎖 / Identity lock</text>
+<text x="540" y="2658" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">Eight Generals face paint, flaming headdress, red-gold armor cloth, spear or</text>
+<text x="540" y="2685" font-family="Menlo, Hiragino Sans TC, Heiti TC, sans-serif" font-size="18" fill="#D7C4A5">ritual weapon, guardian stance, procession energy</text>
+<text x="540" y="2726" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="25" fill="#57C7D4" font-weight="700">核心動作 / Actions</text>
+<text x="540" y="2764" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">idle: Wide guardian stance, spear grounded, shoulder ornaments and flame headdress</text>
+<text x="540" y="2788" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">flicker, face paint readable, heavy rhythmic breathing.</text>
+<text x="540" y="2816" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">attack: Surging spear thrust or shield bash, red-gold flame trail, procession-step</text>
+<text x="540" y="2840" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">footwork, large clear impact shape for mobile readability.</text>
+<text x="540" y="2868" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">defend: Plants shield or ritual weapon forward, body square to enemy, guardian ward flare</text>
+<text x="540" y="2892" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">around armor, unwavering stance.</text>
+<text x="540" y="2920" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">hit: Armor cloth snaps from impact, head turns slightly but stance resists collapse,</text>
+<text x="540" y="2944" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">sparks and face-paint lines remain clear.</text>
+<text x="540" y="2972" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">death: Guardian flame gutters out, spear drops, heavy kneel with procession ornaments</text>
+<text x="540" y="2996" font-family="Hiragino Sans TC, Heiti TC, sans-serif" font-size="17" fill="#F5E7CF">falling still, heroic defeat not ragdoll.</text>
+<text x="540" y="3176" font-family="Menlo, sans-serif" font-size="17" fill="#8B7C73">ref: assets/generated/portraits_v3/jiajiang.png</text>
+</svg>

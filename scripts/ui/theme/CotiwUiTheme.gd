@@ -28,6 +28,19 @@ const PANEL_ASSET_BY_KIND: Dictionary = {
 	"rest": "res://assets/ui/panels/ui_panel_rest_action_default.svg",
 }
 
+## 面板材質鐵律：大型可點選卡片用 SVG texture；資料徽章 / tooltip / 一般容器用 StyleBoxFlat。
+## 這裡是唯一決策表，Scene 不准各自猜材質語言。
+const PANEL_MATERIAL_RULE_BY_KIND: Dictionary = {
+	"reward": "svg_texture",
+	"shop": "svg_texture",
+	"rest": "svg_texture",
+	"card": "svg_texture",
+	"hud_badge": "stylebox_flat",
+	"tooltip": "stylebox_flat",
+	"dialogue": "stylebox_flat",
+	"system_panel": "stylebox_flat",
+}
+
 const LOCATION_LABELS: Dictionary = {
 	LocationData.LOCATION_TYPES.COMBAT: "戰",
 	LocationData.LOCATION_TYPES.MINIBOSS: "菁",
@@ -36,6 +49,14 @@ const LOCATION_LABELS: Dictionary = {
 	LocationData.LOCATION_TYPES.TREASURE: "寶",
 	LocationData.LOCATION_TYPES.SHOP: "商",
 	LocationData.LOCATION_TYPES.REST_SITE: "休",
+}
+
+const CARD_TYPE_ACCENT_TOKEN: Dictionary = {
+	CardData.CARD_TYPES.ATTACK: "festival_red",
+	CardData.CARD_TYPES.SKILL: "spirit_jade",
+	CardData.CARD_TYPES.POWER: "sign_blue",
+	CardData.CARD_TYPES.STATUS: "warning_orange",
+	CardData.CARD_TYPES.CURSE: "mystic_purple",
 }
 
 static var _design_tokens_cache: Dictionary = {}
@@ -55,6 +76,29 @@ static func get_map_node_path(location_type: int) -> String:
 
 static func get_panel_asset_path(panel_kind: String) -> String:
 	return PANEL_ASSET_BY_KIND.get(panel_kind, "")
+
+static func get_panel_material_rule(panel_kind: String) -> String:
+	return PANEL_MATERIAL_RULE_BY_KIND.get(panel_kind, "stylebox_flat")
+
+static func get_typography_size(token_name: String, fallback: int) -> int:
+	var typography: Dictionary = _get_design_tokens().get("typography", {})
+	var token: Dictionary = typography.get(token_name, {})
+	return int(token.get("size", fallback))
+
+static func get_semantic_role(role_name: String) -> Dictionary:
+	var roles: Dictionary = _get_design_tokens().get("semantic_roles", {})
+	var role: Variant = roles.get(role_name, {})
+	if role is Dictionary:
+		return (role as Dictionary).duplicate(true)
+	return {}
+
+static func get_motion_duration(token_name: String, fallback_ms: int) -> int:
+	var motion: Dictionary = _get_design_tokens().get("motion", {})
+	return int(motion.get(token_name, fallback_ms))
+
+static func get_card_type_accent(card_type: int) -> Color:
+	var token_name: String = CARD_TYPE_ACCENT_TOKEN.get(card_type, "festival_red")
+	return get_color(token_name, get_color("festival_red", Color(0.85, 0.29, 0.17)))
 
 static func get_location_short_label(location_type: int) -> String:
 	return LOCATION_LABELS.get(location_type, "？")
@@ -162,6 +206,124 @@ static func apply_panel_texture(texture_rect: TextureRect, panel_kind: String) -
 	texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	texture_rect.stretch_mode = TextureRect.STRETCH_SCALE
 	texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	texture_rect.set_meta("panel_material_rule", get_panel_material_rule(panel_kind))
+
+static func style_reward_button(button: Button, kind: String = "card", rarity: int = 0) -> void:
+	if button == null:
+		return
+	button.set_meta("cotiw_component", "reward_button")
+	button.set_meta("panel_material_rule", get_panel_material_rule("reward"))
+	button.flat = true
+	button.custom_minimum_size = Vector2(320, 112)
+	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	button.clip_text = true
+	button.expand_icon = true
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.add_theme_font_size_override("font_size", get_typography_size("h2", 24))
+	button.add_theme_constant_override("h_separation", _get_spacing_value("md", 16))
+	button.add_theme_constant_override("icon_max_width", 40)
+	for color_name: String in ["font_color", "font_hover_color", "font_pressed_color"]:
+		button.add_theme_color_override(color_name, get_color("paper_warm", Color.WHITE))
+	button.add_theme_color_override("font_disabled_color", get_color("smoke_gray", Color.GRAY))
+	button.add_theme_color_override("font_shadow_color", get_color("text_shadow_soft", Color(0, 0, 0, 0.65)))
+	button.add_theme_constant_override("shadow_offset_x", 1)
+	button.add_theme_constant_override("shadow_offset_y", 1)
+	var style: Dictionary = get_reward_button_style(kind, rarity)
+	var normal := make_stylebox(style["fill_color"], style["rim_color"], _get_radius_value("lg", 16), int(style["border_width"]), 0.58)
+	var hover := make_stylebox((style["fill_color"] as Color).lightened(0.06), (style["rim_color"] as Color).lightened(0.08), _get_radius_value("lg", 16), int(style["border_width"]), 0.62)
+	var pressed := make_stylebox((style["fill_color"] as Color).darkened(0.08), style["rim_color"], _get_radius_value("lg", 16), maxi(2, int(style["border_width"]) - 1), 0.50)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", pressed)
+	button.add_theme_stylebox_override("disabled", make_stylebox(get_color("panel_bg_lock", Color(0.13, 0.09, 0.08, 0.8)), get_color("smoke_gray", Color.GRAY), _get_radius_value("lg", 16), _get_border_value("default", 2), 0.38))
+	button.set_meta("reward_style", style)
+	button.set_meta("touch_feedback_particle_hook", style["fx_hook"])
+	var panel_background := button.get_node_or_null("PanelBackground") as TextureRect
+	if panel_background != null:
+		apply_panel_texture(panel_background, "reward")
+		panel_background.modulate = Color.WHITE if not button.disabled else get_color("disabled_tint", Color(0.6, 0.6, 0.6, 0.85))
+
+static func get_reward_button_style(kind: String, rarity: int = 0) -> Dictionary:
+	if kind == "money":
+		return {"rim_color": get_color("incense_gold", Color(1.0, 0.78, 0.22)), "fill_color": get_color("wood_brown", Color(0.20, 0.12, 0.03)), "border_width": _get_border_value("cta", 4), "glyph": "金", "fx_hook": "fu_light_selected"}
+	if kind == "artifact":
+		return {"rim_color": get_color("mystic_purple", Color(0.64, 0.35, 0.95)), "fill_color": get_color("night_ink", Color(0.10, 0.04, 0.12)), "border_width": _get_border_value("strong", 3), "glyph": "器", "fx_hook": "fu_light_selected"}
+	match rarity:
+		CardData.CARD_RARITIES.RARE:
+			return {"rim_color": get_color("festival_red", Color(0.96, 0.23, 0.18)), "fill_color": get_color("danger_crimson", Color(0.20, 0.02, 0.03)), "border_width": 6, "glyph": "稀", "fx_hook": "fu_light_selected"}
+		CardData.CARD_RARITIES.UNCOMMON:
+			return {"rim_color": get_color("energy_cyan", Color(0.22, 0.84, 0.92)), "fill_color": get_color("sign_blue", Color(0.02, 0.12, 0.16)), "border_width": _get_border_value("cta", 4), "glyph": "奇", "fx_hook": "fu_light_pressed"}
+		CardData.CARD_RARITIES.BASIC:
+			return {"rim_color": get_color("smoke_gray", Color(0.62, 0.54, 0.42)), "fill_color": get_color("lacquer_black", Color(0.12, 0.09, 0.07)), "border_width": _get_border_value("default", 2), "glyph": "基", "fx_hook": "fu_light_pressed"}
+		_:
+			return {"rim_color": get_color("old_gold", Color(0.84, 0.64, 0.28)), "fill_color": get_color("panel_bg", Color(0.13, 0.08, 0.04)), "border_width": _get_border_value("strong", 3), "glyph": "常", "fx_hook": "fu_light_pressed"}
+
+static func style_shop_button(target: Control, is_unaffordable: bool = false) -> void:
+	if target == null:
+		return
+	target.set_meta("cotiw_component", "shop_button")
+	target.set_meta("panel_material_rule", get_panel_material_rule("shop"))
+	var panel_background := target.get_node_or_null("PanelBackground") as TextureRect
+	if panel_background != null:
+		apply_panel_texture(panel_background, "shop")
+		panel_background.modulate = Color.WHITE if not is_unaffordable else get_color("disabled_tint", Color(0.72, 0.72, 0.72, 0.9))
+	var price_label := target.get_node_or_null("PriceLabel") as Label
+	if price_label != null:
+		price_label.add_theme_color_override("font_color", get_color("warning_orange", Color.ORANGE) if is_unaffordable else get_color("incense_gold", Color.GOLD))
+		price_label.add_theme_color_override("font_shadow_color", get_color("text_shadow_soft", Color(0, 0, 0, 0.65)))
+		price_label.add_theme_constant_override("shadow_offset_x", 1)
+		price_label.add_theme_constant_override("shadow_offset_y", 1)
+		price_label.add_theme_font_size_override("font_size", get_typography_size("caption", 18))
+
+static func style_hud_badge(panel: Control, accent_token: String = "incense_gold") -> void:
+	if panel == null:
+		return
+	panel.set_meta("cotiw_component", "hud_badge")
+	panel.set_meta("panel_material_rule", get_panel_material_rule("hud_badge"))
+	var fill := _get_component_color("hud_badge", "fill", get_color("panel_bg", Color(0.15, 0.08, 0.07, 0.93)))
+	var border := get_color(accent_token, _get_component_color("hud_badge", "border", get_color("old_gold", Color(0.64, 0.49, 0.16))))
+	panel.add_theme_stylebox_override("panel", make_stylebox(fill, border, _get_radius_value("md", 12), _get_border_value("default", 2), 0.36))
+
+static func style_map_node(node: TextureButton, location_type: int, label: Label = null, state_glow: ColorRect = null, is_reachable: bool = false, is_current: bool = false, is_travel_mode: bool = false, is_visited: bool = false) -> void:
+	if node == null:
+		return
+	node.set_meta("cotiw_component", "map_node")
+	node.set_meta("panel_material_rule", "svg_icon")
+	var texture := load(get_map_node_path(location_type))
+	node.texture_normal = texture
+	node.texture_hover = texture
+	node.texture_pressed = texture
+	node.texture_disabled = texture
+	node.ignore_texture_size = true
+	node.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	var node_size := Vector2(_get_touch_target_value("minimum", 88), _get_touch_target_value("minimum", 88))
+	node.custom_minimum_size = node_size
+	node.size = node_size
+	if state_glow != null:
+		state_glow.visible = false
+		state_glow.color = Color.TRANSPARENT
+	node.scale = Vector2.ONE
+	node.self_modulate = Color.WHITE
+	var font_color := get_color("paper_warm", Color.WHITE)
+	if is_current:
+		font_color = get_color("incense_gold", Color.GOLD)
+		if state_glow != null:
+			state_glow.visible = true
+			state_glow.color = font_color
+	elif is_reachable:
+		font_color = get_color("neon_cyan", Color.DEEP_SKY_BLUE).lightened(0.1)
+		if state_glow != null:
+			state_glow.visible = true
+			state_glow.color = get_color("neon_cyan", Color.DEEP_SKY_BLUE)
+	elif is_visited:
+		node.self_modulate = get_color("paper_warm", Color(0.92, 0.88, 0.8, 1.0))
+	elif is_travel_mode:
+		var smoke_a := get_color("smoke_gray", Color(0.55, 0.49, 0.45, 1.0))
+		node.self_modulate = Color(smoke_a.r, smoke_a.g, smoke_a.b, 0.82)
+		font_color = smoke_a
+	if label != null:
+		label.add_theme_color_override("font_color", font_color)
+		label.add_theme_font_size_override("font_size", get_typography_size("micro", 16))
 
 static func style_overlay_backdrop(scrim: ColorRect, panel: ColorRect = null) -> void:
 	scrim.color = Color(0.07, 0.04, 0.04, 0.74)
@@ -169,19 +331,24 @@ static func style_overlay_backdrop(scrim: ColorRect, panel: ColorRect = null) ->
 		panel.color = get_color("panel", Color(0.15, 0.08, 0.07, 0.93))
 
 static func get_mobile_safe_card_art_path(original_path: String) -> String:
-	# Returns either:
-	#   - "res://assets/generated/cards/mobile_safe/<file>_mobile_safe_v1.png" if mobile_safe variant exists
-	#   - the ORIGINAL path unmodified (so caller's downstream FileLoader/load() behavior is preserved)
-	# 鐵律：不要對外部 sprites/* 路徑強制加 res:// — FileLoader 需要 raw relative 才能正確 prepend user://。
+	# 回傳值統一規則（修 root cause：先前 fallback 直接回 raw 相對路徑，導致 caller
+	# 拿到混合形態 — mobile_safe / cards_v3 分支回 res://，但 fallback 卻是裸 assets/...）：
+	#   • bundled（assets/... 或 res://...）一律正規化為 res:// 前綴
+	#   • external/...、user://... 等 FileLoader 範疇路徑「不」強制加 res://，原樣回傳
+	#     —— FileLoader 內部會自行 prepend user:// (mobile) 或 res:// (debug)
+	# 對應卡圖優先級：mobile_safe 變體 > 原圖（已正規化）
 	if original_path.is_empty():
 		return original_path
-	if original_path.contains("/cards/mobile_safe/"):
+	# FileLoader 範疇：external 資產 / user:// 已絕對 — 保留原樣
+	if original_path.begins_with("external/") or original_path.begins_with("user://"):
 		return original_path
-	# v3 NBP 卡圖：assets/generated/cards_v3/* — 用 load() 走 res://（已 import 成 ctex 不會 ship 的話 caller fallback 處理）
+
+	# 已在 mobile_safe 子目錄 → 確保 res:// 前綴後直接回
+	if original_path.contains("/cards/mobile_safe/"):
+		return normalize_resource_path(original_path)
+	# v3 NBP 卡圖：assets/generated/cards_v3/* — bundled，直接正規化
 	if original_path.contains("/cards_v3/"):
-		if original_path.begins_with("res://"):
-			return original_path
-		return "res://" + original_path.trim_prefix("/")
+		return normalize_resource_path(original_path)
 
 	var file_name: String = original_path.get_file()
 	var candidate_file_name: String = file_name.replace("_art_v1.", "_mobile_safe_v1.")
@@ -191,7 +358,8 @@ static func get_mobile_safe_card_art_path(original_path: String) -> String:
 	var candidate_path: String = MOBILE_SAFE_CARD_DIR.path_join(candidate_file_name)
 	if ResourceLoader.exists(candidate_path):
 		return candidate_path
-	return original_path
+	# Fallback：bundled 路徑也走 res:// 正規化，與上方分支對齊（root cause）
+	return normalize_resource_path(original_path)
 
 static func normalize_resource_path(resource_path: String) -> String:
 	if resource_path.is_empty():
@@ -218,6 +386,14 @@ static func _get_component_value(component_name: String, key: String, fallback: 
 static func _get_border_value(border_name: String, fallback: int) -> int:
 	var borders: Dictionary = _get_design_tokens().get("borders", {})
 	return int(borders.get(border_name, fallback))
+
+static func _get_spacing_value(spacing_name: String, fallback: int) -> int:
+	var spacing: Dictionary = _get_design_tokens().get("spacing", {})
+	return int(spacing.get(spacing_name, fallback))
+
+static func _get_touch_target_value(size_name: String, fallback: int) -> int:
+	var touch_targets: Dictionary = _get_design_tokens().get("touch_targets", {})
+	return int(touch_targets.get(size_name, fallback))
 
 static func _get_radius_value(radius_name: String, fallback: int) -> int:
 	var radii: Dictionary = _get_design_tokens().get("radii", {})

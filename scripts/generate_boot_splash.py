@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
-"""生成 鎮島錄 boot splash placeholder。
-廟會紅底 + 白色書法字「鎮島錄」+ 英文副標。
-1200×700 對齊 STR viewport（Sprint 2 直向重設計時換 1080×2340）。
+"""生成鎮島錄 engine boot splash placeholder。
+
+用途：
+- 輸出 `assets/ui/boot_splash_v5.png`
+- 僅供 Godot engine boot splash / export 啟動畫面素材使用
+- 目前遊戲 runtime 已改為 `Root.tscn` 內建 loading overlay，
+  不再使用獨立 SplashScreen scene/script
+
+尺寸維持 1200×700，便於與現行 Root 啟動畫面視覺語氣對齊。
 """
 
-from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 
-OUTPUT = Path(__file__).resolve().parents[1] / "assets" / "ui" / "boot_splash.png"
+from PIL import Image, ImageDraw, ImageFont
+
+OUTPUT = Path(__file__).resolve().parents[1] / "assets" / "ui" / "boot_splash_v5.png"
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 
 # 廟會紅 + 漸暈
@@ -49,8 +56,12 @@ draw.text((sub_x, sub_y), subtitle, fill=(255, 230, 180), font=sub_font)
 
 # 底部裝飾線
 line_y = H - 60
-draw.line([(W // 2 - 200, line_y), (W // 2 + 200, line_y)], fill=(255, 230, 180), width=2)
+draw.line(
+    [(W // 2 - 200, line_y), (W // 2 + 200, line_y)],
+    fill=(255, 230, 180),
+    width=2,
+)
 
 img.save(OUTPUT, "PNG")
-print(f"✅ Boot splash saved to {OUTPUT}")
+print(f"✅ Engine boot splash saved to {OUTPUT}")
 print(f"   尺寸：{W}×{H}")

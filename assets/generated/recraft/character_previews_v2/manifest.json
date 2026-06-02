@@ -1,0 +1,34 @@
+{
+  "tongji_a": {
+    "path": "assets/generated/recraft/character_previews_v2/tongji_a.webp",
+    "image_id": "acb71d1c-c414-4280-a4c8-8a0b4ea38db5"
+  },
+  "tongji_b": {
+    "path": "assets/generated/recraft/character_previews_v2/tongji_b.webp",
+    "image_id": "62f1674f-c6c2-47dc-a19b-a01461e9ba1b"
+  },
+  "luannu_a": {
+    "path": "assets/generated/recraft/character_previews_v2/luannu_a.webp",
+    "image_id": "b7a6f04d-182e-4a5f-a3ce-21af639c2a18"
+  },
+  "luannu_b": {
+    "path": "assets/generated/recraft/character_previews_v2/luannu_b.webp",
+    "image_id": "fcfd5849-2f40-4520-a9f6-5693b12611ae"
+  },
+  "daoshi_a": {
+    "path": "assets/generated/recraft/character_previews_v2/daoshi_a.webp",
+    "image_id": "4eb1fa67-9aef-4ec4-bd72-bb63de788b9c"
+  },
+  "daoshi_b": {
+    "path": "assets/generated/recraft/character_previews_v2/daoshi_b.webp",
+    "image_id": "984e6035-0dac-4c42-90e8-096ffb565a99"
+  },
+  "jiajiang_a": {
+    "path": "assets/generated/recraft/character_previews_v2/jiajiang_a.webp",
+    "image_id": "465f334d-f647-449b-90ea-549e452ad618"
+  },
+  "jiajiang_b": {
+    "path": "assets/generated/recraft/character_previews_v2/jiajiang_b.webp",
+    "image_id": "154f7085-5135-46d0-bd67-bf22ad2d8bc8"
+  }
+}

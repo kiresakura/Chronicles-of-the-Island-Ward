@@ -4,13 +4,7 @@ extends BaseShopButton
 
 func _ready():
 	card.card_selected.connect(_on_card_selected)
-	price_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color.GOLD))
-	price_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.65))
-	price_label.add_theme_constant_override("shadow_offset_x", 1)
-	price_label.add_theme_constant_override("shadow_offset_y", 1)
-	price_label.add_theme_font_size_override("font_size", 18)
-	if panel_background != null:
-		COTIW_UI_THEME.apply_panel_texture(panel_background, "shop")
+	COTIW_UI_THEME.style_shop_button(self, is_unaffordable)
 
 func init(_action_on_click: BaseAction) -> void:
 	super(_action_on_click)
@@ -18,6 +12,9 @@ func init(_action_on_click: BaseAction) -> void:
 	var card_data: CardData = _action_on_click.values.get("card_data", null)
 	if card_data != null:
 		card.init(card_data, 0, false, true)
+		TOUCH_FEEDBACK.install_long_press_detail(card, _make_shop_detail_payload())
+		if card.card_button != null:
+			TOUCH_FEEDBACK.install_long_press_detail(card.card_button, _make_shop_detail_payload())
 
 func _on_card_selected(_card: Card):
 	_on_button_up()

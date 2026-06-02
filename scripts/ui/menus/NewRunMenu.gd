@@ -1,23 +1,28 @@
 extends Control
 
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const CHARACTER_GALLERY_SCENE := preload("res://scenes/ui/menus/CharacterGallery.tscn")
+
+const CHARACTER_SHELF_PATH := "res://external/data/ui/new_run_character_shelf.json"
+const PORTRAIT_DIR := "res://assets/generated/portraits_v3/"
+
 @onready var title_screen: Control = $%TitleScreen
 
-@onready var character_name_label = $CharacterNameLabel
-@onready var character_health_label = $CharacterHealthLabel
-@onready var character_money_label = $CharacterMoneyLabel
-@onready var character_description_label = $CharacterDescriptionLabel
+@onready var character_name_label: Label = $CharacterNameLabel
+@onready var character_health_label: Label = $CharacterHealthLabel
+@onready var character_money_label: Label = $CharacterMoneyLabel
+@onready var character_description_label: Label = $CharacterDescriptionLabel
 
-@onready var character_artifact_texture_rect = $CharacterArtifactTextureRect
-@onready var character_artifact_name_label = $CharacterArtifactNameLabel
-@onready var character_artifact_description_label = $CharacterArtifactDescriptionLabel
+@onready var character_artifact_texture_rect: TextureRect = $CharacterArtifactTextureRect
+@onready var character_artifact_name_label: Label = $CharacterArtifactNameLabel
+@onready var character_artifact_description_label: Label = $CharacterArtifactDescriptionLabel
 
-@onready var decrease_difficulty_button = $DifficultySelect/DecreaseDifficultyButton
-@onready var difficulty_label = $DifficultySelect/DifficultyLabel
-@onready var increase_difficulty_button = $DifficultySelect/IncreaseDifficultyButton
+@onready var decrease_difficulty_button: Button = $DifficultySelect/DecreaseDifficultyButton
+@onready var difficulty_label: Label = $DifficultySelect/DifficultyLabel
+@onready var increase_difficulty_button: Button = $DifficultySelect/IncreaseDifficultyButton
 
-@onready var custom_run_modifier_button_container = $CustomRunModifierButtonContainer
-
-@onready var character_button_container = $CharacterButtonContainer
+@onready var custom_run_modifier_button_container: ScrollContainer = $CustomRunModifierButtonContainer
+@onready var character_button_container: ScrollContainer = $CharacterButtonContainer
 
 @onready var start_run_button: Button = $StartRunButton
 @onready var seed_input: LineEdit = $SeedInput
@@ -26,166 +31,417 @@ extends Control
 var selected_character_object_id: String = ""
 var selected_difficulty_level: int = 0
 
-# portrait gallery highlight nodes keyed by character_object_id
-var _portrait_highlights: Dictionary = {}
+var _character_gallery
+var _character_info_panel: Panel
+var _run_guide_panel: Panel
+var _character_tags_flow: HFlowContainer
+var _start_hint_label: Label
+var _info_heading_label: Label
+var _run_heading_label: Label
+var _selection_bridge: Label
+var _character_shelf: Array = []
 
-func _ready():
+static func calculate_p1_bottom_control_layout(safe: Rect2) -> Dictionary:
+	var left_x: float = safe.position.x + 36.0
+	var left_w: float = clampf(safe.size.x * 0.25, 292.0, 320.0)
+	var right_w: float = 344.0
+	var right_x: float = safe.position.x + safe.size.x - right_w - 32.0
+	var gallery_x: float = left_x + left_w + 24.0
+	var gallery_w: float = maxf(280.0, right_x - gallery_x - 24.0)
+	var guide_y: float = safe.position.y + safe.size.y - 164.0
+	var guide_h: float = 152.0
+	var guide_x: float = gallery_x + 12.0
+	var guide_w: float = maxf(360.0, minf(428.0, gallery_w - 24.0))
+	var hint_rect := Rect2(Vector2(guide_x + 16.0, guide_y + 38.0), Vector2(guide_w - 32.0, 40.0))
+	var seed_rect := Rect2(Vector2(guide_x + 16.0, guide_y + 88.0), Vector2(maxf(128.0, guide_w - 204.0), 46.0))
+	var start_rect := Rect2(Vector2(guide_x + guide_w - 176.0, guide_y + 86.0), Vector2(160.0, 58.0))
+	return {
+		"guide": Rect2(Vector2(guide_x, guide_y), Vector2(guide_w, guide_h)),
+		"hint": hint_rect,
+		"seed": seed_rect,
+		"start": start_rect,
+	}
+
+func _ready() -> void:
+	_character_shelf = _load_character_shelf()
 	start_run_button.button_up.connect(_on_start_run_button_up)
 	back_button.button_up.connect(_on_back_button_up)
-	
 	decrease_difficulty_button.button_up.connect(_on_decrease_difficulty_button)
 	increase_difficulty_button.button_up.connect(_on_increase_difficulty_button)
-	
 	seed_input.text_changed.connect(_on_seed_input_text_changed)
-	
 	Signals.character_selected.connect(_on_character_selected)
 	Signals.run_ended.connect(_on_run_ended)
-	# v4 Recraft pixel_art 背景 + PixelFX 動畫（香爐煙霧 + 呼吸 + Ken Burns）
+	if not resized.is_connected(_relayout_runtime_chrome):
+		resized.connect(_relayout_runtime_chrome)
+	var viewport := get_viewport()
+	if viewport != null and not viewport.size_changed.is_connected(_relayout_runtime_chrome):
+		viewport.size_changed.connect(_relayout_runtime_chrome)
+	if not Responsive.changed.is_connected(_relayout_runtime_chrome):
+		Responsive.changed.connect(_relayout_runtime_chrome)
+
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
-	var _newrun_layer = PixelSkinCls.apply_background(self, "newrun_bg_v5.png")
-	if _newrun_layer:
-		PixelFXCls.apply(_newrun_layer, PixelFXCls.Preset.SMOKE)
-	# v2 三角色立繪 gallery（廟堂 3 基座位置）
-	_apply_portrait_gallery()
+	const PixelFXCls = preload("res://scripts/ui/fx/PixelFX.gd")
+	var newrun_layer := PixelSkinCls.apply_background(self, "newrun_bg_v5.png")
+	if newrun_layer:
+		PixelFXCls.apply(newrun_layer, PixelFXCls.Preset.SMOKE)
 
-func _apply_portrait_gallery() -> void:
-	const PORTRAIT_DIR := "res://assets/generated/portraits_v3/"
-	var chars: Array = [
-		{"file": "tongji.png",  "label": "乩童", "locked": false, "character_id": "character_tongji"},
-		{"file": "luannu.png",  "label": "鸞女", "locked": false, "character_id": "character_luannu"},
-		{"file": "daoshi.png",  "label": "道士", "locked": true,  "character_id": ""},
-		{"file": "jiajiang.png","label": "家將", "locked": true,  "character_id": ""},
-	]
+	_style_static_controls()
+	_build_runtime_chrome()
+	_build_character_gallery()
+	populate_new_run_menu()
+	await get_tree().process_frame
+	_relayout_runtime_chrome()
 
-	# 用 Control 而非 CanvasLayer，自動繼承 NewRunMenu visible 狀態
-	var layer := Control.new()
-	layer.name = "PortraitGallery"
-	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	layer.mouse_filter = Control.MOUSE_FILTER_PASS
-	layer.z_index = 5
-	add_child(layer)
+func _style_static_controls() -> void:
+	COTIW_UI_THEME.apply_primary_button_style(start_run_button)
+	COTIW_UI_THEME.apply_secondary_button_style(back_button)
+	COTIW_UI_THEME.apply_secondary_button_style(decrease_difficulty_button)
+	COTIW_UI_THEME.apply_secondary_button_style(increase_difficulty_button)
+	start_run_button.text = "開始開壇"
+	back_button.text = "返回正殿"
+	seed_input.placeholder_text = "留白則隨機起局"
+	seed_input.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	character_button_container.visible = false
+	_update_difficulty_label()
+	_start_run_button_state(false)
 
-	var vp := get_viewport()
-	var screen_w: float = vp.get_visible_rect().size.x if vp else 1200.0
-	var screen_h: float = vp.get_visible_rect().size.y if vp else 700.0
-	var n: int = chars.size()
-	var portrait_w: float = screen_w * (0.18 if n <= 3 else 0.14)
-	var portrait_h: float = screen_h * 0.72
-	var slot_gap: float = screen_w * (0.03 if n <= 3 else 0.02)
-	var total_w: float = portrait_w * n + slot_gap * (n - 1)
-	var start_x: float = (screen_w - total_w) * 0.5
+func _build_runtime_chrome() -> void:
+	if _character_info_panel == null:
+		_character_info_panel = Panel.new()
+		_character_info_panel.name = "CharacterInfoPanel"
+		_character_info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_character_info_panel.z_index = -1
+		add_child(_character_info_panel)
+		_character_info_panel.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
+			Color(0.08, 0.03, 0.03, 0.90),
+			Color(0.78, 0.58, 0.20, 0.72),
+			18,
+			2,
+			0.18
+		))
+	if _run_guide_panel == null:
+		_run_guide_panel = Panel.new()
+		_run_guide_panel.name = "RunGuidePanel"
+		_run_guide_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_run_guide_panel.z_index = -1
+		add_child(_run_guide_panel)
+		_run_guide_panel.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
+			Color(0.10, 0.04, 0.03, 0.92),
+			Color(0.86, 0.64, 0.24, 0.82),
+			18,
+			2,
+			0.18
+		))
+	if _info_heading_label == null:
+		_info_heading_label = Label.new()
+		_info_heading_label.name = "InfoHeadingLabel"
+		_info_heading_label.text = "選誰・得到什麼"
+		_info_heading_label.add_theme_font_size_override("font_size", 16)
+		_info_heading_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
+		add_child(_info_heading_label)
+	if _run_heading_label == null:
+		_run_heading_label = Label.new()
+		_run_heading_label.name = "RunHeadingLabel"
+		_run_heading_label.text = "如何開始"
+		_run_heading_label.add_theme_font_size_override("font_size", 16)
+		_run_heading_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
+		add_child(_run_heading_label)
+	if _selection_bridge == null:
+		_selection_bridge = Label.new()
+		_selection_bridge.name = "SelectionBridgeLabel"
+		_selection_bridge.text = "← 神壇燈光落在哪位，左側就寫誰的起手命格。"
+		_selection_bridge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_selection_bridge.add_theme_font_size_override("font_size", 13)
+		_selection_bridge.add_theme_color_override("font_color", Color(0.96, 0.88, 0.72, 0.82))
+		_selection_bridge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(_selection_bridge)
+	if _character_tags_flow == null:
+		_character_tags_flow = HFlowContainer.new()
+		_character_tags_flow.name = "CharacterTagsFlow"
+		_character_tags_flow.alignment = FlowContainer.ALIGNMENT_BEGIN
+		_character_tags_flow.add_theme_constant_override("h_separation", 6)
+		_character_tags_flow.add_theme_constant_override("v_separation", 6)
+		add_child(_character_tags_flow)
+	if _start_hint_label == null:
+		_start_hint_label = Label.new()
+		_start_hint_label.name = "StartHintLabel"
+		_start_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_start_hint_label.add_theme_font_size_override("font_size", 14)
+		_start_hint_label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.82, 0.92))
+		_start_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(_start_hint_label)
 
-	_portrait_highlights.clear()
+func _build_character_gallery() -> void:
+	if _character_gallery != null:
+		return
+	_character_gallery = CHARACTER_GALLERY_SCENE.instantiate()
+	if _character_gallery == null:
+		return
+	_character_gallery.name = "CharacterGallery"
+	add_child(_character_gallery)
+	_character_gallery.character_selected.connect(func(character_id: String): Signals.character_selected.emit(character_id))
 
-	for i in chars.size():
-		var c: Dictionary = chars[i]
-		var path: String = PORTRAIT_DIR + c.file
-		if not ResourceLoader.exists(path):
-			continue
-		var x: float = start_x + i * (portrait_w + slot_gap)
-		var y: float = (screen_h - portrait_h) * 0.5
+func _relayout_runtime_chrome() -> void:
+	var safe: Rect2 = Responsive.safe_rect if Responsive != null else Rect2(Vector2.ZERO, get_viewport_rect().size)
+	var left_x: float = safe.position.x + 36.0
+	var left_w: float = clampf(safe.size.x * 0.25, 292.0, 320.0)
+	var info_y: float = safe.position.y + 108.0
+	var info_h: float = clampf(safe.size.y * 0.56, 360.0, 396.0)
+	var right_w: float = 344.0
+	var right_x: float = safe.position.x + safe.size.x - right_w - 32.0
+	var gallery_x: float = left_x + left_w + 24.0
+	var gallery_w: float = maxf(280.0, right_x - gallery_x - 24.0)
+	var gallery_y: float = safe.position.y + 106.0
+	var gallery_h: float = clampf(safe.size.y * 0.56, 350.0, 410.0)
+	var bottom_layout := calculate_p1_bottom_control_layout(safe)
+	var guide_rect: Rect2 = bottom_layout["guide"]
+	var hint_rect: Rect2 = bottom_layout["hint"]
+	var seed_rect: Rect2 = bottom_layout["seed"]
+	var start_rect: Rect2 = bottom_layout["start"]
+	var guide_x: float = guide_rect.position.x
+	var guide_y: float = guide_rect.position.y
+	var guide_w: float = guide_rect.size.x
+	var guide_h: float = guide_rect.size.y
 
-		# selection highlight border (gold rim, hidden until selected)
-		if not c.locked and c.character_id != "":
-			var highlight := ColorRect.new()
-			highlight.name = "Highlight_" + c.character_id
-			highlight.color = Color(0.95, 0.82, 0.45, 0.25)
-			highlight.position = Vector2(x - 4, y - 4)
-			highlight.size = Vector2(portrait_w + 8, portrait_h + 8)
-			highlight.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			highlight.visible = false
-			layer.add_child(highlight)
-			_portrait_highlights[c.character_id] = highlight
+	if _character_gallery != null:
+		_character_gallery.position = Vector2(gallery_x, gallery_y)
+		_character_gallery.size = Vector2(gallery_w, gallery_h)
+	if _character_info_panel != null:
+		_character_info_panel.position = Vector2(left_x - 8.0, info_y - 10.0)
+		_character_info_panel.size = Vector2(left_w + 16.0, info_h)
+	if _run_guide_panel != null:
+		_run_guide_panel.position = Vector2(guide_x, guide_y)
+		_run_guide_panel.size = Vector2(guide_w, guide_h)
+	if _info_heading_label != null:
+		_info_heading_label.position = Vector2(left_x + 4.0, info_y - 6.0)
+		_info_heading_label.size = Vector2(left_w - 8.0, 24.0)
+	if _run_heading_label != null:
+		_run_heading_label.position = Vector2(guide_x + 16.0, guide_y + 10.0)
+		_run_heading_label.size = Vector2(160.0, 24.0)
+	if _selection_bridge != null:
+		_selection_bridge.position = Vector2(gallery_x - 12.0, gallery_y + gallery_h + 2.0)
+		_selection_bridge.size = Vector2(gallery_w + 24.0, 20.0)
+	if _character_tags_flow != null:
+		_character_tags_flow.position = Vector2(left_x, info_y + 330.0)
+		_character_tags_flow.size = Vector2(left_w - 16.0, 72.0)
+	if _start_hint_label != null:
+		_start_hint_label.position = hint_rect.position
+		_start_hint_label.size = hint_rect.size
+	if seed_input != null:
+		seed_input.position = seed_rect.position
+		seed_input.size = seed_rect.size
+	if start_run_button != null:
+		start_run_button.position = start_rect.position
+		start_run_button.size = start_rect.size
+	if back_button != null:
+		back_button.position = Vector2(guide_x, guide_y + guide_h + 10.0)
+		back_button.size = Vector2(guide_w, 54.0)
 
-		var rect := TextureRect.new()
-		rect.name = "Portrait_" + c.file.get_basename()
-		rect.texture = load(path)
-		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		rect.position = Vector2(x, y)
-		rect.size = Vector2(portrait_w, portrait_h)
-		rect.modulate = Color(0.45, 0.45, 0.45, 0.7) if c.locked else Color(1, 1, 1, 0.95)
-		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		layer.add_child(rect)
+func _on_seed_input_text_changed(new_text: String) -> void:
+	var caret_column: int = seed_input.caret_column
+	seed_input.text = str(new_text.to_int())
+	seed_input.caret_column = min(caret_column, len(seed_input.text))
 
-		# 角色名 label
-		var lbl := Label.new()
-		lbl.text = c.label + ("（鎖）" if c.locked else "")
-		lbl.position = Vector2(x, y + portrait_h - 8)
-		lbl.size = Vector2(portrait_w, 32)
-		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		lbl.add_theme_font_size_override("font_size", 22)
-		lbl.add_theme_color_override("font_color", Color(0.95, 0.82, 0.45) if not c.locked else Color(0.6, 0.55, 0.5))
-		layer.add_child(lbl)
-
-		# invisible click button over unlocked portrait
-		if not c.locked and c.character_id != "":
-			var btn := Button.new()
-			btn.name = "PortraitBtn_" + c.file.get_basename()
-			btn.position = Vector2(x, y)
-			btn.size = Vector2(portrait_w, portrait_h)
-			btn.flat = true
-			btn.self_modulate = Color(1, 1, 1, 0)  # fully transparent
-			btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			layer.add_child(btn)
-			var char_id: String = c.character_id
-			btn.button_up.connect(func(): Signals.character_selected.emit(char_id))
-
-func _on_seed_input_text_changed(new_text: String):
-	# validate the input of the line edit
-	var caret_column: int = seed_input.caret_column	# store cursor position as changing text resets it
-	seed_input.text = str(new_text.to_int()) # validate inputs to only int
-	seed_input.caret_column = min(caret_column, len(seed_input.text)) # reset the cursor position
-
-func _on_character_selected(character_object_id: String):
+func _on_character_selected(character_object_id: String) -> void:
 	selected_character_object_id = character_object_id
 	populate_character_info(selected_character_object_id)
-	_update_portrait_highlights(character_object_id)
+	if _character_gallery != null:
+		_character_gallery.select_character(character_object_id)
+	_start_run_button_state(not selected_character_object_id.is_empty())
 
-func _update_portrait_highlights(active_character_id: String) -> void:
-	for char_id in _portrait_highlights:
-		var highlight: ColorRect = _portrait_highlights[char_id]
-		if is_instance_valid(highlight):
-			highlight.visible = (char_id == active_character_id)
+func _on_decrease_difficulty_button() -> void:
+	selected_difficulty_level = max(0, selected_difficulty_level - 1)
+	_update_difficulty_label()
 
-func _on_decrease_difficulty_button():
-	selected_difficulty_level = max(0, selected_difficulty_level -1)
-	difficulty_label.text = "Difficulty " + str(selected_difficulty_level)
-func _on_increase_difficulty_button():
+func _on_increase_difficulty_button() -> void:
 	selected_difficulty_level = min(selected_difficulty_level + 1, len(PlayerData.DIFFICULTY_RUN_MODIFIER_OBJECT_IDS))
-	difficulty_label.text = "Difficulty " + str(selected_difficulty_level)
+	_update_difficulty_label()
+
+func _update_difficulty_label() -> void:
+	difficulty_label.text = "難度 %d" % selected_difficulty_level
 
 func populate_new_run_menu() -> void:
-	character_button_container.populate_character_buttons()
 	custom_run_modifier_button_container.populate_custom_run_modifiers()
+	_refresh_character_gallery()
+	_select_default_character_if_needed()
 
 func populate_character_info(character_object_id: String) -> void:
 	var character_data: CharacterData = Global.get_character_data(character_object_id)
-	if character_data != null:
-		character_name_label.text = character_data.character_name
-		character_health_label.text = "HP: {0}".format([character_data.character_starting_health])
-		character_money_label.text = "Money: {0}".format([character_data.character_starting_money])
-		character_description_label.text = character_data.character_description
-		
-		# TODO potentially update ui to support multiple starter artifacts displayed
-		if len(character_data.character_starting_artifact_ids) > 0:
-			var artifact_data: ArtifactData = Global.get_artifact_data(character_data.character_starting_artifact_ids[0])
-			if artifact_data != null:
-				character_artifact_texture_rect.texture = CardArtRegistry.resolve_artifact_texture(artifact_data)
-				character_artifact_name_label.text = artifact_data.artifact_name
-				character_artifact_description_label.text = artifact_data.artifact_description
+	if character_data == null:
+		character_name_label.text = "請先選角"
+		character_health_label.text = "元神：—"
+		character_money_label.text = "銀兩：—"
+		character_description_label.text = "神壇還沒選定主位。"
+		character_artifact_texture_rect.texture = null
+		character_artifact_name_label.text = "起手護符：待定"
+		character_artifact_description_label.text = "先選角色，再看祂帶來什麼。"
+		_populate_character_tags([])
+		_start_hint_label.text = "先從中央 gallery 點一位角色，再決定難度、種子；右側這欄會告訴你祂適合怎麼開局。"
+		return
 
-func _on_start_run_button_up():
-	# get the seed and start the run
+	character_name_label.text = character_data.character_name
+	character_health_label.text = "元神：%d" % character_data.character_starting_health
+	character_money_label.text = "銀兩：%d" % character_data.character_starting_money
+	character_description_label.text = character_data.character_description
+	_populate_character_tags(_tags_for_character(character_object_id))
+
+	var starter_artifact_name: String = "無起手護符"
+	var starter_artifact_description: String = ""
+	character_artifact_texture_rect.texture = null
+	if len(character_data.character_starting_artifact_ids) > 0:
+		var artifact_data: ArtifactData = Global.get_artifact_data(character_data.character_starting_artifact_ids[0])
+		if artifact_data != null:
+			character_artifact_texture_rect.texture = CardArtRegistry.resolve_artifact_texture(artifact_data)
+			starter_artifact_name = artifact_data.artifact_name
+			starter_artifact_description = artifact_data.artifact_description
+	character_artifact_name_label.text = starter_artifact_name
+	character_artifact_description_label.text = starter_artifact_description if not starter_artifact_description.is_empty() else "此角色不帶額外起手遺物。"
+	var build_hint: String = _build_hint_for_character(character_object_id)
+	if build_hint.is_empty():
+		_start_hint_label.text = "已選中【%s】。確認難度與種子後，按下〈開始開壇〉立刻進局。" % character_data.character_name
+	else:
+		_start_hint_label.text = "已選中【%s】。核心開局：%s\n確認難度與種子後，按下〈開始開壇〉立刻進局。" % [character_data.character_name, build_hint]
+
+func _populate_character_tags(tags: Array) -> void:
+	if _character_tags_flow == null:
+		return
+	for child in _character_tags_flow.get_children():
+		child.queue_free()
+	for raw_tag in tags:
+		var tag_text: String = str(raw_tag)
+		if tag_text.is_empty():
+			continue
+		var panel := Panel.new()
+		panel.custom_minimum_size = Vector2(0, 24)
+		panel.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
+			Color(0.20, 0.08, 0.05, 0.94),
+			Color(0.90, 0.68, 0.26, 0.84),
+			12,
+			1,
+			0.12
+		))
+		var label := Label.new()
+		label.text = tag_text
+		label.position = Vector2(9, 2)
+		label.size = Vector2(maxf(58.0, float(tag_text.length()) * 15.0), 20.0)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", 13)
+		label.add_theme_color_override("font_color", Color(0.98, 0.92, 0.82, 1.0))
+		panel.custom_minimum_size.x = label.size.x + 18.0
+		panel.add_child(label)
+		_character_tags_flow.add_child(panel)
+
+func _refresh_character_gallery() -> void:
+	if _character_gallery == null:
+		return
+	_character_gallery.setup_entries(_build_gallery_entries())
+	_character_gallery.select_character(selected_character_object_id)
+
+func _build_gallery_entries() -> Array:
+	var entries: Array = []
+	for shelf_entry in _character_shelf:
+		var entry: Dictionary = shelf_entry.duplicate(true)
+		var character_id: String = str(entry.get("character_id", ""))
+		var character_data: CharacterData = Global.get_character_data(character_id)
+		var has_data: bool = character_data != null
+		var unlocked: bool = has_data and Global.is_character_unlocked(character_id)
+		var unlock_hint: String = Global.get_unlock_hint(character_id)
+		if unlock_hint.is_empty():
+			unlock_hint = str(entry.get("fallback_hint", ""))
+		entry["locked"] = not unlocked
+		entry["portrait_path"] = PORTRAIT_DIR + str(entry.get("portrait_file", ""))
+		entry["unlock_hint"] = unlock_hint
+		if has_data:
+			entry["label"] = character_data.character_name
+			entry["description"] = character_data.character_description
+			if len(character_data.character_starting_artifact_ids) > 0:
+				var artifact_data: ArtifactData = Global.get_artifact_data(character_data.character_starting_artifact_ids[0])
+				if artifact_data != null:
+					entry["starter_name"] = artifact_data.artifact_name
+					entry["starter_description"] = artifact_data.artifact_description
+		else:
+			entry["description"] = str(entry.get("locked_copy", "神像尚未開眼。"))
+		entries.append(entry)
+	return entries
+
+func _select_default_character_if_needed() -> void:
+	if not selected_character_object_id.is_empty() and Global.get_character_data(selected_character_object_id) != null:
+		return
+	for entry in _build_gallery_entries():
+		if not bool(entry.get("locked", true)):
+			var character_id: String = str(entry.get("character_id", ""))
+			if not character_id.is_empty():
+				Signals.character_selected.emit(character_id)
+				return
+	_on_character_selected("")
+
+func _tags_for_character(character_object_id: String) -> Array:
+	for shelf_entry in _character_shelf:
+		if str(shelf_entry.get("character_id", "")) == character_object_id:
+			return shelf_entry.get("tags", [])
+	return []
+
+func _build_hint_for_character(character_object_id: String) -> String:
+	for shelf_entry in _character_shelf:
+		if str(shelf_entry.get("character_id", "")) == character_object_id:
+			return str(shelf_entry.get("build_hint", ""))
+	return ""
+
+func _load_character_shelf() -> Array:
+	if not FileAccess.file_exists(CHARACTER_SHELF_PATH):
+		push_error("NewRunMenu: missing character shelf data: " + CHARACTER_SHELF_PATH)
+		return _fallback_character_shelf_from_global()
+	var file := FileAccess.open(CHARACTER_SHELF_PATH, FileAccess.READ)
+	if file == null:
+		push_error("NewRunMenu: cannot open character shelf data: " + CHARACTER_SHELF_PATH)
+		return _fallback_character_shelf_from_global()
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_ARRAY:
+		push_error("NewRunMenu: character shelf JSON must be an array")
+		return _fallback_character_shelf_from_global()
+	var shelf: Array = []
+	for item in parsed:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var entry: Dictionary = (item as Dictionary).duplicate(true)
+		if not entry.has("tags") or typeof(entry["tags"]) != TYPE_ARRAY:
+			entry["tags"] = []
+		shelf.append(entry)
+	if shelf.is_empty():
+		return _fallback_character_shelf_from_global()
+	return shelf
+
+func _fallback_character_shelf_from_global() -> Array:
+	var shelf: Array = []
+	for character_id: String in Global._id_to_character_data.keys():
+		var character_data: CharacterData = Global.get_character_data(character_id)
+		if character_data == null:
+			continue
+		shelf.append({
+			"character_id": character_id,
+			"label": character_data.character_name,
+			"portrait_file": "",
+			"locked_copy": character_data.character_description,
+			"tags": [],
+			"build_hint": "",
+		})
+	return shelf
+
+func _start_run_button_state(can_start: bool) -> void:
+	start_run_button.disabled = not can_start
+
+func _on_start_run_button_up() -> void:
+	if selected_character_object_id.is_empty():
+		return
 	var run_seed: int = seed_input.text.to_int()
 	Global.start_run(selected_character_object_id, run_seed, selected_difficulty_level, custom_run_modifier_button_container.selected_custom_run_modififers)
 
-func _on_back_button_up():
+func _on_back_button_up() -> void:
 	title_screen.show_main_menu()
 
-func _on_run_ended():
-	# go back to tile screen on failed run, but not abandoned run
+func _on_run_ended() -> void:
 	var has_save_file: bool = FileLoader.has_save_file()
 	visible = not has_save_file
+	selected_character_object_id = ""
 	populate_new_run_menu()

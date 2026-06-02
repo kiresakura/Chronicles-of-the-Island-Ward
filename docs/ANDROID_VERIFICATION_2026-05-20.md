@@ -5,6 +5,8 @@
 > **截圖**：`build/android/shots_redmi/01..10.png`
 > **耗時**：≈ 25 min（含解 BlueStacks Vulkan 黑屏 + qemu AVD config 問題）
 
+> **歷史註記（2026-05-28）**：本文件記錄的是當時驗收流程。專案現況已改為 **`Root.tscn` 內建 loading overlay**；獨立 `SplashScreen` scene/script 已移除，`boot_splash_v5.png` 僅保留作 engine boot splash / export 啟動畫面素材。
+
 ---
 
 ## TL;DR
