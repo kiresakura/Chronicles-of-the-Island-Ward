@@ -194,16 +194,18 @@ func refresh_mascot() -> void:
 		if ResourceLoader.exists(svg_path):
 			_bust_rect.texture = load(svg_path)
 			return
-	# fallback pixel bust
+	# 看板娘正式素材：PixelLab 去背 bust。
+	# ACTOR_TO_BUST(SVG) 目前刻意停用（見上方常數註解），故 pixel bust 是「主要來源」而非
+	# fallback —— 命中時不再發 warning，避免每次載入都污染 log（降噪）。
 	var pixel_name: String = PIXEL_BUST_FALLBACK.get(id, "")
 	if not pixel_name.is_empty():
 		var pixel_path: String = PIXEL_BUST_DIR + pixel_name
 		if ResourceLoader.exists(pixel_path):
 			_bust_rect.texture = load(pixel_path)
-			push_warning("[MascotPanel] using pixel fallback for " + id)
 			return
+	# 只有 SVG 與 pixel bust 皆無（真正缺素材）才警告
 	_bust_rect.texture = null
-	push_warning("[MascotPanel] no bust for " + id)
+	push_warning("[MascotPanel] 找不到看板娘 bust 素材：" + id)
 
 func _on_mascot_changed(_character_id: String) -> void:
 	refresh_mascot()
