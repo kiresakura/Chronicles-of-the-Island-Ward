@@ -193,10 +193,20 @@ func _try_load_svg_from_texture_path(texture_path: String) -> bool:
 
 ## 嘗試由 texture_path basename 映射 actor_id，找到就載入 idle 動畫條。
 ## 返回是否成功（成功時 sprite 已套第一幀，後續 _process 推進循環）。
+# 角色立繪 v4：4 名玩家角色改用新 PixelLab 英雄靜態立繪。
+# PixelLab 64px animate-with-text 會把高細節立繪糊成 off-model，破壞角色一致性，
+# 故這 4 角跳過 anim → set_combatant_sprite 退回靜態 portraits_v3。敵人不受影響。
+const STATIC_ONLY_BASENAMES: Dictionary = {
+	"tongji.png": true, "luannu.png": true, "daoshi.png": true, "jiajiang.png": true,
+}
+
 func _try_load_anim_from_texture_path(texture_path: String) -> bool:
 	if texture_path == null or texture_path.is_empty():
 		return false
 	var basename: String = texture_path.get_file()
+	# 玩家 4 角強制走靜態立繪（見上方註解）
+	if STATIC_ONLY_BASENAMES.has(basename):
+		return false
 	var actor_id: String = ANIM_LOOKUP.get(basename, "")
 	if actor_id == "":
 		return false

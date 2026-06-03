@@ -113,6 +113,8 @@ MISSING_ENEMIES = [
 ACTOR_SOURCES = {
     "character_tongji":   "assets/generated/portraits_v3/tongji.png",
     "character_luannu":   "assets/generated/portraits_v3/luannu.png",
+    "character_daoshi":   "assets/generated/portraits_v3/daoshi.png",
+    "character_jiajiang": "assets/generated/portraits_v3/jiajiang.png",
     "enemy_mountain_boar": "assets/generated/enemies_v3/enemy_mountain_boar.png",
     "enemy_tree_spirit":   "assets/generated/enemies_v3/enemy_tree_spirit.png",
     "enemy_wandering_soul": "assets/generated/enemies_v3/enemy_lost_soul.png",
@@ -126,8 +128,10 @@ ACTOR_SOURCES = {
 
 # Brief actor description (used in animate-with-text)
 ACTOR_DESCS = {
-    "character_tongji":    "young Taiwanese male spirit medium with red headband and bare chest, ceremonial sword",
-    "character_luannu":    "young Taiwanese female phoenix maiden with elaborate gold headdress and red robe, holding spirit brush",
+    "character_tongji":    "young Taiwanese male spirit medium, red headband with trailing tassel, open red-gold ritual vest over bare muscular torso, holding a spirit-brush staff, heroic tall anime proportions",
+    "character_luannu":    "young Taiwanese female phoenix maiden, gold phoenix crown with red gem, red-gold embroidered top and pants with jade-green sash, holding a spirit brush, heroic tall anime proportions",
+    "character_daoshi":    "young Taiwanese male Taoist priest, dark-blue and white Taoist robe, gold priest crown, holding a peach-wood ritual sword, heroic tall anime proportions",
+    "character_jiajiang":  "Taiwanese temple guardian general, horned war helmet, painted guardian opera face, red-gold lamellar plate armor with chest guard and pauldrons, ritual weapon, muscular heroic proportions",
     "enemy_mountain_boar": "fierce wild mountain boar with red eyes and tusks, dark fur, folk-religion demon",
     "enemy_tree_spirit":   "ancient gnarled tree spirit with glowing eyes and twisted bark body",
     "enemy_wandering_soul": "pale floating wandering ghost in tattered white robe, mournful expression",
@@ -395,7 +399,9 @@ def main() -> None:
     if phase in ("missing_enemies", "all"):
         phase_missing_enemies(api_key)
     if phase in ("animations", "all"):
-        phase_animations(api_key)
+        # 可選：phase 之後接 actor_id 子集，例如
+        #   ... animations character_tongji character_luannu character_daoshi character_jiajiang
+        phase_animations(api_key, sys.argv[2:] or None)
 
 
 if __name__ == "__main__":
