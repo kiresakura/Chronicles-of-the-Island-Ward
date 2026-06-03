@@ -4,7 +4,7 @@ const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
 @onready var button_samples: VBoxContainer = $ButtonSamples
 @onready var panel_samples: VBoxContainer = $PanelSamples
-@onready var badge_samples: VBoxContainer = $BadgeSamples
+@onready var badge_samples: HBoxContainer = $BadgeSamples  # scene 內 BadgeSamples 為橫排 HBoxContainer，型別需與 scene 一致
 @onready var tooltip_sample: Panel = $TooltipSample
 @onready var reward_samples: VBoxContainer = $RewardSamples
 @onready var shop_item_samples: VBoxContainer = $ShopItemSamples

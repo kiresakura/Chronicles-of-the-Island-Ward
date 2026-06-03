@@ -339,7 +339,9 @@ func _layout_pixel_skin() -> void:
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):
-		var stage_size_t: Vector2 = size
+		# 與本函式其餘 layout 一致，改用 viewport 尺寸（stage_size），
+		# 不可依賴 MainMenu self.size（在 Root.tscn 為 40×40，會把標題匾縮成一點）。
+		var stage_size_t: Vector2 = stage_size
 		var title_w: float = stage_size_t.x * 0.42
 		var title_h: float = title_w * 0.30
 		_pixel_title.size = Vector2(title_w, title_h)
