@@ -31,8 +31,10 @@ const HORIZONTAL_BIAS: float = -0.18
 # 垂直高度倍率：放大角色讓下半身超出螢幕底（user spec）
 # 1.0 = 全身剛好；1.4 = 下半身約 40% 在螢幕外
 const HEIGHT_OVERSCAN: float = 1.4
-# Y 偏移：正值往下，讓頭頂留更多上方空間
-const VERTICAL_BIAS: float = 0.08
+# Y 偏移：正值往下。新英雄 8 頭身較高，bust 以 1.4× overscan 撐高後若仍底邊對齊，
+# 頭頂會被推出畫面上緣（看板娘沒臉）。提高 bias 把角色整體下移，讓臉進入畫面、
+# 下半身改由螢幕底超出 → 頭到大腿的半身看板娘框取。
+const VERTICAL_BIAS: float = 0.42
 
 signal mascot_tapped()
 signal mascot_change_requested()  # 長按或專屬切換 button 才開 selector
