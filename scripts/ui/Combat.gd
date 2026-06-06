@@ -106,7 +106,7 @@ func _ready():
 	# v4 Recraft pixel_art 背景 + PixelFX 動畫（火星漫天 + 緊張呼吸 + Ken Burns）
 	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
 	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
-	var _combat_layer = PixelSkinCls.apply_background(self, "combat_bg_v5.png")
+	var _combat_layer = PixelSkinCls.apply_background(self, "combat_bg_ch1.png")  # 第一章專屬戰鬥 BG（山門廟埕）
 	if _combat_layer:
 		PixelFXCls.apply(_combat_layer, PixelFXCls.Preset.EMBERS)
 	# v2 HUD overlay：3 神明 affinity badges + 八卦 energy ring
@@ -269,6 +269,11 @@ func _on_combat_started(event_id: String):
 	set_combat_display_visibility(true)
 	update_combat_display()
 	set_combat_status(COMBAT_STATUS_PROCESSING)	# P0：戰鬥開場，回合即將開始
+	# 第一章專屬戰鬥 BG：戰鬥時覆寫 background_button（不動共用的 act1_mountain_temple，
+	# 那張仍用於角色選擇背景）。離開戰鬥到寶箱/商店節點時 _update_background 會還原。
+	const COMBAT_BG_CH1 := "res://assets/generated/pixellab/combat_bg_ch1.png"
+	if is_instance_valid(background_button) and ResourceLoader.exists(COMBAT_BG_CH1):
+		background_button.texture_normal = load(COMBAT_BG_CH1)
 
 func _on_combat_ended():
 	set_combat_display_visibility(false)
