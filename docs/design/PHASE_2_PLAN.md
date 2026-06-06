@@ -60,6 +60,7 @@
 - **範圍**：新 `PilgrimageMapGenerator`（產 `Array[LocationData]` 路線圖）+ Map.gd 接新生成器；route_trait 套節點獎勵；保留 LocationData/Map 既有渲染層。**以 feature flag / 並存方式切換**，contract 測試保護既有地圖直到新生成器就緒。
 - **依賴**：建議排 2A-2C 之後（系統穩定再動地圖核心）。**風險**：高（重寫生成 + 觸 framework map）。**估**：大。
 - **落地檢核**：生成器單元測試（分支結構合法、節點分佈、route_trait 套用）+ 地圖渲染整合 smoke + 既有地圖 contract 不破。
+- **狀態**：✅ **完成（2026-06-06）**——`ActionGeneratePilgrimage`（沿用網格+鄰接+末端 Boss 的有效圖、疊加遶境路線：山路→夜市路→廟路→荒宅路、route_trait 標記到 LocationData、危險度決定遇煞難度池）；act_1 經 `act_action_script_path` 切換（框架擴充點，非 hack）。整合測試驗證圖有效（起點/大醮/可達/route_flavor），既有 smoke/contract 不破，146/146。⏳ 路線視覺主題、香火回報實際套用為後續。
 
 ### 2F — 鎮煞大醮（Boss）+ 第一章整合
 - **目標**：百年虎爺多階段 Boss + 第一章端到端可玩 + 平衡 pass。

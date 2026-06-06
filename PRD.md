@@ -255,7 +255,7 @@
 
 路線特徵 `route_traits/*.json`：`pollution_level`（污染度）、`incense_reward_modifier`（香火回報倍率）、`danger_rating`（危險度）、`route_flavor`（山路 / 廟路 / 夜市路 / 荒宅路）。
 
-**狀態**：✅ 路線特徵資料已落地。⏳ 地圖生成演算法（把 STS 分支圖換成遶境）屬 **Phase 2**——**未宣稱地圖已重寫**。細節見 [pilgrimage_route_system.md](docs/design/pilgrimage_route_system.md)。
+**狀態**：✅ 路線特徵資料 + **遶境生成器已落地**（`ActionGeneratePilgrimage` 取代 STS 分支圖，act_1 經 `act_action_script_path` 切換；有效圖 + 路線標記 + 危險度決定難度池），整合測試驗證圖有效。⏳ 路線視覺主題 / 香火回報實際套用為後續。細節見 [pilgrimage_route_system.md](docs/design/pilgrimage_route_system.md)。
 
 ---
 

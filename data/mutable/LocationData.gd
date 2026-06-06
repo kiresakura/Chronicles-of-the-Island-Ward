@@ -29,6 +29,12 @@ class_name LocationData
 ## A path to an external texture file to use when at this location. Overrides the act background
 @export var location_background_texture_path: String = ""
 
+## 鎮島錄 2E — 遶境路線特徵（由 ActionGeneratePilgrimage 標記；影響主題與獎勵，預設空 = 不影響）
+@export var location_route_flavor: String = ""		# mountain / temple / night_market / haunted
+@export var location_pollution_level: int = 0
+@export var location_incense_modifier: float = 1.0
+@export var location_danger_rating: int = 0
+
 enum LOCATION_TYPES {STARTING, COMBAT, MINIBOSS, BOSS, EVENT, TREASURE, SHOP, REST_SITE}
 ## The type of the location. Determines behavior of what to do when the location is visited.
 @export var location_type: int = LOCATION_TYPES.COMBAT
