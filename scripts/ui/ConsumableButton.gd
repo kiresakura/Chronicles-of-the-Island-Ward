@@ -15,6 +15,11 @@ func init(_consumable_slot_index: int):
 	
 	var consumable_data: ConsumableData = Global.get_player_consumable_in_slot_index(consumable_slot_index)
 	if consumable_data != null:
+		# 有消耗品 → 套用主題 SVG icon，取代場景預設的 res://icon.svg placeholder
+		const CONSUMABLE_ICON := "res://assets/generated/icons_v2/icon_consumable.svg"
+		if ResourceLoader.exists(CONSUMABLE_ICON):
+			texture_normal = load(CONSUMABLE_ICON)
+		self_modulate.a = 1.0
 		# set tooltip
 		tooltip_text = consumable_data.consumable_name
 		if consumable_data.consumable_description != "":

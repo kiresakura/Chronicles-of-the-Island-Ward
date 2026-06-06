@@ -238,6 +238,16 @@ static func style_reward_button(button: Button, kind: String = "card", rarity: i
 	button.add_theme_stylebox_override("disabled", make_stylebox(get_color("panel_bg_lock", Color(0.13, 0.09, 0.08, 0.8)), get_color("smoke_gray", Color.GRAY), _get_radius_value("lg", 16), _get_border_value("default", 2), 0.38))
 	button.set_meta("reward_style", style)
 	button.set_meta("touch_feedback_particle_hook", style["fx_hook"])
+	# 取代場景預設 res://icon.svg placeholder：money/card 套既有主題 icon；
+	# 其餘 kind 若仍是預設 icon.svg 才清空（artifact 等由各自 script 覆寫，不動）
+	var _reward_icon: String = {
+		"money": "res://assets/generated/icons_v2/status/incense_money.svg",
+		"card": "res://assets/generated/icons/ui_v2/ui_deck.svg",
+	}.get(kind, "")
+	if _reward_icon != "" and ResourceLoader.exists(_reward_icon):
+		button.icon = load(_reward_icon)
+	elif button.icon != null and button.icon.resource_path == "res://icon.svg":
+		button.icon = null
 	var panel_background := button.get_node_or_null("PanelBackground") as TextureRect
 	if panel_background != null:
 		apply_panel_texture(panel_background, "reward")
