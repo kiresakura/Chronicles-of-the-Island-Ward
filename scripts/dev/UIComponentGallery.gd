@@ -11,12 +11,32 @@ const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 @onready var map_node_samples: HBoxContainer = $MapNodeSamples
 
 func _ready() -> void:
+	COTIW_UI_THEME.use_card_frame_v2 = true	# P1：Gallery 預覽啟用 v2 符令卡框（dev-only，不影響 live 卡牌鏈/測試）
 	_apply_button_samples()
 	_apply_panel_samples()
 	_apply_badge_samples()
 	_apply_reward_samples()
 	_apply_shop_samples()
 	_apply_map_node_samples()
+	_apply_card_frame_v2_samples()	# P1：v2 卡框五稀有度預覽列
+
+## P1：在 Gallery 加一列 v2 符令卡框預覽（共通/進階/稀有/神威/咒煞）。
+func _apply_card_frame_v2_samples() -> void:
+	var row := HBoxContainer.new()
+	row.name = "CardFrameV2Samples"
+	row.add_theme_constant_override("separation", 12)
+	row.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	row.position += Vector2(-360, -210)
+	add_child(row)
+	for rarity: int in [CardData.CARD_RARITIES.COMMON, CardData.CARD_RARITIES.UNCOMMON, CardData.CARD_RARITIES.RARE, CardData.CARD_RARITIES.BASIC]:
+		var path: String = COTIW_UI_THEME.get_card_frame_v2_path(rarity)
+		if ResourceLoader.exists(path):
+			var tr := TextureRect.new()
+			tr.texture = load(path)
+			tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+			tr.custom_minimum_size = Vector2(120, 180)
+			row.add_child(tr)
 
 func _apply_button_samples() -> void:
 	var primary := button_samples.get_node_or_null("PrimaryButton") as Button

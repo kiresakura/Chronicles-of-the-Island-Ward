@@ -117,7 +117,7 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 			else:
 				card_texture.texture = FileLoader.load_texture(card_art_path)
 	
-	var frame_path: String = COTIW_UI_THEME.get_card_frame_path(card_data.card_rarity)
+	var frame_path: String = COTIW_UI_THEME.get_active_card_frame_path(card_data.card_rarity)	# P1：opt-in v2 框（旗標預設 false=既有框）
 	if frame_path != "" and ResourceLoader.exists(frame_path):
 		card_frame.texture = load(frame_path)
 		card_frame.visible = true  # 啟用金框 SVG 疊圖
