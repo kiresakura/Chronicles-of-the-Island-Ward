@@ -77,18 +77,22 @@ static func mark_disabled(target: Control, disabled: bool) -> void:
 		(target as BaseButton).disabled = disabled
 	apply_state(target, TouchState.DISABLED if disabled else TouchState.NORMAL)
 
-static func install_long_press_detail(target: Control, payload: Variant) -> void:
+static func install_long_press_detail(target: Control, payload: Variant, on_long_press: Callable = Callable()) -> void:
 	if target == null:
 		return
 	target.set_meta("long_press_detail_payload", payload)
 	target.set_meta("long_press_detail_enabled", true)
+	# 鎮島錄 — 可選長按攔截 callback（回傳 true 表已處理 → 不顯示詳情 overlay）。
+	# 手牌長按合符用；reward/shop/map 不傳此參數 → 維持原詳情行為（向後相容）。
+	if on_long_press.is_valid():
+		target.set_meta("long_press_callback", on_long_press)
 	if target.get_node_or_null("TouchLongPressTimer") == null:
 		var timer := Timer.new()
 		timer.name = "TouchLongPressTimer"
 		timer.one_shot = true
 		timer.wait_time = LONG_PRESS_SECONDS
 		target.add_child(timer)
-		timer.timeout.connect(_show_detail_overlay.bind(target))
+		timer.timeout.connect(_on_long_press_fired.bind(target))
 	if not target.gui_input.is_connected(_on_gui_input_for_long_press.bind(target)):
 		target.gui_input.connect(_on_gui_input_for_long_press.bind(target))
 
@@ -312,6 +316,14 @@ static func _on_gui_input_for_long_press(event: InputEvent, target: Control) -> 
 				timer.stop()
 		elif mouse.button_index == MOUSE_BUTTON_RIGHT and mouse.pressed:
 			_show_detail_overlay(target)
+
+## 長按計時器到點：先嘗試攔截 callback（合符）；未處理才顯示詳情 overlay。
+static func _on_long_press_fired(target: Control) -> void:
+	if target != null and target.has_meta("long_press_callback"):
+		var cb: Callable = target.get_meta("long_press_callback")
+		if cb.is_valid() and bool(cb.call()):
+			return	# 已處理（如手牌合符）→ 不顯示詳情
+	_show_detail_overlay(target)
 
 static func _show_detail_overlay(target: Control) -> void:
 	if target == null or not target.has_meta("long_press_detail_payload"):

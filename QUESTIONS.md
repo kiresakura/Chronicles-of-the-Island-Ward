@@ -297,3 +297,15 @@ FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
 ### Q-R5: 道士 / 家將內容排序
 - 兩角目前只有設計與護壇樣本（guardian_jiajiang_front），未建卡。是否確認 Phase 2 才做、先把乩童 + 鸞女的破煞/合符/請神打磨完整？
 - **我的建議**：是。先深做 2 角（已有 18 卡）跑通四支柱，再橫向擴角。
+
+---
+
+## 2026-06-06 QA 修復後待辦（P2 視覺/文件，非阻斷）
+
+> 本次已修 P0/P1：手機合符長按入口、百年虎爺 fist 弱點、Enemy turn hook 呼叫 super、合符限額攔截 + toast。
+> 以下 P2 為非阻斷待辦：
+
+- **硬編碼戰鬥字串 i18n TODO**：「破煞！」「合符！」「本回合已合符」「請神/降乩！」散落於 Enemy.gd / Hand.gd / Combat.gd。
+  待 i18n 導入時集中為 `tr()` key（或先抽 `RitualStrings` 常數）。範圍故意保守，本次未擴大。
+- **煞盾 Label mobile-safe**：Enemy.gd 頭頂煞盾指示為 sprite 子 Label + 固定 px 偏移（隨 sprite 縮放，尚可，非 anchor/container）。待 RitualHud 容器化一併處理。
+- **請神槽/狀態提示版位**：已把降乩按鈕下移至 y46–80 避開頂部回合狀態 Label（y8–42）。長線建議整理成 `RitualHud`/`InvocationHud` 容器統一管理（請神槽 + 煞盾 + 回合狀態），目前為程序化獨立節點。

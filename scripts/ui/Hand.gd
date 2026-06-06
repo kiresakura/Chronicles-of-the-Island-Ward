@@ -258,9 +258,9 @@ func _on_card_right_clicked(card: Card):
 		return # cannot right click cards with a disabled hand
 	if len(card_play_queue) > 0:
 		return # cannot right click cards while cards queued
-	# 鎮島錄 — 合符優先：右鍵可合符的卡 → 與手牌第一張同組同階夥伴合成升階（每回合限額內）。
-	# 若不可合或限額用罄，落回原本的 card_right_click_actions。
-	if _try_merge_card(card):
+	# 鎮島錄 — 合符優先（與手機長按共用 try_mobile_merge：含情境 guard + 限額攔截）。
+	# 未處理（無夥伴 / 不可合情境）才落回原本的 card_right_click_actions。
+	if try_mobile_merge(card):
 		return
 	_perform_card_right_click_actions(card)
 
@@ -683,7 +683,8 @@ func draw_cards(card_number: int, hand_card_count_max: int = PlayerData.PLAYER_D
 		card.card_unhovered.connect(_on_card_unhovered)
 		card.card_selected.connect(_on_card_selected)
 		card.card_right_clicked.connect(_on_card_right_clicked)
-		
+		card.long_press_handler = try_mobile_merge	# P0-1：手機長按合符入口
+
 		# generate fake card request
 		var card_play_request: CardPlayRequest = CardPlayRequest.new()	# generate fake request
 		card_play_request.card_data = card_data
@@ -753,6 +754,7 @@ func add_cards_to_hand(cards: Array[CardData], hand_card_count_max: int = Player
 				card.card_unhovered.connect(_on_card_unhovered)
 				card.card_selected.connect(_on_card_selected)
 				card.card_right_clicked.connect(_on_card_right_clicked)
+				card.long_press_handler = try_mobile_merge	# P0-1：手機長按合符入口
 			else:
 				discarded_cards.append(card_data)
 	
@@ -832,14 +834,30 @@ func banish_cards(cards: Array[CardData], in_limbo: bool = false) -> void:
 func _on_player_turn_started_merge() -> void:
 	_merges_used_this_turn = 0
 
-## 嘗試把 card 與手牌中第一張可合符夥伴合成。成功回 true（呼叫端據此攔截右鍵）。
+## 合符核心：找夥伴 →（限額內）合符 /（限額用完）攔截。回傳 true=已處理。
 func _try_merge_card(card: Card) -> bool:
 	if card == null or card.card_data == null:
 		return false
 	var partner: CardData = TalismanMergeSystem.find_merge_partner(card.card_data, get_player_hand())
 	if partner == null:
 		return false
+	# P1-2：有夥伴但本回合限額用完 → toast +「攔截」（不落回 right-click / 詳情）
+	if _merges_used_this_turn >= MERGES_PER_TURN:
+		if is_instance_valid(combat) and combat.has_method("show_combat_toast"):
+			combat.show_combat_toast("本回合已合符")
+		return true
 	return merge_cards(card.card_data, partner)
+
+## P0-1：手機/桌面合符 UI 入口（長按 / 右鍵共用）。回傳 true=已處理（攔截後續詳情 / 右鍵）。
+## 不在可合符情境（手牌禁用 / 選敵中 / 有 card play 佇列）時不合符，落回原行為（詳情）。
+func try_mobile_merge(card: Card) -> bool:
+	if not _can_merge_now():
+		return false
+	return _try_merge_card(card)
+
+## 目前是否可安全合符（避免在選敵 / 出牌佇列 / 手牌禁用時誤觸合符）。
+func _can_merge_now() -> bool:
+	return not hand_disabled and len(card_play_queue) == 0 and current_selected_card == null
 
 ## 合符執行：
 ##  - card_a 原地 transform 成 merge_result_id 指向的高階符（Card UI 由 card_transformed 自動更新）

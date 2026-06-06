@@ -181,6 +181,7 @@ func _on_player_turn_started():
 	cycle_enemy_intent()
 
 func _on_player_turn_ended():
+	super._on_player_turn_ended()	# 保留 framework hook（BaseCombatant 目前為空，但避免覆寫風險 / 未來相容）
 	# 破煞爆發窗口在玩家回合結束遞減；歸零 → 煞盾回滿、解除破煞
 	if enemy_data != null and enemy_data.enemy_is_broken:
 		WardBreakSystem.tick_broken_state(enemy_data)
