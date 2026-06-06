@@ -101,7 +101,7 @@ godot             # 直接執行
 2. **名詞紅線**：機制吸收 R1999 / HSR，但**禁用**「韌性 / 弱點擊破 / 升階 / 終結技」原詞——我們用「煞盾 / 破煞 / 合符 / 敕符 / 降乩」。
 3. **新欄位向後相容**：卡 / 敵的儀式欄位預設空 / 0，對既有戰鬥行為零影響；接 Phase 1B 時才讓 `WardBreakSystem` 生效。
 4. **測試必綠**：改動後跑 `TestRunner`，維持 101/101；新系統請補 validator / 單元測試。
-5. **下一步**：破煞(1B)/合符(1C)/請神(1D 虎爺) 四支柱核心已落地（`scripts/systems/ritual/` + `Enemy.gd`/`Hand.gd`/`Combat.gd`）；接續 **Phase 2（主祭/護壇/法器配置 + 完整第一章遶境 + 城隍/媽祖/土地公請神）**。
+5. **下一步**：Phase 1（四支柱）+ Phase 2（2A 多神 / 2B 配置+UI / 2C 道士家將 / 2E 遶境生成器 / 2D 修廟系統 / 2F 大醮 Boss）核心皆已落地。剩餘打磨：修廟 screen UI、班底/卡面美術、Boss 演出、建築解鎖實套進 run-start——詳 [PHASE_2_PLAN.md](./docs/design/PHASE_2_PLAN.md)。
 
 ---
 

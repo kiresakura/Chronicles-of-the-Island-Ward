@@ -5,8 +5,8 @@
 		"enemy_object_id": "enemy_tiger_god",
 		"enemy_name": "百年虎爺",
 		"enemy_texture_path": "assets/generated/enemies_v3/enemy_tiger_god.png",
-		"enemy_health": 120,
-		"enemy_health_max": 120,
+		"enemy_health": 150,
+		"enemy_health_max": 150,
 		"enemy_block": 0,
 		"enemy_type": 2,
 		"enemy_attack_states": {
@@ -53,13 +53,13 @@
 				"block": 0,
 				"custom_actions": [],
 				"next_attack_weights": {
-					"roar": 1,
-					"curse": 1
+					"curse": 1,
+					"awaken": 1
 				}
 			},
 			"curse": {
-				"attack_damage": 4,
-				"number_of_attacks": 1,
+				"attack_damage": 0,
+				"number_of_attacks": 0,
 				"block": 0,
 				"custom_actions": [
 					{
@@ -79,7 +79,70 @@
 				],
 				"next_attack_weights": {
 					"roar": 1,
-					"pounce": 1
+					"awaken": 2
+				}
+			},
+			"awaken": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 12,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_damage_increase",
+							"status_charge_amount": 5,
+							"target_override": 1
+						}
+					}
+				],
+				"next_attack_weights": {
+					"enrage_pounce": 1,
+					"hellfire": 1
+				}
+			},
+			"enrage_pounce": {
+				"attack_damage": 18,
+				"number_of_attacks": 1,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"hellfire": 1,
+					"awe": 1
+				}
+			},
+			"hellfire": {
+				"attack_damage": 5,
+				"number_of_attacks": 4,
+				"block": 0,
+				"custom_actions": [],
+				"next_attack_weights": {
+					"enrage_pounce": 1,
+					"awe": 1
+				}
+			},
+			"awe": {
+				"attack_damage": 0,
+				"number_of_attacks": 0,
+				"block": 8,
+				"custom_actions": [
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_vulnerable",
+							"status_charge_amount": 3,
+							"target_override": 2
+						}
+					},
+					{
+						"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+							"status_effect_object_id": "status_effect_weak",
+							"status_charge_amount": 2,
+							"target_override": 2
+						}
+					}
+				],
+				"next_attack_weights": {
+					"enrage_pounce": 1,
+					"hellfire": 1
 				}
 			}
 		},
