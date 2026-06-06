@@ -1,0 +1,18 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "tool_incense_censer",
+		"tool_name": "香爐",
+		"tool_description": "終年不熄的香火爐。命中儀法的卡牌累積更多請神值。",
+		"tool_texture_path": "assets/generated/ritual_tools/incense_censer.png",
+		"tool_rule_domain": "deity",
+		"tool_bonus_break_damage": 0,
+		"tool_extra_broken_turns": 0,
+		"tool_bonus_deity_charge": 3,
+		"tool_affinity_deity_id": "",
+		"tool_bonus_incense_money": 0,
+		"tool_bonus_draw": 0,
+		"tool_granted_card_ids": [],
+		"tool_passive_effect": ""
+	}
+}

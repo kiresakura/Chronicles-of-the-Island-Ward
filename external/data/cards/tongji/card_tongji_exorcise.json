@@ -10,7 +10,9 @@
 		"card_rarity": 1,
 		"card_energy_cost": 1,
 		"card_requires_target": true,
-		"card_keyword_object_ids": ["keyword_startled"],
+		"card_keyword_object_ids": [
+			"keyword_startled"
+		],
 		"card_play_actions": [
 			{
 				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
@@ -24,6 +26,17 @@
 					"status_charge_amount": 2
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"fist",
+			"bell"
+		],
+		"card_break_damage": 2,
+		"card_weakness_break_bonus": 3,
+		"card_merge_group": "",
+		"card_merge_tier": 0,
+		"card_merge_result_id": "",
+		"card_deity_charge": 10,
+		"card_ritual_card_type": "wu_jue"
 	}
 }

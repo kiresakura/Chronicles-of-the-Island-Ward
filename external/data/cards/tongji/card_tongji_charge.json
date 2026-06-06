@@ -10,7 +10,9 @@
 		"card_rarity": 2,
 		"card_energy_cost": 2,
 		"card_requires_target": true,
-		"card_keyword_object_ids": ["keyword_divine_might"],
+		"card_keyword_object_ids": [
+			"keyword_divine_might"
+		],
 		"card_play_actions": [
 			{
 				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
@@ -25,6 +27,16 @@
 					"target_override": 2
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"fist"
+		],
+		"card_break_damage": 3,
+		"card_weakness_break_bonus": 3,
+		"card_merge_group": "merge_tongji_combo",
+		"card_merge_tier": 2,
+		"card_merge_result_id": "",
+		"card_deity_charge": 12,
+		"card_ritual_card_type": "wu_jue"
 	}
 }

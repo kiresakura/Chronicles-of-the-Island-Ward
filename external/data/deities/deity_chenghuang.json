@@ -1,0 +1,22 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "deity_chenghuang",
+		"deity_name": "城隍爺",
+		"deity_description": "掌理陰司賞罰的審判之神。以邪氣與控場壓制成群妖煞。",
+		"deity_texture_path": "assets/generated/deities/deity_chenghuang.png",
+		"deity_charge_tags": [
+			"curse",
+			"talisman"
+		],
+		"deity_max_charge": 120,
+		"deity_starting_charge": 0,
+		"deity_trigger_condition": "on_debuff_applied",
+		"deity_auto_release": false,
+		"deity_invocation_effect": "judgment",
+		"deity_invocation_description": "城隍夜審：對全體施加驚嚇與怯戰，並引爆目標身上所有邪氣層。",
+		"deity_passive_effect": "curse_spread",
+		"deity_passive_description": "對敵施加邪氣時，相鄰敵人也獲得 1 層邪氣。",
+		"deity_charge_per_self_loss": 0
+	}
+}

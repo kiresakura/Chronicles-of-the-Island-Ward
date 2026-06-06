@@ -1,0 +1,23 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "deity_mazu",
+		"deity_name": "媽祖",
+		"deity_description": "渡海護民的慈悲女神。守護、回復與資源的支柱。",
+		"deity_texture_path": "assets/generated/deities/deity_mazu.png",
+		"deity_charge_tags": [
+			"fire",
+			"bell",
+			"talisman"
+		],
+		"deity_max_charge": 100,
+		"deity_starting_charge": 0,
+		"deity_trigger_condition": "on_block_gained",
+		"deity_auto_release": false,
+		"deity_invocation_effect": "merciful_tide",
+		"deity_invocation_description": "慈航普渡：回復大量元神，並為主祭與護壇各獲得一批護身符。",
+		"deity_passive_effect": "heal_on_break",
+		"deity_passive_description": "每次造成破煞時，回復 3 點元神。",
+		"deity_charge_per_self_loss": 0
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "route_haunted_house",
+		"route_name": "荒宅路",
+		"route_flavor": "haunted",
+		"route_description": "廢宅怨氣最重。高污染、高危險，但香火回報最豐。",
+		"pollution_level": 4,
+		"incense_reward_modifier": 1.5,
+		"danger_rating": 4
+	}
+}

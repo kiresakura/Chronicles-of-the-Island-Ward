@@ -1,0 +1,22 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "deity_tudigong",
+		"deity_name": "土地公",
+		"deity_description": "地方守護的福德正神。掌香火、財帛與穩定的開局節奏。",
+		"deity_texture_path": "assets/generated/deities/deity_tudigong.png",
+		"deity_charge_tags": [
+			"talisman",
+			"array"
+		],
+		"deity_max_charge": 80,
+		"deity_starting_charge": 10,
+		"deity_trigger_condition": "manual",
+		"deity_auto_release": false,
+		"deity_invocation_effect": "land_blessing",
+		"deity_invocation_description": "福德降臨：本場戰鬥香火回報提升，並立即抽 2 張牌。",
+		"deity_passive_effect": "incense_gain",
+		"deity_passive_description": "每場戰鬥結束額外獲得香火。",
+		"deity_charge_per_self_loss": 0
+	}
+}

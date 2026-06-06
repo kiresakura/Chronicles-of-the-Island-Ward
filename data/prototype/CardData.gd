@@ -91,6 +91,24 @@ const STANDARD_CARD_RARITIES: Array[int] = [CARD_RARITIES.COMMON, CARD_RARITIES.
 	#"tag_<something>"
 ]
 
+### 鎮島錄 — 儀式系統欄位（資料驅動；預設空/0 → 對既有 STR 戰鬥行為零影響）
+## 設計來源：docs/design/ritual_combat_system.md、ward_break_system.md、talisman_merge_system.md。
+## 六道儀法標籤（單一事實來源見 RitualTags.gd）：
+##   fist 拳 / talisman 符 / fire 火 / bell 鈴 / array 陣 / curse 咒
+## 破煞：卡的 ritual_tags 命中敵人 weaknesses 時，套用 weakness_break_bonus 大幅削減煞盾。
+@export var card_ritual_tags: Array[String] = []
+@export var card_break_damage: int = 0			# 對敵方煞盾的基礎削減量
+@export var card_weakness_break_bonus: int = 0	# 命中弱點時「額外」削減的煞盾量
+## 符階合成（一劃符 → 二劃符 → 三劃敕符）：
+## 手牌中兩張同 merge_group 且同 merge_tier 的卡可合成為 merge_result_id 指向的卡。
+@export var card_merge_group: String = ""		# 合成族群；"" 表示不可合成
+@export var card_merge_tier: int = 0			# 0 不可合成 / 1 初符 / 2 成符 / 3 敕符（頂階）
+@export var card_merge_result_id: String = ""	# 合成產物 object_id；頂階敕符留空
+## 請神值：本卡 ritual_tags 與某神明 deity_charge_tags 有交集時，為其累積此請神值。
+@export var card_deity_charge: int = 0
+## 鎮島錄卡牌分類（武訣/護壇/開壇/符令/神諭/供品/禁忌），與 STR card_type 並存，供 UI 篩選與敘事用。
+@export var card_ritual_card_type: String = ""
+
 ### Upgrades
 @export var card_upgrade_amount: int = 0	# number of times the card has been upgraded
 @export var card_upgrade_amount_max: int = 1	# max number of times the card can be upgraded

@@ -16,6 +16,16 @@
 					"block": 12
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"talisman"
+		],
+		"card_break_damage": 0,
+		"card_weakness_break_bonus": 0,
+		"card_merge_group": "merge_tongji_ward",
+		"card_merge_tier": 2,
+		"card_merge_result_id": "",
+		"card_deity_charge": 10,
+		"card_ritual_card_type": "hu_tan"
 	}
 }

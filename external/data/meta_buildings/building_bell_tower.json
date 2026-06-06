@@ -1,0 +1,15 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "building_bell_tower",
+		"building_name": "鐘鼓樓",
+		"building_description": "晨鐘暮鼓之樓。修復後提供開局被動或演出。",
+		"building_effect_summary": "解鎖溫和的開局被動（不販售、靠香火修復）。",
+		"repair_cost_incense": 220,
+		"unlocks": [
+			"start_passive"
+		],
+		"max_level": 2,
+		"is_cosmetic_only": false
+	}
+}

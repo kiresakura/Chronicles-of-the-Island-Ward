@@ -1,0 +1,18 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "tool_seven_star_flag",
+		"tool_name": "七星令旗",
+		"tool_description": "調度陣頭的令旗。開局多抽一張，戰後多得香火。",
+		"tool_texture_path": "assets/generated/ritual_tools/seven_star_flag.png",
+		"tool_rule_domain": "economy",
+		"tool_bonus_break_damage": 0,
+		"tool_extra_broken_turns": 0,
+		"tool_bonus_deity_charge": 0,
+		"tool_affinity_deity_id": "",
+		"tool_bonus_incense_money": 10,
+		"tool_bonus_draw": 1,
+		"tool_granted_card_ids": [],
+		"tool_passive_effect": ""
+	}
+}

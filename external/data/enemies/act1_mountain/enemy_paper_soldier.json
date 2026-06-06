@@ -57,6 +57,13 @@
 					"march": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 7,
+		"enemy_max_ward_shield": 7,
+		"enemy_weaknesses": [
+			"fire"
+		],
+		"enemy_break_effect": "break_vulnerable",
+		"enemy_broken_turns": 1
 	}
 }

@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "building_stage",
+		"building_name": "戲台",
+		"building_description": "酬神演戲的戲台。純外觀／劇情／音樂內容。",
+		"building_effect_summary": "解鎖外觀、劇情與音樂（不影響戰力）。",
+		"repair_cost_incense": 150,
+		"unlocks": [
+			"cosmetic",
+			"story",
+			"music"
+		],
+		"max_level": 2,
+		"is_cosmetic_only": true
+	}
+}

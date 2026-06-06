@@ -1,0 +1,12 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "route_temple_path",
+		"route_name": "廟路",
+		"route_flavor": "temple",
+		"route_description": "沿途有廟可安神。較安全，但香火回報略低。",
+		"pollution_level": 1,
+		"incense_reward_modifier": 0.8,
+		"danger_rating": 1
+	}
+}

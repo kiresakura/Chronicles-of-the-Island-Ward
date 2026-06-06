@@ -10,7 +10,9 @@
 		"card_rarity": 1,
 		"card_energy_cost": 1,
 		"card_requires_target": true,
-		"card_keyword_object_ids": ["keyword_evil_aura"],
+		"card_keyword_object_ids": [
+			"keyword_evil_aura"
+		],
 		"card_play_actions": [
 			{
 				"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
@@ -18,6 +20,16 @@
 					"status_charge_amount": 3
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"curse"
+		],
+		"card_break_damage": 1,
+		"card_weakness_break_bonus": 2,
+		"card_merge_group": "",
+		"card_merge_tier": 0,
+		"card_merge_result_id": "",
+		"card_deity_charge": 10,
+		"card_ritual_card_type": "fu_ling"
 	}
 }

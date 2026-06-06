@@ -112,3 +112,64 @@ func test_combat_turn_hand_enable_then_end_turn_locks_controls() -> void:
 	assert_true(end_turn_button.disabled, "結束回合後 EndTurnButton 應 disabled（避免重複觸發結束）")
 
 	_teardown_env(env)
+
+
+# ──────────── 測試 3：破煞戰鬥接線（Phase 1B）— 真實樹中煞盾 UI + 出牌破煞 ────────────
+# 在真正的 Combat 場景樹裡生成真實 Enemy 節點，驗證：
+#   (a) Enemy.init() 對有煞盾的敵人建立頭頂煞盾指示 _ward_label
+#   (b) Enemy 已連上 Signals.card_played
+#   (c) 命中弱點且削穿煞盾 → enemy_is_broken + 套破煞 status + UI 轉「破煞！」
+# 全程同步：combat_started 同步生敵、直接呼叫破煞 handler（避免觸發無關 card_played 監聽者）。
+
+func test_combat_enemy_shows_ward_and_breaks_on_weakness_card() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat 節點")
+	if combat == null:
+		_teardown_env(env)
+		return
+
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var tree := Engine.get_main_loop() as SceneTree
+	var enemies: Array = tree.get_nodes_in_group("enemies")
+	assert_true(enemies.size() > 0, "combat_started 後應生成敵人")
+
+	# 找一個具煞盾機制的真實 Enemy 節點
+	var target: Enemy = null
+	for e: Node in enemies:
+		if e is Enemy and (e as Enemy).enemy_data != null and (e as Enemy).enemy_data.enemy_max_ward_shield > 0:
+			target = e as Enemy
+			break
+	assert_not_null(target, "act1 敵人應具煞盾機制（max_ward_shield>0）")
+	if target == null:
+		_teardown_env(env)
+		return
+
+	# (a) 煞盾 UI 已在真實樹中建立；(b) 已連上 card_played
+	assert_not_null(target._ward_label, "有煞盾的敵人應已建立頭頂煞盾指示 Label")
+	assert_true(Signals.card_played.is_connected(target._on_card_played_ward),
+		"Enemy 應已連上 Signals.card_played（出牌時結算破煞）")
+	assert_false(target.enemy_data.enemy_is_broken, "戰鬥開始不應處於破煞")
+	var ward_before: int = target.enemy_data.enemy_ward_shield
+	assert_eq(ward_before, target.enemy_data.enemy_max_ward_shield, "開戰煞盾應為滿值")
+
+	# (c) 構造「必中弱點且一擊削穿」的卡，直接走破煞 handler
+	var tags: Array[String] = []
+	for w: Variant in target.enemy_data.enemy_weaknesses:
+		tags.append(str(w))
+	var hit_card: CardData = CardData.new()
+	hit_card.card_ritual_tags = tags
+	hit_card.card_break_damage = 99
+	var req: CardPlayRequest = CardPlayRequest.new()
+	req.card_data = hit_card
+	req.selected_target = target
+
+	target._on_card_played_ward(req)
+
+	assert_true(target.enemy_data.enemy_is_broken, "命中弱點削穿煞盾後敵人應破煞")
+	assert_true(target._ward_label.text.contains("破煞"), "破煞後煞盾指示應顯示「破煞」")
+	# 破煞窗口傷害加成生效
+	assert_eq(WardBreakSystem.damage_multiplier_for(target.enemy_data), 1.5,
+		"破煞窗口我方傷害倍率應為 1.5")
+
+	_teardown_env(env)

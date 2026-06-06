@@ -50,6 +50,13 @@
 					"gore": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 8,
+		"enemy_max_ward_shield": 8,
+		"enemy_weaknesses": [
+			"fist"
+		],
+		"enemy_break_effect": "break_stun",
+		"enemy_broken_turns": 1
 	}
 }

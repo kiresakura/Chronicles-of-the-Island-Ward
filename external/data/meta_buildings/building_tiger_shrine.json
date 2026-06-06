@@ -1,0 +1,15 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "building_tiger_shrine",
+		"building_name": "虎爺殿",
+		"building_description": "供奉虎爺的偏殿。修復後解鎖破煞法器。",
+		"building_effect_summary": "解鎖破煞向法器（如虎牌）進入開局選池。",
+		"repair_cost_incense": 250,
+		"unlocks": [
+			"ritual_tool_ward_break"
+		],
+		"max_level": 2,
+		"is_cosmetic_only": false
+	}
+}

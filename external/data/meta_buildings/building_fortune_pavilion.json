@@ -1,0 +1,15 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "building_fortune_pavilion",
+		"building_name": "籤詩亭",
+		"building_description": "抽籤問運之亭。修復後開局抽籤可改變本局規則。",
+		"building_effect_summary": "解鎖開局籤詩（run modifier）變化。",
+		"repair_cost_incense": 200,
+		"unlocks": [
+			"run_modifier_fortune"
+		],
+		"max_level": 2,
+		"is_cosmetic_only": false
+	}
+}

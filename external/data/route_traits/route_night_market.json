@@ -1,0 +1,12 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "route_night_market",
+		"route_name": "夜市路",
+		"route_flavor": "night_market",
+		"route_description": "夜市香鋪與法器攤聚集。商店與資源較多。",
+		"pollution_level": 1,
+		"incense_reward_modifier": 1.3,
+		"danger_rating": 2
+	}
+}
