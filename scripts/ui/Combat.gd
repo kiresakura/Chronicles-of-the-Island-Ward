@@ -79,6 +79,13 @@ func _ready():
 	# 戰鬥上排 3 鈕 icon（返回鍵 PauseButton 自帶 ui_back）：牌組 / 地圖
 	_apply_top_button_icon(deck_button, "res://assets/generated/icons/ui_v2/ui_deck.svg")
 	_apply_top_button_icon(get_node_or_null("MapButton") as TextureButton, "res://assets/generated/icons/ui_v2/ui_map.svg")
+	# 牌堆 / 能量 / 商店 HUD 鈕：接線既有主題 SVG，取代預設 res://icon.svg placeholder
+	_apply_top_button_icon(draw_pile_button, "res://assets/generated/icons/ui_v2/ui_draw.svg")
+	_apply_top_button_icon(discard_pile_button, "res://assets/generated/icons/ui_v2/ui_discard.svg")
+	_apply_top_button_icon(exhaust_pile_button, "res://assets/generated/icons/ui_v2/ui_burn_jin.svg")  # 焚化 = 消耗堆
+	_apply_top_button_icon(energy, "res://assets/generated/icons_v2/status/energy_taiji.svg")
+	_apply_top_button_icon(get_node_or_null("Shop") as TextureButton, "res://assets/generated/icons_v2/icon_shop.svg")
+	_apply_top_button_icon(chest as TextureButton, "res://assets/generated/icons_v2/icon_chest.svg")  # 寶箱（treasure 節點）
 	
 	# updating pile counts when cards do things
 	Signals.card_played.connect(_on_card_played)	# player is playing card
