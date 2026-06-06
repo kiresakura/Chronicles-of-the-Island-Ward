@@ -55,3 +55,26 @@ func test_luannu_default_loadout_channels_chenghuang() -> void:
 	assert_eq(RitualLoadout.resolve_active_deity(g, t), "deity_chenghuang", "鸞女預設班底 → 城隍")
 	if t != null:
 		assert_eq(t.tool_bonus_deity_charge, 3, "香爐請神 +3")
+
+func test_daoshi_default_loadout_channels_mazu() -> void:
+	# 道士預設（Phase 2C）：護壇鸞女（媽祖 affinity）+ 法器香爐（無 affinity）→ 媽祖
+	var g: GuardianData = RitualLoadout.load_guardian("guardian_luannu")
+	var t: RitualToolData = RitualLoadout.load_tool("tool_incense_censer")
+	assert_eq(RitualLoadout.resolve_active_deity(g, t), "deity_mazu", "道士預設班底 → 媽祖")
+
+func test_jiajiang_default_loadout_channels_tiger() -> void:
+	# 家將預設（Phase 2C）：護壇家將前鋒（城隍 affinity）+ 法器虎牌（虎爺 affinity）→ 虎爺（法器優先）
+	var g: GuardianData = RitualLoadout.load_guardian("guardian_jiajiang_front")
+	var t: RitualToolData = RitualLoadout.load_tool("tool_tiger_token")
+	assert_eq(RitualLoadout.resolve_active_deity(g, t), "deity_tiger_god", "家將預設班底 → 虎爺（法器優先）")
+
+# ---------- 2B-UI：選擇器選項資料驅動 ----------
+
+func test_list_guardian_and_tool_ids() -> void:
+	var guardians: Array[String] = RitualLoadout.list_guardian_ids()
+	assert_true(guardians.has("guardian_luannu"), "護壇清單應含 guardian_luannu")
+	assert_true(guardians.has("guardian_jiajiang_front"), "護壇清單應含 guardian_jiajiang_front")
+	var tools: Array[String] = RitualLoadout.list_tool_ids()
+	assert_true(tools.has("tool_tiger_token"), "法器清單應含 tool_tiger_token")
+	assert_true(tools.has("tool_incense_censer"), "法器清單應含 tool_incense_censer")
+	assert_true(tools.size() >= 3, "法器至少 3 件（虎牌/香爐/七星令旗）")

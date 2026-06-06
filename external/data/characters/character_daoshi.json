@@ -1,0 +1,36 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "character_daoshi",
+		"character_name": "道士",
+		"character_description": "精通符印與法陣的智者；以符令破煞、以咒術控場。",
+		"character_color_id": "color_daoshi",
+		"character_texture_path": "assets/generated/portraits_v3/daoshi.png",
+		"character_icon_texture_path": "assets/generated/portraits_v3/daoshi.png",
+		"character_background_texture_path": "assets/generated/scenes_v3/act1_mountain_temple.png",
+		"character_player_id": "player_daoshi",
+		"character_starting_artifact_ids": [],
+		"character_starting_artifact_pack_ids": [
+			"artifact_pack_neutral"
+		],
+		"character_starting_card_object_ids": [
+			"card_daoshi_talisman_bolt",
+			"card_daoshi_talisman_bolt",
+			"card_daoshi_talisman_bolt",
+			"card_daoshi_talisman_bolt",
+			"card_daoshi_ward_seal",
+			"card_daoshi_ward_seal",
+			"card_daoshi_ward_seal",
+			"card_daoshi_fire_talisman",
+			"card_daoshi_fire_talisman",
+			"card_daoshi_curse_seal"
+		],
+		"character_starting_money": 99,
+		"character_starting_health": 68,
+		"character_starting_card_draft_card_pack_ids": [
+			"card_pack_daoshi"
+		],
+		"character_default_guardian_id": "guardian_luannu",
+		"character_default_ritual_tool_id": "tool_incense_censer"
+	}
+}

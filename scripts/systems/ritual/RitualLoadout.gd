@@ -53,6 +53,29 @@ static func load_tool(tool_id: String) -> RitualToolData:
 	t.tool_affinity_deity_id = str(props.get("tool_affinity_deity_id", ""))
 	return t
 
+## 列出所有可選護壇 id（供 2B-UI 班底選擇器，資料驅動）。
+static func list_guardian_ids() -> Array[String]:
+	return _list_ids(GUARDIAN_DIR)
+
+## 列出所有可選法器 id。
+static func list_tool_ids() -> Array[String]:
+	return _list_ids(TOOL_DIR)
+
+static func _list_ids(dir_path: String) -> Array[String]:
+	var ids: Array[String] = []
+	var dir: DirAccess = DirAccess.open(dir_path)
+	if dir == null:
+		return ids
+	dir.list_dir_begin()
+	var entry: String = dir.get_next()
+	while entry != "":
+		if entry.ends_with(".json"):
+			ids.append(entry.trim_suffix(".json"))
+		entry = dir.get_next()
+	dir.list_dir_end()
+	ids.sort()
+	return ids
+
 ## 出戰神明解析：法器 affinity > 護壇 affinity > 預設虎爺。
 static func resolve_active_deity(guardian: GuardianData, tool: RitualToolData) -> String:
 	if tool != null and tool.tool_affinity_deity_id != "":

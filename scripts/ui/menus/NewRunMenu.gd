@@ -31,6 +31,12 @@ const PORTRAIT_DIR := "res://assets/generated/portraits_v3/"
 var selected_character_object_id: String = ""
 var selected_difficulty_level: int = 0
 
+## 鎮島錄 — 2B-UI 班底選擇器（護壇 / 法器；留空 → 角色預設班底，由 RitualLoadout 解析出戰神明）
+var selected_guardian_id: String = ""
+var selected_ritual_tool_id: String = ""
+var _guardian_picker: OptionButton = null
+var _tool_picker: OptionButton = null
+
 var _character_gallery
 var _character_info_panel: Panel
 var _run_guide_panel: Panel
@@ -87,6 +93,7 @@ func _ready() -> void:
 
 	_style_static_controls()
 	_build_runtime_chrome()
+	_build_loadout_pickers()
 	_build_character_gallery()
 	populate_new_run_menu()
 	await get_tree().process_frame
@@ -236,6 +243,13 @@ func _relayout_runtime_chrome() -> void:
 	if back_button != null:
 		back_button.position = Vector2(guide_x, guide_y + guide_h + 10.0)
 		back_button.size = Vector2(guide_w, 54.0)
+	# 鎮島錄 — 班底選擇器置於 run guide 面板底部（heading / 指引文字之下；視覺微調待真機）
+	if _guardian_picker != null:
+		_guardian_picker.position = Vector2(guide_x + 16.0, guide_y + guide_h - 84.0)
+		_guardian_picker.size = Vector2(guide_w - 32.0, 34.0)
+	if _tool_picker != null:
+		_tool_picker.position = Vector2(guide_x + 16.0, guide_y + guide_h - 44.0)
+		_tool_picker.size = Vector2(guide_w - 32.0, 34.0)
 
 func _on_seed_input_text_changed(new_text: String) -> void:
 	var caret_column: int = seed_input.caret_column
@@ -431,11 +445,48 @@ func _fallback_character_shelf_from_global() -> Array:
 func _start_run_button_state(can_start: bool) -> void:
 	start_run_button.disabled = not can_start
 
+## 鎮島錄 — 2B-UI：建立護壇 / 法器選擇器（OptionButton，選項資料驅動；留空 = 角色預設班底）。
+func _build_loadout_pickers() -> void:
+	if _guardian_picker != null:
+		return
+	_guardian_picker = _make_loadout_picker(RitualLoadout.list_guardian_ids(), "護壇", true)
+	_guardian_picker.item_selected.connect(_on_guardian_picked)
+	add_child(_guardian_picker)
+	_tool_picker = _make_loadout_picker(RitualLoadout.list_tool_ids(), "法器", false)
+	_tool_picker.item_selected.connect(_on_tool_picked)
+	add_child(_tool_picker)
+
+func _make_loadout_picker(ids: Array, prefix: String, is_guardian: bool) -> OptionButton:
+	var ob: OptionButton = OptionButton.new()
+	ob.name = prefix + "Picker"
+	ob.add_item("%s：（角色預設）" % prefix)
+	ob.set_item_metadata(0, "")
+	for id: String in ids:
+		var disp: String = id
+		if is_guardian:
+			var g: GuardianData = RitualLoadout.load_guardian(id)
+			if g != null and g.guardian_name != "":
+				disp = g.guardian_name
+		else:
+			var t: RitualToolData = RitualLoadout.load_tool(id)
+			if t != null and t.tool_name != "":
+				disp = t.tool_name
+		ob.add_item("%s：%s" % [prefix, disp])
+		ob.set_item_metadata(ob.item_count - 1, id)
+	return ob
+
+func _on_guardian_picked(idx: int) -> void:
+	selected_guardian_id = str(_guardian_picker.get_item_metadata(idx))
+
+func _on_tool_picked(idx: int) -> void:
+	selected_ritual_tool_id = str(_tool_picker.get_item_metadata(idx))
+
 func _on_start_run_button_up() -> void:
 	if selected_character_object_id.is_empty():
 		return
 	var run_seed: int = seed_input.text.to_int()
-	Global.start_run(selected_character_object_id, run_seed, selected_difficulty_level, custom_run_modifier_button_container.selected_custom_run_modififers)
+	# 2B-UI：把玩家選的護壇 / 法器帶入 start_run（留空 → 角色預設班底）
+	Global.start_run(selected_character_object_id, run_seed, selected_difficulty_level, custom_run_modifier_button_container.selected_custom_run_modififers, selected_guardian_id, selected_ritual_tool_id)
 
 func _on_back_button_up() -> void:
 	title_screen.show_main_menu()

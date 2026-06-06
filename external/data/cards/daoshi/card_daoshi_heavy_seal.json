@@ -1,0 +1,32 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_daoshi_heavy_seal",
+		"card_name": "重符",
+		"card_description": "造成 12 點傷害。",
+		"card_texture_path": "",
+		"card_color_id": "color_daoshi",
+		"card_type": 0,
+		"card_rarity": 0,
+		"card_energy_cost": 2,
+		"card_requires_target": true,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 12,
+					"number_of_attacks": 1
+				}
+			}
+		],
+		"card_ritual_tags": [
+			"talisman"
+		],
+		"card_break_damage": 3,
+		"card_weakness_break_bonus": 4,
+		"card_merge_group": "merge_daoshi_seal",
+		"card_merge_tier": 2,
+		"card_merge_result_id": "",
+		"card_deity_charge": 12,
+		"card_ritual_card_type": "wu_jue"
+	}
+}

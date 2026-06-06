@@ -40,13 +40,14 @@
 - **範圍**：`NewRunMenu`/`RunStartOptions` 加 護壇 + 法器 picker（資料已備）；`Global.start_run` 接收 loadout；套 `guardian_support_card_ids` 進起手牌庫、`tool_*` 規則（破煞 +1 / 請神 +N / 香火 +N 已資料化）、active deity = guardian/tool 的 affinity。
 - **依賴**：2A（多神才有選神意義）。**風險**：中（觸 run-start + 角色選擇 UI）。**估**：中。
 - **落地檢核**：loadout 套用整合測試（guardian 支援卡入庫、tool 破煞 +1 生效、active deity 正確）。
-- **狀態**：✅ **系統已完成（2026-06-06）**——`RitualLoadout` + `start_run` 套用（護壇卡入庫、法器破煞/請神加成、affinity 解析出戰神明：乩童→虎爺 / 鸞女→城隍）；136/136。⏳ **配置選擇器 UI 留後續增量**（2B-UI）。
+- **狀態**：✅ **完成（2026-06-06）**——系統（`RitualLoadout` + `start_run`：護壇卡入庫、法器加成、affinity 解析出戰神明）+ **選擇器 UI**（NewRunMenu 護壇/法器 OptionButton → start_run，選項資料驅動）。⏳ UI 視覺版位待真機微調。
 
 ### 2C — 道士 + 家將 角色與卡組
 - **目標**：兩新角 + 各 ~10 張卡（帶 ritual 欄位）。**先復用既有機制**（武訣/護壇/符令 + 破煞/合符/請神）。
 - **範圍**：character JSON ×2 + cards ×~20 + 註冊角色表 + 立繪（已有 portraits_v3 daoshi/jiajiang）。專屬機制（道士「符位/法陣」、家將「前鋒/中壇/後衛陣型」）→ 拆 **2C-2** 後續（或 Phase 3）。
 - **依賴**：無（內容，可與 2B 平行）。**風險**：低-中。**估**：中（內容量）。
 - **落地檢核**：新角 schema 測試（起手卡/合成圖/弱點協同）＋角色表測試更新。
+- **狀態**：✅ **完成（2026-06-06）**——道士/家將 各 8 基礎卡（每角 2 條合符鏈）+ 完整生態（color/pack/player/角色）+ 預設班底（道士→媽祖、家將→虎爺）；角色表 4 角、142/142。符位/法陣、陣型專屬機制留 Phase 3；卡面美術待生成。
 
 ### 2D — 修廟 meta（香火經濟 + 永久解鎖）
 - **目標**：戰後結算香火 → 修廟 → 解鎖內容（神明位/法器池/籤詩/商店/被動）。

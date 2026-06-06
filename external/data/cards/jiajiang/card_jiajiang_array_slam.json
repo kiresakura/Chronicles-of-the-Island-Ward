@@ -1,0 +1,32 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_jiajiang_array_slam",
+		"card_name": "陣裂",
+		"card_description": "造成 5 點傷害。",
+		"card_texture_path": "",
+		"card_color_id": "color_jiajiang",
+		"card_type": 0,
+		"card_rarity": 0,
+		"card_energy_cost": 1,
+		"card_requires_target": true,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 5,
+					"number_of_attacks": 1
+				}
+			}
+		],
+		"card_ritual_tags": [
+			"array"
+		],
+		"card_break_damage": 3,
+		"card_weakness_break_bonus": 4,
+		"card_merge_group": "merge_jiajiang_array",
+		"card_merge_tier": 1,
+		"card_merge_result_id": "card_jiajiang_grand_formation",
+		"card_deity_charge": 8,
+		"card_ritual_card_type": "wu_jue"
+	}
+}
