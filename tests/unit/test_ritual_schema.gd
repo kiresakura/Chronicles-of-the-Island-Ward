@@ -151,6 +151,48 @@ func test_boss_tiger_god_breakable_by_tongji_solo() -> void:
 	assert_true(found, "應找到 enemy_tiger_god 資料")
 	assert_true(hittable, "百年虎爺必須有乩童可命中的弱點（fist 等）")
 
+# ---------- 2F：鎮煞大醮（百年虎爺多階段 + 第一章整合）----------
+
+func test_boss_tiger_god_multi_phase() -> void:
+	var props: Dictionary = {}
+	for p: Dictionary in _collect_props("enemies"):
+		if p.get("object_id", "") == "enemy_tiger_god":
+			props = p
+	assert_false(props.is_empty(), "百年虎爺資料應存在")
+	if props.is_empty():
+		return
+	assert_true(int(props.get("enemy_health", 0)) >= 120, "大醮 Boss HP 應夠高")
+	var states: Dictionary = props.get("enemy_attack_states", {})
+	assert_true(states.has("awaken"), "應有覺醒狀態（phase 2 入口）")
+	assert_true(states.has("enrage_pounce") and states.has("hellfire"), "應有盛怒階段攻擊")
+	# 覺醒應強化自身（神威 → 進入盛怒）
+	var awaken_buffs_self: bool = false
+	for action: Dictionary in states.get("awaken", {}).get("custom_actions", []):
+		for path: String in action:
+			if str(action[path].get("status_effect_object_id", "")) == "status_effect_damage_increase":
+				awaken_buffs_self = true
+	assert_true(awaken_buffs_self, "覺醒應給虎爺神威（進入盛怒階段）")
+
+func test_boss_event_spawns_tiger_god() -> void:
+	# 第一章整合：遶境 BOSS 節點 → boss pool → event_act_1_boss_1 → 百年虎爺
+	var files: Array[String] = []
+	_collect_json_files("res://external/data/events/", files)
+	var boss_event_found: bool = false
+	for path: String in files:
+		if not path.ends_with("event_act_1_boss_1.json"):
+			continue
+		var f: FileAccess = FileAccess.open(path, FileAccess.READ)
+		if f == null:
+			continue
+		var parsed: Variant = JSON.parse_string(f.get_as_text())
+		if typeof(parsed) != TYPE_DICTIONARY:
+			continue
+		var ps: Dictionary = (parsed as Dictionary).get("properties", {})
+		for weighted: Variant in ps.get("event_weighted_enemy_object_ids", []):
+			if (weighted as Dictionary).has("enemy_tiger_god"):
+				boss_event_found = true
+	assert_true(boss_event_found, "鎮煞大醮事件 event_act_1_boss_1 應 spawn 百年虎爺")
+
 # ---------- 神明 deities ----------
 
 func test_deity_schema_valid() -> void:

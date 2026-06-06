@@ -68,6 +68,7 @@
 - **範圍**：Boss 多階段攻擊圖（既有 enemy_attack_states 可擴）+ 破煞窗口 boss 調參（broken_turns=2 已備）；第一章流程串接；難度平衡。
 - **依賴**：2A-2E。**風險**：中。**估**：中-大。
 - **落地檢核**：Boss 戰整合 smoke + 第一章可通關（headless 流程驗）。
+- **狀態**：✅ **完成（2026-06-06）**——百年虎爺 HP 150、多階段（phase1 → 覺醒 → phase2 盛怒，9 attack states）；破煞 fist/fire 弱點 + break_invoke_window 窗口 2；第一章鏈完整（遶境 BOSS 節點 → boss pool → event_act_1_boss_1 → 虎爺），154/154。⏳ Boss 專屬演出 / 數值平衡為後續。
 
 ## 3. 推薦順序與理由
 
