@@ -8,8 +8,10 @@ extends Node
 
 signal charge_changed(current: int, max_charge: int)
 
-## 破煞為 on_enemy_broken 神明累積的固定請神值（遊戲規則，集中於此；Q-R2 數值待平衡）。
-const BREAK_CHARGE: int = 25
+## 各觸發事件累積的固定請神值（遊戲規則，集中於此；Q-R2 數值待平衡）。
+const BREAK_CHARGE: int = 25	# on_enemy_broken（虎爺）
+const BLOCK_CHARGE: int = 10	# on_block_gained（媽祖）
+const DEBUFF_CHARGE: int = 12	# on_debuff_applied（城隍）
 
 var deity: DeityData = null
 var _charge: int = 0
@@ -20,6 +22,10 @@ func _ready() -> void:
 		Signals.card_played.connect(_on_card_played)
 	if not Signals.enemy_broken.is_connected(_on_enemy_broken):
 		Signals.enemy_broken.connect(_on_enemy_broken)
+	if not Signals.combatant_block_added.is_connected(_on_combatant_block_added):
+		Signals.combatant_block_added.connect(_on_combatant_block_added)
+	if not Signals.debuff_applied.is_connected(_on_debuff_applied):
+		Signals.debuff_applied.connect(_on_debuff_applied)
 
 ## 每場戰鬥開始呼叫：設定出戰神明、重置請神值。
 func setup(active_deity: DeityData) -> void:
@@ -51,13 +57,24 @@ func _on_card_played(request: CardPlayRequest) -> void:
 		_charge = DeityInvocationSystem.add_charge(_charge, delta, deity.deity_max_charge)
 		_emit()
 
+# 事件觸發累積：依出戰神明的 trigger_condition 路由（不符則忽略）。
 func _on_enemy_broken(_enemy: Enemy) -> void:
-	if deity == null:
+	_charge_on_trigger("on_enemy_broken", BREAK_CHARGE)
+
+func _on_combatant_block_added(combatant: BaseCombatant) -> void:
+	# 媽祖：玩家獲得護身符時（敵人獲得 block 不算）
+	if combatant != null and combatant.is_in_group("enemies"):
 		return
-	# 虎爺等 on_enemy_broken 神明：破煞額外累積請神值（連通 1B 破煞 → 1D 請神）
-	if deity.deity_trigger_condition == "on_enemy_broken":
-		_charge = DeityInvocationSystem.add_charge(_charge, BREAK_CHARGE, deity.deity_max_charge)
-		_emit()
+	_charge_on_trigger("on_block_gained", BLOCK_CHARGE)
+
+func _on_debuff_applied(_target: BaseCombatant) -> void:
+	_charge_on_trigger("on_debuff_applied", DEBUFF_CHARGE)
+
+func _charge_on_trigger(trigger: String, amount: int) -> void:
+	if deity == null or deity.deity_trigger_condition != trigger:
+		return
+	_charge = DeityInvocationSystem.add_charge(_charge, amount, deity.deity_max_charge)
+	_emit()
 
 func _emit() -> void:
 	charge_changed.emit(_charge, get_max())

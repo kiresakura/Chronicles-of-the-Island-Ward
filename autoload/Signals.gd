@@ -129,6 +129,7 @@ signal energy_added(energy_amount: int)	# when the player gains energy not at st
 signal enemy_intent_changed
 signal enemy_killed(enemy: Enemy)
 signal enemy_broken(enemy: Enemy)	# 鎮島錄 — 敵人煞盾被破（連通 1B 破煞 → 1D 請神累積）
+signal debuff_applied(target: BaseCombatant)	# 鎮島錄 — 對戰鬥員施加 debuff（連通城隍 on_debuff_applied 請神）
 signal enemy_death_animation_finished(enemy: Enemy)
 signal enemy_clicked(enemy: Enemy)
 signal enemy_hovered(enemy: Enemy)

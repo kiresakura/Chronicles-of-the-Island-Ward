@@ -66,3 +66,6 @@ qa_root.log
 
 # Temporary generated backups
 assets/generated/_backup_before_character_replace/
+
+# headless 測試/QA 產生的 log（非原始碼）
+qa_*.log
