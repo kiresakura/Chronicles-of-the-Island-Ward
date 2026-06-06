@@ -684,8 +684,9 @@ func _build_deity_invocation() -> void:
 	_invoke_button.anchor_right = 0.5
 	_invoke_button.offset_left = -95.0
 	_invoke_button.offset_right = 95.0
-	_invoke_button.offset_top = 6.0
-	_invoke_button.offset_bottom = 40.0
+	# P2：置於頂部回合狀態 Label（y 8–42）下方，避免重疊；仍在敵人區（y>120）上方
+	_invoke_button.offset_top = 46.0
+	_invoke_button.offset_bottom = 80.0
 	_invoke_button.add_theme_font_size_override("font_size", 16)
 	_invoke_button.disabled = true
 	_invoke_button.visible = false

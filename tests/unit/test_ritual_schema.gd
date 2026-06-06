@@ -114,6 +114,43 @@ func test_enemy_ward_schema_valid() -> void:
 			assert_true(int(props.get("enemy_broken_turns", 1)) >= 1,
 				"%s broken_turns 必須 >= 1" % name)
 
+# ---------- P0-2：第一章敵人弱點必須相容 Phase 1 卡池（乩童） ----------
+
+## Phase 1 主祭乩童卡池可命中的儀法標籤
+const TONGJI_HITTABLE_TAGS: Array[String] = ["fist", "talisman", "curse", "bell"]
+## 刻意設計成「需跨角色（鸞女 fire）才可破煞」的敵人 allowlist（非 Boss；體現主祭/護壇協同）。
+## ⚠️ 百年虎爺（Boss）不得列入：Phase 1 乩童必須能單獨破其煞。
+const CROSS_CHARACTER_ALLOWLIST: Array[String] = ["enemy_tree_spirit", "enemy_paper_soldier"]
+
+func test_act1_ward_enemies_breakable_by_phase1_kit() -> void:
+	for props: Dictionary in _collect_props("enemies"):
+		var oid: String = props.get("object_id", "")
+		if int(props.get("enemy_max_ward_shield", 0)) <= 0:
+			continue
+		if CROSS_CHARACTER_ALLOWLIST.has(oid):
+			continue	# 設計為需鸞女聖火（跨角色協同），不要求乩童單破
+		var hittable: bool = false
+		for w: Variant in props.get("enemy_weaknesses", []):
+			if TONGJI_HITTABLE_TAGS.has(w):
+				hittable = true
+				break
+		assert_true(hittable,
+			"%s 應至少有一個乩童可命中弱點（fist/talisman/curse/bell），否則須列入跨角色 allowlist" % oid)
+
+func test_boss_tiger_god_breakable_by_tongji_solo() -> void:
+	# 百年虎爺（Boss）絕不可在跨角色 allowlist，且必須能被乩童單獨破煞（fist 保底）
+	assert_false(CROSS_CHARACTER_ALLOWLIST.has("enemy_tiger_god"), "百年虎爺不應在跨角色 allowlist")
+	var found: bool = false
+	var hittable: bool = false
+	for props: Dictionary in _collect_props("enemies"):
+		if props.get("object_id", "") == "enemy_tiger_god":
+			found = true
+			for w: Variant in props.get("enemy_weaknesses", []):
+				if TONGJI_HITTABLE_TAGS.has(w):
+					hittable = true
+	assert_true(found, "應找到 enemy_tiger_god 資料")
+	assert_true(hittable, "百年虎爺必須有乩童可命中的弱點（fist 等）")
+
 # ---------- 神明 deities ----------
 
 func test_deity_schema_valid() -> void:

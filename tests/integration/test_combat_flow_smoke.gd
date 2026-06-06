@@ -172,6 +172,15 @@ func test_combat_enemy_shows_ward_and_breaks_on_weakness_card() -> void:
 	assert_eq(WardBreakSystem.damage_multiplier_for(target.enemy_data), 1.5,
 		"破煞窗口我方傷害倍率應為 1.5")
 
+	# P1-1：破煞窗口在玩家回合結束遞減（_on_player_turn_ended 呼叫 super + tick_broken_state）
+	var window_before: int = target.enemy_data.enemy_broken_turns_remaining
+	target._on_player_turn_ended()
+	if window_before <= 1:
+		assert_false(target.enemy_data.enemy_is_broken, "窗口=1 → 回合結束解除破煞")
+		assert_eq(target.enemy_data.enemy_ward_shield, target.enemy_data.enemy_max_ward_shield, "解除後煞盾回滿")
+	else:
+		assert_eq(target.enemy_data.enemy_broken_turns_remaining, window_before - 1, "窗口>1 → 遞減 1")
+
 	_teardown_env(env)
 
 
@@ -215,7 +224,9 @@ func test_combat_merge_transforms_card_and_consumes_partner() -> void:
 	var hand_cd: Array[CardData] = [c, d]
 	Global.player_data.player_hand = hand_cd
 	var created2: Array = hand.create_cards(hand_cd)
-	assert_false(hand._try_merge_card(created2[0]), "每回合合符限額用罄後不可再合符")
+	# P1-2：限額用完 + 有夥伴 → 攔截（顯示 toast）但不實際合符（不落回右鍵）
+	assert_true(hand._try_merge_card(created2[0]), "限額用完仍應攔截（toast、不落回右鍵 action）")
+	assert_eq(c.card_name, "護身符", "限額用完不應實際合符（c 未升階為鐵布衫）")
 
 	_teardown_env(env)
 
@@ -374,4 +385,57 @@ func test_run_loadout_applied_on_start() -> void:
 			has_support = true
 			break
 	assert_true(has_support, "鸞女護壇支援卡（card_luannu_protection）應入起始牌庫")
+	_teardown_env(env)
+
+
+# ──────────── 測試 8：手機長按合符入口（P0-1）— Card._on_long_press_attempt ────────────
+# 經由「卡牌長按入口」（真機路徑：TouchFeedback timer → Card._on_long_press_attempt
+# → long_press_handler → Hand.try_mobile_merge）驗證手機可達合符，不只直接呼叫 _try_merge_card。
+
+func test_mobile_long_press_merge_entry() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat")
+	if combat == null:
+		_teardown_env(env)
+		return
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var hand: Node = combat.get_node_or_null("Hand")
+	assert_not_null(hand, "需要 Hand")
+	if hand == null:
+		_teardown_env(env)
+		return
+	hand.hand_disabled = false
+
+	# 兩張攻拳 + 模擬 draw_cards 對手牌卡掛上的長按 handler（create_cards 為輕量 helper，不自動掛）
+	var a: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var b: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var hand_ab: Array[CardData] = [a, b]
+	Global.player_data.player_hand = hand_ab
+	var created: Array = hand.create_cards(hand_ab)
+	for card: Variant in created:
+		card.long_press_handler = hand.try_mobile_merge
+
+	# 經由 Card 長按入口合符（= 真機長按路徑）
+	assert_true(created[0]._on_long_press_attempt(), "手機長按入口應合符成功")
+	assert_eq(a.card_name, "重擊", "a 應升階為重擊")
+	assert_false(Global.player_data.player_hand.has(b), "夥伴卡應從手牌移除")
+
+	# 第二對護身符
+	var c: CardData = Global.get_card_data_from_prototype("card_tongji_talisman")
+	var d: CardData = Global.get_card_data_from_prototype("card_tongji_talisman")
+	var hand_cd: Array[CardData] = [c, d]
+	Global.player_data.player_hand = hand_cd
+	var created2: Array = hand.create_cards(hand_cd)
+	for card2: Variant in created2:
+		card2.long_press_handler = hand.try_mobile_merge
+
+	# guard：手牌禁用時長按不合符（落回詳情）
+	hand.hand_disabled = true
+	assert_false(created2[0]._on_long_press_attempt(), "手牌禁用時長按不合符（落回詳情）")
+	hand.hand_disabled = false
+	# P1-2：限額用完 → 攔截但不實際合符
+	assert_true(created2[0]._on_long_press_attempt(), "限額用完長按應攔截（toast、不落回詳情）")
+	assert_eq(c.card_name, "護身符", "限額用完不應實際合符")
+
 	_teardown_env(env)

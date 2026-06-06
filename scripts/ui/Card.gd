@@ -57,6 +57,10 @@ signal card_right_clicked(Card)
 signal card_hovered(Card)
 signal card_unhovered(Card)
 
+## 鎮島錄 — 手牌長按合符 handler（由 Hand 設定為 try_mobile_merge；回傳 true=已處理 → 不顯示詳情）。
+## 非手牌卡（reward/shop）不設定此 handler → 長按維持顯示詳情。
+var long_press_handler: Callable = Callable()
+
 func init(_card_data: CardData, angular_offset: float, connect_combat_signals: bool = false, connect_ui_signals: bool = true):
 	card_data = _card_data
 	pivot.rotation_degrees = angular_offset
@@ -80,7 +84,7 @@ func init(_card_data: CardData, angular_offset: float, connect_combat_signals: b
 		# gui_input's left_click is unreliable on Android (InputEventScreenTouch ≠ InputEventMouseButton)
 		card_button.button_up.connect(_on_card_button_up)
 		card_button.button_down.connect(func(): TOUCH_FEEDBACK.apply_state(card_button, TOUCH_FEEDBACK.TouchState.PRESSED))
-		TOUCH_FEEDBACK.install_long_press_detail(card_button, _make_card_detail_payload())
+		TOUCH_FEEDBACK.install_long_press_detail(card_button, _make_card_detail_payload(), _on_long_press_attempt)
 		card_button.mouse_entered.connect(_on_mouse_entered)
 		card_button.mouse_exited.connect(_on_mouse_exited)
 		keyword_timer.timeout.connect(_on_keyword_timeout)
@@ -305,6 +309,13 @@ func _on_button_gui_input(event: InputEvent):
 	# keep gui_input only for right_click
 	if event.is_action_pressed("right_click"):
 		card_right_clicked.emit(self)
+
+## 鎮島錄 — 長按攔截：委派 Hand 的合符入口（僅手牌卡有 handler）。
+## 回傳 true=已合符/已攔截 → TouchFeedback 不顯示詳情 overlay。
+func _on_long_press_attempt() -> bool:
+	if long_press_handler.is_valid():
+		return bool(long_press_handler.call(self))
+	return false
 
 func _on_mouse_entered():
 	keyword_timer.start(KEYWORD_HOVER_DELAY)
