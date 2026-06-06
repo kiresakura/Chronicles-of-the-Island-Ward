@@ -54,6 +54,7 @@
 - **範圍**：`ProfileData` 加 `incense_balance` + `building_id_to_level`；修廟 screen（新 UI）；建築 `unlocks` 套進 run-start（deity slot 數、tool 進選池、run modifier、shop stock）。**變現鐵則**：只花香火、元寶純外觀。
 - **依賴**：2A-2C（要有可解鎖內容）。**風險**：中（持久化 + 新 screen + run-start 鉤子）。**估**：中-大。
 - **落地檢核**：修廟存讀檔測試（香火扣除 + 等級持久）＋解鎖套用測試。
+- **狀態**：✅ **系統完成（2026-06-06）**——`RitualTemple`（load/repair_cost 遞增/can_repair/repair/unlocked_features）+ `ProfileData` 加 incense + building_levels（序列化持久）+ `end_run` 結算香火（勝 200 / 敗 50）；152/152。⏳ **修廟 screen UI 留後續**；解鎖實際套進 run-start（deity_slot/tool pool/run modifier）為後續接線。
 
 ### 2E — 遶境地圖（新生成器，憲龍 2026-06-06 選定）
 - **目標**：照遶境設計**另寫地圖生成器**，取代 STS 分支圖。節點型別（遇煞 / 惡煞據點 / 夜市香鋪 / 入廟安神 / 民俗問事 / 鎮煞大醮）+ route_traits（污染/香火/危險）**驅動分支結構、獎勵與危險度**。

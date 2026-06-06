@@ -16,6 +16,17 @@ class_name ProfileData
 ## 預設 character_tongji（首次啟動時）。
 @export var profile_mascot_character_id: String = "character_tongji"
 
+## 鎮島錄 2D — 修廟 meta：香火餘額 + 各建築等級（永久進度，隨 profile 序列化存檔）
+@export var profile_incense_balance: int = 0
+@export var profile_building_id_to_level: Dictionary[String, int] = {}
+
+## 香火加成（戰後結算 / 土地公被動等）。
+func add_incense(amount: int) -> void:
+	profile_incense_balance = maxi(0, profile_incense_balance + amount)
+
+func get_building_level(building_id: String) -> int:
+	return profile_building_id_to_level.get(building_id, 0)
+
 func win_run(character_object_id: String) -> void:
 	profile_total_wins += 1
 	var character_wins: int = profile_character_object_id_to_wins.get(character_object_id, 0)
