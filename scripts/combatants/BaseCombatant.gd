@@ -78,6 +78,22 @@ func _ready():
 	_proc_anim = SpriteProcAnim.new()
 	_proc_anim.setup(sprite)
 
+	# 戰鬥指示器 icon：取代場景預設 res://icon.svg placeholder
+	# Block(護身符) → 八卦盾；IncomingDamage(敵方攻擊意圖) → 攻擊匕首
+	const BLOCK_ICON := "res://assets/generated/icons_v2/status/block_bagua.svg"
+	const INTENT_ICON := "res://assets/generated/icons_v2/status/intent_attack.svg"
+	if is_instance_valid(block) and ResourceLoader.exists(BLOCK_ICON):
+		block.texture = load(BLOCK_ICON)
+	if ResourceLoader.exists(INTENT_ICON):
+		var intent_load: Texture2D = load(INTENT_ICON)
+		# 玩家：$Visible/IncomingDamage/TextureRect；敵人：$Visible/Intent/IntentTexture
+		var player_intent := get_node_or_null("Visible/IncomingDamage/TextureRect") as TextureRect
+		if player_intent != null:
+			player_intent.texture = intent_load
+		var enemy_intent_tex := get_node_or_null("Visible/Intent/IntentTexture") as TextureRect
+		if enemy_intent_tex != null:
+			enemy_intent_tex.texture = intent_load
+
 ## 每幀推進程序化動畫 — 呼吸持續、出手 / 受擊殘量衰減。
 func _process(delta: float) -> void:
 	if _proc_anim != null:
