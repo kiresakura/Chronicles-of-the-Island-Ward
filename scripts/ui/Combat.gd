@@ -625,6 +625,9 @@ func set_targeting_status(active: bool) -> void:
 		return
 	_combat_status_label.text = COMBAT_STATUS_TARGETING if active else _combat_status_base_text
 
+## UIQA Phase3 — toast 佇列（逐則顯示，避免疊字 / 無限堆疊）
+var _combat_toast_queue: Array[String] = []
+
 ## 戰鬥短訊 toast（預設透明，呼叫時 fade in → 停留 → fade out）
 func _build_combat_toast() -> void:
 	if _combat_toast != null:
@@ -634,9 +637,8 @@ func _build_combat_toast() -> void:
 	_combat_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_combat_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_combat_toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_combat_toast.position = Vector2(400.0, 300.0)
-	_combat_toast.size = Vector2(400.0, 50.0)
-	_combat_toast.add_theme_font_size_override("font_size", 30)
+	_combat_toast.size = Vector2(440.0, 46.0)	# UIQA：尺寸/位置由 _position_combat_toast 依 safe-rect 設定
+	_combat_toast.add_theme_font_size_override("font_size", COTIW_UI_THEME.get_typography_size("h1", 30))
 	_combat_toast.add_theme_color_override("font_color",
 		COTIW_UI_THEME.get_color("hp_red", Color(0.86, 0.30, 0.24)))
 	_combat_toast.add_theme_color_override("font_shadow_color",
@@ -646,10 +648,20 @@ func _build_combat_toast() -> void:
 	_combat_toast.modulate = Color(1, 1, 1, 0)
 	add_child(_combat_toast)
 
-## 顯示一則短訊（例如「神力不足」）。由 Hand 在不可出牌時呼叫。
+## 顯示一則短訊（例如「神力不足」「合符完成」）。由 Hand/戰鬥事件呼叫。
+## UIQA Phase3：單一 toast 節點 + 佇列 → 不疊字、不無限堆疊；定位走 safe-rect toast lane。
 func show_combat_toast(text: String) -> void:
 	if _combat_toast == null:
 		_build_combat_toast()
+	# 若目前正在顯示，排入佇列逐則顯示（避免疊字）
+	if _combat_toast.modulate.a > 0.0 and _combat_toast_tween != null and _combat_toast_tween.is_valid():
+		if not _combat_toast_queue.has(text):
+			_combat_toast_queue.append(text)
+		return
+	_show_toast_now(text)
+
+func _show_toast_now(text: String) -> void:
+	_position_combat_toast()
 	_combat_toast.text = text
 	if _combat_toast_tween != null and _combat_toast_tween.is_valid():
 		_combat_toast_tween.kill()
@@ -657,6 +669,22 @@ func show_combat_toast(text: String) -> void:
 	_combat_toast_tween = create_tween()
 	_combat_toast_tween.tween_interval(0.7)
 	_combat_toast_tween.tween_property(_combat_toast, "modulate:a", 0.0, 0.4)
+	_combat_toast_tween.tween_callback(_on_combat_toast_finished)
+
+func _on_combat_toast_finished() -> void:
+	if not _combat_toast_queue.is_empty():
+		_show_toast_now(_combat_toast_queue.pop_front())
+
+## UIQA — toast lane：safe-rect 頂部 HUD 下緣（不遮敵人 intent / 手牌 / 請神槽）。
+func _position_combat_toast() -> void:
+	if not is_instance_valid(_combat_toast):
+		return
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	var w: float = minf(440.0, safe.size.x * 0.66)
+	_combat_toast.size = Vector2(w, 46.0)
+	# 置中、頂部狀態 Label(y≈8-42)/請神鈕(y≈46-80) 下方
+	var pos: Vector2 = Vector2(safe.position.x + (safe.size.x - w) * 0.5, safe.position.y + 100.0)
+	_combat_toast.position = COTIW_UI_THEME.clamp_rect_to_safe_area(Rect2(pos, _combat_toast.size), safe).position
 
 
 #region 鎮島錄 — 請神（Deity Invocation, Phase 1D）

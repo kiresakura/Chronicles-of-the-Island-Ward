@@ -433,6 +433,69 @@ func test_pilgrimage_map_generates_valid_graph() -> void:
 	_teardown_env(env)
 
 
+# ──────────── 測試 10：UIQA — toast lane / cancel 鈕 / 合符提示 safe-area 行為 ────────────
+
+func _rect_in_safe(inner: Rect2, outer: Rect2) -> bool:
+	return inner.position.x >= outer.position.x - 1.0 \
+		and inner.position.y >= outer.position.y - 1.0 \
+		and inner.position.x + inner.size.x <= outer.position.x + outer.size.x + 1.0 \
+		and inner.position.y + inner.size.y <= outer.position.y + outer.size.y + 1.0
+
+func test_uiqa_toast_cancel_merge_affordance() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat")
+	if combat == null:
+		_teardown_env(env)
+		return
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var safe: Rect2 = CotiwUiTheme.get_safe_content_rect(combat.get_viewport())
+
+	# toast：safe rect 內、非畫面中心固定值、連觸不堆疊
+	combat.show_combat_toast("測試短訊")
+	var toast: Variant = combat._combat_toast
+	assert_not_null(toast, "toast 應建立")
+	assert_true(_rect_in_safe(Rect2(toast.position, toast.size), safe), "toast 應在 safe rect 內")
+	assert_true(toast.position != Vector2(400.0, 300.0), "toast 不再固定畫面中心 (400,300)")
+	combat.show_combat_toast("第二則")
+	combat.show_combat_toast("第三則")
+	var toast_count: int = 0
+	for c: Node in combat.get_children():
+		if c.name == "CombatToast":
+			toast_count += 1
+	assert_eq(toast_count, 1, "多 toast 連觸不應堆疊出多個節點")
+
+	# cancel target 鈕：safe rect 內、非 (520,250)
+	var hand: Node = combat.get_node_or_null("Hand")
+	assert_not_null(hand, "需要 Hand")
+	if hand == null:
+		_teardown_env(env)
+		return
+	hand._ensure_cancel_target_button()
+	hand._position_cancel_target_button()
+	var btn: Variant = hand._cancel_target_button
+	assert_not_null(btn, "cancel button 應建立")
+	assert_true(btn.position != Vector2(520, 250), "cancel 不再固定 Vector2(520,250)")
+	assert_true(_rect_in_safe(Rect2(btn.position, btn.size), safe), "cancel button 應在 safe rect 內")
+
+	# 合符 affordance：兩張攻拳 → 暖金提示；移除夥伴 → 提示消失
+	var a: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var b: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var pair: Array[CardData] = [a, b]
+	Global.player_data.player_hand = pair
+	var created: Array = hand.create_cards(pair)
+	hand.card_data_to_hand_card[a] = created[0]	# create_cards 為輕量 helper，手動補映射（真機 draw 會自動建）
+	hand.card_data_to_hand_card[b] = created[1]
+	hand._refresh_merge_affordance()
+	assert_eq(created[0].modulate, Color(1.18, 1.06, 0.72), "可合符卡應有暖金提示（MERGE_HINT_TINT）")
+	hand.card_data_to_hand_card.erase(b)
+	Global.player_data.player_hand = [a] as Array[CardData]
+	hand._refresh_merge_affordance()
+	assert_eq(created[0].modulate, Color(1, 1, 1), "無夥伴時不顯示合符提示")
+
+	_teardown_env(env)
+
+
 # ──────────── 測試 8：手機長按合符入口（P0-1）— Card._on_long_press_attempt ────────────
 # 經由「卡牌長按入口」（真機路徑：TouchFeedback timer → Card._on_long_press_attempt
 # → long_press_handler → Hand.try_mobile_merge）驗證手機可達合符，不只直接呼叫 _try_merge_card。

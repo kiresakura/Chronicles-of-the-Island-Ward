@@ -335,5 +335,24 @@ static func _show_detail_overlay(target: Control) -> void:
 	if existing != null:
 		existing.queue_free()
 	var overlay := make_detail_overlay(target.get_meta("long_press_detail_payload"))
-	overlay.position = Vector2(390, 240)
 	root.add_child(overlay)
+	position_detail_overlay(overlay, target)	# UIQA Phase5：safe-rect 縮放 + 目標相對定位 + clamp（取代固定 Vector2(390,240)）
+
+## UIQA — detail overlay 手機友善定位：
+##  - 依 safe-rect 縮放使寬度 ≤ 80%（panel 內部固定版面，用 scale 保比例不裁字）
+##  - 依目標 global rect：優先放目標上方，不足則翻到下方；最終 clamp 進 safe-rect
+static func position_detail_overlay(overlay: Control, target: Control) -> void:
+	if overlay == null or target == null:
+		return
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(target.get_viewport())
+	var base: Vector2 = overlay.size	# make_detail_overlay 預設 500×260
+	var max_w: float = safe.size.x * 0.8
+	var scale: float = minf(1.0, max_w / maxf(1.0, base.x))
+	overlay.scale = Vector2(scale, scale)
+	var eff: Vector2 = base * scale
+	var tr: Rect2 = target.get_global_rect()
+	var x: float = tr.position.x + (tr.size.x - eff.x) * 0.5	# 水平對齊目標中心
+	var y: float = tr.position.y - eff.y - 12.0					# 優先目標上方
+	if y < safe.position.y:
+		y = tr.position.y + tr.size.y + 12.0					# 不足 → 翻到目標下方
+	overlay.position = COTIW_UI_THEME.clamp_rect_to_safe_area(Rect2(Vector2(x, y), eff), safe).position
