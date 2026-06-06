@@ -15,8 +15,8 @@ func test_ui_theme_card_rarity_maps_to_frame_asset() -> void:
 
 func test_ui_theme_location_type_maps_to_node_asset() -> void:
 	var path: String = UI_THEME.get_map_node_path(LocationData.LOCATION_TYPES.SHOP)
-	assert_eq(path, "res://assets/generated/icons/map_nodes/node_shop.svg",
-		"SHOP 節點應映射到 v2 商店節點資產（Recraft 像素）")
+	assert_eq(path, "res://assets/generated/icons/map_nodes_v2/node_shop_anime.svg",
+		"SHOP 節點應映射到 v2 動漫化地標節點資產（古錢/香油錢牌）")
 	assert_true(ResourceLoader.exists(path), "映射出的地圖節點資產必須存在")
 
 func test_ui_theme_mobile_safe_prefers_mobile_variant() -> void:
