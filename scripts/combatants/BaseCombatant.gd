@@ -433,8 +433,11 @@ func add_status_effect_charges(status_effect_object_id: String, charge_amount: i
 			status_effect.update_status_charge_display()
 	
 	update_health_bar(false)
-	
+
 	Signals.enemy_intent_changed.emit()	# update enemy intent in case statuses affect them
+	# 鎮島錄 — 城隍請神鉤：對「敵人」施加 debuff（charge>0）時廣播
+	if charge_amount > 0 and is_in_group("enemies") and status_effect_data.status_effect_type == StatusEffectData.STATUS_EFFECT_TYPES.DEBUFF:
+		Signals.debuff_applied.emit(self)
 
 func add_new_status_effect(status_effect_object_id: String, charge_amount: int, secondary_charge_amount: int = 0, custom_values: Dictionary = {}) -> void:
 	# attempts to add an entirely new status effect with given charges

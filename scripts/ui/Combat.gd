@@ -662,6 +662,10 @@ func show_combat_toast(text: String) -> void:
 #region 鎮島錄 — 請神（Deity Invocation, Phase 1D）
 const ACTIVE_DEITY_ID: String = "deity_tiger_god"	# MVP 固定虎爺（主祭/護壇/法器配置屬 Phase 2）
 const TIGER_ROAR_DAMAGE: int = 12
+const MERCIFUL_HEAL: int = 12		# 媽祖回元神
+const MERCIFUL_BLOCK: int = 8		# 媽祖護身符
+const LAND_DRAW: int = 2			# 土地公抽牌
+const LAND_BLOCK: int = 4			# 土地公護身符
 
 ## 建立請神槽控制器 + 降乩按鈕（程序化）。按鈕兼作請神槽顯示（請神中→顯示進度且 disabled；滿槽→可點降乩）。
 func _build_deity_invocation() -> void:
@@ -715,6 +719,12 @@ func _execute_deity_invocation(deity: DeityData) -> void:
 	match deity.deity_invocation_effect:
 		"tiger_roar":
 			_invoke_tiger_roar()
+		"judgment":
+			_invoke_judgment()
+		"merciful_tide":
+			_invoke_merciful_tide()
+		"land_blessing":
+			_invoke_land_blessing()
 		_:
 			pass
 	show_combat_toast("%s降乩！" % deity.deity_name)
@@ -729,4 +739,24 @@ func _invoke_tiger_roar() -> void:
 			var ed: EnemyData = enemy_node.enemy_data
 			if ed != null and ed.enemy_is_broken:
 				ed.enemy_broken_turns_remaining += 1
+
+## 城隍夜審：全體存活敵人 驚嚇 +2、怯戰 +1（控場）。
+func _invoke_judgment() -> void:
+	for e: Node in get_tree().get_nodes_in_group("enemies"):
+		if e is Enemy and (e as Enemy).is_alive():
+			(e as Enemy).add_status_effect_charges("status_effect_vulnerable", 2)
+			(e as Enemy).add_status_effect_charges("status_effect_weak", 1)
+
+## 媽祖慈航普渡：回復元神 + 獲得護身符。
+func _invoke_merciful_tide() -> void:
+	var pd: PlayerData = Global.player_data
+	pd.set_health(mini(pd.player_health + MERCIFUL_HEAL, pd.player_health_max))
+	if is_instance_valid(player):
+		player.add_block(MERCIFUL_BLOCK)
+
+## 土地公福德降臨：抽牌 + 獲得護身符（資源/穩定）。
+func _invoke_land_blessing() -> void:
+	Signals.card_draw_requested.emit(LAND_DRAW, PlayerData.PLAYER_DEFAULT_HAND_CARD_COUNT_MAX)
+	if is_instance_valid(player):
+		player.add_block(LAND_BLOCK)
 #endregion

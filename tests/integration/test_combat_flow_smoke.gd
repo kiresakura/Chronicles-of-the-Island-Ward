@@ -281,3 +281,73 @@ func _sum_enemy_health() -> int:
 		if e is Enemy and (e as Enemy).enemy_data != null:
 			total += (e as Enemy).enemy_data.enemy_health
 	return total
+
+
+# ──────────── 測試 6：多神請神（Phase 2A）— 觸發路由 + 三神降乩效果 ────────────
+
+func test_deity_trigger_routing_per_deity() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat")
+	if combat == null:
+		_teardown_env(env)
+		return
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var controller: Variant = combat._deity_controller
+	assert_not_null(controller, "需要請神控制器")
+	if controller == null:
+		_teardown_env(env)
+		return
+
+	# 媽祖（on_block_gained）：玩家獲護身符 → 累積；debuff → 不累積
+	controller.setup(DeityInvocationSystem.load_deity("deity_mazu"))
+	assert_eq(controller.get_charge(), 0, "媽祖開局請神值 0")
+	controller._on_combatant_block_added(combat.player)
+	assert_eq(controller.get_charge(), DeityChargeController.BLOCK_CHARGE, "媽祖：玩家獲護身符應累積")
+	controller._on_debuff_applied(null)
+	assert_eq(controller.get_charge(), DeityChargeController.BLOCK_CHARGE, "媽祖：debuff 非其觸發、不累積")
+
+	# 城隍（on_debuff_applied）：施 debuff → 累積；block → 不累積
+	controller.setup(DeityInvocationSystem.load_deity("deity_chenghuang"))
+	assert_eq(controller.get_charge(), 0, "城隍 setup 重置為 0")
+	controller._on_debuff_applied(null)
+	assert_eq(controller.get_charge(), DeityChargeController.DEBUFF_CHARGE, "城隍：施 debuff 應累積")
+	controller._on_combatant_block_added(combat.player)
+	assert_eq(controller.get_charge(), DeityChargeController.DEBUFF_CHARGE, "城隍：block 非其觸發、不累積")
+
+	_teardown_env(env)
+
+func test_multi_deity_invocation_effects() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat")
+	if combat == null:
+		_teardown_env(env)
+		return
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var tree := Engine.get_main_loop() as SceneTree
+
+	# 城隍 judgment：全體敵人獲驚嚇
+	var enemy: Enemy = null
+	for e: Node in tree.get_nodes_in_group("enemies"):
+		if e is Enemy:
+			enemy = e as Enemy
+			break
+	assert_not_null(enemy, "需要敵人")
+	if enemy == null:
+		_teardown_env(env)
+		return
+	combat._execute_deity_invocation(DeityInvocationSystem.load_deity("deity_chenghuang"))
+	assert_true(enemy.get_status_charges("status_effect_vulnerable") > 0, "城隍夜審應給敵人驚嚇")
+
+	# 媽祖 merciful_tide：玩家獲護身符
+	var block_before: int = Global.player_data.player_block
+	combat._execute_deity_invocation(DeityInvocationSystem.load_deity("deity_mazu"))
+	assert_true(Global.player_data.player_block > block_before, "媽祖慈航應給玩家護身符")
+
+	# 土地公 land_blessing：玩家獲護身符（抽牌異步，驗 block）
+	var block_before2: int = Global.player_data.player_block
+	combat._execute_deity_invocation(DeityInvocationSystem.load_deity("deity_tudigong"))
+	assert_true(Global.player_data.player_block > block_before2, "土地公福德應給玩家護身符")
+
+	_teardown_env(env)

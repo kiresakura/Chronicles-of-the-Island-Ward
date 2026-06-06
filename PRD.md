@@ -179,7 +179,7 @@
 
 **規則**：卡牌 `card_deity_charge` 在 `ritual_tags` 與神明 `deity_charge_tags` 交集時累積請神值；破煞、自損、合成三階敕符皆可為觸發來源；滿槽**不自動釋放**，玩家擇時降乩。乩童透過 `deity_charge_per_self_loss` 把自損轉成請神節奏。
 
-**狀態**：✅ `DeityData` + 4 神 JSON + schema 已驗證。✅ **虎爺請神閉環已接線**（`DeityInvocationSystem` + `DeityChargeController` + Combat：出 fist 卡 + 破煞累積請神值 → 滿槽降乩按鈕 → 虎爺咬煞 AoE + 重置），整合測試於真實樹通過。⏳ 城隍/媽祖/土地公效果、請神槽視覺、數值平衡為後續。細節見 [deity_invocation_system.md](docs/design/deity_invocation_system.md)。
+**狀態**：✅ `DeityData` + 4 神 JSON + schema 已驗證。✅ **4 神請神閉環已接線**（`DeityInvocationSystem` + `DeityChargeController` + Combat：虎爺 tiger_roar / 城隍 judgment / 媽祖 merciful_tide / 土地公 land_blessing，觸發路由 on_enemy_broken·on_block_gained·on_debuff_applied），整合測試於真實樹通過。⏳ 請神槽視覺、數值平衡、出戰神明由 loadout 決定（Phase 2B）為後續。細節見 [deity_invocation_system.md](docs/design/deity_invocation_system.md)。
 
 ### 4.4 主祭 / 護壇 / 法器配置
 

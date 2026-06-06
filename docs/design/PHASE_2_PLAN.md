@@ -33,6 +33,7 @@
 - **範圍**：Combat `_execute_deity_invocation` 加 `judgment` / `merciful_tide` / `land_blessing` 分派；補觸發鉤——媽祖 `on_block_gained`（既有 `combatant_block_added` 可用）、城隍 `on_debuff_applied`（需新 debuff 訊號或借 status 套用點）、土地公 `manual`。
 - **依賴**：1D ✅。**風險**：低（純擴充 1D 架構）。**估**：小。
 - **落地檢核**：3 神整合測試（累積→降乩→效果）＋既有綠燈。
+- **狀態**：✅ **已完成（2026-06-06）**——4 神觸發路由（on_enemy_broken/on_block_gained/on_debuff_applied）+ 降乩效果（judgment/merciful_tide/land_blessing）接線；新增 `Signals.debuff_applied` 鉤；真實樹整合測試通過，128/128。
 
 ### 2B — 主祭 / 護壇 / 法器 配置（解除「固定虎爺」）
 - **目標**：開局三件配置；套用 guardian 被動 + 支援卡 + tool 規則；**出戰神明由配置決定**。
