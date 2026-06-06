@@ -53,7 +53,7 @@
 | 請神 | ✅ 4 神 | ✅ `DeityInvocationSystem` + 單元測試 | ✅ **4 神請神槽（虎爺/城隍/媽祖/土地公）+ 觸發路由 + 降乩效果**；平衡/手機版位續調 |
 | 主祭/護壇/法器 | ✅ 樣本 | ✅ `RitualLoadout` + 單元測試 | ✅ **系統 + NewRunMenu 選擇器 UI**：4 角各解析不同出戰神明（乩童→虎爺/鸞女→城隍/道士→媽祖/家將→虎爺）+ 護壇卡入庫 + 法器規則 |
 | 遶境地圖 | ✅ 路線特徵 | ✅ `PilgrimageRoutes` + 單元 | ✅ **遶境生成器**（act_1 切 `ActionGeneratePilgrimage`：有效圖 + 路線標記 + 危險度難度池） |
-| 修廟 meta | ✅ 6 建築 | — | ⏳ Phase 2 |
+| 修廟 meta | ✅ 6 建築 | ✅ `RitualTemple` + 單元 | ✅ **系統：香火結算 + 修廟（成本遞增/解鎖聚合）+ ProfileData 持久**；修廟 screen 留後續 |
 
 ---
 

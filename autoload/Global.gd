@@ -344,6 +344,10 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 	#FileLoader.test_serialization()
 
 ## Used for end_run().
+## 鎮島錄 2D — 戰後結算香火（meta 貨幣，修廟用；數值待平衡）
+const INCENSE_ON_VICTORY: int = 200
+const INCENSE_ON_LOSS: int = 50
+
 enum RUN_ENDS {QUIT, LOSS, VICTORY}
 
 ## Ends the player's current run under the given status.
@@ -354,10 +358,12 @@ func end_run(run_end_state: int = RUN_ENDS.QUIT) -> void:
 		RUN_ENDS.LOSS:
 			FileLoader.delete_save()
 			profile_data.lose_run(player_data.player_character_object_id)
+			profile_data.add_incense(INCENSE_ON_LOSS)	# 鎮島錄 2D — 結算香火（慰勞）
 			FileLoader.save_profile()
 		RUN_ENDS.VICTORY:
 			FileLoader.delete_save()
 			profile_data.win_run(player_data.player_character_object_id)
+			profile_data.add_incense(INCENSE_ON_VICTORY)	# 鎮島錄 2D — 結算香火
 			FileLoader.save_profile()
 	
 	is_run = false
