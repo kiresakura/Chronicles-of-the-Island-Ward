@@ -281,9 +281,9 @@ func _on_combat_started(event_id: String):
 	if is_instance_valid(background_button) and ResourceLoader.exists(COMBAT_BG_CH1):
 		background_button.texture_normal = load(COMBAT_BG_CH1)
 
-	# 鎮島錄 — 請神（Phase 1D）：每場戰鬥設定出戰神明（MVP 固定虎爺）並重置請神槽
+	# 鎮島錄 — 請神：每場戰鬥設定「本局班底解析出的出戰神明」（2B：由 loadout 決定，非固定虎爺）並重置請神槽
 	if _deity_controller != null:
-		_deity_controller.setup(DeityInvocationSystem.load_deity(ACTIVE_DEITY_ID))
+		_deity_controller.setup(DeityInvocationSystem.load_deity(Global.get_run_active_deity_id()))
 
 func _on_combat_ended():
 	set_combat_display_visibility(false)

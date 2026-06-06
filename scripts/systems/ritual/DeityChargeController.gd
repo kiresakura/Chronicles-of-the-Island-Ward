@@ -54,6 +54,7 @@ func _on_card_played(request: CardPlayRequest) -> void:
 		return
 	var delta: int = DeityInvocationSystem.charge_from_card(deity.deity_charge_tags, request.card_data)
 	if delta > 0:
+		delta += Global.run_tool_deity_charge_bonus	# 法器請神加成（2B：香爐等 tool_bonus_deity_charge）
 		_charge = DeityInvocationSystem.add_charge(_charge, delta, deity.deity_max_charge)
 		_emit()
 

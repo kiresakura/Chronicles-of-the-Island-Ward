@@ -351,3 +351,27 @@ func test_multi_deity_invocation_effects() -> void:
 	assert_true(Global.player_data.player_block > block_before2, "土地公福德應給玩家護身符")
 
 	_teardown_env(env)
+
+
+# ──────────── 測試 7：主祭/護壇/法器 loadout（Phase 2B）— start_run 套用 ────────────
+# _build_combat_env 內部 start_run("character_tongji") → 驗證本局班底已套用：
+#   出戰神明由 loadout 解析（非固定虎爺）、法器破煞加成、護壇支援卡入起始牌庫。
+
+func test_run_loadout_applied_on_start() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat")
+	if combat == null:
+		_teardown_env(env)
+		return
+	# 乩童預設班底 → 出戰虎爺（法器虎牌 affinity）、破煞 +1
+	assert_eq(Global.get_run_active_deity_id(), "deity_tiger_god", "乩童預設班底出戰虎爺（由 loadout 解析）")
+	assert_eq(Global.run_tool_break_bonus, 1, "乩童法器虎牌 → 破煞 +1")
+	# 鸞女護壇支援卡入起始牌庫
+	var has_support: bool = false
+	for c: CardData in Global.player_data.player_deck:
+		if c.object_id == "card_luannu_protection":
+			has_support = true
+			break
+	assert_true(has_support, "鸞女護壇支援卡（card_luannu_protection）應入起始牌庫")
+	_teardown_env(env)

@@ -40,6 +40,7 @@
 - **範圍**：`NewRunMenu`/`RunStartOptions` 加 護壇 + 法器 picker（資料已備）；`Global.start_run` 接收 loadout；套 `guardian_support_card_ids` 進起手牌庫、`tool_*` 規則（破煞 +1 / 請神 +N / 香火 +N 已資料化）、active deity = guardian/tool 的 affinity。
 - **依賴**：2A（多神才有選神意義）。**風險**：中（觸 run-start + 角色選擇 UI）。**估**：中。
 - **落地檢核**：loadout 套用整合測試（guardian 支援卡入庫、tool 破煞 +1 生效、active deity 正確）。
+- **狀態**：✅ **系統已完成（2026-06-06）**——`RitualLoadout` + `start_run` 套用（護壇卡入庫、法器破煞/請神加成、affinity 解析出戰神明：乩童→虎爺 / 鸞女→城隍）；136/136。⏳ **配置選擇器 UI 留後續增量**（2B-UI）。
 
 ### 2C — 道士 + 家將 角色與卡組
 - **目標**：兩新角 + 各 ~10 張卡（帶 ritual 欄位）。**先復用既有機制**（武訣/護壇/符令 + 破煞/合符/請神）。
