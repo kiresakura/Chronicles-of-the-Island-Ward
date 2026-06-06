@@ -25,3 +25,7 @@ class_name CharacterData
 @export var character_starting_money: int = 999	# money added to player on start
 @export var character_starting_health: int = 50
 @export var character_starting_card_draft_card_pack_ids: Array[String] = [] # the cards this character can draft. Usually the same as the character color.
+
+## 鎮島錄 — 預設班底（開局未由 loadout UI 指定時採用）。出戰神明由 RitualLoadout 依 affinity 解析。
+@export var character_default_guardian_id: String = ""		# 護壇（GuardianData）
+@export var character_default_ritual_tool_id: String = ""	# 法器（RitualToolData）

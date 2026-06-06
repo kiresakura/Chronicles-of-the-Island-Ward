@@ -225,6 +225,7 @@ func _on_card_played_ward(request: CardPlayRequest) -> void:
 		return
 	var amount: int = WardBreakSystem.compute_ward_damage(request.card_data, enemy_data)
 	if amount > 0:
+		amount += Global.run_tool_break_bonus	# 法器破煞加成（2B：虎牌等 tool_bonus_break_damage）
 		if WardBreakSystem.apply_ward_damage(enemy_data, amount):
 			_on_ward_broken()
 	_refresh_ward_ui()

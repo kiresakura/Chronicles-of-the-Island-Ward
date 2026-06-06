@@ -245,7 +245,36 @@ func _ready():
 
 #region Run
 ## Starts a new run under a given seed with a given character
-func start_run(character_object_id: String, run_seed: int, difficulty_level: int = 0, custom_run_modifier_object_ids: Array[String] = []) -> void:
+# 鎮島錄 — 本局班底（主祭 / 護壇 / 法器）run 狀態 + 出戰神明
+var run_guardian_id: String = ""
+var run_ritual_tool_id: String = ""
+var run_active_deity_id: String = "deity_tiger_god"
+var run_tool_break_bonus: int = 0
+var run_tool_deity_charge_bonus: int = 0
+
+func get_run_active_deity_id() -> String:
+	return run_active_deity_id if run_active_deity_id != "" else RitualLoadout.DEFAULT_DEITY_ID
+
+## 套用本局班底：護壇支援卡入庫、法器規則、出戰神明解析（空參數 → 角色預設班底）。
+func _apply_run_loadout(character_data: CharacterData, guardian_id: String, ritual_tool_id: String) -> void:
+	var g_id: String = guardian_id if guardian_id != "" else character_data.character_default_guardian_id
+	var t_id: String = ritual_tool_id if ritual_tool_id != "" else character_data.character_default_ritual_tool_id
+	run_guardian_id = g_id
+	run_ritual_tool_id = t_id
+	var guardian: GuardianData = RitualLoadout.load_guardian(g_id)
+	var tool: RitualToolData = RitualLoadout.load_tool(t_id)
+	# 護壇支援卡入起始牌庫
+	if guardian != null:
+		for card_id: String in guardian.guardian_support_card_ids:
+			if _id_to_card_data.has(card_id):
+				player_data.player_deck.append(get_card_data_from_prototype(card_id))
+	# 法器規則（破煞 / 請神加成）
+	run_tool_break_bonus = tool.tool_bonus_break_damage if tool != null else 0
+	run_tool_deity_charge_bonus = tool.tool_bonus_deity_charge if tool != null else 0
+	# 出戰神明
+	run_active_deity_id = RitualLoadout.resolve_active_deity(guardian, tool)
+
+func start_run(character_object_id: String, run_seed: int, difficulty_level: int = 0, custom_run_modifier_object_ids: Array[String] = [], guardian_id: String = "", ritual_tool_id: String = "") -> void:
 	var character_data: CharacterData = get_character_data(character_object_id)
 	
 	# initialize player data from a prototype
@@ -266,7 +295,10 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 	# add starting cards to player
 	for card_object_id in character_data.character_starting_card_object_ids:
 		player_data.player_deck.append(get_card_data_from_prototype(card_object_id))
-	
+
+	# 鎮島錄 — 套用本局班底（護壇支援卡 + 法器規則 + 出戰神明）
+	_apply_run_loadout(character_data, guardian_id, ritual_tool_id)
+
 	# card draft
 	player_data.reward_draft_card_pack_ids.assign(character_data.character_starting_card_draft_card_pack_ids)
 	

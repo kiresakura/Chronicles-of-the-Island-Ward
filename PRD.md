@@ -193,7 +193,7 @@
 - **護壇** `guardian`（`GuardianData`）：提供被動與少量支援卡池（已建 `guardian_luannu` 契合媽祖、`guardian_jiajiang_front` 契合城隍）。
 - **法器** `ritual_tool`（`RitualToolData`）：改變破煞 / 請神 / 資源規則（已建 虎牌 / 香爐 / 七星令旗）。
 
-**狀態**：✅ 三類資料 schema + 樣本已落地、已驗證。⏳ 隊伍 wiring + 配置 UI 屬 **Phase 2**。
+**狀態**：✅ 三類資料 + schema。✅ **班底系統已接線**（`RitualLoadout` + `Global.start_run`：護壇支援卡入庫、法器破煞/請神加成、出戰神明由 affinity 解析——乩童→虎爺、鸞女→城隍，**非固定**），整合測試通過。⏳ 配置選擇器 UI 屬後續增量。
 
 ---
 
