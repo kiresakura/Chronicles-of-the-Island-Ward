@@ -284,6 +284,7 @@ FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
 ### Q-R2: 請神滿槽的釋放 UX 與溢出
 - 已定「不自動釋放，玩家擇時降乩」。待定：滿槽後溢出的請神值丟棄或保留？降乩按鈕擺位（側欄 vs 神明立繪可點）？同時多神滿槽如何呈現？
 - **我的建議**：溢出丟棄、側欄請神槽 + 滿槽發光可點。詳見 deity_invocation_system.md。
+- **🟡 2026-06-06 更新**：Phase 1D 已實作**虎爺 MVP**——請神槽以頂部置中按鈕呈現（請神中顯示 `N/max` 且 disabled；滿槽顯示「降乩！」可點），溢出夾在 max（丟棄），手動釋放。`DeityChargeController.BREAK_CHARGE = 25`。仍待決策：①按鈕版位（手機是否改側欄/神明立繪可點）②多神同時滿槽呈現 ③出戰神明選擇（目前固定虎爺，待 Phase 2 主祭/護壇/法器配置）④BREAK_CHARGE 與 tiger_roar 傷害平衡。
 
 ### Q-R3: 破煞爆發窗口的數值
 - 暫定 `BROKEN_DAMAGE_MULTIPLIER = 1.5`、破煞當下不一定跳過敵方行動（由 break_effect 決定）。是否要讓部分 break_effect（如 break_stun）跳過敵方下一次行動？BOSS（百年虎爺 break_invoke_window）窗口應否更長？

@@ -179,7 +179,7 @@
 
 **規則**：卡牌 `card_deity_charge` 在 `ritual_tags` 與神明 `deity_charge_tags` 交集時累積請神值；破煞、自損、合成三階敕符皆可為觸發來源；滿槽**不自動釋放**，玩家擇時降乩。乩童透過 `deity_charge_per_self_loss` 把自損轉成請神節奏。
 
-**狀態**：✅ `DeityData` 類別 + 4 神 JSON 已落地、schema 已驗證。⏳ 請神槽 / 降乩 wiring 屬 **Phase 1D**。細節見 [deity_invocation_system.md](docs/design/deity_invocation_system.md)。
+**狀態**：✅ `DeityData` + 4 神 JSON + schema 已驗證。✅ **虎爺請神閉環已接線**（`DeityInvocationSystem` + `DeityChargeController` + Combat：出 fist 卡 + 破煞累積請神值 → 滿槽降乩按鈕 → 虎爺咬煞 AoE + 重置），整合測試於真實樹通過。⏳ 城隍/媽祖/土地公效果、請神槽視覺、數值平衡為後續。細節見 [deity_invocation_system.md](docs/design/deity_invocation_system.md)。
 
 ### 4.4 主祭 / 護壇 / 法器配置
 
@@ -309,7 +309,7 @@
 | **1A 文件與 schema** | PRD/README 重構、6 份設計文件、CardData/EnemyData 擴充、DeityData/GuardianData/RitualToolData、RitualTags、資料注入、validator + 測試 | ✅ **本輪完成** |
 | **1B 破煞 MVP** | `WardBreakSystem` 接進戰鬥流程（Enemy.gd 監聽 card_played）、頭頂煞盾指示、破煞套 status、爆發窗口 ×1.5 | ✅ **核心落地**（視覺/AoE/平衡續調） |
 | **1C 符階合成 MVP** | 合符動作（右鍵兩張同組同階 → transform 升階 + banish 夥伴）、每回合限額 | ✅ **核心落地**（UI 提示/手機手勢/神力消耗續調） |
-| **1D 請神 MVP** | 請神槽累積（標籤交集 + 觸發事件）、降乩釋放 UI、虎爺 / 媽祖 先行 | ⏳ |
+| **1D 請神 MVP** | 虎爺請神槽（出牌標籤交集 + 破煞累積）、降乩按鈕、tiger_roar AoE + 重置 | ✅ **核心落地**（多神/視覺/平衡續調） |
 | **2 完整第一章遶境** | 遶境地圖生成、主祭/護壇/法器配置 UI、修廟 meta、道士 / 家將卡組、鎮煞大醮 | ⏳ |
 
 ---

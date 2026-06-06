@@ -36,6 +36,10 @@ const _FLAT_DECALS := [
 @onready var background_button: TextureButton = %BackgroundButton
 
 @onready var end_turn_button: Button = $EndTurnButton
+
+## 鎮島錄 — 請神（Phase 1D）：虎爺請神槽控制器 + 降乩按鈕（程序化建立，不動 Combat.tscn）
+var _deity_controller: DeityChargeController = null
+var _invoke_button: Button = null
 var end_turn_object: CombatEndTurn = null
 
 # ── P0 戰鬥狀態提示 + 不可出牌 toast（additive；不改既有 signal flow） ──
@@ -119,6 +123,8 @@ func _ready():
 	# P0：頂部回合狀態提示 Label + 不可出牌短訊 toast（additive）
 	_build_combat_status_label()
 	_build_combat_toast()
+	# 鎮島錄 — 請神槽 + 降乩按鈕（Phase 1D）
+	_build_deity_invocation()
 
 
 ## 套用戰鬥上排 TextureButton 的 icon（取代 icon.svg placeholder）
@@ -274,6 +280,10 @@ func _on_combat_started(event_id: String):
 	const COMBAT_BG_CH1 := "res://assets/generated/pixellab/combat_bg_ch1.png"
 	if is_instance_valid(background_button) and ResourceLoader.exists(COMBAT_BG_CH1):
 		background_button.texture_normal = load(COMBAT_BG_CH1)
+
+	# 鎮島錄 — 請神（Phase 1D）：每場戰鬥設定出戰神明（MVP 固定虎爺）並重置請神槽
+	if _deity_controller != null:
+		_deity_controller.setup(DeityInvocationSystem.load_deity(ACTIVE_DEITY_ID))
 
 func _on_combat_ended():
 	set_combat_display_visibility(false)
@@ -647,3 +657,76 @@ func show_combat_toast(text: String) -> void:
 	_combat_toast_tween = create_tween()
 	_combat_toast_tween.tween_interval(0.7)
 	_combat_toast_tween.tween_property(_combat_toast, "modulate:a", 0.0, 0.4)
+
+
+#region 鎮島錄 — 請神（Deity Invocation, Phase 1D）
+const ACTIVE_DEITY_ID: String = "deity_tiger_god"	# MVP 固定虎爺（主祭/護壇/法器配置屬 Phase 2）
+const TIGER_ROAR_DAMAGE: int = 12
+
+## 建立請神槽控制器 + 降乩按鈕（程序化）。按鈕兼作請神槽顯示（請神中→顯示進度且 disabled；滿槽→可點降乩）。
+func _build_deity_invocation() -> void:
+	if _deity_controller != null:
+		return
+	_deity_controller = DeityChargeController.new()
+	_deity_controller.name = "DeityChargeController"
+	add_child(_deity_controller)
+	_deity_controller.charge_changed.connect(_on_deity_charge_changed)
+
+	_invoke_button = Button.new()
+	_invoke_button.name = "InvokeButton"
+	_invoke_button.focus_mode = Control.FOCUS_NONE
+	# 頂部置中，避開底部手牌與中央敵人
+	_invoke_button.anchor_left = 0.5
+	_invoke_button.anchor_right = 0.5
+	_invoke_button.offset_left = -95.0
+	_invoke_button.offset_right = 95.0
+	_invoke_button.offset_top = 6.0
+	_invoke_button.offset_bottom = 40.0
+	_invoke_button.add_theme_font_size_override("font_size", 16)
+	_invoke_button.disabled = true
+	_invoke_button.visible = false
+	_invoke_button.pressed.connect(_on_invoke_button_pressed)
+	add_child(_invoke_button)
+
+func _on_deity_charge_changed(current: int, max_charge: int) -> void:
+	if not is_instance_valid(_invoke_button):
+		return
+	var dname: String = "神明"
+	if _deity_controller != null and _deity_controller.deity != null:
+		dname = _deity_controller.deity.deity_name
+	_invoke_button.visible = max_charge > 0
+	if _deity_controller != null and _deity_controller.is_ready():
+		_invoke_button.text = "%s 降乩！" % dname
+		_invoke_button.disabled = false
+	else:
+		_invoke_button.text = "%s 請神 %d/%d" % [dname, current, max_charge]
+		_invoke_button.disabled = true
+
+func _on_invoke_button_pressed() -> void:
+	if _deity_controller == null or not _deity_controller.is_ready():
+		return
+	_execute_deity_invocation(_deity_controller.deity)
+	_deity_controller.consume()
+
+## 降乩效果分派（資料驅動鍵 → 效果）。MVP：虎爺 tiger_roar；其他神明屬 Phase 1D+。
+func _execute_deity_invocation(deity: DeityData) -> void:
+	if deity == null:
+		return
+	match deity.deity_invocation_effect:
+		"tiger_roar":
+			_invoke_tiger_roar()
+		_:
+			pass
+	show_combat_toast("%s降乩！" % deity.deity_name)
+
+## 虎爺咬煞：對全體存活敵人造成穿透傷害，並延長其破煞爆發窗口 1 回合。
+## 直接走 Enemy.damage()（可靠、含破煞 ×1.5 與死亡處理）；action 化的演出時序屬後續打磨。
+func _invoke_tiger_roar() -> void:
+	for e: Node in get_tree().get_nodes_in_group("enemies"):
+		if e is Enemy and (e as Enemy).is_alive():
+			var enemy_node: Enemy = e as Enemy
+			enemy_node.damage(TIGER_ROAR_DAMAGE, true)
+			var ed: EnemyData = enemy_node.enemy_data
+			if ed != null and ed.enemy_is_broken:
+				ed.enemy_broken_turns_remaining += 1
+#endregion

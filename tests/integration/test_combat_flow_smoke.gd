@@ -218,3 +218,66 @@ func test_combat_merge_transforms_card_and_consumes_partner() -> void:
 	assert_false(hand._try_merge_card(created2[0]), "每回合合符限額用罄後不可再合符")
 
 	_teardown_env(env)
+
+
+# ──────────── 測試 5：請神（Phase 1D）— 真實樹中累積 → 滿槽 → 降乩 AoE + 重置 ────────────
+# 驗證請神閉環：出 fist 卡 + 破煞累積請神值 → 滿槽降乩按鈕可點 → 虎爺降乩對全體造成傷害 → 重置。
+# 連通性（card_played + enemy_broken）以斷言確認；累積以直接呼叫 handler 隔離（不觸發無關監聽者）。
+
+func test_combat_deity_charge_accumulate_and_invoke() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat 節點")
+	if combat == null:
+		_teardown_env(env)
+		return
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+
+	var controller: Variant = combat._deity_controller
+	assert_not_null(controller, "Combat 應建立請神槽控制器")
+	if controller == null:
+		_teardown_env(env)
+		return
+	# combat_started 已 setup 虎爺、請神值歸 0
+	assert_not_null(controller.deity, "出戰神明應已載入")
+	assert_eq(controller.deity.deity_name, "虎爺", "MVP 出戰神明為虎爺")
+	assert_eq(controller.get_charge(), 0, "開戰請神值應為 0")
+	# 連通：控制器已連 card_played + enemy_broken（1B 破煞 → 1D 請神）
+	assert_true(Signals.card_played.is_connected(controller._on_card_played), "應連 card_played")
+	assert_true(Signals.enemy_broken.is_connected(controller._on_enemy_broken), "應連 enemy_broken")
+
+	# 出 fist 卡累積（攻拳 deity_charge 8）
+	var req: CardPlayRequest = CardPlayRequest.new()
+	req.card_data = Global.get_card_data_from_prototype("card_tongji_punch")
+	controller._on_card_played(req)
+	assert_eq(controller.get_charge(), 8, "攻拳（fist）應累積 8 請神值")
+
+	# 破煞累積（+25）
+	controller._on_enemy_broken(null)
+	assert_eq(controller.get_charge(), 33, "破煞應再累積 25 → 33")
+
+	# 充到滿（再 3 次破煞：33 + 75 = 108 → 夾在 100）
+	controller._on_enemy_broken(null)
+	controller._on_enemy_broken(null)
+	controller._on_enemy_broken(null)
+	assert_true(controller.is_ready(), "請神值應已滿、可降乩")
+	assert_false(combat._invoke_button.disabled, "滿槽時降乩按鈕應可點")
+	assert_true(combat._invoke_button.text.contains("降乩"), "滿槽按鈕應顯示「降乩」")
+
+	# 降乩：對全體敵人造成傷害 + 重置請神值
+	var before: int = _sum_enemy_health()
+	combat._on_invoke_button_pressed()
+	assert_eq(controller.get_charge(), 0, "降乩後請神值應重置為 0")
+	assert_true(combat._invoke_button.disabled, "降乩後按鈕應回到 disabled")
+	var after: int = _sum_enemy_health()
+	assert_true(after < before, "虎爺降乩應對敵人造成傷害（敵方總血量下降）")
+
+	_teardown_env(env)
+
+func _sum_enemy_health() -> int:
+	var tree := Engine.get_main_loop() as SceneTree
+	var total: int = 0
+	for e: Node in tree.get_nodes_in_group("enemies"):
+		if e is Enemy and (e as Enemy).enemy_data != null:
+			total += (e as Enemy).enemy_data.enemy_health
+	return total
