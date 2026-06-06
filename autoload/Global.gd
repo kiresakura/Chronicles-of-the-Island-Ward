@@ -1081,7 +1081,9 @@ func add_test_acts() -> void:
 	act_1.act_miniboss_event_pool_object_id = "event_pool_act_1_miniboss"
 	act_1.act_non_combat_event_pool_object_id = "event_pool_act_1_dialogue"
 	act_1.act_boss_event_pool_object_id = "event_pool_act_1_boss"
-	
+	# 鎮島錄 2E — 第一章改用遶境地圖生成器（取代 STS 分支圖；框架支援的 act_action_script_path 切換點）
+	act_1.act_action_script_path = Scripts.ACTION_GENERATE_PILGRIMAGE
+
 	register_rod(act_1)
 	
 	var act_2: ActData = ActData.new("act_2")

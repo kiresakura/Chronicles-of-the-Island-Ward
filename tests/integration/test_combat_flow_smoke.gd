@@ -388,6 +388,51 @@ func test_run_loadout_applied_on_start() -> void:
 	_teardown_env(env)
 
 
+# ──────────── 測試 9：遶境地圖生成器（Phase 2E）— 有效圖 + 路線標記 ────────────
+# act_1 已切到 ActionGeneratePilgrimage。明確觸發生成後檢查：節點數、起點/大醮存在、
+# 大醮可達（有節點連向它）、節點帶遶境 route_flavor。
+
+func test_pilgrimage_map_generates_valid_graph() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat 節點")
+	if combat == null:
+		_teardown_env(env)
+		return
+	# 明確觸發第一章遶境地圖生成
+	ActionGenerator.generate_act("act_1", 1)
+	var locations: Array = Global.get_all_act_locations()
+	assert_true(locations.size() >= 10, "遶境地圖應生成多個節點（得 %d）" % locations.size())
+
+	var has_start: bool = false
+	var has_boss: bool = false
+	var boss_loc: LocationData = null
+	var route_flavor_seen: bool = false
+	for loc: Variant in locations:
+		var l: LocationData = loc as LocationData
+		if l.location_type == LocationData.LOCATION_TYPES.STARTING:
+			has_start = true
+		if l.location_type == LocationData.LOCATION_TYPES.BOSS:
+			has_boss = true
+			boss_loc = l
+		if l.location_route_flavor != "":
+			route_flavor_seen = true
+	assert_true(has_start, "應有出巡起點（STARTING）")
+	assert_true(has_boss, "應有鎮煞大醮（BOSS）")
+	assert_true(route_flavor_seen, "節點應標記遶境路線 flavor（route_flavor）")
+
+	# 鎮煞大醮可達：至少一個節點的 next 連向它
+	var boss_reachable: bool = false
+	if boss_loc != null:
+		for loc2: Variant in locations:
+			if (loc2 as LocationData).location_next_location_ids.has(boss_loc.location_id):
+				boss_reachable = true
+				break
+	assert_true(boss_reachable, "鎮煞大醮應可達（有節點連向它）")
+
+	_teardown_env(env)
+
+
 # ──────────── 測試 8：手機長按合符入口（P0-1）— Card._on_long_press_attempt ────────────
 # 經由「卡牌長按入口」（真機路徑：TouchFeedback timer → Card._on_long_press_attempt
 # → long_press_handler → Hand.try_mobile_merge）驗證手機可達合符，不只直接呼叫 _try_merge_card。
