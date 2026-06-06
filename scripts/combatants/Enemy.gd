@@ -239,6 +239,8 @@ func _on_ward_broken() -> void:
 	var text_fade: TextFade = Scenes.TEXT_FADE.instantiate()
 	fade_container.add_child(text_fade)
 	text_fade.init("破煞！")
+	# 連通請神（1D）：破煞為 on_enemy_broken 神明（虎爺）累積請神值
+	Signals.enemy_broken.emit(self)
 
 ## 建立敵人頭頂煞盾指示（僅有煞盾機制的敵人）。文字版：煞盾值 + 弱點字 + 破煞態。
 func _setup_ward_ui() -> void:
