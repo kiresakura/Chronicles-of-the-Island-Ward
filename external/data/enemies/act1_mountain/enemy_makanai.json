@@ -58,6 +58,14 @@
 					"lure": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 12,
+		"enemy_max_ward_shield": 12,
+		"enemy_weaknesses": [
+			"array",
+			"curse"
+		],
+		"enemy_break_effect": "break_stun_vulnerable",
+		"enemy_broken_turns": 2
 	}
 }

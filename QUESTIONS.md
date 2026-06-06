@@ -266,3 +266,32 @@ FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
 - ✅ **採納建議**：接受 Claude 提的方向。
 - ❌ **不接受**：請註明替代方案。
 - ⏸️ **暫緩**：先擱置，下個 Sprint 再決定。
+
+---
+
+## 2026-06-06 儀式編排型重構（Phase 1A）— 待決策
+
+> 本輪完成「文件 + schema + 資料 + validator」落地（PRD v0.2、6 份設計文件、CardData/EnemyData 擴充、
+> DeityData/GuardianData/RitualToolData、RitualTags/WardBreakSystem、乩童/鸞女卡 + act1 敵人注入、
+> 4 神/2 護壇/3 法器/4 路線/6 建築、101/101 測試綠燈）。以下為接 Phase 1B–2 前需要產品決策的問題，
+> 各系統設計文件的「開放問題」彙整於此。
+
+### Q-R1: 合符（符階合成）的消耗規則
+- 設計文件暫用「消耗一次合符行動 / 回合」。完整規則待定：是否改為消耗神力？每回合合符上限？合成後新卡是否當回合可立即打出？
+- **我的建議**：MVP 先「每回合 1 次免費合符」最易懂；數值平衡後再評估神力消耗。詳見 talisman_merge_system.md。
+
+### Q-R2: 請神滿槽的釋放 UX 與溢出
+- 已定「不自動釋放，玩家擇時降乩」。待定：滿槽後溢出的請神值丟棄或保留？降乩按鈕擺位（側欄 vs 神明立繪可點）？同時多神滿槽如何呈現？
+- **我的建議**：溢出丟棄、側欄請神槽 + 滿槽發光可點。詳見 deity_invocation_system.md。
+
+### Q-R3: 破煞爆發窗口的數值
+- 暫定 `BROKEN_DAMAGE_MULTIPLIER = 1.5`、破煞當下不一定跳過敵方行動（由 break_effect 決定）。是否要讓部分 break_effect（如 break_stun）跳過敵方下一次行動？BOSS（百年虎爺 break_invoke_window）窗口應否更長？
+- **我的建議**：break_stun 跳過 1 次行動、BOSS 窗口 2 回合（已資料化 broken_turns=2）。詳見 ward_break_system.md。
+
+### Q-R4: 主祭 / 護壇 / 法器 首發開放範圍
+- 三件配置是否首發全開？還是 MVP 先「單主祭 + 法器」，護壇 Phase 2 再開？
+- **我的建議**：Phase 1 先主祭 + 法器（資料已備），護壇隨道士/家將 Phase 2 一起開。
+
+### Q-R5: 道士 / 家將內容排序
+- 兩角目前只有設計與護壇樣本（guardian_jiajiang_front），未建卡。是否確認 Phase 2 才做、先把乩童 + 鸞女的破煞/合符/請神打磨完整？
+- **我的建議**：是。先深做 2 角（已有 18 卡）跑通四支柱，再橫向擴角。

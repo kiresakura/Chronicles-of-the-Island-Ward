@@ -1,0 +1,14 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "guardian_jiajiang_front",
+		"guardian_name": "家將・前鋒",
+		"guardian_description": "八家將前鋒陣位。開壇即立陣，強化陣系破煞。",
+		"guardian_texture_path": "assets/generated/guardians/jiajiang_front.png",
+		"guardian_character_id": "",
+		"guardian_passive_effect": "formation_front",
+		"guardian_passive_description": "戰鬥開始獲得 6 點護身符；陣（array）系卡破煞削減 +1。",
+		"guardian_support_card_ids": [],
+		"guardian_affinity_deity_id": "deity_chenghuang"
+	}
+}

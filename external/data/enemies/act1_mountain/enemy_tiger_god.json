@@ -82,6 +82,14 @@
 					"pounce": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 20,
+		"enemy_max_ward_shield": 20,
+		"enemy_weaknesses": [
+			"array",
+			"fire"
+		],
+		"enemy_break_effect": "break_invoke_window",
+		"enemy_broken_turns": 2
 	}
 }

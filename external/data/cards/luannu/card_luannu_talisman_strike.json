@@ -22,6 +22,16 @@
 					"block": 3
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"talisman"
+		],
+		"card_break_damage": 2,
+		"card_weakness_break_bonus": 3,
+		"card_merge_group": "merge_luannu_brush",
+		"card_merge_tier": 2,
+		"card_merge_result_id": "",
+		"card_deity_charge": 8,
+		"card_ritual_card_type": "wu_jue"
 	}
 }

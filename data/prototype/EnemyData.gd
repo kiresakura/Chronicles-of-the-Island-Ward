@@ -16,6 +16,17 @@ enum ENEMY_TYPES {STANDARD, MINIBOSS, BOSS}
 @export var enemy_type: int = ENEMY_TYPES.STANDARD
 @export var enemy_is_minion: bool = false	# minion enemies do not need to be killed for combat to end
 
+### 鎮島錄 — 破煞 / 煞盾系統（資料驅動；max_ward_shield = 0 時等同無煞盾，戰鬥行為不變）
+## 設計來源：docs/design/ward_break_system.md。運算見 WardBreakSystem.gd。
+@export var enemy_ward_shield: int = 0			# 當前煞盾值
+@export var enemy_max_ward_shield: int = 0		# 最大煞盾；0 表示此敵無破煞機制
+@export var enemy_weaknesses: Array[String] = []	# 弱點儀法標籤，如 ["fist","fire"]（鍵見 RitualTags.gd）
+@export var enemy_break_effect: String = ""		# 破煞後效果鍵：break_stun / break_vulnerable / break_weak / break_stun_vulnerable / break_invoke_window
+@export var enemy_broken_turns: int = 1			# 破煞後爆發窗口持續回合數
+# ── 執行期破煞狀態（非序列化；由 WardBreakSystem 維護）──
+var enemy_is_broken: bool = false
+var enemy_broken_turns_remaining: int = 0
+
 ### Attack States
 
 var enemy_current_attack_state: String = "initial"	# 0 is initial state which it will iterate from on combat start

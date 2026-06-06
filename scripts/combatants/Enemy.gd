@@ -12,6 +12,9 @@ var enemy_slot: int = 0 # the spawn slot the enemy is in
 var enemy_intent_attack_damage: int = 0
 var enemy_intent_number_of_attacks: int = 0
 
+# 鎮島錄 — 破煞系統：頭頂煞盾指示（僅在有煞盾機制的敵人上建立）
+var _ward_label: Label = null
+
 func init(_enemy_data: EnemyData):
 	enemy_data = _enemy_data
 	
@@ -30,10 +33,19 @@ func init(_enemy_data: EnemyData):
 	# update_health_bar()
 	layered_health_bar.init(enemy_data.enemy_health, enemy_data.enemy_health_max)
 
+	# 鎮島錄 — 破煞系統：初始化煞盾（current=max）、建立頭頂煞盾指示、監聽出牌結算破煞
+	WardBreakSystem.init_ward(enemy_data)
+	_setup_ward_ui()
+	if not Signals.card_played.is_connected(_on_card_played_ward):
+		Signals.card_played.connect(_on_card_played_ward)
+
 ## Does damage to combatant and returns [unblocked damage dealt, damage to 0 (if enemy dies), overkill damage (if enemy dies)]
 ## eg 15 damage on 10 remaining health and 3 block will return [12, 10, 2].
 ## bypass_block = true will do damage directly to health.
 func damage(_damage: int, bypass_block: bool = false) -> Array[int]:
+	# 鎮島錄 — 破煞爆發窗口：對已破煞敵人傷害 ×1.5（未破煞不進此分支，對既有數值零影響）
+	if enemy_data != null and enemy_data.enemy_is_broken:
+		_damage = roundi(_damage * WardBreakSystem.damage_multiplier_for(enemy_data))
 	var bypassed_damage: int = _damage # raw unblocked damage
 	var bypassed_damage_capped: int = 0 # damage done that does not factor in overkill damage
 	var overkill_damage: int = 0 # damage done past 0
@@ -168,6 +180,12 @@ func _on_combat_ended():
 func _on_player_turn_started():
 	cycle_enemy_intent()
 
+func _on_player_turn_ended():
+	# 破煞爆發窗口在玩家回合結束遞減；歸零 → 煞盾回滿、解除破煞
+	if enemy_data != null and enemy_data.enemy_is_broken:
+		WardBreakSystem.tick_broken_state(enemy_data)
+		_refresh_ward_ui()
+
 func _on_selection_button_up():
 	if is_alive():
 		Signals.enemy_clicked.emit(self)
@@ -183,3 +201,72 @@ func _on_mouse_exited():
 func _on_death_animtation_finished():
 	# called from animation player
 	Signals.enemy_death_animation_finished.emit(self)
+
+#region 鎮島錄 — 破煞 / 煞盾（Ward Break）戰鬥接線
+## 破煞效果鍵 → 套用的 status（驚嚇=status_effect_vulnerable / 怯戰=status_effect_weak）。
+## 目前無「暈眩」status，break_stun 暫以驚嚇表示頓挫（見 ward_break_system.md 開放問題 / QUESTIONS Q-R3）。
+const BREAK_EFFECT_STATUSES: Dictionary = {
+	"break_stun": [["status_effect_vulnerable", 1]],
+	"break_vulnerable": [["status_effect_vulnerable", 2]],
+	"break_weak": [["status_effect_weak", 2]],
+	"break_stun_vulnerable": [["status_effect_vulnerable", 2], ["status_effect_weak", 1]],
+	"break_invoke_window": [["status_effect_vulnerable", 2]],
+}
+
+## 出牌結束時（ActionCardPlayEnd → Signals.card_played）對「本敵」結算破煞削盾。
+## 註：card_played 在卡牌動作（含該卡傷害）結算「之後」才發，故破煞的 ×1.5 獎勵
+## 套用在「後續出牌」，不會讓觸發破煞的那張卡自身翻倍——節奏明確、無重複計算。
+func _on_card_played_ward(request: CardPlayRequest) -> void:
+	if request == null or request.card_data == null:
+		return
+	if request.selected_target != self:
+		return
+	if not is_alive() or enemy_data == null or enemy_data.enemy_max_ward_shield <= 0:
+		return
+	var amount: int = WardBreakSystem.compute_ward_damage(request.card_data, enemy_data)
+	if amount > 0:
+		if WardBreakSystem.apply_ward_damage(enemy_data, amount):
+			_on_ward_broken()
+	_refresh_ward_ui()
+
+## 破煞瞬間：套用 break_effect 對應 status + 「破煞！」飄字 + 受擊抖動。
+func _on_ward_broken() -> void:
+	var effects: Array = BREAK_EFFECT_STATUSES.get(enemy_data.enemy_break_effect, [])
+	for pair: Array in effects:
+		add_status_effect_charges(str(pair[0]), int(pair[1]))
+	if _proc_anim != null:
+		_proc_anim.trigger_hurt()
+	var text_fade: TextFade = Scenes.TEXT_FADE.instantiate()
+	fade_container.add_child(text_fade)
+	text_fade.init("破煞！")
+
+## 建立敵人頭頂煞盾指示（僅有煞盾機制的敵人）。文字版：煞盾值 + 弱點字 + 破煞態。
+func _setup_ward_ui() -> void:
+	if enemy_data == null or enemy_data.enemy_max_ward_shield <= 0 or _ward_label != null:
+		return
+	_ward_label = Label.new()
+	_ward_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ward_label.add_theme_font_size_override("font_size", 13)
+	_ward_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	_ward_label.add_theme_constant_override("outline_size", 4)
+	_ward_label.offset_left = -82.0
+	_ward_label.offset_right = 84.0
+	_ward_label.offset_top = -98.0
+	_ward_label.offset_bottom = -68.0
+	sprite.add_child(_ward_label)
+	_refresh_ward_ui()
+
+## 重繪煞盾指示：破煞態顯示「破煞！(剩餘窗口)」橘字，否則顯示「煞盾 N/M｜弱 〔弱點字〕」藍字。
+func _refresh_ward_ui() -> void:
+	if _ward_label == null or enemy_data == null:
+		return
+	if enemy_data.enemy_is_broken:
+		_ward_label.text = "破煞！(%d)" % enemy_data.enemy_broken_turns_remaining
+		_ward_label.add_theme_color_override("font_color", Color(1.0, 0.55, 0.2))
+	else:
+		var wk: String = ""
+		for t: String in enemy_data.enemy_weaknesses:
+			wk += str(RitualTags.DISPLAY.get(t, ""))
+		_ward_label.text = "煞盾 %d/%d｜弱 %s" % [enemy_data.enemy_ward_shield, enemy_data.enemy_max_ward_shield, wk]
+		_ward_label.add_theme_color_override("font_color", Color(0.72, 0.82, 1.0))
+#endregion

@@ -48,6 +48,13 @@
 					"lunge": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 6,
+		"enemy_max_ward_shield": 6,
+		"enemy_weaknesses": [
+			"talisman"
+		],
+		"enemy_break_effect": "break_weak",
+		"enemy_broken_turns": 1
 	}
 }

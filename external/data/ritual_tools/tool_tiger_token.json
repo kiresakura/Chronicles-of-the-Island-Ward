@@ -1,0 +1,18 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "tool_tiger_token",
+		"tool_name": "虎牌",
+		"tool_description": "刻有虎爺敕令的木牌。強化全卡破煞、延長爆發窗口。",
+		"tool_texture_path": "assets/generated/ritual_tools/tiger_token.png",
+		"tool_rule_domain": "ward_break",
+		"tool_bonus_break_damage": 1,
+		"tool_extra_broken_turns": 1,
+		"tool_bonus_deity_charge": 0,
+		"tool_affinity_deity_id": "deity_tiger_god",
+		"tool_bonus_incense_money": 0,
+		"tool_bonus_draw": 0,
+		"tool_granted_card_ids": [],
+		"tool_passive_effect": ""
+	}
+}

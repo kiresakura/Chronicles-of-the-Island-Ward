@@ -1,0 +1,15 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "building_main_hall",
+		"building_name": "正殿",
+		"building_description": "鎮島廟的核心。修復後解鎖更多神明位。",
+		"building_effect_summary": "解鎖神明位（請神系統可上場的神明數）。",
+		"repair_cost_incense": 300,
+		"unlocks": [
+			"deity_slot"
+		],
+		"max_level": 3,
+		"is_cosmetic_only": false
+	}
+}

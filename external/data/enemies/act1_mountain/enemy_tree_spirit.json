@@ -58,6 +58,13 @@
 					"bark_defense": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 6,
+		"enemy_max_ward_shield": 6,
+		"enemy_weaknesses": [
+			"fire"
+		],
+		"enemy_break_effect": "break_vulnerable",
+		"enemy_broken_turns": 1
 	}
 }

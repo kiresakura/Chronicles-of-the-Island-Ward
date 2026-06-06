@@ -17,6 +17,16 @@
 					"number_of_attacks": 2
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"fire"
+		],
+		"card_break_damage": 3,
+		"card_weakness_break_bonus": 5,
+		"card_merge_group": "",
+		"card_merge_tier": 0,
+		"card_merge_result_id": "",
+		"card_deity_charge": 12,
+		"card_ritual_card_type": "wu_jue"
 	}
 }

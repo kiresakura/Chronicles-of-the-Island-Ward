@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "guardian_luannu",
+		"guardian_name": "鸞女（護壇）",
+		"guardian_description": "持聖火與符令的護壇者。守護主祭、支援破煞、首破回復。",
+		"guardian_texture_path": "assets/generated/portraits_v3/luannu.png",
+		"guardian_character_id": "character_luannu",
+		"guardian_passive_effect": "heal_on_first_break",
+		"guardian_passive_description": "每場戰鬥第一次破煞時，回復 5 點元神並獲得 1 個護身符。",
+		"guardian_support_card_ids": [
+			"card_luannu_protection",
+			"card_luannu_prayer"
+		],
+		"guardian_affinity_deity_id": "deity_mazu"
+	}
+}

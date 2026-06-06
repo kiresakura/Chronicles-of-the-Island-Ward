@@ -1,0 +1,15 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "building_night_market",
+		"building_name": "夜市香鋪",
+		"building_description": "廟口夜市的香鋪。修復後商店商品更豐富。",
+		"building_effect_summary": "提升夜市香鋪（商店）商品數量與品質。",
+		"repair_cost_incense": 180,
+		"unlocks": [
+			"shop_stock"
+		],
+		"max_level": 3,
+		"is_cosmetic_only": false
+	}
+}

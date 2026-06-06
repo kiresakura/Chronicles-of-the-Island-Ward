@@ -58,6 +58,13 @@
 					"possess": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 4,
+		"enemy_max_ward_shield": 4,
+		"enemy_weaknesses": [
+			"bell"
+		],
+		"enemy_break_effect": "break_stun",
+		"enemy_broken_turns": 1
 	}
 }

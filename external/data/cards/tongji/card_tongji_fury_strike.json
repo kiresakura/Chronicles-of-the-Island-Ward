@@ -23,6 +23,16 @@
 					"number_of_attacks": 1
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"fist"
+		],
+		"card_break_damage": 4,
+		"card_weakness_break_bonus": 5,
+		"card_merge_group": "merge_tongji_fist",
+		"card_merge_tier": 3,
+		"card_merge_result_id": "",
+		"card_deity_charge": 18,
+		"card_ritual_card_type": "wu_jue"
 	}
 }

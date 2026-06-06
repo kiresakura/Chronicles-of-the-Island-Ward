@@ -10,7 +10,9 @@
 		"card_rarity": 1,
 		"card_energy_cost": 1,
 		"card_requires_target": false,
-		"card_keyword_object_ids": ["keyword_divine_might"],
+		"card_keyword_object_ids": [
+			"keyword_divine_might"
+		],
 		"card_play_actions": [
 			{
 				"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
@@ -19,6 +21,16 @@
 					"target_override": 2
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"fist"
+		],
+		"card_break_damage": 0,
+		"card_weakness_break_bonus": 0,
+		"card_merge_group": "",
+		"card_merge_tier": 0,
+		"card_merge_result_id": "",
+		"card_deity_charge": 0,
+		"card_ritual_card_type": "kai_tan"
 	}
 }

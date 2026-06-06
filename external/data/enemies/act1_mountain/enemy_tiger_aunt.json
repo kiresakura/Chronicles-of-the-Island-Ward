@@ -57,6 +57,14 @@
 					"lullaby": 1
 				}
 			}
-		}
+		},
+		"enemy_ward_shield": 9,
+		"enemy_max_ward_shield": 9,
+		"enemy_weaknesses": [
+			"fist",
+			"talisman"
+		],
+		"enemy_break_effect": "break_weak",
+		"enemy_broken_turns": 1
 	}
 }

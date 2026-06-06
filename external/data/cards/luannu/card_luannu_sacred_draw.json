@@ -21,6 +21,16 @@
 					"health_amount": 2
 				}
 			}
-		]
+		],
+		"card_ritual_tags": [
+			"bell"
+		],
+		"card_break_damage": 0,
+		"card_weakness_break_bonus": 0,
+		"card_merge_group": "",
+		"card_merge_tier": 0,
+		"card_merge_result_id": "",
+		"card_deity_charge": 4,
+		"card_ritual_card_type": "fu_ling"
 	}
 }
