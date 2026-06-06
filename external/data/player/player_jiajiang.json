@@ -1,0 +1,14 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "player_jiajiang",
+		"player_character_object_id": "character_jiajiang",
+		"player_health": 82,
+		"player_health_max": 82,
+		"player_money": 0,
+		"player_energy_max": 3,
+		"player_act": 1,
+		"player_act_max": 3,
+		"player_act_id": "act_1"
+	}
+}

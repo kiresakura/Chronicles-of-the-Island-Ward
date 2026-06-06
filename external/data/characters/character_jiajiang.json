@@ -1,0 +1,36 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "character_jiajiang",
+		"character_name": "家將",
+		"character_description": "八家將出陣的護法；以拳路與陣型鎮煞，剛猛護壇。",
+		"character_color_id": "color_jiajiang",
+		"character_texture_path": "assets/generated/portraits_v3/jiajiang.png",
+		"character_icon_texture_path": "assets/generated/portraits_v3/jiajiang.png",
+		"character_background_texture_path": "assets/generated/scenes_v3/act1_mountain_temple.png",
+		"character_player_id": "player_jiajiang",
+		"character_starting_artifact_ids": [],
+		"character_starting_artifact_pack_ids": [
+			"artifact_pack_neutral"
+		],
+		"character_starting_card_object_ids": [
+			"card_jiajiang_vanguard_strike",
+			"card_jiajiang_vanguard_strike",
+			"card_jiajiang_vanguard_strike",
+			"card_jiajiang_vanguard_strike",
+			"card_jiajiang_bell_ward",
+			"card_jiajiang_bell_ward",
+			"card_jiajiang_bell_ward",
+			"card_jiajiang_array_slam",
+			"card_jiajiang_array_slam",
+			"card_jiajiang_bell_purify"
+		],
+		"character_starting_money": 99,
+		"character_starting_health": 82,
+		"character_starting_card_draft_card_pack_ids": [
+			"card_pack_jiajiang"
+		],
+		"character_default_guardian_id": "guardian_jiajiang_front",
+		"character_default_ritual_tool_id": "tool_tiger_token"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_pack_daoshi",
+		"card_pack_color_id": "color_daoshi",
+		"exclude_non_standard_rarities": false,
+		"exclude_non_standard_types": false
+	}
+}

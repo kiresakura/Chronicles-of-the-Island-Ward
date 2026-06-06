@@ -1,0 +1,14 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "player_daoshi",
+		"player_character_object_id": "character_daoshi",
+		"player_health": 68,
+		"player_health_max": 68,
+		"player_money": 0,
+		"player_energy_max": 3,
+		"player_act": 1,
+		"player_act_max": 3,
+		"player_act_id": "act_1"
+	}
+}

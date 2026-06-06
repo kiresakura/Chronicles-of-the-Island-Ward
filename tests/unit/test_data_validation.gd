@@ -9,9 +9,9 @@ const DATA_ROOT: String = "res://external/data/"
 
 # ---------- P1 回歸：只有鎮島錄角色被註冊 ----------
 
-## 鎮島錄目前可遊玩角色：乩童、鸞女（兩者皆預設解鎖，
-## 詳見 Global.MASCOT_AVAILABLE_IDS）
-const COTIW_CHARACTER_IDS: Array[String] = ["character_tongji", "character_luannu"]
+## 鎮島錄目前可遊玩角色：乩童、鸞女、道士、家將（Phase 2C 新增道士/家將，基礎卡；
+## 符位/法陣、陣型專屬機制留 Phase 3）
+const COTIW_CHARACTER_IDS: Array[String] = ["character_tongji", "character_luannu", "character_daoshi", "character_jiajiang"]
 
 func test_only_cotiw_characters_registered() -> void:
 	for cotiw_id: String in COTIW_CHARACTER_IDS:
@@ -25,7 +25,7 @@ func test_cotiw_character_roster_matches_expected() -> void:
 	# 鎮島錄目前的可遊玩角色清單必須與 Global.MASCOT_AVAILABLE_IDS 一致
 	# （若日後新增角色，請同步更新 COTIW_CHARACTER_IDS 與 Global 兩處）
 	assert_eq(Global._id_to_character_data.size(), COTIW_CHARACTER_IDS.size(),
-		"鎮島錄角色表大小應為 %d（目前為乩童 + 鸞女）" % COTIW_CHARACTER_IDS.size())
+		"鎮島錄角色表大小應為 %d（乩童/鸞女/道士/家將）" % COTIW_CHARACTER_IDS.size())
 	for registered_id: String in Global._id_to_character_data.keys():
 		assert_true(COTIW_CHARACTER_IDS.has(registered_id),
 			"角色表中出現非鎮島錄角色：%s" % registered_id)

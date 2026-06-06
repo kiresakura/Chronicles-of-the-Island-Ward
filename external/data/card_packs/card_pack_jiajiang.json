@@ -1,0 +1,9 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_pack_jiajiang",
+		"card_pack_color_id": "color_jiajiang",
+		"exclude_non_standard_rarities": false,
+		"exclude_non_standard_types": false
+	}
+}

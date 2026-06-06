@@ -1,0 +1,31 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_jiajiang_bell_ward",
+		"card_name": "鈴護",
+		"card_description": "獲得 7 點護身符。",
+		"card_texture_path": "",
+		"card_color_id": "color_jiajiang",
+		"card_type": 1,
+		"card_rarity": 0,
+		"card_energy_cost": 1,
+		"card_requires_target": false,
+		"card_play_actions": [
+			{
+				"res://scripts/actions/ActionBlock.gd": {
+					"block": 7
+				}
+			}
+		],
+		"card_ritual_tags": [
+			"bell"
+		],
+		"card_break_damage": 0,
+		"card_weakness_break_bonus": 0,
+		"card_merge_group": "",
+		"card_merge_tier": 0,
+		"card_merge_result_id": "",
+		"card_deity_charge": 6,
+		"card_ritual_card_type": "hu_tan"
+	}
+}
