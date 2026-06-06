@@ -900,7 +900,21 @@ func merge_cards(card_a: CardData, card_b: CardData) -> bool:
 	_merges_used_this_turn += 1
 	if is_instance_valid(combat) and combat.has_method("show_combat_toast"):
 		combat.show_combat_toast("合符！")
+	FuheFX.play(self, _merge_fx_position(card_a))	# P0-4：符飛合 + 金光爆 + 漫畫「合符！」
 	return true
+
+## P0-4：合符 FX 播放點 — 已合符卡（card_a）上方一點；取不到時退回畫面中上。
+func _merge_fx_position(card_a: CardData) -> Vector2:
+	var card: Variant = card_data_to_hand_card.get(card_a)
+	if is_instance_valid(card) and card is Control:
+		var r: Rect2 = (card as Control).get_global_rect()
+		if r.size.length() > 1.0:
+			return r.get_center() + Vector2(0, -40)
+	var vp_size: Vector2 = Vector2(1200, 700)
+	var vp := get_viewport()
+	if vp != null:
+		vp_size = vp.get_visible_rect().size
+	return Vector2(vp_size.x * 0.5, vp_size.y * 0.42)
 #endregion
 
 func shuffle_draw(shuffle_discard_into_draw: bool = true, is_reshuffle: bool = true) -> void:

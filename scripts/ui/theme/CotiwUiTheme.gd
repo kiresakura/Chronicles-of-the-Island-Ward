@@ -21,14 +21,43 @@ const CARD_FRAME_BY_RARITY: Dictionary = {
 	CardData.CARD_RARITIES.GENERATED: "res://assets/ui/frames/ui_frame_card_rare_default.svg",
 }
 
+## P0-3 符令卡框 v2（動漫稀有度雙層：符印費角 + 大插圖窗 + 職業/稀有度色）。
+## opt-in：不取代既有 CARD_FRAME_BY_RARITY，直到 Card 顯式改用 get_card_frame_v2_path()；
+## 先供 Gallery / 預覽使用，避免一次性破壞整條卡牌鏈與測試。
+const CARD_FRAME_V2_DIR: String = "res://assets/ui/frames_v2/"
+const CARD_FRAME_V2_BY_RARITY: Dictionary = {
+	CardData.CARD_RARITIES.BASIC: "ui_frame_card_common_anime.svg",
+	CardData.CARD_RARITIES.COMMON: "ui_frame_card_common_anime.svg",
+	CardData.CARD_RARITIES.UNCOMMON: "ui_frame_card_uncommon_anime.svg",
+	CardData.CARD_RARITIES.RARE: "ui_frame_card_rare_anime.svg",
+	CardData.CARD_RARITIES.GENERATED: "ui_frame_card_rare_anime.svg",
+}
+
+## 取得 v2 符令卡框路徑（opt-in）。rarity 為 CardData.CARD_RARITIES 列舉；找不到回共通框。
+static func get_card_frame_v2_path(rarity: int) -> String:
+	var fname: String = CARD_FRAME_V2_BY_RARITY.get(rarity, "ui_frame_card_common_anime.svg")
+	return CARD_FRAME_V2_DIR + fname
+
+## P1：全域 opt-in 旗標 — true 時整條卡牌鏈改用 v2 符令框（Gallery/預覽用）；
+## live 預設 false，不動既有卡面與 161 測試。
+static var use_card_frame_v2: bool = false
+
+## 依 opt-in 旗標回傳當前卡框路徑（v2 或既有 v1）。Card.gd 統一走這個。
+static func get_active_card_frame_path(rarity: int) -> String:
+	if use_card_frame_v2:
+		return get_card_frame_v2_path(rarity)
+	return get_card_frame_path(rarity)
+
+## P1 動漫化：Q 版地標節點 icon（v2）。戰=紅符令 / 事=籤筒 / 商=古錢 / 休=香爐 / 菁=虎爪 / Boss=黑紅神門。
+## 舊 node_*.svg 保留未刪；此處 repoint 到 v2。
 const MAP_NODE_BY_LOCATION_TYPE: Dictionary = {
-	LocationData.LOCATION_TYPES.COMBAT: "res://assets/generated/icons/map_nodes/node_combat.svg",
-	LocationData.LOCATION_TYPES.MINIBOSS: "res://assets/generated/icons/map_nodes/node_elite.svg",
-	LocationData.LOCATION_TYPES.BOSS: "res://assets/generated/icons/map_nodes/node_boss.svg",
-	LocationData.LOCATION_TYPES.EVENT: "res://assets/generated/icons/map_nodes/node_event.svg",
-	LocationData.LOCATION_TYPES.TREASURE: "res://assets/generated/icons/map_nodes/node_event.svg",
-	LocationData.LOCATION_TYPES.SHOP: "res://assets/generated/icons/map_nodes/node_shop.svg",
-	LocationData.LOCATION_TYPES.REST_SITE: "res://assets/generated/icons/map_nodes/node_rest.svg",
+	LocationData.LOCATION_TYPES.COMBAT: "res://assets/generated/icons/map_nodes_v2/node_combat_anime.svg",
+	LocationData.LOCATION_TYPES.MINIBOSS: "res://assets/generated/icons/map_nodes_v2/node_elite_anime.svg",
+	LocationData.LOCATION_TYPES.BOSS: "res://assets/generated/icons/map_nodes_v2/node_boss_anime.svg",
+	LocationData.LOCATION_TYPES.EVENT: "res://assets/generated/icons/map_nodes_v2/node_event_anime.svg",
+	LocationData.LOCATION_TYPES.TREASURE: "res://assets/generated/icons/map_nodes_v2/node_event_anime.svg",
+	LocationData.LOCATION_TYPES.SHOP: "res://assets/generated/icons/map_nodes_v2/node_shop_anime.svg",
+	LocationData.LOCATION_TYPES.REST_SITE: "res://assets/generated/icons/map_nodes_v2/node_rest_anime.svg",
 }
 
 const PANEL_ASSET_BY_KIND: Dictionary = {

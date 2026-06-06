@@ -34,13 +34,31 @@ func _ready():
 	Signals.shop_opened.connect(_on_shop_opened)
 	
 	Signals.map_location_selected.connect(_on_map_location_selected)
-	# v4 Recraft pixel_art 背景 + PixelFX 動畫（山間薄霧 + Ken Burns）
-	const PixelSkinCls = preload("res://scripts/ui/theme/PixelSkin.gd")
-	const PixelFXCls   = preload("res://scripts/ui/fx/PixelFX.gd")
-	var _map_layer = PixelSkinCls.apply_background(self, "map_bg_v5.png")
-	if _map_layer:
-		PixelFXCls.apply(_map_layer, PixelFXCls.Preset.MIST)
+	# P0-2 遶境地圖 v6：島嶼進香路背景。以 Map 自身子節點承載（避免多畫面共用 CanvasLayer -10
+	# 疊序導致別的畫面背景滲入），並把不透明灰板降為薄暗角，露出遶境背景。
+	_apply_pilgrimage_backdrop()
 	_ensure_map_story_layers()
+
+## P0-2：露出遶境地圖背景。原 Background2 為不透明灰板蓋住背景 → 改全透明；Background 降為薄暗角；
+## 並把 map_bg_v6 加為 Map 自身最底層子節點（隨地圖顯隱正確、不與其他畫面背景搶層）。保留節點，不刪。
+func _apply_pilgrimage_backdrop() -> void:
+	var bg2: Node = get_node_or_null("Background2")
+	if bg2 is ColorRect:
+		(bg2 as ColorRect).color = Color(0.0, 0.0, 0.0, 0.0)	# 不透明灰板 → 全透明
+	var bg1: Node = get_node_or_null("Background")
+	if bg1 is ColorRect:
+		(bg1 as ColorRect).color = Color(0.05, 0.04, 0.06, 0.30)	# 薄暗角，維持節點/連線對比
+	const MAP_BG := "res://assets/generated/pixellab/map_bg_v6.png"
+	if get_node_or_null("PilgrimageBackdrop") == null and ResourceLoader.exists(MAP_BG):
+		var bg := TextureRect.new()
+		bg.name = "PilgrimageBackdrop"
+		bg.texture = load(MAP_BG)
+		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		add_child(bg)
+		move_child(bg, 0)	# 置最底：在暗角/節點之下
 
 func populate_locations(locations: Array[LocationData] = Global.get_all_act_locations()):
 	clear_locations()
