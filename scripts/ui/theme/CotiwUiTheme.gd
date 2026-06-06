@@ -4,6 +4,15 @@ class_name CotiwUiTheme
 const DESIGN_TOKENS_PATH: String = "res://docs/design/design_tokens.json"
 const MOBILE_SAFE_CARD_DIR: String = "res://assets/generated/cards/mobile_safe"
 
+## 鎮島錄 UIQA — 集中式 CanvasLayer / z_index 分層 token（避免散落 magic number；見 docs/design/UI_LAYOUT_SAFE_AREA_GUIDE.md）
+const LAYER_BACKGROUND: int = 0
+const LAYER_WORLD: int = 10
+const LAYER_HUD: int = 20
+const LAYER_FX: int = 30
+const LAYER_OVERLAY: int = 60
+const LAYER_TOAST: int = 80
+const LAYER_TOUCH_DETAIL: int = 90
+
 const CARD_FRAME_BY_RARITY: Dictionary = {
 	CardData.CARD_RARITIES.BASIC: "res://assets/ui/frames/ui_frame_card_common_default.svg",
 	CardData.CARD_RARITIES.COMMON: "res://assets/ui/frames/ui_frame_card_common_default.svg",
@@ -84,6 +93,38 @@ static func get_typography_size(token_name: String, fallback: int) -> int:
 	var typography: Dictionary = _get_design_tokens().get("typography", {})
 	var token: Dictionary = typography.get(token_name, {})
 	return int(token.get("size", fallback))
+
+## 鎮島錄 UIQA — 安全內容區（委派 Responsive autoload 單一真相來源；
+## 無 Responsive 時回退 viewport / 設計畫布）。UI 定位請以此為基準，勿散落 magic Vector2。
+static func get_safe_content_rect(viewport: Viewport = null) -> Rect2:
+	var r: Object = _responsive()
+	if r != null:
+		return r.safe_rect
+	if viewport != null:
+		return Rect2(Vector2.ZERO, viewport.get_visible_rect().size)
+	return Rect2(Vector2.ZERO, get_stage_size())
+
+## 完整邏輯畫布尺寸（全出血用）。
+static func get_stage_size() -> Vector2:
+	var r: Object = _responsive()
+	if r != null:
+		return r.screen_rect.size
+	return Vector2(1200, 700)
+
+## 把 rect 夾進 safe_rect 內（先夾尺寸不超過安全區，再夾位置使整塊在內）。
+static func clamp_rect_to_safe_area(rect: Rect2, safe_rect: Rect2) -> Rect2:
+	var w: float = minf(rect.size.x, safe_rect.size.x)
+	var h: float = minf(rect.size.y, safe_rect.size.y)
+	var x: float = clampf(rect.position.x, safe_rect.position.x, safe_rect.position.x + safe_rect.size.x - w)
+	var y: float = clampf(rect.position.y, safe_rect.position.y, safe_rect.position.y + safe_rect.size.y - h)
+	return Rect2(Vector2(x, y), Vector2(w, h))
+
+## 取 Responsive autoload（CotiwUiTheme 為 RefCounted 無 tree，經主迴圈 root 取得）。
+static func _responsive() -> Object:
+	var loop: Object = Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("/root/Responsive")
+	return null
 
 static func get_semantic_role(role_name: String) -> Dictionary:
 	var roles: Dictionary = _get_design_tokens().get("semantic_roles", {})

@@ -42,6 +42,8 @@ var performing_card_right_click: bool = false	# flag used to lock card plays whi
 ## 鎮島錄 — 符階合成（合符）：每回合可合符次數（Q-R1 簡化版 MVP）
 const MERGES_PER_TURN: int = 1
 var _merges_used_this_turn: int = 0
+## UIQA Phase6 — 可合符卡的暖金提示色（modulate；讓合符不是隱藏彩蛋）
+const MERGE_HINT_TINT: Color = Color(1.18, 1.06, 0.72)
 
 ### Retain
 var cards_retained_this_turn: Array[CardData] = []
@@ -123,7 +125,8 @@ func _ready():
 ## Recalculates the transforms of Card objects in hand and tweens them to their new positions.
 func tween_hand():
 	var cards_in_hand: Array[Card] = get_player_hand_cards()
-	
+	_refresh_merge_affordance()	# UIQA Phase6：可合符卡暖金提示
+
 	### Figure out the number of cards in hand for figuring out offsets. Picking cards will adjust this number
 	var hand_card_count: int = len(cards_in_hand)
 	var picked_card_count: int = 0
@@ -301,6 +304,7 @@ func _prompt_target(_card: Card):
 	# P0：顯示可見「取消」鈕 + 頂部狀態提示「選擇目標」
 	_ensure_cancel_target_button()
 	if is_instance_valid(_cancel_target_button):
+		_position_cancel_target_button()	# UIQA：每次顯示依當前 safe-rect 重新定位
 		_cancel_target_button.visible = true
 	if is_instance_valid(combat) and combat.has_method("set_targeting_status"):
 		combat.set_targeting_status(true)
@@ -327,14 +331,22 @@ func _ensure_cancel_target_button() -> void:
 	_cancel_target_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_cancel_target_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	_cancel_target_button.visible = false
-	_cancel_target_button.size = Vector2(160, 54)
+	_cancel_target_button.size = Vector2(160, 54)	# ≥44px 觸控最低尺寸
 	COTIW_UI_THEME.apply_secondary_button_style(_cancel_target_button)
-	_cancel_target_button.add_theme_font_size_override("font_size", 26)
-	# SelectTargetLabel 在 y≈192–240（頂部置中）；取消鈕擺其正下方置中（1200 寬 → x=520）
+	_cancel_target_button.add_theme_font_size_override("font_size", COTIW_UI_THEME.get_typography_size("button", 26))
 	var anchor_parent: Node = select_target_label.get_parent() if is_instance_valid(select_target_label) else self
 	anchor_parent.add_child(_cancel_target_button)
-	_cancel_target_button.position = Vector2(520, 250)
+	_position_cancel_target_button()	# UIQA Phase4：safe-area 左下拇指區（取代固定 Vector2(520,250)）
 	_cancel_target_button.button_up.connect(_on_cancel_target_button_up)
+
+## UIQA — 取消選敵鈕定位：safe-rect 左下拇指區、手牌列上方（不遮手牌中央、不撞右下結束回合鈕）。
+func _position_cancel_target_button() -> void:
+	if not is_instance_valid(_cancel_target_button):
+		return
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	var btn_size: Vector2 = _cancel_target_button.size
+	var want: Vector2 = Vector2(safe.position.x + 24.0, safe.position.y + safe.size.y - btn_size.y - 108.0)
+	_cancel_target_button.position = COTIW_UI_THEME.clamp_rect_to_safe_area(Rect2(want, btn_size), safe).position
 
 func _on_cancel_target_button_up() -> void:
 	current_selected_card = null
@@ -858,6 +870,17 @@ func try_mobile_merge(card: Card) -> bool:
 ## 目前是否可安全合符（避免在選敵 / 出牌佇列 / 手牌禁用時誤觸合符）。
 func _can_merge_now() -> bool:
 	return not hand_disabled and len(card_play_queue) == 0 and current_selected_card == null
+
+## UIQA Phase6 — 合符 affordance：手牌中有可合符夥伴的卡 → 暖金微亮（modulate，
+## 不與 TouchFeedback 的 self_modulate 衝突）。每次手牌重排（tween_hand）刷新。
+func _refresh_merge_affordance() -> void:
+	var hand_cards: Array = get_player_hand()
+	for card_data: CardData in card_data_to_hand_card:
+		var card: Card = card_data_to_hand_card[card_data]
+		if not is_instance_valid(card):
+			continue
+		var mergeable: bool = TalismanMergeSystem.find_merge_partner(card_data, hand_cards) != null
+		card.modulate = MERGE_HINT_TINT if mergeable else Color(1, 1, 1)
 
 ## 合符執行：
 ##  - card_a 原地 transform 成 merge_result_id 指向的高階符（Card UI 由 card_transformed 自動更新）
