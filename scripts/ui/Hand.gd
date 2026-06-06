@@ -39,6 +39,10 @@ var CARD_NO_ENERGY_COST: int = -1
 var hand_disabled: bool = false	# the player cannot play additional cards manually
 var performing_card_right_click: bool = false	# flag used to lock card plays while a right click action happens
 
+## 鎮島錄 — 符階合成（合符）：每回合可合符次數（Q-R1 簡化版 MVP）
+const MERGES_PER_TURN: int = 1
+var _merges_used_this_turn: int = 0
+
 ### Retain
 var cards_retained_this_turn: Array[CardData] = []
 
@@ -103,6 +107,8 @@ func _ready():
 	Signals.card_exhaust_requested.connect(_on_card_exhaust_requested)
 	Signals.card_banish_requested.connect(_on_card_banish_requested)
 	Signals.card_retain_requested.connect(_on_card_retain_requested)
+	# 鎮島錄 — 合符每回合限額：玩家回合開始重置
+	Signals.player_turn_started.connect(_on_player_turn_started_merge)
 	Signals.reshuffle_requested.connect(_on_reshuffle_requested)
 	
 	Signals.disable_hand_requested.connect(_on_disable_hand_requested)
@@ -252,6 +258,10 @@ func _on_card_right_clicked(card: Card):
 		return # cannot right click cards with a disabled hand
 	if len(card_play_queue) > 0:
 		return # cannot right click cards while cards queued
+	# 鎮島錄 — 合符優先：右鍵可合符的卡 → 與手牌第一張同組同階夥伴合成升階（每回合限額內）。
+	# 若不可合或限額用罄，落回原本的 card_right_click_actions。
+	if _try_merge_card(card):
+		return
 	_perform_card_right_click_actions(card)
 
 ### Targeting
@@ -817,6 +827,40 @@ func banish_cards(cards: Array[CardData], in_limbo: bool = false) -> void:
 	
 	# rerender hand
 	tween_hand()
+
+#region 鎮島錄 — 符階合成（Talisman Merge）
+func _on_player_turn_started_merge() -> void:
+	_merges_used_this_turn = 0
+
+## 嘗試把 card 與手牌中第一張可合符夥伴合成。成功回 true（呼叫端據此攔截右鍵）。
+func _try_merge_card(card: Card) -> bool:
+	if card == null or card.card_data == null:
+		return false
+	var partner: CardData = TalismanMergeSystem.find_merge_partner(card.card_data, get_player_hand())
+	if partner == null:
+		return false
+	return merge_cards(card.card_data, partner)
+
+## 合符執行：
+##  - card_a 原地 transform 成 merge_result_id 指向的高階符（Card UI 由 card_transformed 自動更新）
+##  - 夥伴 card_b 以 banish 從手牌移除（既有 wired 路徑：Card 自我 queue_free + tween_hand 重排）
+##  - 受每回合限額管制；成功時飄「合符！」。回傳是否成功。
+func merge_cards(card_a: CardData, card_b: CardData) -> bool:
+	if _merges_used_this_turn >= MERGES_PER_TURN:
+		return false
+	if not TalismanMergeSystem.can_merge(card_a, card_b):
+		return false
+	var result_id: String = card_a.card_merge_result_id
+	if not Global._id_to_card_data.has(result_id):
+		return false
+	card_a.transform_card(result_id)
+	var consumed: Array[CardData] = [card_b]
+	banish_cards(consumed)
+	_merges_used_this_turn += 1
+	if is_instance_valid(combat) and combat.has_method("show_combat_toast"):
+		combat.show_combat_toast("合符！")
+	return true
+#endregion
 
 func shuffle_draw(shuffle_discard_into_draw: bool = true, is_reshuffle: bool = true) -> void:
 	

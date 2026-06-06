@@ -173,3 +173,48 @@ func test_combat_enemy_shows_ward_and_breaks_on_weakness_card() -> void:
 		"破煞窗口我方傷害倍率應為 1.5")
 
 	_teardown_env(env)
+
+
+# ──────────── 測試 4：符階合成（Phase 1C）— 真實樹中合符升階 + 每回合限額 ────────────
+# 在真正的 Combat/Hand 節點上以真實卡牌走 Hand.merge_cards：
+#   card_a 原地 transform 成高階符、夥伴 card_b 被 banish 移除、每回合限額生效。
+
+func test_combat_merge_transforms_card_and_consumes_partner() -> void:
+	var env: Dictionary = _build_combat_env()
+	var combat: Node = env.get("combat")
+	assert_not_null(combat, "需要 Combat 節點")
+	if combat == null:
+		_teardown_env(env)
+		return
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var hand: Node = combat.get_node_or_null("Hand")
+	assert_not_null(hand, "需要 Hand 節點")
+	if hand == null:
+		_teardown_env(env)
+		return
+
+	# 用兩張真實「攻拳」建立手牌（含 Card UI 節點）
+	var a: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var b: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var hand_ab: Array[CardData] = [a, b]
+	Global.player_data.player_hand = hand_ab
+	var created: Array = hand.create_cards(hand_ab)
+
+	# 走右鍵觸發路徑：_try_merge_card → find_merge_partner → merge_cards（端到端 UX 入口）
+	var ok: bool = hand._try_merge_card(created[0])
+	assert_true(ok, "右鍵可合符的攻拳應觸發合符成功")
+	assert_eq(a.card_name, "重擊", "card_a 應 transform 成重擊")
+	assert_eq(a.card_merge_tier, 2, "重擊應為二劃符（tier 2）")
+	assert_eq(a.card_break_damage, 3, "重擊 break_damage 應為 3（已 transform）")
+	assert_false(Global.player_data.player_hand.has(b), "夥伴卡 b 應已從手牌移除")
+	assert_eq(hand._merges_used_this_turn, 1, "本回合合符次數應為 1")
+
+	# 每回合限額：用罄後再給一對「護身符」也不可合
+	var c: CardData = Global.get_card_data_from_prototype("card_tongji_talisman")
+	var d: CardData = Global.get_card_data_from_prototype("card_tongji_talisman")
+	var hand_cd: Array[CardData] = [c, d]
+	Global.player_data.player_hand = hand_cd
+	var created2: Array = hand.create_cards(hand_cd)
+	assert_false(hand._try_merge_card(created2[0]), "每回合合符限額用罄後不可再合符")
+
+	_teardown_env(env)

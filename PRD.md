@@ -164,7 +164,7 @@
 
 **乩童合成圖**（已資料化）：攻拳→重擊→狂怒一擊（敕符頂階）、連環攻擊→威靈出陣、護身符→鐵布衫。合成消耗先用簡化版（一次「合符」行動）。
 
-**狀態**：✅ 卡牌合成欄位 + 合成圖已落地、完整性已驗證（`test_ritual_schema.gd` 確保 `merge_result_id` 指向存在的卡）。⏳ 合成動作 + UI 屬 **Phase 1C**。細節見 [talisman_merge_system.md](docs/design/talisman_merge_system.md)。
+**狀態**：✅ 卡牌合成欄位 + 合成圖已落地、完整性已驗證。✅ **合成運算 + 執行已接線**（`TalismanMergeSystem` + `Hand.merge_cards`：右鍵可合符的卡 → `transform_card` 升階 + `banish` 夥伴 + 每回合 1 次限額），整合測試於真實樹通過。⏳ 合符 UI 視覺提示 / 手機手勢 / 神力消耗規則為後續打磨。細節見 [talisman_merge_system.md](docs/design/talisman_merge_system.md)。
 
 ### 4.3 請神系統（Deity Invocation）— 戰鬥節奏核心
 
@@ -308,7 +308,7 @@
 |---|---|---|
 | **1A 文件與 schema** | PRD/README 重構、6 份設計文件、CardData/EnemyData 擴充、DeityData/GuardianData/RitualToolData、RitualTags、資料注入、validator + 測試 | ✅ **本輪完成** |
 | **1B 破煞 MVP** | `WardBreakSystem` 接進戰鬥流程（Enemy.gd 監聽 card_played）、頭頂煞盾指示、破煞套 status、爆發窗口 ×1.5 | ✅ **核心落地**（視覺/AoE/平衡續調） |
-| **1C 符階合成 MVP** | 合符動作（手牌兩張同組同階 → 生成 result）、合成 UI、消耗規則 | ⏳ |
+| **1C 符階合成 MVP** | 合符動作（右鍵兩張同組同階 → transform 升階 + banish 夥伴）、每回合限額 | ✅ **核心落地**（UI 提示/手機手勢/神力消耗續調） |
 | **1D 請神 MVP** | 請神槽累積（標籤交集 + 觸發事件）、降乩釋放 UI、虎爺 / 媽祖 先行 | ⏳ |
 | **2 完整第一章遶境** | 遶境地圖生成、主祭/護壇/法器配置 UI、修廟 meta、道士 / 家將卡組、鎮煞大醮 | ⏳ |
 
