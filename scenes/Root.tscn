@@ -885,7 +885,7 @@ offset_bottom = 199.029
 grow_horizontal = 2
 theme = ExtResource("2_bi5lp")
 theme_override_font_sizes/font_size = 17
-text = "HP: "
+text = "keyword.hp_short"
 vertical_alignment = 1
 
 [node name="CharacterMoneyLabel" type="Label" parent="TitleScreen/NewRunMenu" unique_id=1009901785]
@@ -958,7 +958,7 @@ offset_right = 320.0
 offset_bottom = 461.029
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 16
-text = "Description "
+text = "ui.placeholder.desc"
 autowrap_mode = 2
 
 [node name="DifficultySelect" type="Control" parent="TitleScreen/NewRunMenu" unique_id=1415064739]
@@ -1308,7 +1308,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 34
-text = "$10000"
+text = "銀兩 0"
 horizontal_alignment = 2
 
 [node name="HealthLabel" type="Label" parent="RunScreen/Combat" unique_id=1355614356]
@@ -1530,7 +1530,7 @@ offset_left = 1080.0
 offset_top = 560.0
 offset_right = 1130.0
 offset_bottom = 610.0
-tooltip_text = "Exhaust Pile"
+tooltip_text = "battle.exhaust_pile"
 texture_normal = ExtResource("3_8ax2e")
 ignore_texture_size = true
 stretch_mode = 0
@@ -1565,7 +1565,7 @@ offset_top = -180.0
 offset_bottom = -157.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Pick X cards"
+text = "ui.pick_x_cards"
 horizontal_alignment = 1
 
 [node name="ConfirmPickButton" type="Button" parent="RunScreen/Combat/CardPicking" unique_id=290815867]
@@ -1663,7 +1663,7 @@ offset_top = -30.0
 offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Turn"
+text = "battle.turn_count"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1837,7 +1837,7 @@ offset_right = 180.0
 offset_bottom = 278.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "離開  Leave"
+text = "ui.leave"
 
 [node name="DialogueOverlay" type="Control" parent="RunScreen" unique_id=387607437]
 unique_name_in_owner = true
@@ -1943,7 +1943,7 @@ offset_top = 64.0
 offset_right = 1168.0
 offset_bottom = 224.0
 theme_override_font_sizes/font_size = 50
-text = "Victory"
+text = "battle.victory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1954,7 +1954,7 @@ offset_top = 64.0
 offset_right = 1168.0
 offset_bottom = 224.0
 theme_override_font_sizes/font_size = 50
-text = "Defeat"
+text = "battle.defeat"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1965,7 +1965,7 @@ offset_top = 528.0
 offset_right = 856.0
 offset_bottom = 609.0
 theme_override_font_sizes/font_size = 32
-text = "Back To Main Menu"
+text = "ui.back_to_main_menu"
 
 [node name="RunStartOptions" type="Control" parent="RunScreen" unique_id=1508763293]
 unique_name_in_owner = true
@@ -2130,7 +2130,7 @@ offset_left = 176.0
 offset_top = 8.0
 offset_right = 1016.0
 offset_bottom = 32.0
-text = "Pick X Cards"
+text = "ui.pick_x_cards"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -2248,7 +2248,7 @@ offset_right = 160.0
 offset_bottom = 270.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "謝禮  Skip"
+text = "ui.skip"
 
 [node name="Map" type="Control" parent="RunScreen" unique_id=72595504]
 unique_name_in_owner = true

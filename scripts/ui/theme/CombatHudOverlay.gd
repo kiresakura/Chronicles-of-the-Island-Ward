@@ -350,19 +350,19 @@ static func _update_status_strip(strip: Control, state: Dictionary) -> void:
 	for child in strip.get_children():
 		child.queue_free()
 	var entries := [
-		{"key": "health", "name": "HP", "value": "%d/%d" % [int(state.get("health", 0)), int(state.get("health_max", 0))], "color": "hp_red", "role": "life_total"},
+		{"key": "health", "name": "HP", "display": TranslationServer.translate("keyword.hp_short"), "value": "%d/%d" % [int(state.get("health", 0)), int(state.get("health_max", 0))], "color": "hp_red", "role": "life_total"},
 		{"key": "block", "name": "護", "value": str(int(state.get("block", 0))), "color": "armor_gold", "role": "protection"},
 		{"key": "incoming_damage", "name": "預兆", "value": str(int(state.get("incoming_damage", 0))), "color": "warning_orange", "role": "incoming_intent"},
 	]
 	var x := 0.0
 	for e: Dictionary in entries:
-		var pill := _make_status_pill(str(e.get("name", "")), str(e.get("value", "")), str(e.get("color", "paper_warm")), str(e.get("key", "")), str(e.get("role", "")))
+		var pill := _make_status_pill(str(e.get("name", "")), str(e.get("value", "")), str(e.get("color", "paper_warm")), str(e.get("key", "")), str(e.get("role", "")), str(e.get("display", "")))
 		pill.position = Vector2(x, 0)
 		strip.add_child(pill)
 		x += pill.size.x + 8.0
 	strip.size = Vector2(x, 44.0)
 
-static func _make_status_pill(title: String, value: String, color_token: String, semantic_key: String = "", semantic_role: String = "") -> Control:
+static func _make_status_pill(title: String, value: String, color_token: String, semantic_key: String = "", semantic_role: String = "", display_title: String = "") -> Control:
 	var pill := Panel.new()
 	pill.name = "PriorityPill_" + title
 	pill.size = Vector2(82, 40)
@@ -373,7 +373,7 @@ static func _make_status_pill(title: String, value: String, color_token: String,
 	COTIW_UI_THEME.style_hud_badge(pill, color_token)
 
 	var title_label := Label.new()
-	title_label.text = title
+	title_label.text = display_title if display_title != "" else title
 	title_label.position = Vector2(8, 2)
 	title_label.size = Vector2(66, 14)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

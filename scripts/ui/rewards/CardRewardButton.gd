@@ -5,7 +5,7 @@ func init(_action_on_click: BaseAction, _reward_group: int) -> void:
 	reward_rarity = _resolve_highest_draft_rarity(_action_on_click)
 	super(_action_on_click, _reward_group)
 	
-	text = "Card Reward"
+	text = tr("reward.card")
 	_apply_visual_style()
 
 func _resolve_highest_draft_rarity(action: BaseAction) -> int:

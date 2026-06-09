@@ -5,7 +5,7 @@
 [node name="CardDraftShopButton" type="Button"]
 offset_right = 112.0
 offset_bottom = 31.0
-text = "Reward 1"
+text = "ui.reward"
 icon = ExtResource("1_4bltw")
 expand_icon = true
 

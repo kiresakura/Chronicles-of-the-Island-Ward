@@ -393,7 +393,7 @@ func _build_avatar() -> void:
 
 	_avatar_lv = Label.new()
 	_avatar_lv.name = "AvatarLv"
-	_avatar_lv.text = "Lv 1"
+	_avatar_lv.text = tr("ui.avatar_level") % 1
 	_avatar_lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_gold_font(_avatar_lv, 16)
 	add_child(_avatar_lv)
@@ -818,8 +818,8 @@ func _refresh_resources() -> void:
 	var xp_in_level: int = wins % 3
 	if _res_incense: _res_incense.text = "香火  %d" % incense
 	if _res_yuanbao: _res_yuanbao.text = "元寶  %d" % yuanbao
-	if _res_level: _res_level.text = "Lv %d   %d/3" % [level, xp_in_level]
-	if _avatar_lv: _avatar_lv.text = "Lv %d" % level
+	if _res_level: _res_level.text = tr("ui.level_progress") % [level, xp_in_level]
+	if _avatar_lv: _avatar_lv.text = tr("ui.avatar_level") % level
 	# 進度填充寬度交由 _relayout 依 _level_ratio() 重算
 	_relayout()
 

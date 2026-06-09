@@ -7,7 +7,7 @@
 custom_minimum_size = Vector2(320, 112)
 offset_right = 320.0
 offset_bottom = 112.0
-text = "Reward 1"
+text = "ui.reward"
 icon = ExtResource("1_8q1fk")
 expand_icon = true
 script = ExtResource("2_fjsnl")

@@ -35,7 +35,7 @@ func _ready():
 	# 隨機 NPC 報價台詞
 	npc_info_bar.text = _NPC_QUOTES[randi() % _NPC_QUOTES.size()]
 
-	continue_button.text = "離開  Leave"
+	continue_button.text = tr("ui.leave")
 	continue_button.button_up.connect(_on_continue_button_up)
 	COTIW_UI_THEME.apply_primary_button_style(continue_button)
 	COTIW_UI_THEME.style_overlay_backdrop(backdrop, panel_fill)
