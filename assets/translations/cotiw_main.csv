@@ -41,3 +41,25 @@ mascot.luannu.q2,"靈符已備，可去除邪祟。","灵符已备，可去除�
 mascot.luannu.q3,"鸞堂之事，皆有定數。","鸾堂之事，皆有定数。","All things in Luan-tang follow destiny.","鸞堂のことは、すべて天命です。"
 mascot.luannu.q4,"再寫一張符，需要些時間。","再写一张符，需要些时间。","Drawing another talisman takes time.","もう一枚、符を書くには時間が要る。"
 mascot.luannu.q5,"今日香爐還旺，可祈福。","今日香炉还旺，可祈福。","The censer still glows—good for prayer.","香炉はまだ燃えている、祈りに好ましい。"
+ui.level,等級,等级,Level,レベル
+ui.avatar_level,等級 %d,等级 %d,Lv %d,Lv %d
+ui.level_progress,等級 %d　%d/3,等级 %d　%d/3,Lv %d   %d/3,Lv %d   %d/3
+ui.leave,離開,离开,Leave,離れる
+ui.back_to_main_menu,返回主選單,返回主菜单,Back To Main Menu,メインメニューへ戻る
+ui.skip,略過,跳过,Skip,スキップ
+ui.pick_x_cards,選擇 %d 張卡,选择 %d 张卡,Pick %d Cards,%d枚選ぶ
+ui.reward,獎勵,奖励,Reward,報酬
+ui.placeholder.name,名稱,名称,Name,名前
+ui.placeholder.keyword_desc,關鍵字說明,关键字说明,Keyword description,キーワード説明
+battle.turn_count,第 %s 回合,第 %s 回合,Turn %s,%sターン目
+battle.victory,鎮煞成功,镇煞成功,Victory,勝利
+battle.defeat,鎮煞失敗,镇煞失败,Defeat,敗北
+reward.card,符令獎勵,符令奖励,Card Reward,カード報酬
+reward.money,銀兩 %s,银两 %s,Money %s,銀 %s
+shop.artifact_placeholder,法器名稱,法器名称,Artifact Name,法器名
+shop.consumable_placeholder,消耗品名稱,消耗品名称,Consumable Name,消耗品名
+run.rest_action,入廟安神,入庙安神,Rest Action,休息
+run.modifier_name,自訂修正,自定义修正,Run Modifier,ラン修正
+keyword.boss,章節王,章节王,Boss,ボス
+keyword.hp_short,元神,元神,HP,HP
+ui.placeholder.desc,說明,说明,Description,説明

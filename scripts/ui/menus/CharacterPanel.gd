@@ -145,7 +145,7 @@ func _build_cards() -> void:
 		# HP
 		var hp_lbl := Label.new()
 		hp_lbl.name = "HpLabel"
-		hp_lbl.text = ("HP  %d" % char_hp) if not locked else "——"
+		hp_lbl.text = ("%s  %d" % [tr("keyword.hp_short"), char_hp]) if not locked else "——"
 		hp_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_gold_font(hp_lbl, 16)
 		hp_lbl.add_theme_color_override("font_color",

@@ -17,6 +17,6 @@ script = ExtResource("2_tcn0y")
 layout_mode = 2
 theme = ExtResource("1_gdcnl")
 bbcode_enabled = true
-text = "[color=Orange][Keyword][/color] description here"
+text = "ui.placeholder.keyword_desc"
 fit_content = true
 scroll_active = false

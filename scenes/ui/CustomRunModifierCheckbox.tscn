@@ -4,5 +4,5 @@
 
 [node name="CustomRunModifierCheckbox" type="CheckBox"]
 custom_minimum_size = Vector2(328, 0)
-text = "Run Name"
+text = "run.modifier_name"
 script = ExtResource("1_hfny6")

@@ -219,7 +219,7 @@ func _on_card_queue_refunded():
 	update_combat_display()
 
 func _on_player_money_changed():
-	money_label.text = "$%s" % Global.player_data.player_money
+	money_label.text = tr("reward.money") % Global.player_data.player_money
 
 func _on_player_health_changed():
 	health_label.text = "%s / %s" % [Global.player_data.player_health, Global.player_data.player_health_max]

@@ -166,8 +166,12 @@ func generate_rarity_weighted_card_draft(rng: RandomNumberGenerator, number_of_c
 				if card_ids_in_draft.has(selected_card_id):
 					selected_card_id = ""
 			
+			# COTIW：選中稀有度桶取不到（空/全重複）→ 跨桶降級補位，避免抽不滿且不噴 warning
 			if selected_card_id == "":
-				DebugLogger.log_warning("Random.generate_rarity_weighted_card_draft(): Insufficient cards IDs in rarity bucket {0} for drafting".format([selected_card_rarity]))
+				selected_card_id = _draft_fallback_from_any_bucket(rng, player_reward_card_rarity_cache, card_ids_in_draft)
+
+			if selected_card_id == "":
+				DebugLogger.log_line("generate_rarity_weighted_card_draft：卡池不足，已盡量降級補位後仍少一張（非錯誤）")
 			else:
 				card_ids_in_draft.append(selected_card_id)
 			
@@ -181,8 +185,22 @@ func generate_rarity_weighted_card_draft(rng: RandomNumberGenerator, number_of_c
 	
 	# convert card ids into card prototypes
 	returned_cards = Global.get_card_data_from_prototypes(card_ids_in_draft)
-	
+
 	return returned_cards
+
+
+## COTIW：卡池稀有度不足時的降級補位 —— 從任一稀有度桶找出尚未抽到的卡 id（找不到回 ""）。
+func _draft_fallback_from_any_bucket(rng: RandomNumberGenerator, rarity_cache: Dictionary, already_drafted: Array[String]) -> String:
+	var rarities: Array = rarity_cache.keys()
+	rarities.sort()
+	for rarity: Variant in rarities:
+		var bucket: Array = (rarity_cache[rarity] as Array).duplicate()
+		shuffle_array(rng, bucket)
+		while len(bucket) > 0:
+			var cid: String = bucket.pop_back()
+			if not already_drafted.has(cid):
+				return cid
+	return ""
 
 
 ### Artifacts

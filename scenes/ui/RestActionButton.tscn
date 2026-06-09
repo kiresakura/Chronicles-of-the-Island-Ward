@@ -5,7 +5,7 @@
 [node name="RestActionButton" type="Button"]
 custom_minimum_size = Vector2(240, 180)
 theme_override_font_sizes/font_size = 24
-text = "Rest Action"
+text = "run.rest_action"
 text_overrun_behavior = 3
 script = ExtResource("1_t1ki4")
 
