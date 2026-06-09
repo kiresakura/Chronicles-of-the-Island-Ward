@@ -1,38 +1,38 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "card_jiajiang_bell_purify",
-		"card_name": "淨鈴",
-		"card_description": "造成 5 點傷害，給予目標 1 層驚嚇。",
-		"card_texture_path": "",
-		"card_color_id": "color_jiajiang",
-		"card_type": 0,
-		"card_rarity": 0,
-		"card_energy_cost": 1,
-		"card_requires_target": true,
-		"card_play_actions": [
-			{
-				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
-					"damage": 5,
-					"number_of_attacks": 1
-				}
-			},
-			{
-				"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
-					"status_effect_object_id": "status_effect_vulnerable",
-					"status_charge_amount": 1
-				}
-			}
-		],
-		"card_ritual_tags": [
-			"bell"
-		],
-		"card_break_damage": 2,
-		"card_weakness_break_bonus": 3,
-		"card_merge_group": "",
-		"card_merge_tier": 0,
-		"card_merge_result_id": "",
-		"card_deity_charge": 8,
-		"card_ritual_card_type": "wu_jue"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "card_jiajiang_bell_purify",
+    "card_name": "淨鈴",
+    "card_description": "造成 5 點傷害，給予目標 1 層驚嚇。",
+    "card_texture_path": "assets/generated/cards_v3/card_jiajiang_bell_purify.png",
+    "card_color_id": "color_jiajiang",
+    "card_type": 0,
+    "card_rarity": 0,
+    "card_energy_cost": 1,
+    "card_requires_target": true,
+    "card_play_actions": [
+      {
+        "res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+          "damage": 5,
+          "number_of_attacks": 1
+        }
+      },
+      {
+        "res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+          "status_effect_object_id": "status_effect_vulnerable",
+          "status_charge_amount": 1
+        }
+      }
+    ],
+    "card_ritual_tags": [
+      "bell"
+    ],
+    "card_break_damage": 2,
+    "card_weakness_break_bonus": 3,
+    "card_merge_group": "",
+    "card_merge_tier": 0,
+    "card_merge_result_id": "",
+    "card_deity_charge": 8,
+    "card_ritual_card_type": "wu_jue"
+  }
 }

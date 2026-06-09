@@ -1,32 +1,32 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "card_daoshi_curse_seal",
-		"card_name": "咒封",
-		"card_description": "施加 3 層邪氣於目標。",
-		"card_texture_path": "",
-		"card_color_id": "color_daoshi",
-		"card_type": 1,
-		"card_rarity": 0,
-		"card_energy_cost": 1,
-		"card_requires_target": true,
-		"card_play_actions": [
-			{
-				"res://scripts/actions/status_actions/ActionApplyStatus.gd": {
-					"status_effect_object_id": "status_effect_corrosion",
-					"status_charge_amount": 3
-				}
-			}
-		],
-		"card_ritual_tags": [
-			"curse"
-		],
-		"card_break_damage": 1,
-		"card_weakness_break_bonus": 2,
-		"card_merge_group": "",
-		"card_merge_tier": 0,
-		"card_merge_result_id": "",
-		"card_deity_charge": 10,
-		"card_ritual_card_type": "fu_ling"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "card_daoshi_curse_seal",
+    "card_name": "咒封",
+    "card_description": "施加 3 層邪氣於目標。",
+    "card_texture_path": "assets/generated/cards_v3/card_daoshi_curse_seal.png",
+    "card_color_id": "color_daoshi",
+    "card_type": 1,
+    "card_rarity": 0,
+    "card_energy_cost": 1,
+    "card_requires_target": true,
+    "card_play_actions": [
+      {
+        "res://scripts/actions/status_actions/ActionApplyStatus.gd": {
+          "status_effect_object_id": "status_effect_corrosion",
+          "status_charge_amount": 3
+        }
+      }
+    ],
+    "card_ritual_tags": [
+      "curse"
+    ],
+    "card_break_damage": 1,
+    "card_weakness_break_bonus": 2,
+    "card_merge_group": "",
+    "card_merge_tier": 0,
+    "card_merge_result_id": "",
+    "card_deity_charge": 10,
+    "card_ritual_card_type": "fu_ling"
+  }
 }

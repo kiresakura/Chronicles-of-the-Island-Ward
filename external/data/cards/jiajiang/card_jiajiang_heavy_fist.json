@@ -1,32 +1,32 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "card_jiajiang_heavy_fist",
-		"card_name": "重拳",
-		"card_description": "造成 13 點傷害。",
-		"card_texture_path": "",
-		"card_color_id": "color_jiajiang",
-		"card_type": 0,
-		"card_rarity": 0,
-		"card_energy_cost": 2,
-		"card_requires_target": true,
-		"card_play_actions": [
-			{
-				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
-					"damage": 13,
-					"number_of_attacks": 1
-				}
-			}
-		],
-		"card_ritual_tags": [
-			"fist"
-		],
-		"card_break_damage": 3,
-		"card_weakness_break_bonus": 4,
-		"card_merge_group": "merge_jiajiang_fist",
-		"card_merge_tier": 2,
-		"card_merge_result_id": "",
-		"card_deity_charge": 12,
-		"card_ritual_card_type": "wu_jue"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "card_jiajiang_heavy_fist",
+    "card_name": "重拳",
+    "card_description": "造成 13 點傷害。",
+    "card_texture_path": "assets/generated/cards_v3/card_jiajiang_heavy_fist.png",
+    "card_color_id": "color_jiajiang",
+    "card_type": 0,
+    "card_rarity": 0,
+    "card_energy_cost": 2,
+    "card_requires_target": true,
+    "card_play_actions": [
+      {
+        "res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+          "damage": 13,
+          "number_of_attacks": 1
+        }
+      }
+    ],
+    "card_ritual_tags": [
+      "fist"
+    ],
+    "card_break_damage": 3,
+    "card_weakness_break_bonus": 4,
+    "card_merge_group": "merge_jiajiang_fist",
+    "card_merge_tier": 2,
+    "card_merge_result_id": "",
+    "card_deity_charge": 12,
+    "card_ritual_card_type": "wu_jue"
+  }
 }

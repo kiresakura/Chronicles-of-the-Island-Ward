@@ -1,32 +1,32 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "card_daoshi_talisman_bolt",
-		"card_name": "符箭",
-		"card_description": "造成 6 點傷害。",
-		"card_texture_path": "",
-		"card_color_id": "color_daoshi",
-		"card_type": 0,
-		"card_rarity": 0,
-		"card_energy_cost": 1,
-		"card_requires_target": true,
-		"card_play_actions": [
-			{
-				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
-					"damage": 6,
-					"number_of_attacks": 1
-				}
-			}
-		],
-		"card_ritual_tags": [
-			"talisman"
-		],
-		"card_break_damage": 2,
-		"card_weakness_break_bonus": 3,
-		"card_merge_group": "merge_daoshi_seal",
-		"card_merge_tier": 1,
-		"card_merge_result_id": "card_daoshi_heavy_seal",
-		"card_deity_charge": 8,
-		"card_ritual_card_type": "wu_jue"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "card_daoshi_talisman_bolt",
+    "card_name": "符箭",
+    "card_description": "造成 6 點傷害。",
+    "card_texture_path": "assets/generated/cards_v3/card_daoshi_talisman_bolt.png",
+    "card_color_id": "color_daoshi",
+    "card_type": 0,
+    "card_rarity": 0,
+    "card_energy_cost": 1,
+    "card_requires_target": true,
+    "card_play_actions": [
+      {
+        "res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+          "damage": 6,
+          "number_of_attacks": 1
+        }
+      }
+    ],
+    "card_ritual_tags": [
+      "talisman"
+    ],
+    "card_break_damage": 2,
+    "card_weakness_break_bonus": 3,
+    "card_merge_group": "merge_daoshi_seal",
+    "card_merge_tier": 1,
+    "card_merge_result_id": "card_daoshi_heavy_seal",
+    "card_deity_charge": 8,
+    "card_ritual_card_type": "wu_jue"
+  }
 }

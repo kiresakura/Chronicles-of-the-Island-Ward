@@ -71,13 +71,30 @@ func _show_tab(tab: int) -> void:
 			_populate_portraits(DEITY_LIST, DEITY_DIR)
 
 
+## 收藏卡牌過濾：只顯示 active COTIW 角色卡（乩童/鸞女/道士/家將），
+## 不公開 external/data/cards/str 的 legacy/debug 卡（最大污染源）。
+const ACTIVE_CARD_PREFIXES: Array = [
+	"card_tongji_", "card_luannu_", "card_daoshi_", "card_jiajiang_",
+]
+
+func _is_active_cotiw_card(card_object_id: String) -> bool:
+	for prefix: String in ACTIVE_CARD_PREFIXES:
+		if card_object_id.begins_with(prefix):
+			return true
+	return false
+
 func _populate_cards() -> void:
 	var card_object_ids: Array = Global._id_to_card_data.keys()
+	card_object_ids.sort()	# 依 id 排序 → 角色卡群聚（tongji/luannu/daoshi/jiajiang）
+	var shown: int = 0
 	for card_object_id: String in card_object_ids:
+		if not _is_active_cotiw_card(card_object_id):
+			continue	# 過濾 STR legacy/debug 卡
 		var card_data: CardData = Global.get_card_data(card_object_id)
 		var card: Card = Scenes.CARD.instantiate()
 		codex_card_container.add_child(card)
 		card.init(card_data, 0, false, false)
+		shown += 1
 
 
 func _populate_portraits(spec_list: Array, base_dir: String) -> void:
