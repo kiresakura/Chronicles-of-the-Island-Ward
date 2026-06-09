@@ -1,32 +1,32 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "card_daoshi_thunder_talisman",
-		"card_name": "雷符",
-		"card_description": "造成 14 點傷害。",
-		"card_texture_path": "",
-		"card_color_id": "color_daoshi",
-		"card_type": 0,
-		"card_rarity": 0,
-		"card_energy_cost": 2,
-		"card_requires_target": true,
-		"card_play_actions": [
-			{
-				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
-					"damage": 14,
-					"number_of_attacks": 1
-				}
-			}
-		],
-		"card_ritual_tags": [
-			"fire"
-		],
-		"card_break_damage": 4,
-		"card_weakness_break_bonus": 5,
-		"card_merge_group": "merge_daoshi_fire",
-		"card_merge_tier": 2,
-		"card_merge_result_id": "",
-		"card_deity_charge": 14,
-		"card_ritual_card_type": "wu_jue"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "card_daoshi_thunder_talisman",
+    "card_name": "雷符",
+    "card_description": "造成 14 點傷害。",
+    "card_texture_path": "assets/generated/cards_v3/card_daoshi_thunder_talisman.png",
+    "card_color_id": "color_daoshi",
+    "card_type": 0,
+    "card_rarity": 0,
+    "card_energy_cost": 2,
+    "card_requires_target": true,
+    "card_play_actions": [
+      {
+        "res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+          "damage": 14,
+          "number_of_attacks": 1
+        }
+      }
+    ],
+    "card_ritual_tags": [
+      "fire"
+    ],
+    "card_break_damage": 4,
+    "card_weakness_break_bonus": 5,
+    "card_merge_group": "merge_daoshi_fire",
+    "card_merge_tier": 2,
+    "card_merge_result_id": "",
+    "card_deity_charge": 14,
+    "card_ritual_card_type": "wu_jue"
+  }
 }

@@ -1,31 +1,31 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "card_jiajiang_war_drum",
-		"card_name": "戰鼓",
-		"card_description": "抽 2 張牌。",
-		"card_texture_path": "",
-		"card_color_id": "color_jiajiang",
-		"card_type": 1,
-		"card_rarity": 0,
-		"card_energy_cost": 1,
-		"card_requires_target": false,
-		"card_play_actions": [
-			{
-				"res://scripts/actions/meta_actions/ActionDrawGenerator.gd": {
-					"number_of_draws": 2
-				}
-			}
-		],
-		"card_ritual_tags": [
-			"bell"
-		],
-		"card_break_damage": 0,
-		"card_weakness_break_bonus": 0,
-		"card_merge_group": "",
-		"card_merge_tier": 0,
-		"card_merge_result_id": "",
-		"card_deity_charge": 6,
-		"card_ritual_card_type": "fu_ling"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "card_jiajiang_war_drum",
+    "card_name": "戰鼓",
+    "card_description": "抽 2 張牌。",
+    "card_texture_path": "assets/generated/cards_v3/card_jiajiang_war_drum.png",
+    "card_color_id": "color_jiajiang",
+    "card_type": 1,
+    "card_rarity": 0,
+    "card_energy_cost": 1,
+    "card_requires_target": false,
+    "card_play_actions": [
+      {
+        "res://scripts/actions/meta_actions/ActionDrawGenerator.gd": {
+          "number_of_draws": 2
+        }
+      }
+    ],
+    "card_ritual_tags": [
+      "bell"
+    ],
+    "card_break_damage": 0,
+    "card_weakness_break_bonus": 0,
+    "card_merge_group": "",
+    "card_merge_tier": 0,
+    "card_merge_result_id": "",
+    "card_deity_charge": 6,
+    "card_ritual_card_type": "fu_ling"
+  }
 }
