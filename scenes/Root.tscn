@@ -2113,7 +2113,7 @@ offset_left = 504.0
 offset_top = 40.0
 offset_right = 648.0
 offset_bottom = 71.0
-text = "<----"
+text = "ui.back"
 
 [node name="ConfirmButton" type="Button" parent="RunScreen/CardSelectionOverlay" unique_id=210348357]
 visible = false
@@ -2287,7 +2287,7 @@ offset_left = 504.0
 offset_top = 32.0
 offset_right = 648.0
 offset_bottom = 63.0
-text = "<----"
+text = "ui.back"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="RunScreen/Map" unique_id=1857189487]
 layout_mode = 0

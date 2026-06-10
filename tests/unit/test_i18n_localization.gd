@@ -10,6 +10,7 @@ const BANNED: Array = [
 	"Pick X Cards", "Pick %d Cards", "Exhaust Pile", "Leave",
 	"Card Reward", "Reward 1", "Reward", "Artifact Name", "Consumable Name",
 	"Rest Action", "Run Name", "Money %s", "Pick X cards", "Description",
+	"<----",
 ]
 # 刻意保留的品牌英文副標（明確允許，不視為漏本地化）
 const ALLOWED_BRAND: Array = ["Chronicles of the Island Ward"]
@@ -37,6 +38,7 @@ const REQUIRED_KEYS: Array = [
 	"battle.turn_count", "battle.victory", "battle.defeat", "battle.exhaust_pile",
 	"reward.card", "reward.money", "shop.artifact_placeholder",
 	"shop.consumable_placeholder", "run.rest_action", "keyword.boss", "keyword.hp_short",
+	"ui.back",
 ]
 
 const SENTINEL: String = "￿"	# 表「此行非 text 賦值」
@@ -118,4 +120,5 @@ func test_translation_server_resolves_zhtw() -> void:
 	assert_eq(TranslationServer.translate("battle.victory"), "鎮煞成功", "zh_TW battle.victory 應翻成鎮煞成功")
 	assert_eq(TranslationServer.translate("ui.leave"), "離開", "zh_TW ui.leave 應翻成離開")
 	assert_eq(TranslationServer.translate("keyword.hp_short"), "元神", "zh_TW keyword.hp_short 應翻成元神")
+	assert_eq(TranslationServer.translate("ui.back"), "返回", "zh_TW ui.back 應翻成返回")
 	TranslationServer.set_locale(prev)

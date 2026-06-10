@@ -45,6 +45,7 @@ ui.level,等級,等级,Level,レベル
 ui.avatar_level,等級 %d,等级 %d,Lv %d,Lv %d
 ui.level_progress,等級 %d　%d/3,等级 %d　%d/3,Lv %d   %d/3,Lv %d   %d/3
 ui.leave,離開,离开,Leave,離れる
+ui.back,返回,返回,Back,戻る
 ui.back_to_main_menu,返回主選單,返回主菜单,Back To Main Menu,メインメニューへ戻る
 ui.skip,略過,跳过,Skip,スキップ
 ui.pick_x_cards,選擇 %d 張卡,选择 %d 张卡,Pick %d Cards,%d枚選ぶ
