@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://bm8bb6vrjhbrx"]
 
-[ext_resource type="Texture2D" uid="uid://nh32y87hcke5" path="res://icon.svg" id="1_3r3br"]
+[ext_resource type="Texture2D" uid="uid://nh32y87hcke5" path="res://assets/generated/icons_v2/rest/icon_rest_increase_attack_on_rest.svg" id="1_3r3br"]
 [ext_resource type="Script" uid="uid://dastyj0nm12fr" path="res://scripts/ui/shop/ArtifactShopButton.gd" id="2_nmaik"]
 
 [node name="ArtifactShopButton" type="Control"]
-custom_minimum_size = Vector2(280, 96)
+custom_minimum_size = Vector2(280, 112)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 280.0
-offset_bottom = 96.0
+offset_bottom = 112.0
 script = ExtResource("2_nmaik")
 
 [node name="PanelBackground" type="TextureRect" parent="."]
@@ -24,9 +24,9 @@ mouse_filter = 2
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
 offset_left = 12.0
-offset_top = 10.0
+offset_top = 8.0
 offset_right = 268.0
-offset_bottom = 54.0
+offset_bottom = 72.0
 text = "shop.artifact_placeholder"
 icon = ExtResource("1_3r3br")
 text_overrun_behavior = 4
@@ -36,8 +36,8 @@ expand_icon = true
 [node name="PriceLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 12.0
-offset_top = 60.0
+offset_top = 78.0
 offset_right = 268.0
-offset_bottom = 86.0
+offset_bottom = 104.0
 text = "999"
 horizontal_alignment = 1

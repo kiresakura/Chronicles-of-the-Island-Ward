@@ -149,7 +149,9 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 
 	# ── 文字內容 ─────────────────────────────────────────────────────────────────────
 	card_name.set_bbcode("[center]" + card_data.get_card_name() + "[/center]")
-	card_description.set_bbcode(get_card_description(selected_enemy))
+	var desc_bbcode: String = get_card_description(selected_enemy)
+	card_description.set_bbcode(desc_bbcode)
+	card_description.visible = desc_bbcode.strip_edges() != ""	# UIQA P2-4：空敘述不留白框
 	card_type.text = CARD_TYPE_LABELS.get(card_data.card_type, "？")
 	card_name.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("incense_gold", Color.GOLD))
 	card_type.add_theme_color_override("font_color", Color(0.96, 0.90, 0.80, 1.0))

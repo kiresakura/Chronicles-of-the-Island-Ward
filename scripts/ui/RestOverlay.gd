@@ -27,6 +27,7 @@ func _on_map_location_selected(_location_data: LocationData):
 
 func populate_rest_actions() -> void:
 	clear_rest_actions()
+	_ensure_rest_title()
 	
 	# get the rest actions the player can perform
 	var player_rest_action_object_ids: Array[String] = Global.player_data.player_available_rest_action_object_ids
@@ -79,3 +80,20 @@ func _on_continue_button_up():
 	else:
 		visible = false
 		Signals.run_victory.emit()
+
+
+## UIQA P3：歇腳畫面補標題（與其他 overlay 標題慣例一致）
+func _ensure_rest_title() -> void:
+	if get_node_or_null("RestTitle") != null:
+		return
+	var title := Label.new()
+	title.name = "RestTitle"
+	title.text = tr("run.rest_action")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.position = Vector2(300.0, 36.0)
+	title.size = Vector2(600.0, 44.0)
+	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_color_override("font_color", Color(1.0, 0.93, 0.62))
+	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
+	title.add_theme_constant_override("shadow_offset_y", 2)
+	add_child(title)

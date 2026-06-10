@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://lclxd5k1by2h" path="res://scripts/ui/ConsumableButton.gd" id="2_8oul1"]
 
 [node name="ConsumableButton" type="TextureButton"]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(64, 64)
 size_flags_horizontal = 0
 size_flags_vertical = 0
 texture_normal = ExtResource("1_1j522")

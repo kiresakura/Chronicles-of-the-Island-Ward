@@ -3,6 +3,6 @@
 [ext_resource type="Script" uid="uid://dyrtu2pm8iko3" path="res://scripts/ui/CustomRunModifierCheckbox.gd" id="1_hfny6"]
 
 [node name="CustomRunModifierCheckbox" type="CheckBox"]
-custom_minimum_size = Vector2(328, 0)
+custom_minimum_size = Vector2(328, 48)
 text = "run.modifier_name"
 script = ExtResource("1_hfny6")

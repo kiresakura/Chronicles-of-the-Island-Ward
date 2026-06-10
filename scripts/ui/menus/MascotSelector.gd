@@ -39,6 +39,13 @@ func _ready() -> void:
 
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	# UIQA P2-1：parent（MainMenu）rect 為 40×40，FULL_RECT 撐不開 →
+	# 進 fullbleed_mask group 由 UiMaskFitter 鋪滿全畫布，children FULL_RECT 自動跟。
+	add_to_group("fullbleed_mask")
+	var _resp: Node = get_node_or_null("/root/Responsive")
+	if _resp != null:
+		global_position = _resp.screen_rect.position
+		size = _resp.screen_rect.size
 
 	_build_backdrop()
 	_build_title()
@@ -177,8 +184,8 @@ func _relayout() -> void:
 		_title_lbl.position = Vector2(safe.position.x, safe.position.y + roundf(pad * 0.4))
 
 	if is_instance_valid(_back_btn):
-		var bw: float = roundf(148.0 * ts)
-		var bh: float = roundf(44.0 * ts)
+		var bw: float = roundf(188.0 * ts)
+		var bh: float = roundf(64.0 * ts)	# UIQA P1-5：返回鈕觸控底線
 		_back_btn.size = Vector2(bw, bh)
 		_back_btn.position = Vector2(safe.position.x + pad,
 									 safe.position.y + roundf(pad * 0.5))
