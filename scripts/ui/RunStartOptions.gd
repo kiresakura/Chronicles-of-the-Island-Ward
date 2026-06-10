@@ -144,8 +144,10 @@ func _apply_offering_chrome() -> void:
 		bg.texture = load(OFFERING_BG_PATH)
 		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		# UIQA P1-1：供桌圖兼任 modal 視覺+輸入遮罩 — 全出血（COVERED 自行裁切）+ STOP
+		bg.mouse_filter = Control.MOUSE_FILTER_STOP
 		bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		bg.add_to_group("fullbleed_mask")
 		add_child(bg)
 		move_child(bg, 0)	# 置於最底，標題/副標/籤詩卡在其上
 	# 暗角加深一點，確保金字在亮供桌上仍可讀

@@ -47,15 +47,24 @@ func test_p1_reward_overlay_builds_offering_table_language() -> void:
 	table.queue_free()
 
 func test_p1_new_run_bottom_controls_do_not_overlap_guide_copy() -> void:
-	var layout: Dictionary = NEW_RUN_MENU.calculate_p1_bottom_control_layout(Rect2(Vector2.ZERO, Vector2(2772, 1280)))
-	for required_key in ["start", "seed", "hint"]:
-		assert_true(layout.has(required_key), "P1 NewRun layout 必須回傳 %s rect" % required_key)
-	var start_rect: Rect2 = layout["start"]
-	var seed_rect: Rect2 = layout["seed"]
-	var hint_rect: Rect2 = layout["hint"]
-	assert_false(start_rect.intersects(hint_rect), "開始開壇 CTA 不可壓到如何開始文案")
-	assert_false(start_rect.intersects(seed_rect), "開始開壇 CTA 不可壓到種子輸入")
-	assert_true(start_rect.size.y >= 54.0, "開始開壇 CTA 必須維持手機可點高度")
+	# UIQA P1-2 強化：對手機(1200x700)與平板(2772x1280)雙尺寸驗證
+	# 全部控件互不重疊、全部落在 safe 區內（返回鈕曾 y=698 出界 96%）
+	for safe_size: Vector2 in [Vector2(1200, 700), Vector2(2772, 1280)]:
+		var safe := Rect2(Vector2.ZERO, safe_size)
+		var layout: Dictionary = NEW_RUN_MENU.calculate_p1_bottom_control_layout(safe)
+		for required_key in ["start", "seed", "hint", "guardian", "tool", "back"]:
+			assert_true(layout.has(required_key), "P1 NewRun layout 必須回傳 %s rect" % required_key)
+		var keys: Array = ["hint", "guardian", "tool", "seed", "start", "back"]
+		for i: int in keys.size():
+			var r_i: Rect2 = layout[keys[i]]
+			assert_true(safe.grow(0.5).encloses(r_i), "%s 必須完整落在 safe 區內（%s @%s）" % [keys[i], str(r_i), str(safe_size)])
+			for j: int in range(i + 1, keys.size()):
+				var r_j: Rect2 = layout[keys[j]]
+				assert_false(r_i.intersects(r_j), "%s 不可壓到 %s（@%s）" % [keys[i], keys[j], str(safe_size)])
+		var start_rect: Rect2 = layout["start"]
+		var back_rect: Rect2 = layout["back"]
+		assert_true(start_rect.size.y >= 54.0, "開始開壇 CTA 必須維持手機可點高度")
+		assert_true(minf(back_rect.size.x, back_rect.size.y) >= 64.0, "返回正殿 觸控短邊須 ≥64px")
 
 func _load_json_array(path: String) -> Array:
 	assert_true(FileAccess.file_exists(path), "%s 必須存在" % path)

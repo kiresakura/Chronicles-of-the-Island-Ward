@@ -40,7 +40,7 @@ static func get_card_frame_v2_path(rarity: int) -> String:
 
 ## P1：全域 opt-in 旗標 — true 時整條卡牌鏈改用 v2 符令框（Gallery/預覽用）；
 ## live 預設 false，不動既有卡面與 161 測試。
-static var use_card_frame_v2: bool = false
+static var use_card_frame_v2: bool = true	# UIQA P2-4：v2 符令框轉正式（v1 STR 白底敘述區突兀）
 
 ## 依 opt-in 旗標回傳當前卡框路徑（v2 或既有 v1）。Card.gd 統一走這個。
 static func get_active_card_frame_path(rarity: int) -> String:

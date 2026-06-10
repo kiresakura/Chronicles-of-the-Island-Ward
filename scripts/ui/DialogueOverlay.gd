@@ -57,7 +57,12 @@ func populate_dialogue_options() -> void:
 	
 	# set prompt image
 	if current_dialogue_state.dialogue_state_dialogue_texture_path != "":
-		dialogue_texture_rect.texture = FileLoader.load_texture(current_dialogue_state.dialogue_state_dialogue_texture_path)
+		# UIQA P1-3：res:// 資產走 load()；FileLoader 是 external/ 範疇（吃 res:// 會 fallback 成 icon.svg）
+		var tex_path: String = current_dialogue_state.dialogue_state_dialogue_texture_path
+		if tex_path.begins_with("res://"):
+			dialogue_texture_rect.texture = load(tex_path)
+		else:
+			dialogue_texture_rect.texture = FileLoader.load_texture(tex_path)
 	
 	# create and validate dialogue option buttons
 	# keep track of how many are actually clickable
@@ -147,7 +152,8 @@ func reset_dialogue() -> void:
 	clear_dialogue_options()
 	visible = false
 	dialogue_prompt_label.parse_bbcode("")
-	dialogue_texture_rect.texture = load("res://icon.svg")
+	# UIQA P1-3：fallback 由 Godot icon 改為通用香爐事件圖（不再出機器人）
+	dialogue_texture_rect.texture = load("res://assets/generated/events_v1/generic_incense.png")
 	
 	current_dialogue_data = null
 	current_dialogue_state = null

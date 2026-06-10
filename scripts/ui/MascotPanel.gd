@@ -129,10 +129,16 @@ func _process(delta: float) -> void:
 	_bust_rect.size = Vector2(dst_w, dst_h)
 	_bust_rect.pivot_offset = Vector2(dst_w * 0.5, dst_h)   # 以底中為支點
 
-	# Button hit-area 跟 bust 同步
+	# Button hit-area 跟 bust 同步（UIQA P2-6：高度夾回畫布內，不再出界跨壓其他畫面）
 	if _button != null:
 		_button.position = _bust_rect.position
-		_button.size = _bust_rect.size
+		var hit_size: Vector2 = _bust_rect.size
+		var resp: Node = get_node_or_null("/root/Responsive")
+		if resp != null:
+			var over: float = (_bust_rect.global_position.y + hit_size.y) - resp.screen_rect.end.y
+			if over > 0.0:
+				hit_size.y = maxf(64.0, hit_size.y - over)
+		_button.size = hit_size
 
 	# 表情倒數：到 0 切回 idle bust
 	if _expression_timer > 0:

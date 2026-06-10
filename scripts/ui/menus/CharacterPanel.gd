@@ -37,6 +37,13 @@ func _ready() -> void:
 
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP   # 吃掉所有點擊，不讓事件穿透
+	# UIQA P2-1：parent（TitleScreen）rect 為 0×0，FULL_RECT 撐不開 →
+	# 進 fullbleed_mask group 由 UiMaskFitter 鋪滿全畫布（含寬螢幕側帶），children FULL_RECT 自動跟。
+	add_to_group("fullbleed_mask")
+	var _resp: Node = get_node_or_null("/root/Responsive")
+	if _resp != null:
+		global_position = _resp.screen_rect.position
+		size = _resp.screen_rect.size
 
 	_build_backdrop()
 	_build_title()
@@ -253,8 +260,8 @@ func _relayout() -> void:
 
 	# 返回按鈕：左上角
 	if is_instance_valid(_back_btn):
-		var bw: float = roundf(148.0 * ts_scale)
-		var bh: float = roundf(44.0 * ts_scale)
+		var bw: float = roundf(188.0 * ts_scale)
+		var bh: float = roundf(64.0 * ts_scale)	# UIQA P1-5：返回鈕觸控底線
 		_back_btn.size     = Vector2(bw, bh)
 		_back_btn.position = Vector2(safe.position.x + pad,
 								   safe.position.y + roundf(pad * 0.5))
@@ -304,8 +311,8 @@ func _relayout() -> void:
 		if cd_dict.has("set_mascot_btn"):
 			var smb = cd_dict["set_mascot_btn"]
 			if smb != null and is_instance_valid(smb):
-				smb.position = Vector2(8, card_h - 44)
-				smb.size = Vector2(card_w - 16, 36)
+				smb.position = Vector2(8, card_h - 72)
+				smb.size = Vector2(card_w - 16, 64)	# UIQA P1-5：觸控底線
 
 # ── Helpers ──────────────────────────────────────────────────────────
 

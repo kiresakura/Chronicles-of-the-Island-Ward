@@ -105,7 +105,7 @@ func _build_offering_table_chrome() -> void:
 func _sync_offering_table_layout() -> void:
 	if _offering_table_panel == null or reward_container == null:
 		return
-	var margin := Vector2(26.0, 42.0)
+	var margin := Vector2(26.0, 68.0)	# UIQA P2-2：標題列需 68px 頭部空間（原 42 被獎勵列壓住）
 	_offering_table_panel.position = reward_container.position - margin
 	_offering_table_panel.size = reward_container.size + margin * 2.0
 	var cloth := _offering_table_panel.get_node_or_null("OfferingCloth") as ColorRect

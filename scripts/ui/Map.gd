@@ -57,6 +57,7 @@ func _apply_pilgrimage_backdrop() -> void:
 		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		bg.add_to_group("fullbleed_mask")	# UIQA P2-5：寬螢幕側帶也覆蓋（COVERED 自裁切）
 		add_child(bg)
 		move_child(bg, 0)	# 置最底：在暗角/節點之下
 

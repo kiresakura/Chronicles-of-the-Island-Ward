@@ -47,6 +47,9 @@ var _run_heading_label: Label
 var _selection_bridge: Label
 var _character_shelf: Array = []
 
+## UIQA P1-2 重排：guide 面板內四列互不重疊（標題/提示/護壇法器/種子），
+## 開始開壇 = 右側 80 高大 CTA；返回正殿改左上角（與角色面板「← 返回」同慣例，
+## 原本排在 guide 下方 y=guide_y+guide_h+10 → 698 必出界）。
 static func calculate_p1_bottom_control_layout(safe: Rect2) -> Dictionary:
 	var left_x: float = safe.position.x + 36.0
 	var left_w: float = clampf(safe.size.x * 0.25, 292.0, 320.0)
@@ -58,14 +61,26 @@ static func calculate_p1_bottom_control_layout(safe: Rect2) -> Dictionary:
 	var guide_h: float = 152.0
 	var guide_x: float = gallery_x + 12.0
 	var guide_w: float = maxf(360.0, minf(428.0, gallery_w - 24.0))
-	var hint_rect := Rect2(Vector2(guide_x + 16.0, guide_y + 38.0), Vector2(guide_w - 32.0, 40.0))
-	var seed_rect := Rect2(Vector2(guide_x + 16.0, guide_y + 88.0), Vector2(maxf(128.0, guide_w - 204.0), 46.0))
-	var start_rect := Rect2(Vector2(guide_x + guide_w - 176.0, guide_y + 86.0), Vector2(160.0, 58.0))
+	var inner_x: float = guide_x + 16.0
+	var inner_w: float = guide_w - 32.0
+	var cta_w: float = 168.0
+	var left_zone_w: float = inner_w - cta_w - 16.0
+	var picker_w: float = (left_zone_w - 12.0) / 2.0
+	# v3：picker 左欄全寬雙行（寬列 ≥40 高標準）；種子上移右欄與提示同列；開壇 CTA 右下大鈕
+	var hint_rect := Rect2(Vector2(inner_x, guide_y + 30.0), Vector2(inner_w - 200.0, 26.0))
+	var seed_rect := Rect2(Vector2(guide_x + guide_w - cta_w - 16.0, guide_y + 26.0), Vector2(cta_w, 32.0))
+	var guardian_rect := Rect2(Vector2(inner_x, guide_y + 64.0), Vector2(left_zone_w, 40.0))
+	var tool_rect := Rect2(Vector2(inner_x, guide_y + 108.0), Vector2(left_zone_w, 40.0))
+	var start_rect := Rect2(Vector2(guide_x + guide_w - cta_w - 16.0, guide_y + 62.0), Vector2(cta_w, 86.0))
+	var back_rect := Rect2(Vector2(safe.position.x + 16.0, safe.position.y + 12.0), Vector2(188.0, 80.0))
 	return {
 		"guide": Rect2(Vector2(guide_x, guide_y), Vector2(guide_w, guide_h)),
 		"hint": hint_rect,
+		"guardian": guardian_rect,
+		"tool": tool_rect,
 		"seed": seed_rect,
 		"start": start_rect,
+		"back": back_rect,
 	}
 
 func _ready() -> void:
@@ -190,6 +205,9 @@ func _build_character_gallery() -> void:
 
 func _relayout_runtime_chrome() -> void:
 	var safe: Rect2 = Responsive.safe_rect if Responsive != null else Rect2(Vector2.ZERO, get_viewport_rect().size)
+	# UIQA：safe 是螢幕座標；本面板掛在會被置中偏移的 TitleScreen 下（4:3 時 y+100）
+	# → 轉成 parent-local，否則底排（開始開壇/班底 picker）雙重偏移出畫面
+	safe.position -= global_position
 	var left_x: float = safe.position.x + 36.0
 	var left_w: float = clampf(safe.size.x * 0.25, 292.0, 320.0)
 	var info_y: float = safe.position.y + 108.0
@@ -241,15 +259,19 @@ func _relayout_runtime_chrome() -> void:
 		start_run_button.position = start_rect.position
 		start_run_button.size = start_rect.size
 	if back_button != null:
-		back_button.position = Vector2(guide_x, guide_y + guide_h + 10.0)
-		back_button.size = Vector2(guide_w, 54.0)
-	# 鎮島錄 — 班底選擇器置於 run guide 面板底部（heading / 指引文字之下；視覺微調待真機）
+		# UIQA P1-2：返回改左上角（原 guide 下方必出界）
+		var back_rect: Rect2 = bottom_layout["back"]
+		back_button.position = back_rect.position
+		back_button.size = back_rect.size
+	# 班底選擇器：與種子/開始鈕同列系統，互不重疊（rect 由 layout 函式給）
 	if _guardian_picker != null:
-		_guardian_picker.position = Vector2(guide_x + 16.0, guide_y + guide_h - 84.0)
-		_guardian_picker.size = Vector2(guide_w - 32.0, 34.0)
+		var g_rect: Rect2 = bottom_layout["guardian"]
+		_guardian_picker.position = g_rect.position
+		_guardian_picker.size = g_rect.size
 	if _tool_picker != null:
-		_tool_picker.position = Vector2(guide_x + 16.0, guide_y + guide_h - 44.0)
-		_tool_picker.size = Vector2(guide_w - 32.0, 34.0)
+		var t_rect: Rect2 = bottom_layout["tool"]
+		_tool_picker.position = t_rect.position
+		_tool_picker.size = t_rect.size
 
 func _on_seed_input_text_changed(new_text: String) -> void:
 	var caret_column: int = seed_input.caret_column
@@ -459,6 +481,8 @@ func _build_loadout_pickers() -> void:
 func _make_loadout_picker(ids: Array, prefix: String, is_guardian: bool) -> OptionButton:
 	var ob: OptionButton = OptionButton.new()
 	ob.name = prefix + "Picker"
+	ob.clip_text = true	# UIQA P1-2：min width 不得撐爆排版（曾壓到開始開壇）
+	ob.fit_to_longest_item = false
 	ob.add_item("%s：（角色預設）" % prefix)
 	ob.set_item_metadata(0, "")
 	for id: String in ids:
