@@ -2,6 +2,7 @@
 extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const JIAOBEI_FX := preload("res://scripts/ui/fx/JiaoBeiFX.gd")
 
 var _option_type_to_option_ids: Dictionary = {}
 const MIXED_OPTION_COUNT: int = 3	# number of options to populate that have both an upside and downside
@@ -12,6 +13,11 @@ const COMPLETE_OPTION_COUNT: int = 1	# number of unique options to populate
 
 ## P0-1 神示供桌：供桌背景素材（取代 debug 紅黑底，建立「擲筊問神」舞台）
 const OFFERING_BG_PATH := "res://assets/generated/pixellab/run_start_offering_bg_v1.png"
+
+## Q2-B 籤詩四選一：籤首（干支 + 籤等）。混合選項=中平（有得有失）、完整選項=上上。
+const OMEN_HEADS: Array[String] = ["甲子籤【中平】", "乙丑籤【中平】", "丙寅籤【中平】", "丁卯籤【上上】"]
+const STRIP_SEPARATION: float = 16.0
+var _resolving: bool = false	# 擲筊演出中鎖重入
 
 func _ready():
 	_aggregate_run_start_options()
@@ -29,7 +35,9 @@ func _aggregate_run_start_options() -> void:
 
 func populate_run_start_options() -> void:
 	# Presents a list of options to the player
-	
+	_resolving = false
+	_relayout_offering_strips()	# Q2-B：容器轉橫排 + 依視口置中（四支籤詩並立）
+
 	# get options based on type
 	var upside_option_ids: Array[String] = _option_type_to_option_ids[RunStartOptionData.RUN_START_OPTION_TYPES.PARTIAL_UPSIDE]
 	var complete_option_ids: Array[String] = _option_type_to_option_ids[RunStartOptionData.RUN_START_OPTION_TYPES.COMPLETE]
@@ -69,7 +77,7 @@ func populate_run_start_options() -> void:
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
 		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
-		_apply_offering_card_style(run_start_option_button)	# P0-1：籤詩/供品牌樣式
+		_apply_offering_strip_style(run_start_option_button, i, option_bbcode)	# Q2-B：直立籤詩
 
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
 
@@ -88,24 +96,53 @@ func populate_run_start_options() -> void:
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
 		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
-		_apply_offering_card_style(run_start_option_button)	# P0-1：籤詩/供品牌樣式
+		_apply_offering_strip_style(run_start_option_button, MIXED_OPTION_COUNT + i, option_bbcode)	# Q2-B：上上籤
 
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
-	
+
 func clear_run_start_options() -> void:
 	for child in starting_option_container.get_children():
 		child.queue_free()
 	
 func _on_dialogue_option_clicked(dialogue_option: DialogueOption):
+	# Q2-B 擲筊問神：效果即刻生效（演出鐵律 — 結算不等演出）；
+	# 筊杯演出為 overlay 節拍（1.15s ≤ 1.5s），其間鎖選項防重入。
+	if _resolving:
+		return
+	_resolving = true
 	var player: Player = Global.get_player()
 	var generated_actions: Array[BaseAction] = ActionGenerator.create_actions(player, null, [player], dialogue_option.action_data, null)
 	ActionHandler.add_actions(generated_actions)
-	clear_run_start_options()
-	visible = false
-	
+
+	# 選中演出：本籤升起鍍金、其餘籤退場
+	for child in starting_option_container.get_children():
+		if child is DialogueOption:
+			(child as DialogueOption).option_enabled = false
+			var tw := (child as Control).create_tween()
+			if child == dialogue_option:
+				tw.set_parallel(true)
+				tw.tween_property(child, "modulate", Color(1.18, 1.10, 0.86), 0.18)
+				tw.tween_property(child, "position:y", (child as Control).position.y - 14.0, 0.22) \
+					.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			else:
+				tw.tween_property(child, "modulate:a", 0.22, 0.20)
+
+	# 擲筊（供桌中央偏下）+ 落地木響
+	var stage: Rect2 = Rect2(Vector2.ZERO, COTIW_UI_THEME.get_stage_size())
+	var resp: Node = get_node_or_null("/root/Responsive")
+	if resp != null:
+		stage = resp.screen_rect
+	JIAOBEI_FX.play(self, stage.position + stage.size * Vector2(0.5, 0.58))
+	get_tree().create_timer(0.55).timeout.connect(func() -> void: AudioManager.play_sfx("turn_end"))
+
+	# 演出節拍 + actions 收尾後進地圖
+	await get_tree().create_timer(1.15).timeout
 	if ActionHandler.actions_being_performed:
 		await ActionHandler.actions_ended
-	
+
+	clear_run_start_options()
+	visible = false
+	_resolving = false
 	map.can_travel = true
 	map.show_map()
 	
@@ -169,26 +206,140 @@ func _apply_offering_chrome() -> void:
 		presenter.size = Vector2(252, 432)
 		add_child(presenter)	# 置頂層：站在供桌前（右側，不擋中央籤詩卡）
 
-## 把選項條變成「籤詩 / 供品牌」：高觸控、紙金卡面、深字可讀、置中。
-func _apply_offering_card_style(option: Control) -> void:
+## Q2-B 容器重排：VBox 轉橫排（BoxContainer.vertical=false）+ 依視口安全區置中。
+## 四支籤詩並立 — 1200×700 與 4:3 皆以 stage 寬重算（地圖同款 runtime 置中思路）。
+func _relayout_offering_strips() -> void:
+	var box: BoxContainer = starting_option_container as BoxContainer
+	if box == null:
+		return
+	if box is VBoxContainer:
+		# VBoxContainer 鎖死 vertical（子類硬定向，runtime 設 false 無效 — 實測）→
+		# 建 HBox 接管原節點名（driver/外部路徑不變），舊 VBox 保留隱藏（fork-first：不刪節點）。
+		var parent: Node = box.get_parent()
+		box.name = "StartingOptionContainerLegacy"
+		box.visible = false
+		var row := HBoxContainer.new()
+		row.name = "StartingOptionContainer"
+		parent.add_child(row)
+		starting_option_container = row
+		box = row
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", int(STRIP_SEPARATION))
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	var width: float = minf(880.0, safe.size.x - 56.0)
+	var top: float = safe.position.y + safe.size.y * 0.285
+	var height: float = minf(404.0, safe.position.y + safe.size.y - top - 64.0)
+	box.position = Vector2(safe.position.x + (safe.size.x - width) * 0.5, top)
+	box.size = Vector2(width, height)
+	# 乩童立繪：移到籤詩「後方」（tree 序在容器前 = 先繪）+ 貼安全區右緣 —
+	# 1244 窄幅下不再壓到第四籤的可讀面
+	var presenter: Control = get_node_or_null("RSOPresenter") as Control
+	if presenter != null:
+		var box_index: int = (box as Node).get_index()
+		if presenter.get_index() > box_index:
+			move_child(presenter, box_index)
+		presenter.position = Vector2(safe.position.x + safe.size.x - presenter.size.x + 26.0,
+			safe.position.y + safe.size.y - presenter.size.y - 8.0)
+
+## Q2-B 直立籤詩：硃砂籤首帶（干支+籤等）+ 紙底金框直條 + 內文置中。
+## PanelContainer 內重組為 VBox（DialogueOption 的 rich_text_label 引用是 cached var，reparent 安全）。
+func _apply_offering_strip_style(option: Control, index: int, option_bbcode: String) -> void:
 	if option == null:
 		return
-	option.custom_minimum_size = Vector2(560, 90)	# ≥88 觸控高度
-	option.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var box: Control = starting_option_container as Control
+	var strip_h: float = maxf(320.0, box.size.y if box != null else 380.0)
+	option.custom_minimum_size = Vector2(196, strip_h)	# 寬 ≥80 舒適觸控、整支可點
+	option.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = COTIW_UI_THEME.get_color("paper_warm", Color(0.96, 0.91, 0.81, 1.0))
-	sb.bg_color.a = 0.95
-	sb.set_corner_radius_all(12)
+	sb.bg_color.a = 0.96
+	sb.set_corner_radius_all(10)
 	sb.set_border_width_all(3)
 	sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 1.0))
-	sb.set_content_margin_all(14)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 0	# 籤首帶頂部貼框
+	sb.content_margin_bottom = 10
 	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
 	sb.shadow_size = 6
 	sb.shadow_offset = Vector2(0, 4)
 	option.add_theme_stylebox_override("panel", sb)
-	var rtl: Node = option.get_node_or_null("RichTextLabel")
-	if rtl is RichTextLabel:
-		(rtl as RichTextLabel).add_theme_color_override("default_color", COTIW_UI_THEME.get_color("lacquer_black", Color(0.16, 0.09, 0.08, 1.0)))
+
+	# 內部重組：籤首帶 + 內文（一次性，冪等）
+	if option.get_node_or_null("OmenStack") == null:
+		var stack := VBoxContainer.new()
+		stack.name = "OmenStack"
+		stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stack.add_theme_constant_override("separation", 8)
+		option.add_child(stack)
+
+		var head := Label.new()
+		head.name = "OmenHead"
+		head.text = OMEN_HEADS[clampi(index, 0, OMEN_HEADS.size() - 1)]
+		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		head.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		head.custom_minimum_size = Vector2(0, 52)
+		head.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		head.add_theme_font_size_override("font_size", 19)
+		head.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72))
+		var head_sb := StyleBoxFlat.new()
+		head_sb.bg_color = Color(0.56, 0.14, 0.10, 1.0)	# 硃砂帶
+		head_sb.corner_radius_top_left = 8
+		head_sb.corner_radius_top_right = 8
+		head_sb.border_width_bottom = 2
+		head_sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 1.0))
+		head.add_theme_stylebox_override("normal", head_sb)
+		stack.add_child(head)
+
+		# 內文垂直置中：上下彈簧 Control 夾住 fit_content 的 RTL
+		var spring_top := Control.new()
+		spring_top.name = "SpringTop"
+		spring_top.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		spring_top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stack.add_child(spring_top)
+		var rtl: Node = option.get_node_or_null("RichTextLabel")
+		if rtl is RichTextLabel:
+			rtl.reparent(stack)	# DialogueOption 的引用是 @onready cached var → reparent 後仍有效
+			(rtl as RichTextLabel).fit_content = true
+			(rtl as Control).size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var spring_bottom := Control.new()
+		spring_bottom.name = "SpringBottom"
+		spring_bottom.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		spring_bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stack.add_child(spring_bottom)
+		# 籤尾飾線（雙金線，補直條下段留白的版式重量）
+		var foot := Panel.new()
+		foot.name = "OmenFoot"
+		foot.custom_minimum_size = Vector2(0, 8)
+		foot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var foot_sb := StyleBoxFlat.new()
+		foot_sb.bg_color = Color.TRANSPARENT
+		foot_sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 0.8))
+		foot_sb.border_width_top = 2
+		foot_sb.border_width_bottom = 2
+		foot.add_theme_stylebox_override("panel", foot_sb)
+		stack.add_child(foot)
+
+	var rtl2: Node = option.get_node_or_null("OmenStack/RichTextLabel")
+	if rtl2 is RichTextLabel:
+		var r := rtl2 as RichTextLabel
+		r.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("lacquer_black", Color(0.16, 0.09, 0.08, 1.0)))
+		r.add_theme_font_size_override("normal_font_size", 17)
+		r.add_theme_font_size_override("bold_font_size", 17)
+		r.parse_bbcode("[center]" + option_bbcode + "[/center]")
+
+	# 按壓回饋（三態：常態/按下/鎖定由 modulate 表達）
+	if not option.gui_input.is_connected(_on_strip_gui_input):
+		option.gui_input.connect(_on_strip_gui_input.bind(option))
+
+func _on_strip_gui_input(event: InputEvent, option: Control) -> void:
+	if _resolving or option == null:
+		return
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			option.modulate = Color(0.88, 0.88, 0.88) if mb.pressed else Color.WHITE
 
 ## P1：神示金光提示 — 供桌出現時，供桌中央一道金光脈動（擲筊問神得示）。一次性、自我清理。
 const OMEN_GLOW := "res://assets/generated/fx/offering_omen_glow_v1.png"
