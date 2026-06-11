@@ -81,6 +81,7 @@ func hide_menus():
 
 
 func show_main_menu():
+	AudioManager.play_bgm("main_menu")	# Q1-F+：場景 BGM（Suno 正式音源）
 	hide_menus()
 	main_menu.visible = true
 
