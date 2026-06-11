@@ -66,3 +66,21 @@ func test_aoe_card_break_numbers_registered() -> void:
 	assert_not_null(c, "鞭炮陣已載入")
 	assert_true(c.card_break_damage > 0, "AoE 卡帶削盾值（各敵各算）")
 	assert_true(c.card_ritual_tags.has("fire"), "鞭炮屬火儀法（弱點判定用）")
+
+# ---------- Q3-F 合符神力消耗實驗開關 ----------
+
+func test_merge_energy_cost_defaults_to_free() -> void:
+	assert_eq(Global.run_merge_energy_cost, 0, "預設 0 = 現狀免費（經濟定案前不動）")
+
+func test_merge_energy_cost_gates_when_broke() -> void:
+	var hand: Node = load("res://scripts/ui/Hand.gd").new()
+	Global.add_child(hand)
+	Global.run_merge_energy_cost = 1
+	var saved_energy: int = Global.player_data.player_energy
+	Global.player_data.player_energy = 0
+	var a: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	var b: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
+	assert_false(hand.merge_cards(a, b), "神力不足時合符被擋（gate 在 can_merge 之前）")
+	Global.run_merge_energy_cost = 0
+	Global.player_data.player_energy = saved_energy
+	hand.queue_free()

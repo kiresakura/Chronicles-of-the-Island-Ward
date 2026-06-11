@@ -267,6 +267,9 @@ var run_bell_first_combat_charge: int = 0
 var _run_bell_charge_granted: bool = false
 # 正殿備援神位：降乩釋放後自動接掌的神明佇列（最小版）。
 var run_deity_queue: Array[String] = []
+# Q3-F 合符神力消耗實驗開關（合符經濟 — 文件「待經濟定案」）：
+# 預設 0 = 現狀免費；模擬管線以非 0 值跑對比數據，憲龍拍板後改預設。
+var run_merge_energy_cost: int = 0
 
 func get_run_active_deity_id() -> String:
 	return run_active_deity_id if run_active_deity_id != "" else RitualLoadout.DEFAULT_DEITY_ID
