@@ -3,7 +3,7 @@ class_name ArtifactData
 
 @export var artifact_name: String = ""
 @export var artifact_description: String = ""
-@export var artifact_texture_path: String = "external/sprites/artifacts/artifact_white.png"
+@export var artifact_texture_path: String = "assets/generated/artifacts_v3/artifact_white.png"
 @export var artifact_script_path: String = "res://scripts/artifacts/BaseArtifact.gd"
 @export var artifact_counter: int = 0 # do not adjust directly
 @export var artifact_counter_max: int = 1

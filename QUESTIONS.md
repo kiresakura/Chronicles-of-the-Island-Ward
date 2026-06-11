@@ -309,3 +309,29 @@ FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
   待 i18n 導入時集中為 `tr()` key（或先抽 `RitualStrings` 常數）。範圍故意保守，本次未擴大。
 - **煞盾 Label mobile-safe**：Enemy.gd 頭頂煞盾指示為 sprite 子 Label + 固定 px 偏移（隨 sprite 縮放，尚可，非 anchor/container）。待 RitualHud 容器化一併處理。
 - **請神槽/狀態提示版位**：已把降乩按鈕下移至 y46–80 避開頂部回合狀態 Label（y8–42）。長線建議整理成 `RitualHud`/`InvocationHud` 容器統一管理（請神槽 + 煞盾 + 回合狀態），目前為程序化獨立節點。
+
+---
+
+## 2026-06-11 Q0 守門關卡問題
+
+### Q0-A: exit leak 殘量的處置（已用白名單契約，是否排程根治）
+
+**情境**：
+
+- Q0 要求「處理 exit leak」。實測定位：洩漏不是 QA driver 或 autoload 快取，而是**跑局期 action↔combatant↔data 物件圖的 RefCounted 循環引用**（清掉所有 _id_to_*、ActionHandler 堆疊、static Script 快取、FileLoader 映射後，洩漏簽名一條不動；minimal boot 與 start_run-only 路徑皆零洩漏，僅完整戰鬥流程產生）。
+- 根治 = 對 STR 核心 action/interceptor 反向引用做 weakref 重構，觸碰鐵律 3（fork-first）且估 1–2 天，超出 Q0 工具範圍。
+- 已落地的處置：`tools/pre_release_check.sh` 把「恰好這兩行退場簽名」列為已知良性白名單，**任何其他** WARNING/ERROR 一律紅燈。白名單契約本身已在驗收中抓到兩條真 bug（res://res:// 雙前綴、e2e 預覽板 anchor warning），證明訊號可信。
+
+**選項 A**：排程 weakref 根治（建議放 Q4 效能 pass 一併做，屆時本來就要動記憶體剖析）
+
+- 優：退場報告真乾淨；杜絕長 session 記憶體緩慢增長的理論風險。
+- 缺：動 STR 核心，1–2 天，回歸風險需全套測試護航。
+
+**選項 B**：維持白名單契約至上架後
+
+- 優：零風險零成本；CI 訊號已可信；玩家不受影響（程序退出時 OS 回收一切）。
+- 缺：簽名永遠掛在 log 上；若未來洩漏圖長大，白名單可能掩蓋增量（緩解：守門可改記錄資源數量趨勢）。
+
+**我的建議**：B 為現狀 + A 排入 Q4。循環引用在「單局內」不增長（每局結束物件圖被新局取代），實際風險低；Q4 效能 pass 有 profiler 在手時順手根治最划算。
+
+**🟡 待憲龍回覆**

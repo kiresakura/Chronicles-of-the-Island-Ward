@@ -35,7 +35,7 @@ func _ready() -> void:
 	GOLD     = COTIW_UI_THEME.get_color("incense_gold", GOLD)
 	GOLD_DIM = COTIW_UI_THEME.get_color("old_gold",     GOLD_DIM)
 
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)	# 等錨 + 手動幾何（FULL_RECT 非等錨會觸發 size 覆寫警告，Q0-2）
 	mouse_filter = Control.MOUSE_FILTER_STOP   # 吃掉所有點擊，不讓事件穿透
 	# UIQA P2-1：parent（TitleScreen）rect 為 0×0，FULL_RECT 撐不開 →
 	# 進 fullbleed_mask group 由 UiMaskFitter 鋪滿全畫布（含寬螢幕側帶），children FULL_RECT 自動跟。
@@ -260,8 +260,8 @@ func _relayout() -> void:
 
 	# 返回按鈕：左上角
 	if is_instance_valid(_back_btn):
-		var bw: float = roundf(188.0 * ts_scale)
-		var bh: float = roundf(64.0 * ts_scale)	# UIQA P1-5：返回鈕觸控底線
+		var bw: float = roundf(200.0 * ts_scale)
+		var bh: float = roundf(80.0 * ts_scale)	# UIQA P1-5：返回鈕觸控底線
 		_back_btn.size     = Vector2(bw, bh)
 		_back_btn.position = Vector2(safe.position.x + pad,
 								   safe.position.y + roundf(pad * 0.5))

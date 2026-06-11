@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://brjr60xgcwb0c"]
 
-[ext_resource type="Texture2D" uid="uid://nh32y87hcke5" path="res://assets/generated/icons_v2/rest/icon_reward_talisman.svg" id="1_4bltw"]
+[ext_resource type="Texture2D" path="res://assets/generated/icons_v2/rest/icon_reward_talisman.png" id="1_4bltw"]
 
 [node name="CardDraftShopButton" type="Button"]
 offset_right = 112.0

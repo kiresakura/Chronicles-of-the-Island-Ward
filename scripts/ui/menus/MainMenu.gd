@@ -688,8 +688,8 @@ func _relayout() -> void:
 	# 右上：✕ + 3 工具鈕（貼安全區右上）
 	# tokens.touch_targets：min 88 / comfortable 96 / cta 112
 	# UIQA P1-5：角落 ✕ 與工具列升至 64（手機 ≥35pt 觸控底線；原 44/48 過小）
-	var ex: float = roundf(64.0 * ts)
-	var ux: float = roundf(64.0 * ts)
+	var ex: float = roundf(80.0 * ts)
+	var ux: float = roundf(80.0 * ts)
 	var ugap: float = roundf(6.0 * ts)
 	var right: float = safe.position.x + safe.size.x - pad
 	if btn_exit_x:
