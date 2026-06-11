@@ -80,6 +80,12 @@ func _ready():
 	update_combat_display()
 	player.update_player_display(Global.player_data)
 	
+	# Q2-F：tablet（4:3）戰場帶 — 下沉 + 腳底錨點放大，把多出的縱向給「舞台」
+	_apply_tablet_stage()
+	var resp_node: Node = get_node_or_null("/root/Responsive")
+	if resp_node != null and resp_node.has_signal("changed"):
+		resp_node.changed.connect(_apply_tablet_stage)
+	
 	# pile buttons
 	deck_button.button_up.connect(_on_deck_button_up)
 	draw_pile_button.button_up.connect(_on_draw_pile_button_up)
@@ -874,3 +880,25 @@ func _stop_invoke_glow() -> void:
 	_invoke_glow_tween = null
 	if is_instance_valid(_invoke_button):
 		_invoke_button.self_modulate = Color(1, 1, 1)
+
+
+# ───────────────── Q2-F tablet（4:3）戰場帶 ─────────────────
+
+## 4:3 多出的縱向高度若不處理，會變成「單位群與手牌之間的裂縫 + 頂上空帶」。
+## 專屬排版：戰場成員（玩家/敵群）整帶下沉 + 以腳底為錨微放大 — 舞台感而非拉伸。
+## 可逆（手機回 1.0/原位）；基準位置首次記在 meta（冪等）。
+const TABLET_STAGE_SHIFT_Y := 92.0
+const TABLET_STAGE_SCALE := 1.12
+
+func _apply_tablet_stage() -> void:
+	var resp: Node = get_node_or_null("/root/Responsive")
+	var on_tablet: bool = resp != null and resp.has_method("is_tablet") and resp.is_tablet()
+	for member: Control in [player as Control, enemy_container as Control]:
+		if member == null:
+			continue
+		if not member.has_meta("tablet_base_y"):
+			member.set_meta("tablet_base_y", member.position.y)
+		var base_y: float = float(member.get_meta("tablet_base_y"))
+		member.position.y = base_y + (TABLET_STAGE_SHIFT_Y if on_tablet else 0.0)
+		member.pivot_offset = Vector2(member.size.x * 0.5, member.size.y)	# 腳底錨點
+		member.scale = Vector2.ONE * (TABLET_STAGE_SCALE if on_tablet else 1.0)
