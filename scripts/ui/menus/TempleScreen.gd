@@ -141,24 +141,36 @@ func _make_building_card(bid: String) -> PanelContainer:
 	vb.add_theme_constant_override("separation", 6)
 	card.add_child(vb)
 
-	# 首行：glyph 徽章 + 名稱 + 等級
+	# 首行：建築立繪（Q2-E 正式素材；缺檔回退 glyph 徽章）+ 名稱 + 等級
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", 8)
 	vb.add_child(head)
-	var badge := Label.new()
-	badge.text = str(BUILDING_GLYPH.get(bid, "廟"))
-	badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	badge.custom_minimum_size = Vector2(44, 44)
-	badge.add_theme_font_size_override("font_size", 24)
-	badge.add_theme_color_override("font_color", Color(1, 0.95, 0.85))
-	var badge_sb := StyleBoxFlat.new()
-	badge_sb.bg_color = BUILDING_BADGE_COLOR.get(bid, Color(0.4, 0.3, 0.3))
-	badge_sb.set_corner_radius_all(22)
-	badge_sb.border_color = Color(0.12, 0.05, 0.04)
-	badge_sb.set_border_width_all(2)
-	badge.add_theme_stylebox_override("normal", badge_sb)
-	head.add_child(badge)
+	var portrait_path: String = "res://assets/generated/temple_buildings/%s.png" % bid
+	if ResourceLoader.exists(portrait_path):
+		var portrait := TextureRect.new()
+		portrait.name = "BuildingPortrait"
+		portrait.texture = load(portrait_path)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		portrait.clip_contents = true
+		portrait.custom_minimum_size = Vector2(48, 48)
+		portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		head.add_child(portrait)
+	else:
+		var badge := Label.new()
+		badge.text = str(BUILDING_GLYPH.get(bid, "廟"))
+		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		badge.custom_minimum_size = Vector2(44, 44)
+		badge.add_theme_font_size_override("font_size", 24)
+		badge.add_theme_color_override("font_color", Color(1, 0.95, 0.85))
+		var badge_sb := StyleBoxFlat.new()
+		badge_sb.bg_color = BUILDING_BADGE_COLOR.get(bid, Color(0.4, 0.3, 0.3))
+		badge_sb.set_corner_radius_all(22)
+		badge_sb.border_color = Color(0.12, 0.05, 0.04)
+		badge_sb.set_border_width_all(2)
+		badge.add_theme_stylebox_override("normal", badge_sb)
+		head.add_child(badge)
 	var name_lbl := Label.new()
 	name_lbl.text = str(props.get("building_name", bid))
 	name_lbl.add_theme_font_size_override("font_size", 21)

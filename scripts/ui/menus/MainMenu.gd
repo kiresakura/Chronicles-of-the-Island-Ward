@@ -494,7 +494,12 @@ func _set_slot_content(btn: Button, icon: String, label_text: String, ready: boo
 	ic.texture = _load_icon(icon)
 	ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	ic.modulate = tint
+	# Q2-C：v2 彩色 Q 版 icon 不吃金染（會黃偏）— 白底直出；鎖定壓灰。v1 白線稿維持金染。
+	var has_v2_icon: bool = ResourceLoader.exists("res://assets/generated/icons_v2/icon_%s.svg" % icon)
+	if has_v2_icon:
+		ic.modulate = Color.WHITE if ready else Color(0.46, 0.42, 0.38)
+	else:
+		ic.modulate = tint
 	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var lbl := btn.get_node_or_null("Label") as Label
