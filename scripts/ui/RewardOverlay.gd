@@ -28,6 +28,7 @@ var reward_data: Dictionary = {
 func _ready():
 	Signals.combat_started.connect(_on_combat_started)
 	Signals.combat_ended.connect(_on_combat_ended)
+	_apply_reward_banner()	# Q2-E 儀式感頂帶
 	
 	Signals.map_location_selected.connect(_on_map_location_selected)
 	Signals.chest_opened.connect(_on_chest_opened)
@@ -303,3 +304,23 @@ func _on_continue_button_up():
 
 func _on_map_location_selected(_location_data: LocationData):
 	visible = false
+
+## Q2-E：獎勵畫面頂部紅綢金光 banner（儀式感錨點）。缺檔靜默跳過。
+func _apply_reward_banner() -> void:
+	const BANNER := "res://assets/generated/scenes_v2/reward_banner_v1.png"
+	if get_node_or_null("RewardBannerArt") != null or not ResourceLoader.exists(BANNER):
+		return
+	var art := TextureRect.new()
+	art.name = "RewardBannerArt"
+	art.texture = load(BANNER)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art.clip_contents = true
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	art.modulate = Color(1, 1, 1, 0.92)
+	art.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	art.offset_top = 0
+	art.offset_bottom = 118
+	add_child(art)
+	var bg2_index: int = (get_node_or_null("Background2").get_index() + 1) if get_node_or_null("Background2") != null else 0
+	move_child(art, bg2_index)	# 暗底之上、獎勵列/標題之下

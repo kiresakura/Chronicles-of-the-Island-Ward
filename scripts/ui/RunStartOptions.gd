@@ -12,7 +12,7 @@ const COMPLETE_OPTION_COUNT: int = 1	# number of unique options to populate
 @onready var map = $%Map
 
 ## P0-1 神示供桌：供桌背景素材（取代 debug 紅黑底，建立「擲筊問神」舞台）
-const OFFERING_BG_PATH := "res://assets/generated/pixellab/run_start_offering_bg_v1.png"
+const OFFERING_BG_PATH := "res://assets/generated/scenes_v2/run_start_offering_bg_v2.png"	# Q2-E：v2 供桌（中央淨空給籤詩列）
 
 ## Q2-B 籤詩四選一：籤首（干支 + 籤等）。混合選項=中平（有得有失）、完整選項=上上。
 const OMEN_HEADS: Array[String] = ["甲子籤【中平】", "乙丑籤【中平】", "丙寅籤【中平】", "丁卯籤【上上】"]

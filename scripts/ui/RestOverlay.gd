@@ -11,6 +11,7 @@ const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
 func _ready():
 	Signals.combat_started.connect(_on_combat_started)
+	_apply_scene_chrome()	# Q2-E 場景錨點
 
 	Signals.map_location_selected.connect(_on_map_location_selected)
 	continue_button.button_up.connect(_on_continue_button_up)
@@ -97,3 +98,29 @@ func _ensure_rest_title() -> void:
 	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 	title.add_theme_constant_override("shadow_offset_y", 2)
 	add_child(title)
+
+## Q2-E 美術密度：場景錨點底圖（入廟安神）。COVERED 全出血、置於遮罩上內容下；
+## 缺檔靜默跳過（佔位回退）。暗角壓字保可讀。
+func _apply_scene_chrome() -> void:
+	const SCENE_BG := "res://assets/generated/scenes_v2/rest_hall_bg_v1.png"
+	if get_node_or_null("SceneChromeBg") != null or not ResourceLoader.exists(SCENE_BG):
+		return
+	var bg := TextureRect.new()
+	bg.name = "SceneChromeBg"
+	bg.texture = load(SCENE_BG)
+	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg.add_to_group("fullbleed_mask")
+	add_child(bg)
+	var bg_index: int = 1 if get_node_or_null("Background") != null else 0
+	move_child(bg, bg_index)	# 遮罩之上、內容之下
+	var vignette := ColorRect.new()
+	vignette.name = "SceneChromeVignette"
+	vignette.color = Color(0.05, 0.03, 0.03, 0.38)
+	vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vignette.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vignette.add_to_group("fullbleed_mask")
+	add_child(vignette)
+	move_child(vignette, bg_index + 1)
