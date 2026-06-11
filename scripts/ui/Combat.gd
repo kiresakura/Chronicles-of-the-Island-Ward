@@ -304,6 +304,10 @@ func _on_combat_started(event_id: String):
 	# 鎮島錄 — 請神：每場戰鬥設定「本局班底解析出的出戰神明」（2B：由 loadout 決定，非固定虎爺）並重置請神槽
 	if _deity_controller != null:
 		_deity_controller.setup(DeityInvocationSystem.load_deity(Global.get_run_active_deity_id()))
+		# Q3-E 鐘鼓樓 Lv2：首戰預充（單次/趟；數值在 building_bell_tower.json）
+		var bell_charge: int = Global.consume_bell_first_charge()
+		if bell_charge > 0:
+			_deity_controller.grant_charge(bell_charge)
 
 func _on_combat_ended():
 	set_combat_display_visibility(false)
@@ -786,6 +790,11 @@ func _on_invoke_button_pressed() -> void:
 		return
 	_execute_deity_invocation(_deity_controller.deity)
 	_deity_controller.consume()
+	# Q3-E 正殿備援神位：釋放後次位神接掌（重設請神盤；無備援則維持原神重充）
+	var next_id: String = Global.advance_deity_queue()
+	if next_id != "":
+		_deity_controller.setup(DeityInvocationSystem.load_deity(next_id))
+		show_combat_toast("備援神位 — %s 接掌請神盤" % str(_deity_controller.deity.deity_name if _deity_controller.deity != null else next_id))
 
 ## 降乩效果分派（資料驅動鍵 → 效果）。MVP：虎爺 tiger_roar；其他神明屬 Phase 1D+。
 func _execute_deity_invocation(deity: DeityData) -> void:

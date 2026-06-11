@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"shop_price_mult": 1.0,
+		"money_gain_mult": 1.0,
+		"post_combat_heal": 0,
+		"max_health_delta": 0,
+		"incense_mult": 0.85,
+		"reveal_all_map": true,
+		"object_id": "fortune_mist_road",
+		"stick_name": "霧鎖前路",
+		"stick_grade": "中下",
+		"stick_verse": "霧裡看花花更明，前路盡顯香火輕",
+		"stick_up_text": "全圖節點現形",
+		"stick_down_text": "完局香火 -15%"
+	}
+}

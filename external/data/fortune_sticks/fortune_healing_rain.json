@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"shop_price_mult": 1.15,
+		"money_gain_mult": 1.0,
+		"post_combat_heal": 4,
+		"max_health_delta": 0,
+		"incense_mult": 1.0,
+		"reveal_all_map": false,
+		"object_id": "fortune_healing_rain",
+		"stick_name": "妙手回春",
+		"stick_grade": "上",
+		"stick_verse": "春風化雨潤行人，戰罷自有回春力",
+		"stick_up_text": "每戰後回復 4 元神",
+		"stick_down_text": "商店售價 +15%"
+	}
+}

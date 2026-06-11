@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"shop_price_mult": 1.0,
+		"money_gain_mult": 1.0,
+		"post_combat_heal": 0,
+		"max_health_delta": -12,
+		"incense_mult": 1.35,
+		"reveal_all_map": false,
+		"object_id": "fortune_against_current",
+		"stick_name": "逆水行舟",
+		"stick_grade": "下",
+		"stick_verse": "逆水行舟不進退，險中求得滿爐灰",
+		"stick_up_text": "完局香火 +35%",
+		"stick_down_text": "元神上限 -12"
+	}
+}

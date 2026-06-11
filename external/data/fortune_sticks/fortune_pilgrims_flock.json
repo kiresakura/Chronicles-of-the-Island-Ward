@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"shop_price_mult": 0.8,
+		"money_gain_mult": 0.85,
+		"post_combat_heal": 0,
+		"max_health_delta": 0,
+		"incense_mult": 1.0,
+		"reveal_all_map": false,
+		"object_id": "fortune_pilgrims_flock",
+		"stick_name": "香客盈門",
+		"stick_grade": "上上",
+		"stick_verse": "廟埕車馬日紛紛，香客盈門利市春",
+		"stick_up_text": "商店售價 -20%",
+		"stick_down_text": "銀兩獲取 -15%"
+	}
+}

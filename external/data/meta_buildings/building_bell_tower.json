@@ -10,6 +10,8 @@
 			"start_passive"
 		],
 		"max_level": 2,
-		"is_cosmetic_only": false
+		"is_cosmetic_only": false,
+		"passive_reveal_floors_lv1": 2,
+		"passive_first_combat_deity_charge_lv2": 8
 	}
 }

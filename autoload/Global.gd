@@ -194,6 +194,9 @@ func _ready():
 	# make SerializableData make a mapping of global classes of its type to class.
 	# this must be done before everything else or you cannot load objects from file.
 	SerializableData.build_serializable_script_cache()
+	# Q3-E 籤詩「妙手回春」：戰後回復（feed 為 0 時無感；單點訂閱）
+	Signals.combat_ended.connect(_on_combat_ended_fortune_heal)
+
 	
 	### Load Profile and User Settings
 	FileLoader.load_profile()
@@ -252,6 +255,19 @@ var run_active_deity_id: String = "deity_tiger_god"
 var run_tool_break_bonus: int = 0
 var run_tool_deity_charge_bonus: int = 0
 
+# Q3-E 內容型 unlocks 的 run feed（QUESTIONS Q3-B/C/D 憲龍拍板 2026-06-11）。
+# 籤詩亭：開局抽籤一利一弊（數值在 external/data/fortune_sticks/）。
+var run_fortune_stick_id: String = ""
+var run_fortune_shop_price_mult: float = 1.0
+var run_fortune_money_gain_mult: float = 1.0
+var run_fortune_post_combat_heal: int = 0
+var run_fortune_incense_mult: float = 1.0
+# 鐘鼓樓（嚴格版：便利/資訊型，禁戰鬥數值）：首戰預充（單次/趟）。
+var run_bell_first_combat_charge: int = 0
+var _run_bell_charge_granted: bool = false
+# 正殿備援神位：降乩釋放後自動接掌的神明佇列（最小版）。
+var run_deity_queue: Array[String] = []
+
 func get_run_active_deity_id() -> String:
 	return run_active_deity_id if run_active_deity_id != "" else RitualLoadout.DEFAULT_DEITY_ID
 
@@ -273,6 +289,87 @@ func _apply_run_loadout(character_data: CharacterData, guardian_id: String, ritu
 	run_tool_deity_charge_bonus = tool.tool_bonus_deity_charge if tool != null else 0
 	# 出戰神明
 	run_active_deity_id = RitualLoadout.resolve_active_deity(guardian, tool)
+
+## Q3-E 修廟內容型解鎖（start_run 尾端呼叫；feed 歸零 → 按建築等級套用）。
+## 鐵律 1：所有數值在 JSON（fortune_sticks/ 與 building_bell_tower.json）。
+func _apply_meta_unlocks() -> void:
+	run_fortune_stick_id = ""
+	run_fortune_shop_price_mult = 1.0
+	run_fortune_money_gain_mult = 1.0
+	run_fortune_post_combat_heal = 0
+	run_fortune_incense_mult = 1.0
+	run_bell_first_combat_charge = 0
+	_run_bell_charge_granted = false
+	run_deity_queue = []
+
+	# 籤詩亭：開局抽籤（確定性 — 同種子同籤）
+	if RitualTemple.feature_open(profile_data, "run_modifier_fortune"):
+		var rng: RandomNumberGenerator = player_data.get_player_rng("rng_fortune_stick")
+		run_fortune_stick_id = FortuneSticks.draw_stick_id(rng)
+		var props: Dictionary = FortuneSticks.load_stick(run_fortune_stick_id)
+		if not props.is_empty():
+			run_fortune_shop_price_mult = float(props.get("shop_price_mult", 1.0))
+			run_fortune_money_gain_mult = float(props.get("money_gain_mult", 1.0))
+			run_fortune_post_combat_heal = int(props.get("post_combat_heal", 0))
+			run_fortune_incense_mult = float(props.get("incense_mult", 1.0))
+			var hp_delta: int = int(props.get("max_health_delta", 0))
+			if hp_delta != 0:
+				player_data.player_health_max = maxi(10, player_data.player_health_max + hp_delta)
+				player_data.player_health = mini(player_data.player_health, player_data.player_health_max)
+			if bool(props.get("reveal_all_map", false)):
+				_reveal_map_floors(9999)
+
+	# 鐘鼓樓：便利/資訊型被動（Lv1 前兩層現形；Lv2 首戰預充 — 單次/趟）
+	var bell_lv: int = profile_data.get_building_level("building_bell_tower") if profile_data != null else 0
+	if RitualTemple.dev_unlock_all() and bell_lv == 0:
+		bell_lv = 1
+	if bell_lv >= 1:
+		var bell: Dictionary = RitualTemple.load_building("building_bell_tower")
+		_reveal_map_floors(int(bell.get("passive_reveal_floors_lv1", 0)))
+		if bell_lv >= 2:
+			run_bell_first_combat_charge = int(bell.get("passive_first_combat_deity_charge_lv2", 0))
+
+	# 正殿：備援神位佇列（主神 + 親和鏈次位；feature 未開 → 只有主神）
+	var slots: int = 1
+	if RitualTemple.feature_open(profile_data, "deity_slot"):
+		slots += maxi(1, profile_data.get_building_level("building_main_hall") if profile_data != null else 1)
+	run_deity_queue = RitualLoadout.resolve_deity_queue(
+		RitualLoadout.load_guardian(run_guardian_id), RitualLoadout.load_tool(run_ritual_tool_id), slots)
+	if not run_deity_queue.is_empty():
+		run_active_deity_id = run_deity_queue[0]
+
+## Q3-E 籤詩戰後回復（妙手回春 +4 — 數值在 fortune JSON）。
+func _on_combat_ended_fortune_heal() -> void:
+	if run_fortune_post_combat_heal <= 0 or not is_run:
+		return
+	var player: Player = get_player()
+	if player != null and player.is_alive():
+		player_data.player_health = mini(player_data.player_health_max,
+			player_data.player_health + run_fortune_post_combat_heal)
+		Signals.player_health_changed.emit()
+
+## 揭示前 N 層節點（鐘鼓樓 Lv1 / 籤「霧鎖前路」全圖）。表現層資料：obfuscated 旗標。
+func _reveal_map_floors(floors: int) -> void:
+	if floors <= 0:
+		return
+	for location_data: LocationData in get_all_act_locations():
+		if location_data.location_floor <= floors and location_data.location_obfuscated:
+			location_data.location_obfuscated = false
+
+## 降乩釋放後推進備援神位（正殿）。回傳接掌的神 id（無備援回空字串）。
+func advance_deity_queue() -> String:
+	if run_deity_queue.size() <= 1:
+		return ""
+	run_deity_queue.remove_at(0)
+	run_active_deity_id = run_deity_queue[0]
+	return run_active_deity_id
+
+## 鐘鼓樓首戰預充（單次/趟）。Combat 於戰鬥開始時呼叫；回傳本次應預充量。
+func consume_bell_first_charge() -> int:
+	if _run_bell_charge_granted or run_bell_first_combat_charge <= 0:
+		return 0
+	_run_bell_charge_granted = true
+	return run_bell_first_combat_charge
 
 func start_run(character_object_id: String, run_seed: int, difficulty_level: int = 0, custom_run_modifier_object_ids: Array[String] = [], guardian_id: String = "", ritual_tool_id: String = "") -> void:
 	var character_data: CharacterData = get_character_data(character_object_id)
@@ -335,6 +432,9 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 	# run modifiers
 	perform_start_of_run_modifiers()
 	
+	# Q3-E：修廟內容型解鎖套用（籤詩亭抽籤 / 鐘鼓樓被動 / 正殿備援神位）
+	_apply_meta_unlocks()
+	
 	# save immediately at start of run
 	FileLoader.autosave()
 	
@@ -376,12 +476,12 @@ func end_run(run_end_state: int = RUN_ENDS.QUIT) -> void:
 		RUN_ENDS.LOSS:
 			FileLoader.delete_save()
 			profile_data.lose_run(player_data.player_character_object_id)
-			profile_data.add_incense(roundi(INCENSE_ON_LOSS * incense_route_multiplier(get_all_act_locations())))	# Q3-D 路線加權
+			profile_data.add_incense(roundi(INCENSE_ON_LOSS * incense_route_multiplier(get_all_act_locations()) * run_fortune_incense_mult))	# Q3-D 路線加權 ×Q3-E 籤詩
 			FileLoader.save_profile()
 		RUN_ENDS.VICTORY:
 			FileLoader.delete_save()
 			profile_data.win_run(player_data.player_character_object_id)
-			profile_data.add_incense(roundi(INCENSE_ON_VICTORY * incense_route_multiplier(get_all_act_locations())))	# Q3-D 路線加權
+			profile_data.add_incense(roundi(INCENSE_ON_VICTORY * incense_route_multiplier(get_all_act_locations()) * run_fortune_incense_mult))	# Q3-D 路線加權 ×Q3-E 籤詩
 			FileLoader.save_profile()
 	
 	is_run = false

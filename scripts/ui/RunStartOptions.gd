@@ -38,6 +38,8 @@ func populate_run_start_options() -> void:
 	_resolving = false
 	_relayout_offering_strips()	# Q2-B：容器轉橫排 + 依視口置中（四支籤詩並立）
 
+	_update_fortune_banner()	# Q3-E：籤詩亭開局籤顯示（無籤自動隱藏）
+
 	# get options based on type
 	var upside_option_ids: Array[String] = _option_type_to_option_ids[RunStartOptionData.RUN_START_OPTION_TYPES.PARTIAL_UPSIDE]
 	var complete_option_ids: Array[String] = _option_type_to_option_ids[RunStartOptionData.RUN_START_OPTION_TYPES.COMPLETE]
@@ -205,6 +207,37 @@ func _apply_offering_chrome() -> void:
 		presenter.position = Vector2(936, 246)
 		presenter.size = Vector2(252, 432)
 		add_child(presenter)	# 置頂層：站在供桌前（右側，不擋中央籤詩卡）
+
+## Q3-E 籤詩帶：籤詩亭解鎖後，開局籤（一利一弊）顯示在副標下方。冪等；無籤隱藏。
+func _update_fortune_banner() -> void:
+	var banner: Label = get_node_or_null("FortuneStickBanner") as Label
+	if Global.run_fortune_stick_id == "":
+		if banner != null:
+			banner.visible = false
+		return
+	if banner == null:
+		banner = Label.new()
+		banner.name = "FortuneStickBanner"
+		banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		banner.add_theme_font_size_override("font_size", 17)
+		banner.add_theme_color_override("font_color", Color(1.0, 0.9, 0.62))
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.38, 0.09, 0.07, 0.92)
+		sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42))
+		sb.set_border_width_all(2)
+		sb.set_corner_radius_all(9)
+		sb.content_margin_left = 16
+		sb.content_margin_right = 16
+		sb.content_margin_top = 6
+		sb.content_margin_bottom = 6
+		banner.add_theme_stylebox_override("normal", sb)
+		add_child(banner)
+	banner.text = "籤詩亭 ┃ " + FortuneSticks.stick_summary(FortuneSticks.load_stick(Global.run_fortune_stick_id))
+	banner.visible = true
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	banner.size = Vector2.ZERO
+	banner.position = Vector2(safe.position.x + safe.size.x * 0.5 - 280.0, safe.position.y + 152.0)
 
 ## Q2-B 容器重排：VBox 轉橫排（BoxContainer.vertical=false）+ 依視口安全區置中。
 ## 四支籤詩並立 — 1200×700 與 4:3 皆以 stage 寬重算（地圖同款 runtime 置中思路）。

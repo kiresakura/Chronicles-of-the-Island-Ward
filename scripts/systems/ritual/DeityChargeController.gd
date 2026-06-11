@@ -33,6 +33,13 @@ func setup(active_deity: DeityData) -> void:
 	_charge = deity.deity_starting_charge if deity != null else 0
 	_emit()
 
+## Q3-E 鐘鼓樓首戰預充：外部直接灌充能（走同一 clamp 管線 + UI 通知）。
+func grant_charge(amount: int) -> void:
+	if deity == null or amount <= 0:
+		return
+	_charge = DeityInvocationSystem.add_charge(_charge, amount, get_max())
+	_emit()
+
 func get_charge() -> int:
 	return _charge
 
