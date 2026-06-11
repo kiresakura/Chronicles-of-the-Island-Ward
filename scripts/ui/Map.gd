@@ -7,6 +7,23 @@ const ROUTE_STATE_REACHABLE := "reachable"
 const ROUTE_STATE_VISITED := "visited"
 const MAP_NODE_ANCHOR := Vector2(44, 44)
 
+# Q2-A 遶境地圖二輪 — 蜿蜒重映射（DELEGATION §5 Q2「節點嵌入島嶼路徑」）。
+# 生成器的 location_position 是格陣（存檔資料，動它要遷移存檔且違反 fork-first）；
+# 這裡只做「表現層」重映射：格陣 → 蜿蜒進香路。資料不動，存檔/測試/生成全不受影響。
+const SERPENT_AMP := 84.0			# 蜿蜒振幅（px；整排同移，不改鄰距）
+const SERPENT_WAVELEN := 430.0		# 蜿蜒波長（px，沿 y 軸）
+const JITTER_X := 13.0				# 節點手繪感抖動（由 location_id 決定，確定性）
+const JITTER_Y := 9.0
+const TRAIL_GRID_MIN_X := 200.0		# 生成器格陣 x 範圍（MIDDLE=400 ± 2×100）
+const TRAIL_GRID_MAX_X := 600.0
+# 逐欄縱向錯位：打散「水平成排」的格陣感。同欄整欄同移 → 同欄上下鄰距不變（不互撞）；
+# 橫向鄰欄高低參差 → 視覺成「五條山徑並行交織」而非表格。
+const COL_STAGGER: Array[float] = [0.0, -18.0, 12.0, -12.0, 20.0]
+
+const PAPER_SCROLL_PATH := "res://assets/generated/map_v7/talisman_scroll_v1.png"
+const BOSS_AURA_PATH := "res://assets/generated/map_v7/boss_sha_aura_v1.png"
+const BOSS_GATE_PATH := "res://assets/generated/map_v7/boss_gate_v1.png"
+
 @onready var scroll_container = $ScrollContainer
 @onready var location_container = $ScrollContainer/LocationContainer
 @onready var back_button: Button = $BackButton
@@ -48,6 +65,9 @@ func _apply_pilgrimage_backdrop() -> void:
 	var bg1: Node = get_node_or_null("Background")
 	if bg1 is ColorRect:
 		(bg1 as ColorRect).color = Color(0.05, 0.04, 0.06, 0.30)	# 薄暗角，維持節點/連線對比
+		# Q2-A z 層修正：暗角壓到 -9，否則蓋住 LocationContainer 內負 z 的符紙/路線層
+		#（z_index 跨手足比 tree order 優先 — 路線一直偏暗的根因）
+		(bg1 as ColorRect).z_index = -9
 	const MAP_BG := "res://assets/generated/pixellab/map_bg_v6.png"
 	if get_node_or_null("PilgrimageBackdrop") == null and ResourceLoader.exists(MAP_BG):
 		var bg := TextureRect.new()
@@ -58,6 +78,7 @@ func _apply_pilgrimage_backdrop() -> void:
 		bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		bg.add_to_group("fullbleed_mask")	# UIQA P2-5：寬螢幕側帶也覆蓋（COVERED 自裁切）
+		bg.z_index = -10	# Q2-A：最底（< 暗角 -9 < 符紙 -5 < 山門 -4 < 路線 -3 < 節點 0）
 		add_child(bg)
 		move_child(bg, 0)	# 置最底：在暗角/節點之下
 
@@ -72,20 +93,22 @@ func populate_locations(locations: Array[LocationData] = Global.get_all_act_loca
 	var reachable_map_locations: Array[MapLocation] = []
 	var location_by_id: Dictionary = {}
 	var boss_map_location: MapLocation = null
-	
+
 	for location_data in locations:
 		if location_data.location_type == LocationData.LOCATION_TYPES.STARTING:
 			continue	# starting area not displayed
-		
+
 		var map_location: MapLocation = Scenes.MAP_LOCATION.instantiate()
 		location_container.add_child(map_location)
-		
+
 		var is_reachable: bool = can_travel and next_locations.has(location_data)
 		var is_current: bool = location_data == Global.get_player_location_data()
 		map_location.init(location_data, is_reachable, is_current, can_travel)
+		# 表現層重映射：init 內以格陣資料定位，這裡覆寫為蜿蜒進香路顯示位（資料不動）
+		map_location.position = display_position(location_data, _trail_x_shift())
 		map_location.map_location_button_up.connect(_on_map_location_button_up)
-		
-		max_y = max(max_y, location_data.location_position.y)
+
+		max_y = max(max_y, map_location.position.y)
 		location_by_id[location_data.location_id] = map_location
 		
 		if is_reachable:
@@ -102,8 +125,10 @@ func populate_locations(locations: Array[LocationData] = Global.get_all_act_loca
 	location_container.custom_minimum_size.y = max_y + MAP_Y_MARGIN
 	location_container.size.y = max_y + MAP_Y_MARGIN
 	
-	# 地圖不是 icon 清單，而是路線敘事：把所有連線狀態、引路感、Boss 壓迫一起補上。
+	# 地圖不是 icon 清單，而是路線敘事：符紙路引、連線狀態、引路感、Boss 壓迫一起補上。
+	_rebuild_paper_scroll(locations)
 	_rebuild_map_story_layers(locations, location_by_id, current_map_location, reachable_map_locations, next_locations, boss_map_location)
+	_dress_boss_node(boss_map_location)
 
 	# wait a frame to ensure container is properly resized
 	await Global.get_tree().process_frame
@@ -116,10 +141,22 @@ func populate_locations(locations: Array[LocationData] = Global.get_all_act_loca
 	
 
 func clear_locations() -> void:
+	# Q2-A 修既有潛伏 bug：原本連故事層一起 free，但 _ensure 的 null 檢查在
+	# 「queue_free pending、尚未真正釋放」狀態下不重建 → 路線/Boss 層整層死在當幀
+	# （地圖連線「有時消失」的隨機根因 — 取決於 show_map 呼叫節奏）。
+	# 故事層持久化：本體保留，內容物由 _rebuild_map_story_layers 自清。
 	for child in location_container.get_children():
+		if child == _boss_omen_layer or child == _route_line_layer or child == _route_marker_layer:
+			continue
 		child.queue_free()
 
 func _ensure_map_story_layers() -> void:
+	if _boss_omen_layer != null and not is_instance_valid(_boss_omen_layer):
+		_boss_omen_layer = null
+	if _route_line_layer != null and not is_instance_valid(_route_line_layer):
+		_route_line_layer = null
+	if _route_marker_layer != null and not is_instance_valid(_route_marker_layer):
+		_route_marker_layer = null
 	if _boss_omen_layer == null:
 		_boss_omen_layer = Control.new()
 		_boss_omen_layer.name = "BossOmenLayer"
@@ -141,6 +178,136 @@ func _ensure_map_story_layers() -> void:
 
 static func _map_anchor_from_position(position: Vector2) -> Vector2:
 	return position + MAP_NODE_ANCHOR
+
+# ---------- Q2-A 蜿蜒重映射（表現層，資料不動）----------
+
+## 格陣 → 蜿蜒進香路。確定性：同一 location 永遠映到同一點（jitter 由 id hash 決定）。
+static func display_position(location_data: LocationData, x_shift: float) -> Vector2:
+	var grid: Vector2 = location_data.location_position
+	var serpent: float = SERPENT_AMP * sin(grid.y * TAU / SERPENT_WAVELEN + 0.7)
+	var h: int = location_data.location_id.hash()
+	var jx: float = float(h % 1000) / 1000.0 * 2.0 - 1.0			# -1..1
+	var jy: float = float((h / 1000) % 1000) / 1000.0 * 2.0 - 1.0
+	var col: int = clampi(int(roundf((grid.x - TRAIL_GRID_MIN_X) / 100.0)), 0, COL_STAGGER.size() - 1)
+	var stagger: float = COL_STAGGER[col]
+	# Boss 走中軸不抖不錯位：壓迫感來自端點的穩，蜿蜒留給途中
+	if location_data.location_type == LocationData.LOCATION_TYPES.BOSS:
+		jx = 0.0
+		jy = 0.0
+		stagger = 0.0
+	return Vector2(grid.x + serpent + jx * JITTER_X + x_shift, grid.y + jy * JITTER_Y + stagger)
+
+## 蜿蜒帶置中：格陣帶（200..600 + 節點 88）置中到實際視口寬。
+func _trail_x_shift() -> float:
+	var view_w: float = get_viewport_rect().size.x
+	var resp: Node = get_node_or_null("/root/Responsive")
+	if resp != null:
+		view_w = resp.screen_rect.size.x
+	var band_center: float = (TRAIL_GRID_MIN_X + TRAIL_GRID_MAX_X + MAP_NODE_ANCHOR.x * 2.0) * 0.5
+	return view_w * 0.5 - band_center
+
+## 半透明符紙路卷：墊在節點/路線之下、島嶼背景之上 —「遶境路引是一張開出來的符紙」。
+## 有正式材質用材質；否則程序化符紙（暖紙底 + 硃砂內框 + 印章角）— 設計性 matting，非佔位。
+func _rebuild_paper_scroll(locations: Array[LocationData]) -> void:
+	var old: Node = location_container.get_node_or_null("TalismanScroll")
+	if old != null:
+		old.queue_free()
+	var min_y: float = INF
+	var max_y: float = -INF
+	for location_data: LocationData in locations:
+		if location_data.location_type == LocationData.LOCATION_TYPES.STARTING:
+			continue
+		min_y = minf(min_y, location_data.location_position.y)
+		max_y = maxf(max_y, location_data.location_position.y)
+	if min_y == INF:
+		return
+	var shift: float = _trail_x_shift()
+	var band_left: float = TRAIL_GRID_MIN_X + shift - SERPENT_AMP - 76.0
+	var band_right: float = TRAIL_GRID_MAX_X + MAP_NODE_ANCHOR.x * 2.0 + shift + SERPENT_AMP + 76.0
+	var band_top: float = maxf(0.0, min_y - 132.0)
+	var band_size := Vector2(band_right - band_left, max_y + 124.0 - band_top)
+
+	var scroll: Control
+	if ResourceLoader.exists(PAPER_SCROLL_PATH):
+		var tex_rect := TextureRect.new()
+		tex_rect.texture = load(PAPER_SCROLL_PATH)
+		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex_rect.stretch_mode = TextureRect.STRETCH_SCALE
+		tex_rect.modulate = Color(1, 1, 1, 0.86)
+		scroll = tex_rect
+	else:
+		scroll = _make_procedural_talisman_panel(band_size)
+	scroll.name = "TalismanScroll"
+	scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	scroll.position = Vector2(band_left, band_top)
+	scroll.size = band_size
+	scroll.z_index = -5	# BossOmen(-4)/路線(-3)/節點(0) 之下
+	location_container.add_child(scroll)
+
+## 程序化符紙：半透明暖紙 + 硃砂雙框 + 四角印章方。零素材依賴的設計面板。
+static func _make_procedural_talisman_panel(panel_size: Vector2) -> Control:
+	var panel := Panel.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.91, 0.82, 0.60, 0.30)			# 暖符紙，透島嶼
+	sb.border_color = Color(0.62, 0.13, 0.09, 0.62)		# 硃砂框
+	sb.set_border_width_all(3)
+	sb.corner_radius_top_left = 10
+	sb.corner_radius_top_right = 10
+	sb.corner_radius_bottom_left = 10
+	sb.corner_radius_bottom_right = 10
+	sb.anti_aliasing = true
+	panel.add_theme_stylebox_override("panel", sb)
+	# 內框（細線，雙框出「符」的版式感）
+	var inner := Panel.new()
+	inner.name = "InnerFrame"
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var sbi := StyleBoxFlat.new()
+	sbi.bg_color = Color.TRANSPARENT
+	sbi.border_color = Color(0.62, 0.13, 0.09, 0.34)
+	sbi.set_border_width_all(1)
+	sbi.anti_aliasing = true
+	inner.add_theme_stylebox_override("panel", sbi)
+	inner.position = Vector2(9, 9)
+	inner.size = panel_size - Vector2(18, 18)
+	panel.add_child(inner)
+	# 四角硃砂印章方（45° 菱形）
+	for corner: int in 4:
+		var seal := ColorRect.new()
+		seal.name = "CornerSeal%d" % corner
+		seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		seal.color = Color(0.62, 0.13, 0.09, 0.55)
+		seal.size = Vector2(16, 16)
+		seal.pivot_offset = seal.size * 0.5
+		seal.rotation_degrees = 45.0
+		var sx: float = 22.0 if corner % 2 == 0 else panel_size.x - 38.0
+		var sy: float = 24.0 if corner < 2 else panel_size.y - 40.0
+		seal.position = Vector2(sx, sy)
+		panel.add_child(seal)
+	return panel
+
+## Boss 節點壓迫感：煞氣光暈（緩旋脈動）+ 不動按鈕幾何（觸控/連線錨點不受影響）。
+func _dress_boss_node(boss_map_location: MapLocation) -> void:
+	if boss_map_location == null or _boss_omen_layer == null:
+		return
+	if not ResourceLoader.exists(BOSS_AURA_PATH):
+		return
+	var center: Vector2 = boss_map_location.position + MAP_NODE_ANCHOR
+	var aura := TextureRect.new()
+	aura.name = "BossShaAura"
+	aura.texture = load(BOSS_AURA_PATH)
+	aura.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	aura.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	aura.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	aura.size = Vector2(196, 196)
+	aura.pivot_offset = aura.size * 0.5
+	aura.position = center - aura.size * 0.5
+	_boss_omen_layer.add_child(aura)
+	var tw := aura.create_tween().set_loops()
+	tw.tween_property(aura, "rotation_degrees", 360.0, 14.0).from(0.0)
+	var pulse := aura.create_tween().set_loops()
+	pulse.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	pulse.tween_property(aura, "modulate", Color(1.0, 0.86, 0.86, 0.92), 1.1)
+	pulse.tween_property(aura, "modulate", Color(1, 1, 1, 0.66), 1.1)
 
 static func _make_path_midpoint(from_position: Vector2, to_position: Vector2) -> Vector2:
 	var midpoint := from_position.lerp(to_position, 0.5)
@@ -190,14 +357,15 @@ static func make_map_path_line(from_position: Vector2, to_position: Vector2, rou
 			])
 			line.gradient = ember_gradient
 		_:
-			line.width = 4.0
-			line.default_color = Color(0.18, 0.14, 0.14, 0.42)
+			# Q2-A：z 層修正後 dim 線不再被暗角壓暗 → 自身降透明度，未知路保持「隱約」
+			line.width = 3.5
+			line.default_color = Color(0.18, 0.14, 0.14, 0.30)
 			var dim_gradient := Gradient.new()
 			dim_gradient.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
 			dim_gradient.colors = PackedColorArray([
-				Color(0.12, 0.10, 0.10, 0.20),
-				Color(0.24, 0.18, 0.18, 0.34),
-				Color(0.14, 0.10, 0.10, 0.18),
+				Color(0.12, 0.10, 0.10, 0.13),
+				Color(0.24, 0.18, 0.18, 0.24),
+				Color(0.14, 0.10, 0.10, 0.12),
 			])
 			line.gradient = dim_gradient
 	return line
@@ -206,6 +374,23 @@ static func make_reachable_flow_line(from_position: Vector2, to_position: Vector
 	var line := make_map_path_line(from_position, to_position, ROUTE_STATE_REACHABLE)
 	line.name = "ReachableFlowLine"
 	return line
+
+## 路基線：與狀態線同路徑、更寬、暗土色，墊底（z -2 < 狀態線 -1）。
+static func make_road_bed_line(from_position: Vector2, to_position: Vector2) -> Line2D:
+	var start := _map_anchor_from_position(from_position)
+	var finish := _map_anchor_from_position(to_position)
+	var bed := Line2D.new()
+	bed.name = "RoadBedLine"
+	bed.points = PackedVector2Array([start, _make_path_midpoint(start, finish), finish])
+	bed.joint_mode = Line2D.LINE_JOINT_ROUND
+	bed.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	bed.end_cap_mode = Line2D.LINE_CAP_ROUND
+	bed.antialiased = true
+	bed.width = 16.0
+	bed.default_color = Color(0.20, 0.13, 0.09, 0.50)
+	bed.z_index = -2
+	bed.set_meta("route_story", "road_bed")
+	return bed
 
 static func make_boss_omen_marker(boss_center: Vector2) -> Control:
 	var holder := Control.new()
@@ -216,30 +401,59 @@ static func make_boss_omen_marker(boss_center: Vector2) -> Control:
 	holder.set_meta("route_story", "boss_omen")
 	holder.set_meta("omen_subject", "tiger_lord_gate")
 
-	var shadow := ColorRect.new()
-	shadow.name = "BossMountainShadow"
-	shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shadow.position = Vector2(0.0, 12.0)
-	shadow.size = Vector2(420.0, 220.0)
-	shadow.color = Color(0.09, 0.04, 0.04, 0.34)
-	holder.add_child(shadow)
+	# 煞氣壓頂：Boss 區上方紅黑漸層帶（無素材依賴，程序化漸層）
+	var sha_band := TextureRect.new()
+	sha_band.name = "BossShaBand"
+	sha_band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var grad := Gradient.new()
+	grad.offsets = PackedFloat32Array([0.0, 1.0])
+	grad.colors = PackedColorArray([Color(0.22, 0.02, 0.03, 0.46), Color(0.22, 0.02, 0.03, 0.0)])
+	var grad_tex := GradientTexture2D.new()
+	grad_tex.gradient = grad
+	grad_tex.fill_from = Vector2(0.5, 0.0)
+	grad_tex.fill_to = Vector2(0.5, 1.0)
+	sha_band.texture = grad_tex
+	sha_band.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sha_band.stretch_mode = TextureRect.STRETCH_SCALE
+	sha_band.position = Vector2(-320.0, -36.0)
+	sha_band.size = Vector2(1060.0, 250.0)
+	holder.add_child(sha_band)
 
-	for x_offset in [92.0, 302.0]:
-		var pillar := ColorRect.new()
-		pillar.name = "BossGatePillar"
-		pillar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		pillar.position = Vector2(x_offset, 46.0)
-		pillar.size = Vector2(24.0, 110.0)
-		pillar.color = Color(0.16, 0.06, 0.06, 0.52)
-		holder.add_child(pillar)
-
-	var lintel := ColorRect.new()
-	lintel.name = "BossGateLintel"
-	lintel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	lintel.position = Vector2(70.0, 34.0)
-	lintel.size = Vector2(280.0, 22.0)
-	lintel.color = Color(0.26, 0.08, 0.06, 0.62)
-	holder.add_child(lintel)
+	if ResourceLoader.exists(BOSS_GATE_PATH):
+		# 正式素材：紅黑山門（虎爺關牌樓），Boss 節點背後拔地而起
+		var gate := TextureRect.new()
+		gate.name = "BossGateArt"
+		gate.texture = load(BOSS_GATE_PATH)
+		gate.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		gate.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		gate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		gate.position = Vector2(60.0, 8.0)
+		gate.size = Vector2(300.0, 188.0)
+		holder.add_child(gate)
+	else:
+		# 佔位（明顯醜，等素材）：色塊山門
+		var shadow := ColorRect.new()
+		shadow.name = "BossMountainShadow"
+		shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		shadow.position = Vector2(0.0, 12.0)
+		shadow.size = Vector2(420.0, 220.0)
+		shadow.color = Color(0.09, 0.04, 0.04, 0.34)
+		holder.add_child(shadow)
+		for x_offset in [92.0, 302.0]:
+			var pillar := ColorRect.new()
+			pillar.name = "BossGatePillar"
+			pillar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			pillar.position = Vector2(x_offset, 46.0)
+			pillar.size = Vector2(24.0, 110.0)
+			pillar.color = Color(0.16, 0.06, 0.06, 0.52)
+			holder.add_child(pillar)
+		var lintel := ColorRect.new()
+		lintel.name = "BossGateLintel"
+		lintel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		lintel.position = Vector2(70.0, 34.0)
+		lintel.size = Vector2(280.0, 22.0)
+		lintel.color = Color(0.26, 0.08, 0.06, 0.62)
+		holder.add_child(lintel)
 
 	var omen_label := Label.new()
 	omen_label.name = "BossOmenLabel"
@@ -281,6 +495,11 @@ func _rebuild_map_story_layers(locations: Array[LocationData], location_by_id: D
 			if to_map_location == null:
 				continue
 			var route_state := _classify_route_state(from_location, to_map_location.location_data, reachable_ids)
+			# 路基（土路底）墊在彩色狀態線下：路線讀成「進香路」而非線框；未知路基更淡
+			var road_bed := make_road_bed_line(from_map_location.position, to_map_location.position)
+			if route_state == ROUTE_STATE_DIM:
+				road_bed.default_color.a = 0.26
+			_route_line_layer.add_child(road_bed)
 			var line := make_map_path_line(from_map_location.position, to_map_location.position, route_state)
 			_route_line_layer.add_child(line)
 			if route_state == ROUTE_STATE_REACHABLE and current_map_location != null:

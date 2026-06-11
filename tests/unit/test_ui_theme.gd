@@ -33,8 +33,10 @@ func test_ui_theme_mobile_safe_falls_back_to_original_path() -> void:
 		"找不到 mobile-safe 對應圖時，應回原始路徑")
 
 func test_ui_theme_location_short_label_is_compact() -> void:
-	assert_eq(UI_THEME.get_location_short_label(LocationData.LOCATION_TYPES.MINIBOSS), "菁",
-		"地圖節點短標籤應符合 mobile-first 小尺寸需求")
+	assert_eq(UI_THEME.get_location_short_label(LocationData.LOCATION_TYPES.MINIBOSS), "惡",
+		"地圖節點短標籤走民俗語彙（Q2-A：惡煞據點）")
+	assert_eq(UI_THEME.get_location_short_label(LocationData.LOCATION_TYPES.BOSS), "醮",
+		"Boss 短標應為鎮煞大醮的「醮」")
 
 ## 2026-05-19 新增的 7 個語意 token 必須可讀，防止下游引用時打錯 token 名
 func test_ui_theme_new_semantic_tokens_resolve() -> void:

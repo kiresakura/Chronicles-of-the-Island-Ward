@@ -55,7 +55,7 @@ const MAP_NODE_BY_LOCATION_TYPE: Dictionary = {
 	LocationData.LOCATION_TYPES.MINIBOSS: "res://assets/generated/icons/map_nodes_v2/node_elite_anime.svg",
 	LocationData.LOCATION_TYPES.BOSS: "res://assets/generated/icons/map_nodes_v2/node_boss_anime.svg",
 	LocationData.LOCATION_TYPES.EVENT: "res://assets/generated/icons/map_nodes_v2/node_event_anime.svg",
-	LocationData.LOCATION_TYPES.TREASURE: "res://assets/generated/icons/map_nodes_v2/node_event_anime.svg",
+	LocationData.LOCATION_TYPES.TREASURE: "res://assets/generated/icons/map_nodes_v2/node_treasure_anime.svg",	# Q2-A：寶匣專屬（原誤共用 event 籤筒）
 	LocationData.LOCATION_TYPES.SHOP: "res://assets/generated/icons/map_nodes_v2/node_shop_anime.svg",
 	LocationData.LOCATION_TYPES.REST_SITE: "res://assets/generated/icons/map_nodes_v2/node_rest_anime.svg",
 }
@@ -79,14 +79,27 @@ const PANEL_MATERIAL_RULE_BY_KIND: Dictionary = {
 	"system_panel": "stylebox_flat",
 }
 
+## Q2-A：節點短標走民俗語彙（遇煞/惡煞據點/鎮煞大醮/民俗問事/寶匣/夜市香鋪/入廟安神），
+## 與遶境敘事同一套符號系統（基準 Q-4），不用通用 roguelike 字。
 const LOCATION_LABELS: Dictionary = {
-	LocationData.LOCATION_TYPES.COMBAT: "戰",
-	LocationData.LOCATION_TYPES.MINIBOSS: "菁",
-	LocationData.LOCATION_TYPES.BOSS: "王",
-	LocationData.LOCATION_TYPES.EVENT: "事",
+	LocationData.LOCATION_TYPES.COMBAT: "煞",
+	LocationData.LOCATION_TYPES.MINIBOSS: "惡",
+	LocationData.LOCATION_TYPES.BOSS: "醮",
+	LocationData.LOCATION_TYPES.EVENT: "問",
 	LocationData.LOCATION_TYPES.TREASURE: "寶",
-	LocationData.LOCATION_TYPES.SHOP: "商",
-	LocationData.LOCATION_TYPES.REST_SITE: "休",
+	LocationData.LOCATION_TYPES.SHOP: "市",
+	LocationData.LOCATION_TYPES.REST_SITE: "廟",
+}
+
+## Q2-A：節點型別色環 — 地圖辨型別的第二符號軸（色 + 字 + 圖三重編碼，遠看靠色近看靠圖）。
+const MAP_NODE_RING_BY_TYPE: Dictionary = {
+	LocationData.LOCATION_TYPES.COMBAT: Color(0.85, 0.29, 0.17, 0.95),		# festival_red
+	LocationData.LOCATION_TYPES.MINIBOSS: Color(0.58, 0.10, 0.24, 0.95),	# 暗血紅
+	LocationData.LOCATION_TYPES.BOSS: Color(0.30, 0.04, 0.07, 1.0),		# 煞黑紅
+	LocationData.LOCATION_TYPES.EVENT: Color(0.36, 0.70, 0.82, 0.95),		# 問事青
+	LocationData.LOCATION_TYPES.TREASURE: Color(0.93, 0.76, 0.30, 0.95),	# incense_gold
+	LocationData.LOCATION_TYPES.SHOP: Color(0.95, 0.55, 0.18, 0.95),		# 燈籠橙
+	LocationData.LOCATION_TYPES.REST_SITE: Color(0.45, 0.66, 0.34, 0.95),	# 安神綠
 }
 
 const CARD_TYPE_ACCENT_TOKEN: Dictionary = {
@@ -379,6 +392,7 @@ static func style_map_node(node: TextureButton, location_type: int, label: Label
 	var node_size := Vector2(_get_touch_target_value("minimum", 88), _get_touch_target_value("minimum", 88))
 	node.custom_minimum_size = node_size
 	node.size = node_size
+	_ensure_map_node_type_ring(node, location_type, node_size)
 	if state_glow != null:
 		state_glow.visible = false
 		state_glow.color = Color.TRANSPARENT
@@ -404,6 +418,29 @@ static func style_map_node(node: TextureButton, location_type: int, label: Label
 	if label != null:
 		label.add_theme_color_override("font_color", font_color)
 		label.add_theme_font_size_override("font_size", get_typography_size("micro", 16))
+
+## Q2-A：節點型別色環（程序化 StyleBoxFlat 圓環，零素材依賴；冪等 — 重複 style 只更新色）。
+static func _ensure_map_node_type_ring(node: TextureButton, location_type: int, node_size: Vector2) -> void:
+	var ring: Panel = node.get_node_or_null("TypeRing") as Panel
+	if ring == null:
+		ring = Panel.new()
+		ring.name = "TypeRing"
+		ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		node.add_child(ring)
+	var pad: float = 3.0
+	ring.position = Vector2(-pad, -pad)
+	ring.size = node_size + Vector2(pad, pad) * 2.0
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color.TRANSPARENT
+	sb.border_color = MAP_NODE_RING_BY_TYPE.get(location_type, Color(0.6, 0.6, 0.6, 0.9))
+	sb.set_border_width_all(4)
+	sb.anti_aliasing = true
+	var radius: int = int(ring.size.x * 0.5)
+	sb.corner_radius_top_left = radius
+	sb.corner_radius_top_right = radius
+	sb.corner_radius_bottom_left = radius
+	sb.corner_radius_bottom_right = radius
+	ring.add_theme_stylebox_override("panel", sb)
 
 static func style_overlay_backdrop(scrim: ColorRect, panel: ColorRect = null) -> void:
 	scrim.color = Color(0.07, 0.04, 0.04, 0.74)
