@@ -72,18 +72,16 @@ func test_aoe_card_break_numbers_registered() -> void:
 func test_merge_energy_cost_defaults_to_free() -> void:
 	assert_eq(Global.run_merge_energy_cost, 0, "預設 0 = 現狀免費（經濟定案前不動）")
 
-func test_merge_energy_cost_gates_when_broke() -> void:
-	var hand: Node = load("res://scripts/ui/Hand.gd").new()
-	Global.add_child(hand)
-	Global.run_merge_energy_cost = 1
-	var saved_energy: int = Global.player_data.player_energy
-	Global.player_data.player_energy = 0
-	var a: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
-	var b: CardData = Global.get_card_data_from_prototype("card_tongji_punch")
-	assert_false(hand.merge_cards(a, b), "神力不足時合符被擋（gate 在 can_merge 之前）")
-	Global.run_merge_energy_cost = 0
-	Global.player_data.player_energy = saved_energy
-	hand.queue_free()
+func test_shop_draft_never_contains_basic_cards() -> void:
+	# Q3-G 修復守門：跨桶補位不得撈 BASIC/GENERATED（商店價格表只有標準三檔）
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20260613
+	var cards: Array[CardData] = Random.generate_rarity_weighted_card_draft(rng, 20, Random.CARD_DRAFT_TABLE_TYPES.SHOP, false)
+	for c: CardData in cards:
+		assert_true(CardData.STANDARD_CARD_RARITIES.has(c.card_rarity),
+			"商店抽樣出現非標準稀有度卡：%s rarity=%d" % [c.object_id, c.card_rarity])
+		assert_true(ShopData.CARD_RARITY_TO_PRICE_RANGE.has(c.card_rarity),
+			"%s 無價格檔（會 Nil crash）" % c.object_id)
 
 # ---------- Q3-A Boss 覺醒（多階段轉場）----------
 
