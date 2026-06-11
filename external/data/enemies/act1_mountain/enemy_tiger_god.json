@@ -153,6 +153,12 @@
 			"fire"
 		],
 		"enemy_break_effect": "break_invoke_window",
-		"enemy_broken_turns": 2
+		"enemy_broken_turns": 2,
+		"enemy_awaken_threshold": 0.5,
+		"enemy_awaken_status_effects": {
+			"status_effect_damage_increase": 2
+		},
+		"enemy_awaken_restore_ward": true,
+		"enemy_awaken_title": "百年虎爺・煞變"
 	}
 }
