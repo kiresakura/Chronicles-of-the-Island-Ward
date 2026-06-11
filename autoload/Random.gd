@@ -191,7 +191,13 @@ func generate_rarity_weighted_card_draft(rng: RandomNumberGenerator, number_of_c
 
 ## COTIW：卡池稀有度不足時的降級補位 —— 從任一稀有度桶找出尚未抽到的卡 id（找不到回 ""）。
 func _draft_fallback_from_any_bucket(rng: RandomNumberGenerator, rarity_cache: Dictionary, already_drafted: Array[String]) -> String:
-	var rarities: Array = rarity_cache.keys()
+	# Q3-G 修潛伏 bug：補位只允許標準稀有度（COMMON/UNCOMMON/RARE）。
+	# 原版「任意桶」會撈到 BASIC/GENERATED — BASIC 進商店無價格檔（Nil crash）、
+	# 起手基礎卡也不該出現在任何 draft/商店。
+	var rarities: Array = []
+	for r: Variant in rarity_cache.keys():
+		if CardData.STANDARD_CARD_RARITIES.has(int(r)):
+			rarities.append(r)
 	rarities.sort()
 	for rarity: Variant in rarities:
 		var bucket: Array = (rarity_cache[rarity] as Array).duplicate()

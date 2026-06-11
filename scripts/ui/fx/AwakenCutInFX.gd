@@ -88,7 +88,13 @@ static func play(host: Node, enemy_data: EnemyData) -> void:
 	var tex: Texture2D = null
 	var tex_path: String = str(enemy_data.enemy_texture_path)
 	if tex_path != "":
-		tex = load(tex_path) if tex_path.begins_with("res://") else FileLoader.load_texture(tex_path)
+		# bundled 資產優先走正規 import 資源（raw image load 會噴 export warning — log 契約紅線）
+		if tex_path.begins_with("res://"):
+			tex = load(tex_path)
+		elif ResourceLoader.exists("res://" + tex_path):
+			tex = load("res://" + tex_path)
+		else:
+			tex = FileLoader.load_texture(tex_path)
 	var portrait := TextureRect.new()
 	if tex != null:
 		portrait.texture = tex

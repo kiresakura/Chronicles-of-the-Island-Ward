@@ -104,7 +104,9 @@ func add_shop_card_from_id(card_object_id: String, price: int = -1) -> void:
 func add_shop_card(card_data: CardData, price: int = -1):
 	# adds a card and randomizes the price, if no price is given
 	if card_data != null:
-		var card_price_range_values: Array = CARD_RARITY_TO_PRICE_RANGE.get(card_data.card_rarity)
+		# Q3-G 防衛：表外稀有度（BASIC/GENERATED 不該進商店，但若漏網）退 COMMON 價，不炸
+		var card_price_range_values: Array = CARD_RARITY_TO_PRICE_RANGE.get(card_data.card_rarity,
+			CARD_RARITY_TO_PRICE_RANGE[CardData.CARD_RARITIES.COMMON])
 		var item_price_range: int = card_price_range_values[1] - card_price_range_values[0]
 		var card_price: int = price
 		if price < 0:
