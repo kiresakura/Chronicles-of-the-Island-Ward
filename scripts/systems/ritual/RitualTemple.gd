@@ -78,3 +78,36 @@ static func unlocked_features(profile: ProfileData) -> Array[String]:
 
 static func has_unlock(profile: ProfileData, feature: String) -> bool:
 	return unlocked_features(profile).has(feature)
+
+# ───────── Q2-D 結構型 unlocks 實套（DELEGATION §5 Q2／QUESTIONS Q2-A 選項 A）─────────
+
+## 測試/驗收用全開旗標（環境變數 COTIW_TEMPLE_ALL=1）— 老存檔體驗不倒退的逃生門。
+static func dev_unlock_all() -> bool:
+	return OS.get_environment("COTIW_TEMPLE_ALL") == "1"
+
+## 含 dev 旗標的解鎖查詢（run 開局流程一律走這個）。
+static func feature_open(profile: ProfileData, feature: String) -> bool:
+	if dev_unlock_all():
+		return true
+	return has_unlock(profile, feature)
+
+## 夜市香鋪 → 商店庫存加成。數值在 building_night_market.json（鐵律 1：數字在資料層）：
+## shop_stock_bonus_cards_per_level（每級加卡）、shop_stock_bonus_consumables（≥1 級加消耗品）。
+static func _night_market_level(profile: ProfileData) -> int:
+	if profile == null:
+		return 0
+	var lvl: int = profile.get_building_level("building_night_market")
+	if dev_unlock_all() and lvl == 0:
+		lvl = 1
+	return lvl
+
+static func shop_bonus_cards(profile: ProfileData) -> int:
+	var lvl: int = _night_market_level(profile)
+	if lvl <= 0:
+		return 0
+	return lvl * int(load_building("building_night_market").get("shop_stock_bonus_cards_per_level", 0))
+
+static func shop_bonus_consumables(profile: ProfileData) -> int:
+	if _night_market_level(profile) <= 0:
+		return 0
+	return int(load_building("building_night_market").get("shop_stock_bonus_consumables", 0))

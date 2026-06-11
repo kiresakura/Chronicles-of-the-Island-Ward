@@ -466,6 +466,8 @@ func _build_slots() -> void:
 				btn.button_up.connect(_on_codex_button_up)
 			elif act == "character":
 				btn.button_up.connect(_on_character_button_up)
+			elif act == "temple":
+				btn.button_up.connect(_open_temple_screen)	# Q2-D：修廟主行動格
 		else:
 			btn.button_up.connect(_show_coming_soon.bind(data["label"]))
 		_slot_btns.append(btn)
@@ -585,7 +587,10 @@ func _build_utilities() -> void:
 		ic.modulate = GOLD
 		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		u.add_child(ic)
-		u.button_up.connect(_show_coming_soon.bind(str(_utility_definitions[i].get("name", "功能"))))
+		if str(_utility_definitions[i].get("act", "")) == "temple":
+			u.button_up.connect(_open_temple_screen)	# Q2-D：修廟入口
+		else:
+			u.button_up.connect(_show_coming_soon.bind(str(_utility_definitions[i].get("name", "功能"))))
 		_hook_hover(u)
 		_util_btns.append(u)
 
@@ -811,7 +816,8 @@ func _start_qi_jia_pulse() -> void:
 # ---------- 資源刷新 ----------
 
 func _refresh_resources() -> void:
-	var incense := _profile_int("profile_incense", 250)
+	# Q2-D 修 bug：原讀不存在的 profile_incense → fallback 恆 250；真欄位是 profile_incense_balance（0 合法）
+	var incense: int = Global.profile_data.profile_incense_balance if Global.profile_data != null else 0
 	var yuanbao := _profile_int("profile_yuanbao", 0)
 	var wins := _profile_int("profile_total_wins", 0)
 	var level: int = 1 + int(wins / 3)
@@ -822,6 +828,18 @@ func _refresh_resources() -> void:
 	if _avatar_lv: _avatar_lv.text = tr("ui.avatar_level") % level
 	# 進度填充寬度交由 _relayout 依 _level_ratio() 重算
 	_relayout()
+
+const TEMPLE_SCREEN := preload("res://scripts/ui/menus/TempleScreen.gd")	# class_name 全域註冊 headless 不可靠 → preload 慣例
+var _temple_screen: Control = null
+
+## Q2-D：修廟畫面（lazy 建立；修復成功 → 刷新香火列）
+func _open_temple_screen() -> void:
+	if _temple_screen == null or not is_instance_valid(_temple_screen):
+		_temple_screen = TEMPLE_SCREEN.new()
+		_temple_screen.name = "TempleScreen"
+		add_child(_temple_screen)
+		_temple_screen.temple_changed.connect(_refresh_resources)
+	_temple_screen.open()
 
 func _profile_int(field: String, fallback: int) -> int:
 	if Global.profile_data and field in Global.profile_data:

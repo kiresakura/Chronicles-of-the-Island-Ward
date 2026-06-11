@@ -61,6 +61,20 @@ static func list_guardian_ids() -> Array[String]:
 static func list_tool_ids() -> Array[String]:
 	return _list_ids(TOOL_DIR)
 
+## Q2-D 修廟解鎖過濾池：破煞向法器（tool_rule_domain == "ward_break"，如虎牌）
+## 需虎爺殿 ≥1 級（unlocks: ritual_tool_ward_break）才進開局選池。
+## 0 級基線（QUESTIONS Q2-B 選項 A）：香爐/七星令旗仍可選 — 溫和收窄，非鎖死。
+static func list_tool_ids_unlocked(profile: ProfileData) -> Array[String]:
+	var ids: Array[String] = list_tool_ids()
+	if RitualTemple.feature_open(profile, "ritual_tool_ward_break"):
+		return ids
+	var open_ids: Array[String] = []
+	for tool_id: String in ids:
+		var t: RitualToolData = load_tool(tool_id)
+		if t == null or t.tool_rule_domain != "ward_break":
+			open_ids.append(tool_id)
+	return open_ids
+
 static func _list_ids(dir_path: String) -> Array[String]:
 	var ids: Array[String] = []
 	var dir: DirAccess = DirAccess.open(dir_path)

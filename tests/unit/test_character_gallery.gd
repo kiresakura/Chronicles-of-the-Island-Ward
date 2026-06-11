@@ -55,11 +55,13 @@ func test_lobby_action_and_utility_json_are_valid() -> void:
 		var action: Dictionary = raw_action
 		assert_ne(str(action.get("node", "")), "", "Lobby action 缺 node")
 		assert_ne(str(action.get("label", "")), "", "Lobby action 缺 label")
-		assert_true(ResourceLoader.exists("res://assets/ui/icons/ui_icon_%s_default.svg" % str(action.get("icon", ""))),
-			"Lobby action icon 不存在：%s" % str(action.get("icon", "")))
+		var icon_name: String = str(action.get("icon", ""))
+		assert_true(ResourceLoader.exists("res://assets/ui/icons/ui_icon_%s_default.svg" % icon_name)
+			or ResourceLoader.exists("res://assets/generated/icons_v2/icon_%s.svg" % icon_name),
+			"Lobby action icon 不存在（v1/v2 皆無）：%s" % icon_name)
 		assert_eq(typeof(action.get("ready", false)), TYPE_BOOL, "%s ready 必須是 bool" % str(action.get("node", "")))
 		if bool(action.get("ready", false)):
-			assert_true(["run", "codex", "character"].has(str(action.get("act", ""))),
+			assert_true(["run", "codex", "character", "temple"].has(str(action.get("act", ""))),
 				"%s 已開放 action 必須有有效 act" % str(action.get("node", "")))
 
 	var utilities: Array = _load_json_array(LOBBY_UTILITIES_PATH)

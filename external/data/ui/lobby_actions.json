@@ -25,10 +25,11 @@
   },
   {
     "node": "BtnFormation",
-    "label": "陣型",
-    "icon": "formation",
-    "ready": false,
-    "priority": "low"
+    "label": "修廟",
+    "icon": "temple",
+    "ready": true,
+    "priority": "low",
+    "act": "temple"
   },
   {
     "node": "BtnShop",

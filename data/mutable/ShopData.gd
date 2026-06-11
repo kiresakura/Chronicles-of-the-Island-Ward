@@ -56,7 +56,10 @@ func visit_shop() -> void:
 		
 		### Generate Items
 		# generates shop cards
-		var generated_cards: Array[CardData] = Random.generate_rarity_weighted_card_draft(rng_shop, ShopData.GENERATED_CARD_COUNT, Random.CARD_DRAFT_TABLE_TYPES.SHOP, false)
+		# Q2-D 修廟：夜市香鋪等級加成商品數（數值在 building_night_market.json）
+		var bonus_cards: int = RitualTemple.shop_bonus_cards(Global.profile_data)
+		var bonus_consumables: int = RitualTemple.shop_bonus_consumables(Global.profile_data)
+		var generated_cards: Array[CardData] = Random.generate_rarity_weighted_card_draft(rng_shop, ShopData.GENERATED_CARD_COUNT + bonus_cards, Random.CARD_DRAFT_TABLE_TYPES.SHOP, false)
 		
 		# generate regular artifacts from player artifact pool
 		var artifact_ids: Array[String] = Global.player_data.get_next_shop_standard_artifacts_from_pool(GENERATED_ARTIFACT_COUNT, true)
@@ -67,7 +70,7 @@ func visit_shop() -> void:
 		
 		# generate shop consumables
 		var consumable_ids: Array[String] = []
-		for _i in GENERATED_CONSUMABLE_COUNT:
+		for _i in GENERATED_CONSUMABLE_COUNT + bonus_consumables:
 			var consumable_object_id: String = Random.get_random_consumable_object_id(rng_shop)
 			consumable_ids.append(consumable_object_id)
 		

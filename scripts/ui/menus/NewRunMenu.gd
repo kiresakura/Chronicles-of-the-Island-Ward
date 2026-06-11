@@ -476,7 +476,7 @@ func _build_loadout_pickers() -> void:
 	_guardian_picker = _make_loadout_picker(RitualLoadout.list_guardian_ids(), "護壇", true)
 	_guardian_picker.item_selected.connect(_on_guardian_picked)
 	add_child(_guardian_picker)
-	_tool_picker = _make_loadout_picker(RitualLoadout.list_tool_ids(), "法器", false)
+	_tool_picker = _make_loadout_picker(RitualLoadout.list_tool_ids_unlocked(Global.profile_data), "法器", false)	# Q2-D：破煞法器需虎爺殿解鎖
 	_tool_picker.item_selected.connect(_on_tool_picked)
 	add_child(_tool_picker)
 
