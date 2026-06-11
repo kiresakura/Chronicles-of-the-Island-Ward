@@ -890,6 +890,12 @@ func _refresh_merge_affordance() -> void:
 func merge_cards(card_a: CardData, card_b: CardData) -> bool:
 	if _merges_used_this_turn >= MERGES_PER_TURN:
 		return false
+	# Q3-F 合符神力消耗（實驗開關，預設 0 = 免費；經濟定案前不動預設）
+	if Global.run_merge_energy_cost > 0 and Global.player_data.player_energy < Global.run_merge_energy_cost:
+		var combat_node: Node = get_node_or_null("../")
+		if is_instance_valid(combat_node) and combat_node.has_method("show_combat_toast"):
+			combat_node.show_combat_toast("神力不足，無法合符")
+		return false
 	if not TalismanMergeSystem.can_merge(card_a, card_b):
 		return false
 	var result_id: String = card_a.card_merge_result_id
@@ -899,6 +905,9 @@ func merge_cards(card_a: CardData, card_b: CardData) -> bool:
 	var consumed: Array[CardData] = [card_b]
 	banish_cards(consumed)
 	_merges_used_this_turn += 1
+	if Global.run_merge_energy_cost > 0:
+		Global.player_data.player_energy -= Global.run_merge_energy_cost
+		Signals.energy_added.emit(0)	# 借既有訊號驅動 HUD 神力刷新（0 = 純刷新，無增量語意副作用）
 	# Q1-C：演出取代文字 — FuheFX 自帶漫畫「合符！」，文字 toast 移除（吵不等於熱鬧）
 	FuheFX.play(self, _merge_fx_position(card_a))	# P0-4：符飛合 + 金光爆 + 漫畫「合符！」
 	_play_merged_card_rebirth(card_a)	# Q1-C：新符落入手牌（重生彈跳 + 金閃）
