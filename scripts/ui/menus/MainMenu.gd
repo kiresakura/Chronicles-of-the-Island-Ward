@@ -322,12 +322,14 @@ func _layout_pixel_skin() -> void:
 		_hotspot_lantern.size = Vector2(stage_size.x * 0.08, stage_size.y * 0.12)
 
 	# 活動 banner：右側中部，~18% 寬 × 28% 高，避免擋 mascot
+	# Q2-F：tablet（4:3）改直式看板 — 吃掉右側中段空帶（專屬構圖，非等比放大）
 	if is_instance_valid(_activity_banner):
+		var on_tablet: bool = Responsive.is_tablet()
 		var bw: float = clampf(stage_size.x * 0.16, 220.0, 320.0)
-		var bh: float = clampf(stage_size.y * 0.28, 200.0, 280.0)
+		var bh: float = clampf(stage_size.y * (0.40 if on_tablet else 0.28), 200.0, 384.0 if on_tablet else 280.0)
 		_activity_banner.size = Vector2(bw, bh)
 		_activity_banner.position = Vector2(stage_size.x - bw - 40,
-											stage_size.y * 0.34)
+											stage_size.y * (0.27 if on_tablet else 0.34))
 		# 內部 label + button 同步
 		if is_instance_valid(_activity_banner_label):
 			_activity_banner_label.size = Vector2(bw, bh)
