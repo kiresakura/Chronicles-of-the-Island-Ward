@@ -221,7 +221,7 @@ const BREAK_EFFECT_STATUSES: Dictionary = {
 func _on_card_played_ward(request: CardPlayRequest) -> void:
 	if request == null or request.card_data == null:
 		return
-	if request.selected_target != self:
+	if not _card_play_hits_ward(request):
 		return
 	if not is_alive() or enemy_data == null or enemy_data.enemy_max_ward_shield <= 0:
 		return
@@ -231,6 +231,23 @@ func _on_card_played_ward(request: CardPlayRequest) -> void:
 		if WardBreakSystem.apply_ward_damage(enemy_data, amount):
 			_on_ward_broken()
 	_refresh_ward_ui()
+
+## Q3-D AoE 破煞：單體卡限 selected_target 本敵；無需選目標的卡若任一 play action
+## 以 ALL_ENEMIES 為 target_override（波及全體），則每個敵人「各自」結算削盾
+## （弱點按各敵自己的儀法判 — compute_ward_damage 本就吃 per-enemy 資料）。
+func _card_play_hits_ward(request: CardPlayRequest) -> bool:
+	if request.selected_target == self:
+		return true
+	if request.selected_target != null:
+		return false	# 指了別人：與本敵無關
+	if request.card_data.card_requires_target:
+		return false	# 需選目標但沒選到我（防衛性）
+	for action_dict: Dictionary in request.card_data.card_play_actions:
+		for script_path: Variant in action_dict:
+			var values: Variant = action_dict[script_path]
+			if values is Dictionary and int((values as Dictionary).get("target_override", 0)) == BaseAction.TARGET_OVERRIDES.ALL_ENEMIES:
+				return true
+	return false
 
 ## 破煞瞬間：套用 break_effect 對應 status + 「破煞！」飄字 + 受擊抖動。
 func _on_ward_broken() -> void:

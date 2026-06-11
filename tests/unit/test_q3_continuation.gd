@@ -1,0 +1,68 @@
+# 鎮島錄 Q3-D — PRD 續調守門：香火路線加權結算 + AoE 破煞判定。
+extends "res://tests/test_case.gd"
+
+func _loc(modifier: float, visited: bool, type: int = LocationData.LOCATION_TYPES.COMBAT) -> LocationData:
+	var l: LocationData = LocationData.new()
+	l.location_incense_modifier = modifier
+	l.location_visited = visited
+	l.location_type = type
+	return l
+
+# ---------- 香火路線加權 ----------
+
+func test_incense_multiplier_averages_visited_only() -> void:
+	var locs: Array[LocationData] = [
+		_loc(1.5, true), _loc(0.8, true),	# 行經：荒宅 + 廟路
+		_loc(1.3, false),					# 未走過不計
+		_loc(2.0, true, LocationData.LOCATION_TYPES.STARTING),	# 起點不計
+	]
+	assert_true(absf(Global.incense_route_multiplier(locs) - 1.15) < 0.001,
+		"行經加權 = (1.5+0.8)/2 = 1.15")
+
+func test_incense_multiplier_empty_run_is_neutral() -> void:
+	var locs: Array[LocationData] = [_loc(1.5, false)]
+	assert_eq(Global.incense_route_multiplier(locs), 1.0, "無行經紀錄回 1.0（直接退局）")
+
+func test_incense_multiplier_zero_modifier_treated_as_one() -> void:
+	var locs: Array[LocationData] = [_loc(0.0, true)]
+	assert_eq(Global.incense_route_multiplier(locs), 1.0, "未標路線的節點視為 1.0")
+
+# ---------- AoE 破煞判定 ----------
+
+func _enemy_in_tree() -> Enemy:
+	var e: Enemy = Scenes.ENEMY.instantiate() if "ENEMY" in Scenes else null
+	if e == null:
+		e = load("res://prefabs/combatants/enemy.tscn").instantiate() if ResourceLoader.exists("res://prefabs/combatants/enemy.tscn") else null
+	assert_not_null(e, "需要可實例化的 Enemy prefab")
+	Global.add_child(e)
+	return e
+
+func _request(card_id: String, target: BaseCombatant) -> CardPlayRequest:
+	var r: CardPlayRequest = CardPlayRequest.new()
+	r.card_data = Global.get_card_data(card_id)
+	r.selected_target = target
+	return r
+
+func test_aoe_card_hits_every_enemy_ward() -> void:
+	var e: Enemy = _enemy_in_tree()
+	var r: CardPlayRequest = _request("card_tongji_firecracker_volley", null)
+	assert_not_null(r.card_data, "鞭炮陣應已註冊進卡池")
+	assert_false(r.card_data.card_requires_target, "鞭炮陣為免選目標 AoE")
+	assert_true(e._card_play_hits_ward(r), "AoE 卡（ALL_ENEMIES override）應波及本敵削盾")
+	e.queue_free()
+
+func test_single_target_card_only_hits_selected() -> void:
+	var e: Enemy = _enemy_in_tree()
+	var other: Enemy = _enemy_in_tree()
+	var r: CardPlayRequest = _request("card_tongji_charge", other)
+	assert_false(e._card_play_hits_ward(r), "單體卡指了別人，不波及本敵")
+	var r2: CardPlayRequest = _request("card_tongji_charge", e)
+	assert_true(e._card_play_hits_ward(r2), "單體卡指本敵則結算")
+	e.queue_free()
+	other.queue_free()
+
+func test_aoe_card_break_numbers_registered() -> void:
+	var c: CardData = Global.get_card_data("card_tongji_firecracker_volley")
+	assert_not_null(c, "鞭炮陣已載入")
+	assert_true(c.card_break_damage > 0, "AoE 卡帶削盾值（各敵各算）")
+	assert_true(c.card_ritual_tags.has("fire"), "鞭炮屬火儀法（弱點判定用）")

@@ -1,0 +1,32 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "card_tongji_firecracker_volley",
+		"card_name": "鞭炮陣",
+		"card_description": "對所有敵人造成 3 點傷害。",
+		"card_texture_path": "assets/generated/cards_v3/card_tongji_firecracker_volley.png",
+		"card_color_id": "color_tongji",
+		"card_type": 0,
+		"card_rarity": 1,
+		"card_energy_cost": 1,
+		"card_requires_target": false,
+		"card_keyword_object_ids": [],
+		"card_play_actions": [
+			{
+				"res://scripts/actions/meta_actions/ActionAttackGenerator.gd": {
+					"damage": 3,
+					"number_of_attacks": 1,
+					"target_override": 4
+				}
+			}
+		],
+		"card_ritual_tags": ["fire"],
+		"card_break_damage": 2,
+		"card_weakness_break_bonus": 2,
+		"card_merge_group": "merge_tongji_firecracker",
+		"card_merge_tier": 1,
+		"card_merge_result_id": "",
+		"card_deity_charge": 8,
+		"card_ritual_card_type": "wu_jue"
+	}
+}

@@ -348,6 +348,24 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 const INCENSE_ON_VICTORY: int = 200
 const INCENSE_ON_LOSS: int = 50
 
+## Q3-D 香火回報實套：完局香火 = base × 行經路線加權（visited 節點的
+## location_incense_modifier 平均；高險路多走多領 — 路線資料 external/data/route_traits/）。
+## 純函式（餵 locations 可測）；無行經紀錄回 1.0。
+static func incense_route_multiplier(locations: Array[LocationData]) -> float:
+	var total: float = 0.0
+	var count: int = 0
+	for location_data: LocationData in locations:
+		if location_data == null or location_data.location_type == LocationData.LOCATION_TYPES.STARTING:
+			continue
+		if not location_data.location_visited:
+			continue
+		var m: float = location_data.location_incense_modifier
+		total += (m if m > 0.0 else 1.0)
+		count += 1
+	if count == 0:
+		return 1.0
+	return total / float(count)
+
 enum RUN_ENDS {QUIT, LOSS, VICTORY}
 
 ## Ends the player's current run under the given status.
@@ -358,12 +376,12 @@ func end_run(run_end_state: int = RUN_ENDS.QUIT) -> void:
 		RUN_ENDS.LOSS:
 			FileLoader.delete_save()
 			profile_data.lose_run(player_data.player_character_object_id)
-			profile_data.add_incense(INCENSE_ON_LOSS)	# 鎮島錄 2D — 結算香火（慰勞）
+			profile_data.add_incense(roundi(INCENSE_ON_LOSS * incense_route_multiplier(get_all_act_locations())))	# Q3-D 路線加權
 			FileLoader.save_profile()
 		RUN_ENDS.VICTORY:
 			FileLoader.delete_save()
 			profile_data.win_run(player_data.player_character_object_id)
-			profile_data.add_incense(INCENSE_ON_VICTORY)	# 鎮島錄 2D — 結算香火
+			profile_data.add_incense(roundi(INCENSE_ON_VICTORY * incense_route_multiplier(get_all_act_locations())))	# Q3-D 路線加權
 			FileLoader.save_profile()
 	
 	is_run = false
