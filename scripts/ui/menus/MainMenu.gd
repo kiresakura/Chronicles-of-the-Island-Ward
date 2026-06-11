@@ -549,12 +549,88 @@ func _build_primary() -> void:
 	ic.modulate = GOLD
 	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+	_dress_plaque_cta(b)	# Q2-C：紅布神匾造型（程序化 — 金釘/垂帶/雙框）
+
 	for c in b.button_up.get_connections():
 		b.button_up.disconnect(c["callable"])
 	b.button_up.connect(_on_primary_pressed)
 	# 同時觸發 mascot 反應（user spec：tap 起駕 → 看板娘也對話）
 	b.button_up.connect(_on_qi_jia_mascot_react)
 	_hook_hover(b)
+
+## Q2-C 紅布神匾 CTA（程序化）：匾身雙金框 + 四角金釘 + 底緣紅布垂帶×2 —
+## 「不要只是一塊平面矩形」（動漫化審查 3.1）。零素材依賴；裝飾全 IGNORE 不影響點擊。
+func _dress_plaque_cta(b: Button) -> void:
+	if b.get_node_or_null("PlaqueDeco") != null:
+		return
+	var deco := Control.new()
+	deco.name = "PlaqueDeco"
+	deco.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	deco.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	b.add_child(deco)
+	# 內金框（細線，與外框成雙框「匾」式）
+	var inner := Panel.new()
+	inner.name = "PlaqueInnerFrame"
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	inner.offset_left = 7; inner.offset_top = 7; inner.offset_right = -7; inner.offset_bottom = -7
+	var sbi := StyleBoxFlat.new()
+	sbi.bg_color = Color.TRANSPARENT
+	sbi.border_color = Color(0.95, 0.82, 0.45, 0.55)
+	sbi.set_border_width_all(1)
+	sbi.set_corner_radius_all(10)
+	inner.add_theme_stylebox_override("panel", sbi)
+	deco.add_child(inner)
+	# 四角金釘
+	for corner: int in 4:
+		var nail := Panel.new()
+		nail.name = "PlaqueNail%d" % corner
+		nail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var sbn := StyleBoxFlat.new()
+		sbn.bg_color = Color(0.95, 0.82, 0.45)
+		sbn.set_corner_radius_all(5)
+		sbn.border_color = Color(0.45, 0.30, 0.10)
+		sbn.set_border_width_all(1)
+		nail.add_theme_stylebox_override("panel", sbn)
+		nail.custom_minimum_size = Vector2(10, 10)
+		nail.size = Vector2(10, 10)
+		var on_right: bool = corner % 2 == 1
+		var on_bottom: bool = corner >= 2
+		nail.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		nail.anchor_left = 1.0 if on_right else 0.0
+		nail.anchor_right = nail.anchor_left
+		nail.anchor_top = 1.0 if on_bottom else 0.0
+		nail.anchor_bottom = nail.anchor_top
+		nail.offset_left = (-16.0 if on_right else 6.0)
+		nail.offset_right = nail.offset_left + 10.0
+		nail.offset_top = (-16.0 if on_bottom else 6.0)
+		nail.offset_bottom = nail.offset_top + 10.0
+		deco.add_child(nail)
+	# 底緣紅布垂帶 ×2（左右對位，帶金緣 — 神匾披紅）
+	for side: int in 2:
+		var ribbon := Panel.new()
+		ribbon.name = "PlaqueRibbon%d" % side
+		ribbon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var sbr := StyleBoxFlat.new()
+		sbr.bg_color = Color(0.52, 0.10, 0.08, 0.96)
+		sbr.border_color = Color(0.95, 0.82, 0.45, 0.85)
+		sbr.border_width_left = 2
+		sbr.border_width_right = 2
+		sbr.border_width_bottom = 3
+		sbr.corner_radius_bottom_left = 4
+		sbr.corner_radius_bottom_right = 4
+		ribbon.add_theme_stylebox_override("panel", sbr)
+		ribbon.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		ribbon.anchor_left = 0.18 if side == 0 else 0.82
+		ribbon.anchor_right = ribbon.anchor_left
+		ribbon.anchor_top = 1.0
+		ribbon.anchor_bottom = 1.0
+		ribbon.offset_left = -11.0
+		ribbon.offset_right = 11.0
+		ribbon.offset_top = -2.0
+		ribbon.offset_bottom = 20.0
+		ribbon.z_index = -1	# 垂帶從匾後垂出
+		deco.add_child(ribbon)
 	_start_qi_jia_pulse()
 
 func _on_qi_jia_mascot_react() -> void:
