@@ -499,6 +499,7 @@ func _make_loadout_picker(ids: Array, prefix: String, is_guardian: bool) -> Opti
 				disp = t.tool_name
 		ob.add_item("%s：%s" % [prefix, disp])
 		ob.set_item_metadata(ob.item_count - 1, id)
+	_apply_picker_icons(ob, ids)	# Q3-B：班底 Q 版小圖示
 	return ob
 
 func _on_guardian_picked(idx: int) -> void:
@@ -522,3 +523,18 @@ func _on_run_ended() -> void:
 	visible = not has_save_file
 	selected_character_object_id = ""
 	populate_new_run_menu()
+
+
+## Q3-B 班底圖示：OptionButton 各項掛 28px Q 版小圖（assets/generated/icons_v2/loadout_<id>.svg）。
+## 缺圖靜默跳過（資料驅動：新班底丟同名 SVG 即得圖示）。
+func _apply_picker_icons(picker: OptionButton, ids: Array) -> void:
+	for i: int in mini(picker.item_count, ids.size()):
+		var icon_path: String = "res://assets/generated/icons_v2/loadout_%s.svg" % str(ids[i])
+		if not ResourceLoader.exists(icon_path):
+			continue
+		var tex: Texture2D = load(icon_path)
+		var img: Image = tex.get_image()
+		if img == null:
+			continue
+		img.resize(28, 28, Image.INTERPOLATE_LANCZOS)
+		picker.set_item_icon(i, ImageTexture.create_from_image(img))
