@@ -66,11 +66,12 @@ static func calculate_p1_bottom_control_layout(safe: Rect2) -> Dictionary:
 	var cta_w: float = 168.0
 	var left_zone_w: float = inner_w - cta_w - 16.0
 	var picker_w: float = (left_zone_w - 12.0) / 2.0
-	# v3：picker 左欄全寬雙行（寬列 ≥40 高標準）；種子上移右欄與提示同列；開壇 CTA 右下大鈕
-	var hint_rect := Rect2(Vector2(inner_x, guide_y + 30.0), Vector2(inner_w - 200.0, 26.0))
+	# v5（UIQA W1）：hint 移右欄「自訂修正」下空帶（autowrap，任何寬度零碰撞）；
+	# picker 左欄疊雙行 48 高（寬列舒適線）；種子右欄上列、開壇 CTA 右下大鈕
+	var hint_rect := Rect2(Vector2(right_x + 8.0, safe.position.y + safe.size.y - 252.0), Vector2(right_w - 24.0, 84.0))
 	var seed_rect := Rect2(Vector2(guide_x + guide_w - cta_w - 16.0, guide_y + 26.0), Vector2(cta_w, 32.0))
-	var guardian_rect := Rect2(Vector2(inner_x, guide_y + 64.0), Vector2(left_zone_w, 40.0))
-	var tool_rect := Rect2(Vector2(inner_x, guide_y + 108.0), Vector2(left_zone_w, 40.0))
+	var guardian_rect := Rect2(Vector2(inner_x, guide_y + 40.0), Vector2(left_zone_w, 48.0))
+	var tool_rect := Rect2(Vector2(inner_x, guide_y + 92.0), Vector2(left_zone_w, 48.0))
 	var start_rect := Rect2(Vector2(guide_x + guide_w - cta_w - 16.0, guide_y + 62.0), Vector2(cta_w, 86.0))
 	var back_rect := Rect2(Vector2(safe.position.x + 16.0, safe.position.y + 12.0), Vector2(188.0, 80.0))
 	return {
@@ -250,6 +251,7 @@ func _relayout_runtime_chrome() -> void:
 		_character_tags_flow.position = Vector2(left_x, info_y + 330.0)
 		_character_tags_flow.size = Vector2(left_w - 16.0, 72.0)
 	if _start_hint_label != null:
+		_start_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_start_hint_label.position = hint_rect.position
 		_start_hint_label.size = hint_rect.size
 	if seed_input != null:

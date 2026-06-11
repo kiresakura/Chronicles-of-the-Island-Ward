@@ -661,7 +661,7 @@ func add_test_artifacts() -> void:
 	artifact_boss_white.artifact_description = "Test White Boss Artifact."
 	artifact_boss_white.artifact_rarity = ArtifactData.ARTIFACT_RARITIES.BOSS
 	artifact_boss_white.artifact_color_id = "color_white"
-	artifact_boss_white.artifact_texture_path = "external/sprites/artifacts/artifact_white.png"
+	artifact_boss_white.artifact_texture_path = "assets/generated/artifacts_v3/artifact_white.png"
 	
 	register_rod(artifact_boss_white)
 	
@@ -670,7 +670,7 @@ func add_test_artifacts() -> void:
 	artifact_shop_white.artifact_description = "Test White Shop Artifact."
 	artifact_shop_white.artifact_rarity = ArtifactData.ARTIFACT_RARITIES.SHOP
 	artifact_shop_white.artifact_color_id = "color_white"
-	artifact_shop_white.artifact_texture_path = "external/sprites/artifacts/artifact_white.png"
+	artifact_shop_white.artifact_texture_path = "assets/generated/artifacts_v3/artifact_white.png"
 	
 	register_rod(artifact_shop_white)
 	
@@ -4479,3 +4479,5 @@ func validate(validators: Array[Dictionary], card_data: CardData = null, action:
 	return true
 
 #endregion
+
+

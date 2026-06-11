@@ -63,6 +63,7 @@ const ENEMIES: Dictionary = {
 }
 
 const ARTIFACTS: Dictionary = {
+	"artifact_white": preload("res://assets/generated/artifacts_v3/artifact_white.png"),
 	"artifact_add_money": preload("res://assets/generated/artifacts_v3/artifact_add_money.png"),
 	"artifact_block_on_attacks": preload("res://assets/generated/artifacts_v3/artifact_block_on_attacks.png"),
 	"artifact_draw_on_combat_start": preload("res://assets/generated/artifacts_v3/artifact_draw_on_combat_start.png"),
@@ -115,6 +116,10 @@ static func resolve_artifact_texture(artifact_data: ArtifactData) -> Texture2D:
 	if artifact_data == null:
 		return null
 	var tex: Texture2D = get_artifact(artifact_data.object_id)
+	if tex == null:
+		# Q0：object_id miss 時以檔名 stem 反查 preload（如共用 fallback artifact_white），
+		# 避免 FileLoader 原始載圖在 export 失效 + 噴警告
+		tex = get_by_texture_path(artifact_data.artifact_texture_path)
 	if tex == null:
 		tex = FileLoader.load_texture(artifact_data.artifact_texture_path)
 	return tex

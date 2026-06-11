@@ -29,6 +29,11 @@
 [ext_resource type="Script" uid="uid://pk2e8kasw6rr" path="res://scripts/ui/RunSummaryOverlay.gd" id="21_fj66g"]
 [ext_resource type="Script" uid="uid://s7lqf6p66yti" path="res://scripts/ui/RunStartOptions.gd" id="25_ll3o0"]
 [ext_resource type="Script" path="res://scripts/ui/theme/UiMaskFitter.gd" id="200_maskfit"]
+[ext_resource type="Texture2D" path="res://assets/generated/icons_v2/icon_codex.svg" id="201_ic_deck"]
+[ext_resource type="Texture2D" path="res://assets/generated/icons_v2/rest/icon_reward_talisman.png" id="202_ic_draw"]
+[ext_resource type="Texture2D" path="res://assets/generated/icons_v2/rest/icon_rest_remove_cards.png" id="203_ic_discard"]
+[ext_resource type="Texture2D" path="res://assets/generated/icons_v2/status/curse.svg" id="204_ic_exhaust"]
+[ext_resource type="Texture2D" path="res://assets/generated/icons_v2/status/block_bagua.svg" id="205_ic_energy"]
 [ext_resource type="Script" uid="uid://b2t515tpjrija" path="res://addons/smooth_scroll_container/SmoothScrollContainer.gd" id="25_t3i5t"]
 [ext_resource type="Script" uid="uid://ci6oby4hmnfg6" path="res://scripts/ui/DialogueOverlay.gd" id="25_tn5yy"]
 [ext_resource type="Script" uid="uid://b3nvcsku8u75w" path="res://addons/smooth_scroll_container/scroll_damper/expo_scroll_damper.gd" id="26_08sam"]
@@ -973,13 +978,14 @@ anchors_preset = 0
 offset_left = 64.0
 offset_top = 504.0
 offset_right = 336.0
-offset_bottom = 544.0
+offset_bottom = 592.0
 
 [node name="DecreaseDifficultyButton" type="Button" parent="TitleScreen/NewRunMenu/DifficultySelect" unique_id=900924452]
+offset_left = 0.0
 layout_mode = 0
-offset_top = 8.0
-offset_right = 64.0
-offset_bottom = 72.0
+offset_top = 0.0
+offset_right = 80.0
+offset_bottom = 80.0
 text = "◀"
 
 [node name="DifficultyLabel" type="Label" parent="TitleScreen/NewRunMenu/DifficultySelect" unique_id=679730876]
@@ -1002,10 +1008,10 @@ clip_text = true
 
 [node name="IncreaseDifficultyButton" type="Button" parent="TitleScreen/NewRunMenu/DifficultySelect" unique_id=291246]
 layout_mode = 0
-offset_left = 208.0
-offset_top = 8.0
+offset_left = 192.0
+offset_top = 0.0
 offset_right = 272.0
-offset_bottom = 72.0
+offset_bottom = 80.0
 text = "▶"
 
 [node name="CharacterButtonContainer" type="ScrollContainer" parent="TitleScreen/NewRunMenu" unique_id=1478047615]
@@ -1160,19 +1166,19 @@ offset_bottom = 584.0
 theme_override_constants/separation = 8
 
 [node name="TabCards" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer" unique_id=1946510529]
-custom_minimum_size = Vector2(150, 64)
+custom_minimum_size = Vector2(150, 80)
 unique_name_in_owner = true
 layout_mode = 2
 text = "卡圖收藏"
 
 [node name="TabJiajiang" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer" unique_id=157309372]
-custom_minimum_size = Vector2(150, 64)
+custom_minimum_size = Vector2(150, 80)
 unique_name_in_owner = true
 layout_mode = 2
 text = "家將圖鑑"
 
 [node name="TabDeities" type="Button" parent="TitleScreen/CodexMenu/VBoxContainer" unique_id=740286920]
-custom_minimum_size = Vector2(150, 64)
+custom_minimum_size = Vector2(150, 80)
 unique_name_in_owner = true
 layout_mode = 2
 text = "神明好感"
@@ -1277,9 +1283,9 @@ stretch_mode = 0
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 12.0
-offset_top = 6.0
-offset_right = 80.0
-offset_bottom = 74.0
+offset_top = 4.0
+offset_right = 92.0
+offset_bottom = 84.0
 shortcut = SubResource("Shortcut_i7igs")
 shortcut_feedback = false
 shortcut_in_tooltip = false
@@ -1291,21 +1297,21 @@ script = ExtResource("13_i7igs")
 [node name="MapButton" type="TextureButton" parent="RunScreen/Combat" unique_id=640343289]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 88.0
-offset_top = 6.0
-offset_right = 156.0
-offset_bottom = 74.0
+offset_left = 100.0
+offset_top = 4.0
+offset_right = 180.0
+offset_bottom = 84.0
 texture_normal = ExtResource("3_8ax2e")
 ignore_texture_size = true
 stretch_mode = 0
 
 [node name="DeckButton" type="TextureButton" parent="RunScreen/Combat" unique_id=402712651]
 layout_mode = 0
-offset_left = 164.0
-offset_top = 6.0
-offset_right = 232.0
-offset_bottom = 74.0
-texture_normal = ExtResource("3_8ax2e")
+offset_left = 188.0
+offset_top = 4.0
+offset_right = 268.0
+offset_bottom = 84.0
+texture_normal = ExtResource("201_ic_deck")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -1386,16 +1392,16 @@ mouse_filter = 2
 
 [node name="Consumables" type="Control" parent="RunScreen/Combat" unique_id=2065072121]
 anchors_preset = 0
-offset_left = 512.0
-offset_right = 752.0
+offset_left = 700.0
+offset_right = 1000.0
 offset_bottom = 104.0
 script = ExtResource("11_c46y0")
 
 [node name="ConsumableContainer" type="HBoxContainer" parent="RunScreen/Combat/Consumables" unique_id=1577072813]
 layout_mode = 0
-offset_top = 16.0
+offset_top = 4.0
 offset_right = 480.0
-offset_bottom = 48.0
+offset_bottom = 84.0
 
 [node name="ConsumableActionDropdown" type="Control" parent="RunScreen/Combat/Consumables" unique_id=660167128]
 anchors_preset = 0
@@ -1477,11 +1483,11 @@ horizontal_alignment = 1
 visible = false
 layout_mode = 0
 offset_left = 16.0
-offset_top = 540.0
-offset_right = 84.0
+offset_top = 528.0
+offset_right = 96.0
 offset_bottom = 608.0
 tooltip_text = "神力"
-texture_normal = ExtResource("3_8ax2e")
+texture_normal = ExtResource("205_ic_energy")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -1499,11 +1505,11 @@ horizontal_alignment = 1
 visible = false
 layout_mode = 0
 offset_left = 16.0
-offset_top = 616.0
-offset_right = 84.0
-offset_bottom = 684.0
+offset_top = 612.0
+offset_right = 96.0
+offset_bottom = 692.0
 tooltip_text = "抽牌堆"
-texture_normal = ExtResource("3_8ax2e")
+texture_normal = ExtResource("202_ic_draw")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -1520,12 +1526,12 @@ horizontal_alignment = 1
 [node name="DiscardPile" type="TextureButton" parent="RunScreen/Combat" unique_id=1731566202]
 visible = false
 layout_mode = 0
-offset_left = 1118.0
-offset_top = 540.0
-offset_right = 1186.0
+offset_left = 1112.0
+offset_top = 528.0
+offset_right = 1192.0
 offset_bottom = 608.0
 tooltip_text = "棄牌堆"
-texture_normal = ExtResource("3_8ax2e")
+texture_normal = ExtResource("203_ic_discard")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -1542,12 +1548,12 @@ horizontal_alignment = 1
 [node name="ExhaustPile" type="TextureButton" parent="RunScreen/Combat" unique_id=617647375]
 visible = false
 layout_mode = 0
-offset_left = 1042.0
-offset_top = 540.0
+offset_left = 1030.0
+offset_top = 528.0
 offset_right = 1110.0
 offset_bottom = 608.0
 tooltip_text = "battle.exhaust_pile"
-texture_normal = ExtResource("3_8ax2e")
+texture_normal = ExtResource("204_ic_exhaust")
 ignore_texture_size = true
 stretch_mode = 0
 

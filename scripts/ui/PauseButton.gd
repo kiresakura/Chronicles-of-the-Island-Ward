@@ -21,8 +21,8 @@ func _ready() -> void:
 		texture_disabled = back_icon
 	ignore_texture_size = true
 	stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	custom_minimum_size = Vector2(68, 68)
-	size = Vector2(68, 68)
+	custom_minimum_size = Vector2(80, 80)
+	size = Vector2(80, 80)
 	
 func _on_pause_button_pressed() -> void:
 	Global.pause_game()

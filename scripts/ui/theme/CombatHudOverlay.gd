@@ -94,7 +94,7 @@ static func apply(host: Control, provider: Object = null) -> CanvasLayer:
 		deity_holder.position = get_safe_anchor_position(safe, Anchor.TOP_RIGHT, deity_holder.size, SAFE_MARGIN)
 		# HP/護/預兆 資源 strip：原本錨在 bottom-left 會壓到手牌（Hand x≥168）。
 		# 改錨 top-left、置於頂部資源 bar 下方一列，清出整個底部給卡牌（HP 頂部已顯示一次，不重複佔底部）。
-		status_strip.position = get_safe_anchor_position(safe, Anchor.TOP_LEFT, status_strip.size, Vector2(SAFE_MARGIN.x, SAFE_MARGIN.y + 52.0))
+		status_strip.position = get_safe_anchor_position(safe, Anchor.TOP_LEFT, status_strip.size, Vector2(SAFE_MARGIN.x, SAFE_MARGIN.y + 88.0))	# 80px 頂列讓位（UIQA W1）
 
 	var refresh := func(_arg1: Variant = null, _arg2: Variant = null, _arg3: Variant = null) -> void:
 		if not is_instance_valid(layer):

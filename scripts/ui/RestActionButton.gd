@@ -16,11 +16,11 @@ func _ready():
 
 ## UIQA P2-3：歇腳行動 icon（Recraft 民俗 SVG）；無對應 id 時不顯示（純加法）
 const REST_ICON_BY_ID: Dictionary = {
-	"rest_action_rest": "res://assets/generated/icons_v2/rest/icon_rest_rest.svg",
-	"rest_action_upgrade_card": "res://assets/generated/icons_v2/rest/icon_rest_upgrade_card.svg",
-	"rest_action_remove_cards": "res://assets/generated/icons_v2/rest/icon_rest_remove_cards.svg",
-	"rest_action_add_random_consumable": "res://assets/generated/icons_v2/rest/icon_rest_add_random_consumable.svg",
-	"rest_action_increase_attack_on_rest": "res://assets/generated/icons_v2/rest/icon_rest_increase_attack_on_rest.svg",
+	"rest_action_rest": "res://assets/generated/icons_v2/rest/icon_rest_rest.png",
+	"rest_action_upgrade_card": "res://assets/generated/icons_v2/rest/icon_rest_upgrade_card.png",
+	"rest_action_remove_cards": "res://assets/generated/icons_v2/rest/icon_rest_remove_cards.png",
+	"rest_action_add_random_consumable": "res://assets/generated/icons_v2/rest/icon_rest_add_random_consumable.png",
+	"rest_action_increase_attack_on_rest": "res://assets/generated/icons_v2/rest/icon_rest_increase_attack_on_rest.png",
 }
 
 func init(_rest_action_object_id: String) -> void:

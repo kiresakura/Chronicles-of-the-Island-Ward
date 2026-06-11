@@ -1,207 +1,116 @@
-# CLAUDE.md — 給 Claude Code 的接手指南
+# CLAUDE.md — 給 Claude Code 的工程指南
 
-> 這個檔案告訴你（Claude Code）如何接手「鎮島錄 / COTIW」這個專案。
-> **務必先讀完這份文件，再讀 `PRD.md`。**
-
----
-
-## 1. 你是誰，你要做什麼
-
-你是接手「鎮島錄」開發的 Claude Code agent。專案剛通過企劃階段，你的任務是：
-
-1. **建立 Godot 4.4 專案骨架**
-2. **Fork 並整合 `DesirePathGames/Slay-The-Robot`** 作為核心戰鬥框架
-3. **按 PRD 的 Phase 1 → Phase 5 推進開發**
-
-你不是被要求一次寫完所有東西。你是要**先把 Phase 1（Prototype）做好**，每完成一個里程碑就停下來等開發者（憲龍）驗收。
+> **最後更新**：2026-06-11（取代 2026-05 的 Sprint 0 版本——那個階段早就結束了）
+> **最高工作指令**：先讀 **[`DELEGATION.md`](./DELEGATION.md)**（總委託書：角色、品質基準、關卡、互動協議），本檔只管工程鐵律與日常操作。
+> 若任何文件與 repo 現狀矛盾，**以 repo 現狀為準**，矛盾記入 `QUESTIONS.md`。
 
 ---
+
+## 1. 你是誰，現在在哪
+
+你是「鎮島錄 / COTIW」的代理製作人兼首席工程師（角色定義見 `DELEGATION.md` §1）。
+
+**專案現狀（2026-06-11）**：
+- Godot **4.6.1**（QUESTIONS.md Q1 定案，勿再裝 4.4）、橫向 1200×700、fork 自 Slay-The-Robot（MIT）
+- PRD v0.2「儀式編排型」重構：Phase 1（破煞/合符/請神/班底）+ Phase 2（多神/配置/道士家將/修廟/遶境生成器/大醮 Boss）核心**全部落地**
+- 測試 167/167 綠燈、E2E 通過、三解析度 UI audit 0 FAIL
+- 第一章端到端可玩；當前戰場是**商業產品感**（品質關卡 Q0–Q5，見 `DELEGATION.md` §5）
+
+**不要做的事**：不要重建專案骨架、不要重新 fork、不要從 Sprint 0 開始——那些是 2026-05 的歷史。
 
 ## 2. 三條鐵律（違反請停下重來）
 
 ### 鐵律 1：資料驅動，不要硬編碼
 
-❌ 不可以這樣寫：
+❌ 不可以：
+
 ```gdscript
 func play_card_attack():
 	enemy.hp -= 6
 	enemy.add_status("poison", 3)
 ```
 
-✅ 要這樣寫：
+✅ 要這樣：
+
 ```gdscript
 func play_card(card_data: CardData):
 	for action in card_data.actions:
 		ActionSystem.execute(action, card_data.target)
 ```
 
-卡牌、敵人、事件、文字**全部走 JSON / CSV**。理由：日後做平衡調整、本地化、Mod 都靠這個。
+卡牌、敵人、神明、護壇、法器、路線、建築、事件、文字**全部走 JSON / CSV**。破煞值、弱點、請神值絕不寫死在 UI / combat script。演出層只讀系統事件與資料。
 
 ### 鐵律 2：Mobile-First，不是 Mobile-Port
 
-- 所有 UI 設計**從橫向手機螢幕開始**（基準解析度 1200×700；2026-05-19 定案橫向，見 PRD §5.1 / QUESTIONS）
-- 所有互動**設計給觸控**，不要有「需要滑鼠 hover」才能用的功能
-- 在 Godot Editor 把 Display 設成 mobile preset
-- 每個 Sprint 結束都要在**真機**測試（iPhone SE 模擬器最低標，理想是真 iPhone + 真 Android）
+- 橫向手機螢幕優先（基準 1200×700，stretch `canvas_items + expand`）
+- 觸控優先：最小點擊區 88×88、不依賴 hover、長按看詳情
+- 三解析度常測：1244×700（Android 16:9）/ 1515×700（iPhone 19.5:9）/ 1200×900（tablet 4:3，需專屬排版不是放大）
+- 每個品質關卡結束都要真機驗證（iPhone + Android）
 
 ### 鐵律 3：Fork-first，不要重造輪子
 
-**Phase 1 起手**：
-```bash
-git clone https://github.com/DesirePathGames/Slay-The-Robot.git COTIW-base
-cd COTIW-base
-git remote rename origin upstream
-# 在 GitHub 建立私人 repo: cotiw
-git remote add origin <your-private-repo>
-git push -u origin main
-```
+- 上游：`DesirePathGames/Slay-The-Robot`（remote `upstream`）
+- **新增** 資料欄位 / 系統腳本 / action / validator / UI overlay；**避免**大改 framework 核心
+- 擴充點範例：`act_action_script_path`（遶境生成器就是這樣切入的，不是 hack）
 
-之後你的修改提交到自己的 repo，但保留 upstream 以追原作更新。
+## 3. 品質紅線（與鐵律同級，出處 `DELEGATION.md` §4/§7）
 
----
-
-## 3. 推薦的開發順序（Phase 1 細節）
-
-### Sprint 0: 環境設置（1 週）
-
-- [ ] 安裝 Godot 4.4 stable
-- [ ] Fork Slay The Robot，跑通預設範例
-- [ ] 設定 GitHub Actions（iOS + Android build pipeline）
-- [ ] 設定 Godot project export presets（iOS、Android）
-- [ ] 在 iPhone + Android 真機跑通 Slay The Robot 原版
-
-**驗收問題**：Slay The Robot 預設範例能不能在 iPhone 真機跑起來？能完成一場戰鬥嗎？
-
-### Sprint 1: 主題改造（2 週）
-
-- [ ] 替換 Slay The Robot 預設機器人主題 → 乩童
-- [ ] 建立 `data/cards/tongji/` 目錄，寫 10 張卡的 JSON
-- [ ] 替換 5 個預設敵人 → 山豬精、樹靈、虎姑婆等
-- [ ] 替換戰鬥資源文字（Energy → 神力，HP → 元神，etc.）
-- [ ] 美術全部用 placeholder（純色方塊 + 中文字）
-
-**驗收問題**：能不能用乩童打完一場「山豬精」戰鬥？資料是不是全部從 JSON 載入？
-
-### Sprint 2: 橫向 Mobile UI（2 週）
-
-- [ ] 重新設計戰鬥場景 UI 為橫向
-- [ ] 實作觸控手勢（拖曳出卡、長按看詳情）
-- [ ] 適配多種螢幕尺寸（iPhone SE 至 iPhone Pro Max）
-- [ ] 加入 i18n 框架（即使只支援繁中）
-
-**驗收問題**：UI 在 iPhone SE 和 iPhone 15 Pro Max 兩個極端尺寸下都正常嗎？
-
-### Sprint 3: 地圖與單章節（3 週）
-
-- [ ] 實作分支地圖系統（複用 Slay The Robot Act 系統）
-- [ ] 第一章 15 層地圖（戰鬥、菁英、商店、休息、事件、Boss）
-- [ ] 商店、休息（廟宇）、隨機事件節點
-- [ ] **章節王「百年虎爺」**戰鬥（簡化版即可，Phase 4 再打磨）
-
-**Phase 1 驗收（M2 結束）**：能從新一局開始 → 跑完第一章 → 打敗百年虎爺。1 個角色、30 張卡、15 個敵人，能在 iPhone 真機完整跑通。
-
----
+- 每個 UI 改動：headless 測試 + 三解析度 audit 必須綠
+- 交付前過「R1999 八條品質基準」自評，任一條 < 4 不得交付
+- 名詞紅線：禁用「韌性 / 弱點擊破 / 升階 / 終結技」，用「煞盾 / 破煞 / 合符 / 敕符 / 降乩」
+- 變現紅線：元寶只買外觀/角色解鎖；戰力、香火、抽卡碰不得
+- 演出 ≤ 1.5s 或可跳過；placeholder 必須明顯醜
 
 ## 4. 重要決策（已定，不要再問）
 
-| 決策 | 答案 | 理由 |
+| 決策 | 答案 | 出處 |
 |---|---|---|
-| 引擎 | Godot 4.4+ | MIT、STS2 同款、行動匯出成熟 |
-| 主要語言 | GDScript | 開發快、社群大、效能瓶頸再換 C# |
-| 起手框架 | Slay The Robot (MIT) | 省 6+ 月開發時間 |
-| 螢幕方向 | 橫向 | R1999 lobby 風、沿用 STR 橫向基底（2026-05-19 定案，早期直向作廢）|
-| 變現模式 | F2P + IAP | 已定，**不放廣告**（MVP） |
-| 首發語言 | 繁中、簡中、英文 | 主要市場 |
-| 後端 | 無（MVP） | 純本地 + 雲端存檔 |
+| 引擎 | Godot 4.6.1（GDScript） | QUESTIONS.md Q1 |
+| 螢幕方向 | 橫向 1200×700 | PRD §5.1、2026-05-19 定案 |
+| 美術方向 | Temple Neon Pixel（不轉向 R1999 風格） | ART_DIRECTION + 2026-06-11 憲龍拍板 |
+| 品質對標 | R1999 的**製作精緻度**（非風格、非內容量） | DELEGATION.md §2，2026-06-11 拍板 |
+| 程式碼層命名 | 沿用 STR 英文命名，UI 顯示走 i18n | QUESTIONS.md Q5 |
+| 變現 | F2P + IAP，不放廣告、不賣戰力 | PRD §9 |
+| 首發語言 | 繁中、簡中、英文 | PRD §2 |
+| 後端 | 無（本地加密存檔 + 平台雲存檔） | PRD §10 |
 
----
+## 5. 開放問題的處理方式
 
-## 5. 等決策的開放問題（請邊做邊問）
-
-把你做的時候卡住或需要決策的問題，**累積寫到 `COTIW/QUESTIONS.md`**，每週末（或每個 Sprint 結束）一次問憲龍，**不要每個問題都打斷他**。
-
-範本：
-```markdown
-## 2026-XX-XX Sprint X 結束問題清單
-
-### Q1: [問題標題]
-**情境**：[你遇到什麼]
-**選項 A**：[做法 A + 優缺點]
-**選項 B**：[做法 B + 優缺點]
-**你的建議**：[傾向哪個 + 為什麼]
-```
-
----
+卡住或需要決策 → 寫進 `QUESTIONS.md`（格式：情境 / 選項 A / 選項 B / 你的建議），每關卡結束或週末一次問憲龍。緊急問題直接問。自主 vs 上報的分界表見 `DELEGATION.md` §6。
 
 ## 6. 程式碼風格
 
-- **GDScript 命名**：`snake_case` 變數與函式、`PascalCase` 類別
-- **節點命名**：`PascalCase`（Godot 慣例）
-- **檔案命名**：`snake_case.gd`、`PascalCase.tscn`
-- **註解**：複雜邏輯一律寫中文註解（後續其他人接手較友善）
-- **無註解的 commit**：不接受
-- **commit message**：用中文，格式 `[類別] 動詞 + 對象`，例如 `[戰鬥] 加入邪氣狀態效果`
-
----
+- GDScript：`snake_case` 變數/函式、`PascalCase` 類別；節點 `PascalCase`；檔案 `snake_case.gd` / `PascalCase.tscn`
+- 複雜邏輯寫中文註解；commit message 中文：`[類別] 動詞 + 對象`（例：`[戰鬥] 加入煞盾碎裂演出`）
+- 新系統腳本放 `scripts/systems/ritual/`；新資料類別 extends `PrototypeData`
 
 ## 7. 測試要求
 
-- **戰鬥核心邏輯**：必須有單元測試（用 GUT framework）
-- **資料載入**：每個 JSON schema 要有 validator
-- **UI**：手動測試 + 真機驗證
-- **CI/CD**：每次 push 自動跑單元測試 + 自動 build
-
----
-
-## 8. 你必須避免的陷阱
-
-| 陷阱 | 後果 | 避免方式 |
-|---|---|---|
-| 一次想做完所有 Phase | 死於完美主義 | 嚴守 Phase 1 範圍，Phase 2 前不碰 |
-| 自己改 Slay The Robot 核心 | 失去追上游能力 | 改 framework 用 monkey patch / 繼承，不直接編輯 addon |
-| 硬編碼數值 | 後期平衡 hell | JSON 第一，所有 magic number 入設定檔 |
-| 寫了再說（無設計） | 重構地獄 | 每 Sprint 開始先寫一頁設計筆記 |
-| 忽略真機測試 | 上架前才發現 UI 爆炸 | 每週至少一次 iPhone + Android 真機跑 |
-| 美術 placeholder 變正式素材 | 上線醜陋 | placeholder 階段就用「明顯醜」的純色方塊，逼自己後期換掉 |
-
----
-
-## 9. 與憲龍的溝通
-
-- **每週**：1 次同步（書面 OK），報告本週進度 + 下週計畫
-- **每 Sprint 結束**：交付驗收影片（30 秒-2 分鐘真機錄影）+ 開放問題清單
-- **緊急問題**：直接問，不要等
-- **平衡問題**：你不負責，蒐集數據給憲龍決策
-
----
-
-## 10. 快速指令參考
+- 戰鬥核心邏輯：單元測試；每個 JSON schema：validator；UI：E2E driver + 三解析度 audit + 真機
+- 跑法（場景模式，`--script` 不載 autoload）：
 
 ```bash
-# 啟動 Godot 編輯器
-godot --editor
-
-# 命令列建 iOS 版
-godot --headless --export-release "iOS" build/cotiw.ipa
-
-# 命令列建 Android 版
-godot --headless --export-release "Android" build/cotiw.apk
-
-# 跑單元測試（場景模式；--script 不會載入 autoload，Global/Random 會找不到）
-godot --headless res://tests/TestRunner.tscn
+godot --headless --import                          # 首次或新增資源後
+godot --headless res://tests/TestRunner.tscn       # 全套測試，exit 0 = 綠
+godot --path . res://qa/uiux/e2e_driver.tscn       # E2E
+UIUX_RES=1244x700 godot --path . res://qa/uiux/uiux_audit_driver.tscn  # 解析度 audit（×3）
 ```
 
----
+## 8. 必讀文件導覽
 
-## 11. 重要連結
-
-- **PRD**：`./PRD.md`
-- **Slay The Robot 原 repo**：https://github.com/DesirePathGames/Slay-The-Robot
-- **Godot 4 mobile 匯出文件**：https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_ios.html
-- **GUT 測試框架**：https://github.com/bitwes/Gut
+| 文件 | 用途 |
+|---|---|
+| `DELEGATION.md` | **總委託書**（先讀） |
+| `README.md` | 專案現狀、已落地 vs 待接 |
+| `PRD.md` | 產品需求 v0.2 |
+| `docs/design/COTIW_UI_UX_ART_DIRECTION.md` | 美術憲法 |
+| `docs/design/PHASE_2_PLAN.md` | Phase 2 記錄（已完成，供考古） |
+| `qa/uiux/UIUX_QA_E2E_REVIEW_2026-06-11.md` | 最新 QA 與 roadmap |
+| `qa/uiux/ANIME_STYLE_UI_AUDIT_2026-06-07.md` | 逐畫面動漫化診斷 |
+| `QUESTIONS.md` | 待決策問題（含歷史定案） |
 
 ---
 
 **END OF CLAUDE.md**
 
-讀完後請開始 Sprint 0。第一個任務：fork Slay The Robot，把預設範例跑在 iPhone 真機上。
+讀完後：開啟 `DELEGATION.md`，從當前品質關卡開工（起點 Q0：QA 守門員化）。
