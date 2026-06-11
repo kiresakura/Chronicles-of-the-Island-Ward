@@ -21,3 +21,17 @@ func test_play_assigns_stream_to_pool() -> void:
 		if p is AudioStreamPlayer and (p as AudioStreamPlayer).stream != null:
 			assigned = true
 	assert_true(assigned, "play_sfx 應指派 stream 至池內 player")
+
+func test_bgm_paths_registered_for_four_scenes() -> void:
+	for key: String in ["main_menu", "map", "battle", "boss"]:
+		assert_true(AudioManager.BGM_PATHS.has(key), "BGM 場景應註冊：%s" % key)
+
+func test_bgm_unknown_scene_is_safe() -> void:
+	AudioManager.play_bgm("not_a_scene")	# 不得炸
+	assert_true(true, "未知 BGM 場景靜默略過")
+
+func test_bgm_files_exist_and_load() -> void:
+	# Suno 正式音源落檔檢查（缺檔=守門紅，避免「接線了但沒檔」矇混）
+	for key: String in AudioManager.BGM_PATHS:
+		var path: String = str(AudioManager.BGM_PATHS[key])
+		assert_true(ResourceLoader.exists(path), "BGM 檔應存在且可載：%s" % path)

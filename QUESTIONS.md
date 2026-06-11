@@ -359,7 +359,12 @@ FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
 
 **我的建議**：A 墊檔 + 把「民俗 SFX prompt 規格書」寫好放 Q3 一次決。Q1 不因音訊卡關。
 
-**🟡 待憲龍回覆（未覆前按 A 進行）**
+**🟢 部分解決 2026-06-11**：憲龍提供 sunoapi.org key → **BGM 四場景已正式生成落地**
+（Suno V4 器樂、OGG loop、AudioManager 場景自動切換，餘額 ~1018 credits 可續用於更多場景/變奏）。
+**SFX 仍開放**：Suno 不支援 one-shot 音效（實測兩種 prompt 皆拒）。選項：
+(a) 補一把 ElevenLabs key（sound-generation API，數百音效額度足夠全清單）
+(b) 核准我從 CC0 庫（freesound/kenney）下載挑選
+(c) 維持程序化佔位至 Q3。**建議 (a)**。
 
 ### Q1-B: 降乩 cut-in 的神明立繪素材策略（4 神各一）
 

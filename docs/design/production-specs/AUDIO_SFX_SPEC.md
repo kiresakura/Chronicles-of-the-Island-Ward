@@ -1,5 +1,10 @@
 # 鎮島錄 — 民俗 SFX / BGM 規格書（Q3 音訊全面 pass 用）
-**狀態**：Q1 已落地程序化佔位（`assets/audio/sfx_placeholder/PLACEHOLDER_*.wav`）+ AudioManager（SFX/BGM bus、8 槽池）。
+**狀態更新 2026-06-11**：BGM 四場景（主選單/地圖/戰鬥/Boss）已由 sunoapi.org（Suno V4）正式生成
+→ `assets/audio/bgm/bgm_*.ogg`（OGG q3、loop=true、AudioManager 訊號中樞自動切換）。
+SFX 仍為程序化佔位 — Suno 為歌曲式模型，one-shot 素材軌兩種 prompt 皆 GENERATE_AUDIO_FAILED；
+正式 SFX 需 SFX 專用服務（首選 ElevenLabs sound-generation，見 QUESTIONS.md Q1-A）。
+
+**原始狀態**：Q1 已落地程序化佔位（`assets/audio/sfx_placeholder/PLACEHOLDER_*.wav`）+ AudioManager（SFX/BGM bus、8 槽池）。
 **本檔目的**：Q3 替換正式音源時的採購/生成規格；來源方案（AI 生成 / CC0 庫 / 外包）由憲龍依 QUESTIONS.md Q1-A 決議。
 
 ## 風格憲法
