@@ -84,6 +84,8 @@ func damage(_damage: int, bypass_block: bool = false) -> Array[int]:
 				animation_player.play("death")
 				remove_from_group("enemies")
 				Signals.enemy_killed.emit(self)
+		else:
+			_check_awaken()	# Q3-A：Boss 覺醒（血量閾值，單次）
 	
 	return [bypassed_damage, bypassed_damage_capped, overkill_damage]
 
@@ -299,3 +301,29 @@ func _refresh_ward_ui() -> void:
 		if is_instance_valid(_weakness_chips):
 			_weakness_chips.visible = true
 #endregion
+
+
+# ───────────────── Q3-A Boss 覺醒（多階段轉場）─────────────────
+
+const AWAKEN_CUTIN_FX := preload("res://scripts/ui/fx/AwakenCutInFX.gd")
+
+## 血量 ≤ 閾值 → 覺醒一次：套 status + 煞盾重灌（第二輪破煞循環）+ cut-in + 染紅。
+## 全資料驅動（enemy JSON 的 awaken 欄位）；threshold 0 的敵人完全不進此路徑。
+func _check_awaken() -> void:
+	if enemy_data == null or enemy_data.enemy_awaken_threshold <= 0.0 or enemy_data.enemy_is_awakened:
+		return
+	if float(enemy_data.enemy_health) > float(enemy_data.enemy_health_max) * enemy_data.enemy_awaken_threshold:
+		return
+	enemy_data.enemy_is_awakened = true
+	for status_id: String in enemy_data.enemy_awaken_status_effects:
+		add_status_effect_charges(status_id, int(enemy_data.enemy_awaken_status_effects[status_id]))
+	if enemy_data.enemy_awaken_restore_ward and enemy_data.enemy_max_ward_shield > 0:
+		enemy_data.enemy_ward_shield = enemy_data.enemy_max_ward_shield
+		enemy_data.enemy_is_broken = false
+		_refresh_ward_ui()
+	# 覺醒體徵：常駐煞紅染色 + 受擊抖動
+	if _proc_anim != null:
+		_proc_anim.trigger_hurt()
+	modulate = Color(1.12, 0.82, 0.78)
+	AWAKEN_CUTIN_FX.play(self, enemy_data)
+	AudioManager.play_sfx("ward_break")	# Boss 專屬吼聲待 Q3-C 音源

@@ -84,3 +84,53 @@ func test_merge_energy_cost_gates_when_broke() -> void:
 	Global.run_merge_energy_cost = 0
 	Global.player_data.player_energy = saved_energy
 	hand.queue_free()
+
+# ---------- Q3-A Boss 覺醒（多階段轉場）----------
+
+func _awaken_enemy(hp_ratio: float) -> Enemy:
+	var e: Enemy = _enemy_in_tree()
+	e.enemy_data = Global.get_enemy_data_from_prototype("enemy_tiger_god")
+	e.enemy_data.enemy_health = int(e.enemy_data.enemy_health_max * hp_ratio)
+	return e
+
+func test_boss_awaken_json_carries_numbers() -> void:
+	var d: EnemyData = Global.get_enemy_data_from_prototype("enemy_tiger_god")
+	assert_true(d.enemy_awaken_threshold > 0.0, "百年虎爺應有覺醒閾值（JSON）")
+	assert_true(d.enemy_awaken_restore_ward, "覺醒應重灌煞盾（第二輪破煞循環）")
+	assert_ne(d.enemy_awaken_title, "", "覺醒標題在 JSON")
+
+func test_awaken_triggers_once_below_threshold() -> void:
+	var e: Enemy = _awaken_enemy(0.45)
+	e.enemy_data.enemy_ward_shield = 0
+	e.enemy_data.enemy_is_broken = true
+	AwakenCutInFX._last_msec = -100000
+	e._check_awaken()
+	assert_true(e.enemy_data.enemy_is_awakened, "血量 45% ≤ 閾值 50% 應覺醒")
+	assert_eq(e.enemy_data.enemy_ward_shield, e.enemy_data.enemy_max_ward_shield, "覺醒煞盾重灌")
+	assert_false(e.enemy_data.enemy_is_broken, "覺醒清除破煞態（第二輪循環）")
+	var ward_after: int = e.enemy_data.enemy_ward_shield
+	e.enemy_data.enemy_ward_shield = 3
+	e._check_awaken()
+	assert_eq(e.enemy_data.enemy_ward_shield, 3, "覺醒只觸發一次（不重灌第二次）")
+	var layer: Node = Global.get_tree().root.get_node_or_null("AwakenCutInLayer")
+	if layer != null:
+		AwakenCutInFX._free_layer(layer)
+	e.queue_free()
+
+func test_awaken_not_triggered_above_threshold() -> void:
+	var e: Enemy = _awaken_enemy(0.8)
+	e._check_awaken()
+	assert_false(e.enemy_data.enemy_is_awakened, "血量 80% > 閾值不覺醒")
+	e.queue_free()
+
+func test_normal_enemies_never_awaken() -> void:
+	var e: Enemy = _enemy_in_tree()
+	e.enemy_data = Global.get_enemy_data_from_prototype("enemy_tiger_aunt")
+	e.enemy_data.enemy_health = 1
+	e._check_awaken()
+	assert_false(e.enemy_data.enemy_is_awakened, "threshold 0 的敵人不進覺醒路徑")
+	e.queue_free()
+
+func test_awaken_cutin_contract() -> void:
+	assert_true(AwakenCutInFX.TOTAL_LIFE <= 1.5, "覺醒 cut-in ≤1.5s（演出鐵律）")
+	assert_true(AwakenCutInFX.DIM_ALPHA >= 0.30, "壓暗 ≥30%（基準 Q-2）")

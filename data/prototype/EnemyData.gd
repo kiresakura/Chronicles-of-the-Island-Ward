@@ -23,6 +23,13 @@ enum ENEMY_TYPES {STANDARD, MINIBOSS, BOSS}
 @export var enemy_weaknesses: Array[String] = []	# 弱點儀法標籤，如 ["fist","fire"]（鍵見 RitualTags.gd）
 @export var enemy_break_effect: String = ""		# 破煞後效果鍵：break_stun / break_vulnerable / break_weak / break_stun_vulnerable / break_invoke_window
 @export var enemy_broken_turns: int = 1			# 破煞後爆發窗口持續回合數
+
+# Q3-A Boss 覺醒（多階段轉場；數值在敵人 JSON — 鐵律 1）。threshold 0 = 無覺醒機制。
+@export var enemy_awaken_threshold: float = 0.0			# 血量比例 ≤ 此值觸發覺醒（如 0.5）
+@export var enemy_awaken_status_effects: Dictionary[String, int] = {}	# 覺醒套用 status → 層數
+@export var enemy_awaken_restore_ward: bool = false		# 覺醒時煞盾重灌（第二輪破煞循環）
+@export var enemy_awaken_title: String = ""				# 覺醒 cut-in 標題（如「百年虎爺・煞變」）
+var enemy_is_awakened: bool = false						# runtime 狀態（單次觸發守門）
 # ── 執行期破煞狀態（非序列化；由 WardBreakSystem 維護）──
 var enemy_is_broken: bool = false
 var enemy_broken_turns_remaining: int = 0
