@@ -40,7 +40,7 @@ func test_lobby_p0_actions_are_grouped_by_frequency() -> void:
 			_:
 				_fail("每個 lobby action 都必須標記 priority=high/low：%s" % str(action))
 	assert_eq(high_count, 3, "P0 高頻入口應固定三個：角色/新局/收藏")
-	assert_eq(low_count, 3, "P0 低頻入口應固定三個：陣型/商店/招募")
+	assert_eq(low_count, 3, "P0 低頻入口應固定三個：修廟/商店/招募（Q2-D 修廟取代陣型佔位）")
 
 func test_combat_hud_incoming_damage_label_is_not_hostility() -> void:
 	var state := {

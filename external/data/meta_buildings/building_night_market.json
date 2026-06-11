@@ -10,6 +10,8 @@
 			"shop_stock"
 		],
 		"max_level": 3,
-		"is_cosmetic_only": false
+		"is_cosmetic_only": false,
+		"shop_stock_bonus_cards_per_level": 1,
+		"shop_stock_bonus_consumables": 1
 	}
 }
