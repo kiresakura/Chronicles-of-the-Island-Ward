@@ -78,6 +78,14 @@ func visit_shop() -> void:
 		var card_prices: Array[int] = Random.get_shop_card_prices(generated_cards, rng_shop)
 		var artifact_prices: Array[int] = Random.get_shop_artifact_prices(artifact_ids, rng_shop)
 		var consumable_prices: Array[int] = Random.get_shop_consumable_prices(consumable_ids, rng_shop)
+		# Q3-E 籤詩：商店售價倍率（香客盈門 0.8× / 妙手回春 1.15× — 數值在 fortune JSON）
+		if Global.run_fortune_shop_price_mult != 1.0:
+			for i: int in card_prices.size():
+				card_prices[i] = maxi(1, roundi(card_prices[i] * Global.run_fortune_shop_price_mult))
+			for i: int in artifact_prices.size():
+				artifact_prices[i] = maxi(1, roundi(artifact_prices[i] * Global.run_fortune_shop_price_mult))
+			for i: int in consumable_prices.size():
+				consumable_prices[i] = maxi(1, roundi(consumable_prices[i] * Global.run_fortune_shop_price_mult))
 		
 		### Generate Population Action
 		ActionGenerator.generate_populate_shop_items(generated_cards, card_prices, artifact_ids, artifact_prices, consumable_ids, consumable_prices)

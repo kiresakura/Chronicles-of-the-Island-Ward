@@ -1,0 +1,17 @@
+{
+	"patch_data": {},
+	"properties": {
+		"shop_price_mult": 1.0,
+		"money_gain_mult": 1.25,
+		"post_combat_heal": 0,
+		"max_health_delta": -8,
+		"incense_mult": 1.0,
+		"reveal_all_map": false,
+		"object_id": "fortune_sail_by_wind",
+		"stick_name": "行船看風",
+		"stick_grade": "中",
+		"stick_verse": "行船全靠一帆風，財來財去兩相沖",
+		"stick_up_text": "銀兩獲取 +25%",
+		"stick_down_text": "元神上限 -8"
+	}
+}

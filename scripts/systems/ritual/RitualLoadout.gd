@@ -91,6 +91,21 @@ static func _list_ids(dir_path: String) -> Array[String]:
 	return ids
 
 ## 出戰神明解析：法器 affinity > 護壇 affinity > 預設虎爺。
+## Q3-E 正殿備援神位（最小版，憲龍拍板）：主神 = 現行親和解析；備援 = 親和鏈次位
+## （法器主 → 護壇次；同神則退 DEFAULT；再同則無備援）。slots 上限裁切。
+static func resolve_deity_queue(guardian: GuardianData, tool: RitualToolData, slots: int) -> Array[String]:
+	var queue: Array[String] = []
+	var primary: String = resolve_active_deity(guardian, tool)
+	queue.append(primary)
+	if guardian != null and guardian.guardian_affinity_deity_id != "" \
+			and guardian.guardian_affinity_deity_id != primary:
+		queue.append(guardian.guardian_affinity_deity_id)
+	elif DEFAULT_DEITY_ID != primary:
+		queue.append(DEFAULT_DEITY_ID)
+	if queue.size() > maxi(1, slots):
+		queue.resize(maxi(1, slots))
+	return queue
+
 static func resolve_active_deity(guardian: GuardianData, tool: RitualToolData) -> String:
 	if tool != null and tool.tool_affinity_deity_id != "":
 		return tool.tool_affinity_deity_id
