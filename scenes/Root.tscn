@@ -2027,7 +2027,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 40
-text = "選一個起手選項"
+text = "神示供桌"
 horizontal_alignment = 1
 vertical_alignment = 1
 
