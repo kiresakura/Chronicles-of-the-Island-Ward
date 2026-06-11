@@ -42,6 +42,7 @@ ActionGenerator="*res://autoload/ActionGenerator.gd"
 DebugLogger="*res://autoload/DebugLogger.gd"
 UIDGenerator="*res://autoload/UIDGenerator.gd"
 Responsive="*res://autoload/Responsive.gd"
+AudioManager="*res://autoload/AudioManager.gd"
 
 [debug]
 

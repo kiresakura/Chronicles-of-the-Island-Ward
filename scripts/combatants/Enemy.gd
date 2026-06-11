@@ -14,6 +14,7 @@ var enemy_intent_number_of_attacks: int = 0
 
 # 鎮島錄 — 破煞系統：頭頂煞盾指示（僅在有煞盾機制的敵人上建立）
 var _ward_label: Label = null
+var _weakness_chips: HBoxContainer = null	# Q1-E：儀法璽印章排
 
 func init(_enemy_data: EnemyData):
 	enemy_data = _enemy_data
@@ -258,6 +259,11 @@ func _setup_ward_ui() -> void:
 	_ward_label.offset_top = -98.0
 	_ward_label.offset_bottom = -68.0
 	sprite.add_child(_ward_label)
+	# Q1-E：弱點儀法璽印章排（icon 化，取代文字「弱 拳火」）
+	_weakness_chips = preload("res://scripts/ui/theme/WeaknessChips.gd").make(enemy_data.enemy_weaknesses if enemy_data != null else [])
+	_weakness_chips.position = Vector2(-60.0, -132.0)
+	_weakness_chips.size = Vector2(120.0, 28.0)
+	sprite.add_child(_weakness_chips)
 	_refresh_ward_ui()
 
 ## 重繪煞盾指示：破煞態顯示「破煞！(剩餘窗口)」橘字，否則顯示「煞盾 N/M｜弱 〔弱點字〕」藍字。
@@ -267,10 +273,12 @@ func _refresh_ward_ui() -> void:
 	if enemy_data.enemy_is_broken:
 		_ward_label.text = "破煞！(%d)" % enemy_data.enemy_broken_turns_remaining
 		_ward_label.add_theme_color_override("font_color", Color(1.0, 0.55, 0.2))
+		if is_instance_valid(_weakness_chips):
+			_weakness_chips.visible = false	# 破煞窗口：弱點資訊退場，聚焦輸出
 	else:
-		var wk: String = ""
-		for t: String in enemy_data.enemy_weaknesses:
-			wk += str(RitualTags.DISPLAY.get(t, ""))
-		_ward_label.text = "煞盾 %d/%d｜弱 %s" % [enemy_data.enemy_ward_shield, enemy_data.enemy_max_ward_shield, wk]
+		# Q1-E：弱點改璽印章 icon（文字僅留煞盾數值）
+		_ward_label.text = "煞盾 %d/%d" % [enemy_data.enemy_ward_shield, enemy_data.enemy_max_ward_shield]
 		_ward_label.add_theme_color_override("font_color", Color(0.72, 0.82, 1.0))
+		if is_instance_valid(_weakness_chips):
+			_weakness_chips.visible = true
 #endregion
