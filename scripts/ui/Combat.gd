@@ -9,6 +9,10 @@ const _FLAT_DECALS := [
 	"CombatTopBarBg", "CombatTopBarGold", "CombatBottomBarBg", "CombatBottomBarGold",
 ]
 
+const HUD_FOCUS := preload("res://scripts/ui/theme/HudFocus.gd")
+const WARD_BREAK_FX := preload("res://scripts/ui/fx/WardBreakFX.gd")
+const DEITY_CUTIN_FX := preload("res://scripts/ui/fx/DeityCutInFX.gd")
+
 @onready var money_label: Label = $%MoneyLabel
 @onready var health_label: Label = $%HealthLabel
 
@@ -40,6 +44,8 @@ const _FLAT_DECALS := [
 ## 鎮島錄 — 請神（Phase 1D）：虎爺請神槽控制器 + 降乩按鈕（程序化建立，不動 Combat.tscn）
 var _deity_controller: DeityChargeController = null
 var _invoke_button: Button = null
+var _invoke_fill: ColorRect = null	# Q1-E：請神槽充能條
+var _invoke_glow_tween: Tween = null	# Q1-E：滿槽金光脈動
 var end_turn_object: CombatEndTurn = null
 
 # ── P0 戰鬥狀態提示 + 不可出牌 toast（additive；不改既有 signal flow） ──
@@ -125,6 +131,11 @@ func _ready():
 	_build_combat_toast()
 	# 鎮島錄 — 請神槽 + 降乩按鈕（Phase 1D）
 	_build_deity_invocation()
+	# Q1-A：HUD 三層閱讀秩序 — 低頻資訊 idle 降權（變化時打一拍）
+	_apply_hud_focus_layers()
+	# Q1-B：破煞演出 — 演出層只訂閱事件，數值留在 WardBreakSystem（鐵律 1）
+	if not Signals.enemy_broken.is_connected(_on_enemy_broken_fx):
+		Signals.enemy_broken.connect(_on_enemy_broken_fx)
 
 
 ## 套用戰鬥上排 TextureButton 的 icon（取代 icon.svg placeholder）
@@ -159,9 +170,9 @@ func _on_map_location_selected(location_data: LocationData):
 
 func update_combat_display():
 	energy_count.text = str(Global.player_data.player_energy) + "/" + str(Global.player_data.player_energy_max)
-	draw_count.text = str(len(Global.player_data.player_draw))
-	discard_count.text = str(len(Global.player_data.player_discard))
-	exhaust_count.text = str(len(Global.player_data.player_exhaust))
+	_set_count_with_pulse(draw_count, draw_pile_button, str(len(Global.player_data.player_draw)))
+	_set_count_with_pulse(discard_count, discard_pile_button, str(len(Global.player_data.player_discard)))
+	_set_count_with_pulse(exhaust_count, exhaust_pile_button, str(len(Global.player_data.player_exhaust)))
 	_on_player_health_changed()
 	_on_player_money_changed()
 
@@ -219,7 +230,10 @@ func _on_card_queue_refunded():
 	update_combat_display()
 
 func _on_player_money_changed():
-	money_label.text = tr("reward.money") % Global.player_data.player_money
+	var _money_text: String = tr("reward.money") % Global.player_data.player_money
+	if money_label.text != _money_text:
+		money_label.text = _money_text
+		HUD_FOCUS.pulse(money_label)
 
 func _on_player_health_changed():
 	health_label.text = "%s / %s" % [Global.player_data.player_health, Global.player_data.player_health_max]
@@ -479,6 +493,7 @@ func _on_enemy_turn_ended():
 	start_turn_animation()
 	
 func _on_end_turn_button_up():
+	AudioManager.play_sfx("turn_end")	# Q1-F
 	queue_end_turn(CombatEndTurn.END_TURN_QUEUE_IMMEDIACY.WAIT_FOR_ALL_CARD_PLAYS)
 
 func _on_end_turn_requested(immediacy: int):
@@ -720,6 +735,20 @@ func _build_deity_invocation() -> void:
 	_invoke_button.visible = false
 	_invoke_button.pressed.connect(_on_invoke_button_pressed)
 	add_child(_invoke_button)
+	HUD_FOCUS.mark_low_freq(_invoke_button)	# Q1-A：請神進度屬層 3，滿槽才升層
+	# Q1-E：鈕內底部充能細條（背景 + 金色填充）
+	var fill_bg := ColorRect.new()
+	fill_bg.color = Color(0.12, 0.06, 0.05, 0.9)
+	fill_bg.position = Vector2(6.0, 27.0)
+	fill_bg.size = Vector2(178.0, 4.0)
+	fill_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_invoke_button.add_child(fill_bg)
+	_invoke_fill = ColorRect.new()
+	_invoke_fill.color = Color(0.95, 0.78, 0.32)
+	_invoke_fill.position = Vector2(6.0, 27.0)
+	_invoke_fill.size = Vector2(0.0, 4.0)
+	_invoke_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_invoke_button.add_child(_invoke_fill)
 
 func _on_deity_charge_changed(current: int, max_charge: int) -> void:
 	if not is_instance_valid(_invoke_button):
@@ -731,9 +760,20 @@ func _on_deity_charge_changed(current: int, max_charge: int) -> void:
 	if _deity_controller != null and _deity_controller.is_ready():
 		_invoke_button.text = "%s 降乩！" % dname
 		_invoke_button.disabled = false
+		HUD_FOCUS.set_operational(_invoke_button, true)	# 滿槽=本回合可操作 → 恆亮
+		if is_instance_valid(_invoke_fill):
+			_invoke_fill.size.x = 178.0
+		_start_invoke_glow()	# Q1-E：滿槽金光脈動
 	else:
+		var _prev_text: String = _invoke_button.text
 		_invoke_button.text = "%s 請神 %d/%d" % [dname, current, max_charge]
 		_invoke_button.disabled = true
+		HUD_FOCUS.set_operational(_invoke_button, false)
+		_stop_invoke_glow()
+		if is_instance_valid(_invoke_fill) and max_charge > 0:
+			_invoke_fill.size.x = 178.0 * clampf(float(current) / float(max_charge), 0.0, 1.0)
+		if _prev_text != _invoke_button.text:
+			HUD_FOCUS.pulse(_invoke_button)	# 充能進度變化打一拍
 
 func _on_invoke_button_pressed() -> void:
 	if _deity_controller == null or not _deity_controller.is_ready():
@@ -756,7 +796,9 @@ func _execute_deity_invocation(deity: DeityData) -> void:
 			_invoke_land_blessing()
 		_:
 			pass
-	show_combat_toast("%s降乩！" % deity.deity_name)
+	# Q1-D：cut-in 演出取代文字 toast（效果已即時結算，演出純 overlay 不拖慢操作）
+	DEITY_CUTIN_FX.play(self, deity)
+	AudioManager.play_sfx("invoke")	# Q1-F
 
 ## 虎爺咬煞：對全體存活敵人造成穿透傷害，並延長其破煞爆發窗口 1 回合。
 ## 直接走 Enemy.damage()（可靠、含破煞 ×1.5 與死亡處理）；action 化的演出時序屬後續打磨。
@@ -789,3 +831,46 @@ func _invoke_land_blessing() -> void:
 	if is_instance_valid(player):
 		player.add_block(LAND_BLOCK)
 #endregion
+
+
+## Q1-A：三層閱讀秩序接線 — 層 3 低頻元素清單（層 1/2 不經此系統，恆亮）
+func _apply_hud_focus_layers() -> void:
+	for low_freq: Variant in [
+		money_label,
+		deck_button, draw_pile_button, discard_pile_button, exhaust_pile_button,
+		get_node_or_null("MapButton"), get_node_or_null("PauseButton"),
+	]:
+		if low_freq is CanvasItem:
+			HUD_FOCUS.mark_low_freq(low_freq as CanvasItem)
+
+## 計數文字變更才更新 + 對所屬按鈕打鼓點（值沒變不打 — 熱鬧要有鼓點）
+func _set_count_with_pulse(count_label: Label, owner_button: CanvasItem, new_text: String) -> void:
+	if count_label.text == new_text:
+		return
+	count_label.text = new_text
+	HUD_FOCUS.pulse(owner_button)
+
+
+## Q1-B：破煞情緒峰值 — 煞盾碎裂 + 畫面震 + 背景降亮（總長 0.72s，不阻塞輸入）
+func _on_enemy_broken_fx(enemy: Enemy) -> void:
+	if enemy == null or not is_instance_valid(enemy) or not visible:
+		return
+	var at: Vector2 = enemy.global_position + Vector2(0.0, -60.0)	# 煞盾環視覺位置（頭頂）
+	WARD_BREAK_FX.play(self, at)
+	AudioManager.play_sfx("ward_break")	# Q1-F
+
+
+## Q1-E：滿槽金光脈動（呼吸式 self_modulate 暖金；非滿槽即停）
+func _start_invoke_glow() -> void:
+	if _invoke_glow_tween != null and _invoke_glow_tween.is_valid():
+		return
+	_invoke_glow_tween = _invoke_button.create_tween().set_loops()
+	_invoke_glow_tween.tween_property(_invoke_button, "self_modulate", Color(1.35, 1.18, 0.85), 0.55).set_trans(Tween.TRANS_SINE)
+	_invoke_glow_tween.tween_property(_invoke_button, "self_modulate", Color(1, 1, 1), 0.55).set_trans(Tween.TRANS_SINE)
+
+func _stop_invoke_glow() -> void:
+	if _invoke_glow_tween != null and _invoke_glow_tween.is_valid():
+		_invoke_glow_tween.kill()
+	_invoke_glow_tween = null
+	if is_instance_valid(_invoke_button):
+		_invoke_button.self_modulate = Color(1, 1, 1)

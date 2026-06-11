@@ -568,6 +568,7 @@ func refund_card_queue():
 	Signals.card_queue_refunded.emit()
 
 func _on_card_played(card_play_request: CardPlayRequest):
+	AudioManager.play_sfx("card_play")	# Q1-F
 	# reset card play cost
 	if card_play_request.card_data.card_energy_cost_until_played > -1:
 		card_play_request.card_data.set_card_energy_cost_until_played(-1)
@@ -898,10 +899,27 @@ func merge_cards(card_a: CardData, card_b: CardData) -> bool:
 	var consumed: Array[CardData] = [card_b]
 	banish_cards(consumed)
 	_merges_used_this_turn += 1
-	if is_instance_valid(combat) and combat.has_method("show_combat_toast"):
-		combat.show_combat_toast("合符！")
+	# Q1-C：演出取代文字 — FuheFX 自帶漫畫「合符！」，文字 toast 移除（吵不等於熱鬧）
 	FuheFX.play(self, _merge_fx_position(card_a))	# P0-4：符飛合 + 金光爆 + 漫畫「合符！」
+	_play_merged_card_rebirth(card_a)	# Q1-C：新符落入手牌（重生彈跳 + 金閃）
+	AudioManager.play_sfx("fuhe")	# Q1-F
 	return true
+
+## Q1-C：合成高階符的「誕生」動效 — 縮放 punch（0.55→1.0 過衝）+ 金光閃回常色，~0.42s。
+## 純視覺：不動卡牌資料與手牌排版邏輯（tween_hand 只管 position，scale 不衝突）。
+func _play_merged_card_rebirth(card_a: CardData) -> void:
+	var card: Variant = card_data_to_hand_card.get(card_a)
+	if not (is_instance_valid(card) and card is Control):
+		return
+	var c: Control = card as Control
+	c.pivot_offset = c.size * 0.5
+	c.scale = Vector2(0.55, 0.55)
+	c.modulate = Color(1.7, 1.45, 0.8)	# 金光過曝
+	var tw := c.create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(c, "scale", Vector2.ONE, 0.34).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(c, "modulate", MERGE_HINT_TINT, 0.42)	# 回到可合符提示色系（重排會再刷新）
+	tw.chain().tween_callback(_refresh_merge_affordance)
 
 ## P0-4：合符 FX 播放點 — 已合符卡（card_a）上方一點；取不到時退回畫面中上。
 func _merge_fx_position(card_a: CardData) -> Vector2:

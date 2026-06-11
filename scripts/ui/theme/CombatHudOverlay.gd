@@ -5,6 +5,8 @@
 extends Object
 class_name CombatHudOverlay
 
+const HUD_FOCUS := preload("res://scripts/ui/theme/HudFocus.gd")
+
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const DEITY_DIR := "res://assets/generated/icons/deities/"
 const RING_SIZE := Vector2(128, 128)
@@ -82,6 +84,7 @@ static func apply(host: Control, provider: Object = null) -> CanvasLayer:
 
 	var deity_holder := _make_deity_badges(state.get("deity_affinity", DEFAULT_DEITY_AFFINITY))
 	layer.add_child(deity_holder)
+	HUD_FOCUS.mark_low_freq(deity_holder)	# Q1-A：神祇好感徽章屬層 3 低頻
 
 	var status_strip := _make_status_strip(state)
 	layer.add_child(status_strip)

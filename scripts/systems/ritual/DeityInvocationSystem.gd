@@ -42,6 +42,7 @@ static func load_deity(deity_id: String) -> DeityData:
 	d.object_id = str(props.get("object_id", deity_id))
 	d.deity_name = str(props.get("deity_name", ""))
 	d.deity_description = str(props.get("deity_description", ""))
+	d.deity_texture_path = str(props.get("deity_texture_path", ""))	# Q1-D：cut-in 立繪
 	var tags: Array[String] = []
 	for t: Variant in props.get("deity_charge_tags", []):
 		tags.append(str(t))
