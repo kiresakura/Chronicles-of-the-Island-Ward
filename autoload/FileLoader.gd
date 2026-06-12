@@ -45,6 +45,9 @@ const VALID_IMAGE_EXTENSIONS: Array[String] = [
 	".png", ".jpg", ".jpeg", ".svg"
 ]
 
+# Q4-D 雲端存檔（preload 慣例 — class_name 全域註冊 headless 不可靠）
+const CloudSaveScript := preload("res://scripts/systems/cloud/CloudSave.gd")
+
 func _ready():
 	# change the base folder path based on the build type
 	DebugLogger.log_line("FileLoader: To enable external file loading in builds, download an export template and add the custom feature tag \"exported\" to the export. See https://docs.godotengine.org/en/stable/tutorials/export/feature_tags.html",Color.YELLOW, DebugLogger.Severities.WARNING)
@@ -569,5 +572,8 @@ func load_profile() -> void:
 		save_profile()
 
 func save_profile() -> void:
+	# Q4-D：落地前蓋寫入時戳（雲端對帳 last-writer-wins 依據）
+	Global.profile_data.profile_updated_at_unix = int(Time.get_unix_time_from_system())
 	var dict_repr: Dictionary = Global.profile_data.get_serializable_properties(true)
 	save_json_encrypted(PROFILE_DIR_PATH, PROFILE_FILE_NAME, dict_repr)	# Q4-B 進度檔加密
+	CloudSaveScript.push_after_save(dict_repr)	# 雲端可用時順手上雲（否則零成本 no-op）

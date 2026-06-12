@@ -20,6 +20,10 @@ class_name ProfileData
 @export var profile_incense_balance: int = 0
 @export var profile_building_id_to_level: Dictionary[String, int] = {}
 
+## Q4-D 雲端存檔：最後寫入時戳（unix 秒）— 開機對帳 last-writer-wins 依據。
+## FileLoader.save_profile() 落地時蓋章。
+@export var profile_updated_at_unix: int = 0
+
 ## Q4-C IAP：元寶（付費貨幣）。紅線：元寶只買外觀/角色解鎖 —
 ## 香火與戰力不可販售，授與路由在 IAPManager 以白名單強制。
 @export var profile_yuanbao: int = 0
