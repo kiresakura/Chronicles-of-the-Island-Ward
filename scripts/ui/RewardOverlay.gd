@@ -66,7 +66,7 @@ static func make_offering_table_panel(panel_size: Vector2 = Vector2(640, 360)) -
 
 	var title := Label.new()
 	title.name = "OfferingTitle"
-	title.text = "神示供桌"
+	title.text = TranslationServer.translate("reward.title")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.position = Vector2(20.0, 14.0)
 	title.size = Vector2(maxf(0.0, panel_size.x - 40.0), 28.0)
@@ -79,7 +79,7 @@ static func make_offering_table_panel(panel_size: Vector2 = Vector2(640, 360)) -
 
 	var rule := Label.new()
 	rule.name = "ChoiceRuleLabel"
-	rule.text = "三份神示只能領一份；長按可看細節。"
+	rule.text = TranslationServer.translate("reward.hint")
 	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rule.position = Vector2(20.0, 42.0)
 	rule.size = Vector2(maxf(0.0, panel_size.x - 40.0), 22.0)

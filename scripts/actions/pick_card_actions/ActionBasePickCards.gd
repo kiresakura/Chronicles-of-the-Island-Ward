@@ -53,7 +53,7 @@ func get_card_pick_text() -> String:
 	var remaining_card_amount: int = max_card_amount - picked_card_amount
 	var pickable_cards_max_amount: int = get_pickable_cards_max_amount()
 	
-	var card_pick_text: String = get_action_value("card_pick_text", "選擇 {0} 張卡（已選 {1}）")
+	var card_pick_text: String = get_action_value("card_pick_text", tr("pick.cards"))
 	var returned_text: String = card_pick_text.format([max_card_amount, picked_card_amount, remaining_card_amount, pickable_cards_max_amount])
 	return returned_text
 

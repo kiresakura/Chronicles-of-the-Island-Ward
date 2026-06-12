@@ -21,10 +21,10 @@ var PANEL_BG_ACTIVE: Color = Color(0.36, 0.10, 0.08, 0.96)
 
 # 候選清單：有 anim 條的 unlocked 角色 + 鎖定角色
 const CHOICES: Array = [
-	{"id": "character_tongji", "label": "乩童",  "locked": false},
-	{"id": "character_luannu", "label": "鸞女",  "locked": false},
-	{"id": "",                 "label": "道士",  "locked": true},
-	{"id": "",                 "label": "家將",  "locked": true},
+	{"id": "character_tongji", "label": "mascot.tongji",  "locked": false},
+	{"id": "character_luannu", "label": "mascot.luannu",  "locked": false},
+	{"id": "",                 "label": "mascot.daoshi",  "locked": true},
+	{"id": "",                 "label": "mascot.jiajiang",  "locked": true},
 ]
 
 var _back_btn: Button
@@ -70,7 +70,7 @@ func _build_backdrop() -> void:
 
 func _build_title() -> void:
 	_title_lbl = Label.new()
-	_title_lbl.text = "選看板娘"
+	_title_lbl.text = tr("mascot.pick_title")
 	_title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_gold_font(_title_lbl, 38)
 	add_child(_title_lbl)
@@ -80,7 +80,7 @@ func _build_cards() -> void:
 	for choice in CHOICES:
 		var c_id: String = choice["id"]
 		var locked: bool = choice["locked"]
-		var label: String = choice["label"]
+		var label: String = tr(str(choice["label"]))
 
 		var panel := Panel.new()
 		panel.name = "Card_" + label
@@ -111,7 +111,7 @@ func _build_cards() -> void:
 
 		# 名稱
 		var name_lbl := Label.new()
-		name_lbl.text = label + ("（鎖）" if locked else "")
+		name_lbl.text = label + (tr("mascot.locked") if locked else "")
 		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_gold_font(name_lbl, 22)
 		if locked:
@@ -122,7 +122,7 @@ func _build_cards() -> void:
 		var active_lbl: Label = null
 		if is_active:
 			active_lbl = Label.new()
-			active_lbl.text = "★ 目前"
+			active_lbl.text = tr("mascot.current")
 			active_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			_gold_font(active_lbl, 16)
 			active_lbl.add_theme_color_override("font_color", Color(1.0, 0.84, 0.42))
@@ -148,7 +148,7 @@ func _build_cards() -> void:
 
 func _build_back_button() -> void:
 	_back_btn = Button.new()
-	_back_btn.text = "← 返回"
+	_back_btn.text = tr("mascot.back")
 	_back_btn.flat = false
 	_back_btn.focus_mode = Control.FOCUS_NONE
 	_back_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

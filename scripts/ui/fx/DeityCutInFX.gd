@@ -105,7 +105,7 @@ static func play(host: Node, deity: DeityData) -> void:
 
 	# 5) 「神名・降乩」牌匾字（左側對位）
 	var title := Label.new()
-	title.text = "%s・降乩" % deity.deity_name
+	title.text = TranslationServer.translate("fx.invoke_title") % deity.deity_name
 	title.add_theme_font_size_override("font_size", 54)
 	title.add_theme_color_override("font_color", Color(1.0, 0.92, 0.6))
 	title.add_theme_color_override("font_shadow_color", Color(0.25, 0.03, 0.03, 0.9))

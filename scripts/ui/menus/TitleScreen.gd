@@ -20,10 +20,10 @@ const BRAND_HOLD_SEC: float = 0.35      # 品牌過場停留時間（儀式感�
 const OVERLAY_FADE_SEC: float = 0.15    # 過場淡出時間
 # 氛圍文案：用「已完成」語氣，避免「…中」讓玩家誤以為仍在載入
 const BRAND_PHRASES: Array[String] = [
-	"香火已燃",
-	"聖筊已應",
-	"鎮島降乩",
-]
+	"title.loading1",
+	"title.loading2",
+	"title.loading3",
+]	# i18n key（const 內不可 tr，顯示點翻）
 
 @onready var main_menu = $MainMenu
 @onready var new_run_menu = $NewRunMenu
@@ -146,7 +146,7 @@ func _build_root_loading_overlay() -> void:
 
 	_loading_title = Label.new()
 	_loading_title.name = "Title"
-	_loading_title.text = "鎮島錄"
+	_loading_title.text = tr("title.game")
 	_loading_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_loading_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_loading_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -176,7 +176,7 @@ func _begin_root_transition() -> void:
 	_loading_active = true
 	_loading_finished = false
 	# 隨機挑一句氛圍文案（用 ticks 當種子，避免每次都同一句）
-	var phrase: String = BRAND_PHRASES[int(Time.get_ticks_msec()) % BRAND_PHRASES.size()]
+	var phrase: String = tr(BRAND_PHRASES[int(Time.get_ticks_msec()) % BRAND_PHRASES.size()])
 	_loading_status.text = phrase
 	visible = true
 	hide_menus()

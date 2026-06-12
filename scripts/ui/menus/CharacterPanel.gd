@@ -22,9 +22,9 @@ const CHARS: Array = [
 	{"id": "character_tongji",   "file": "tongji.png",   "v2_card": "tongji_card.png"},
 	{"id": "character_luannu",   "file": "luannu.png",   "v2_card": "luannu_card.png"},
 	{"id": "character_daoshi",   "file": "daoshi.png",   "v2_card": "daoshi_card.png",
-	 "name": "道士", "desc": "（修煉中…）"},
+	 "name": "mascot.daoshi", "desc": "char.training"},
 	{"id": "character_jiajiang", "file": "jiajiang.png", "v2_card": "jiajiang_card.png",
-	 "name": "家將", "desc": "（鎮島之師…）"},
+	 "name": "mascot.jiajiang", "desc": "char.master"},
 ]
 
 var _title_lbl: Label
@@ -79,7 +79,7 @@ func _build_backdrop() -> void:
 func _build_title() -> void:
 	_title_lbl = Label.new()
 	_title_lbl.name = "TitleLabel"
-	_title_lbl.text = "角色"
+	_title_lbl.text = tr("char.title")
 	_title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_gold_font(_title_lbl, 38)
 	add_child(_title_lbl)
@@ -105,8 +105,8 @@ func _build_cards() -> void:
 			char_desc = cd.character_description
 			char_hp   = cd.character_starting_health
 		else:
-			char_name = c.get("name", "???")
-			char_desc = c.get("desc", "")
+			char_name = tr(str(c.get("name", "???")))
+			char_desc = tr(str(c.get("desc", "")))
 			char_hp   = 0
 			# 附上解鎖 hint（如 "0 / 3 勝場"）
 			if actor_id != "":
@@ -142,7 +142,7 @@ func _build_cards() -> void:
 		# 名稱（鎖定者附上「（鎖）」）
 		var name_lbl := Label.new()
 		name_lbl.name = "NameLabel"
-		name_lbl.text = char_name + ("（鎖）" if locked else "")
+		name_lbl.text = char_name + (tr("mascot.locked") if locked else "")
 		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_gold_font(name_lbl, 20)
 		if locked:
@@ -180,7 +180,7 @@ func _build_cards() -> void:
 			set_mascot_btn.name = "SetMascotBtn"
 			set_mascot_btn.focus_mode = Control.FOCUS_NONE
 			set_mascot_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			set_mascot_btn.text = "★ 看板娘中" if is_current_mascot else "設為看板娘"
+			set_mascot_btn.text = tr("char.is_mascot") if is_current_mascot else tr("char.set_mascot")
 			set_mascot_btn.disabled = is_current_mascot
 			_gold_font(set_mascot_btn, 14)
 			set_mascot_btn.add_theme_stylebox_override("normal",
@@ -223,7 +223,7 @@ func _on_set_mascot_pressed(character_id: String) -> void:
 func _build_back_button() -> void:
 	_back_btn = Button.new()
 	_back_btn.name  = "BackButton"
-	_back_btn.text  = "← 返回"
+	_back_btn.text  = tr("mascot.back")
 	_back_btn.flat  = false
 	_back_btn.focus_mode = Control.FOCUS_NONE
 	_back_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

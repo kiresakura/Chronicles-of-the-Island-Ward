@@ -49,10 +49,10 @@ var _invoke_glow_tween: Tween = null	# Q1-E：滿槽金光脈動
 var end_turn_object: CombatEndTurn = null
 
 # ── P0 戰鬥狀態提示 + 不可出牌 toast（additive；不改既有 signal flow） ──
-const COMBAT_STATUS_PLAYER: String = "我方回合"
-const COMBAT_STATUS_TARGETING: String = "選擇目標"
-const COMBAT_STATUS_PROCESSING: String = "行動處理中"
-const COMBAT_STATUS_ENEMY: String = "敵方回合"
+const COMBAT_STATUS_PLAYER: String = "combat.my_turn"	# i18n key（const 內不可 tr，顯示點翻）
+const COMBAT_STATUS_TARGETING: String = "combat.pick_target"
+const COMBAT_STATUS_PROCESSING: String = "combat.processing"
+const COMBAT_STATUS_ENEMY: String = "combat.enemy_turn"
 var _combat_status_label: Label = null
 var _combat_status_base_text: String = ""	# 記住非選敵時的回合狀態，選敵取消後還原
 var _combat_toast: Label = null
@@ -640,15 +640,15 @@ func _build_combat_status_label() -> void:
 
 ## 設定回合狀態文字，並記為 base（供選敵取消後還原）
 func set_combat_status(text: String) -> void:
-	_combat_status_base_text = text
+	_combat_status_base_text = tr(text)
 	if is_instance_valid(_combat_status_label):
-		_combat_status_label.text = text
+		_combat_status_label.text = tr(text)
 
 ## Hand 於進入/離開選敵時呼叫：顯示「選擇目標」，取消後還原回合狀態
 func set_targeting_status(active: bool) -> void:
 	if not is_instance_valid(_combat_status_label):
 		return
-	_combat_status_label.text = COMBAT_STATUS_TARGETING if active else _combat_status_base_text
+	_combat_status_label.text = tr(COMBAT_STATUS_TARGETING) if active else _combat_status_base_text
 
 ## UIQA Phase3 — toast 佇列（逐則顯示，避免疊字 / 無限堆疊）
 var _combat_toast_queue: Array[String] = []
@@ -763,12 +763,12 @@ func _build_deity_invocation() -> void:
 func _on_deity_charge_changed(current: int, max_charge: int) -> void:
 	if not is_instance_valid(_invoke_button):
 		return
-	var dname: String = "神明"
+	var dname: String = tr("combat.deity")
 	if _deity_controller != null and _deity_controller.deity != null:
 		dname = _deity_controller.deity.deity_name
 	_invoke_button.visible = max_charge > 0
 	if _deity_controller != null and _deity_controller.is_ready():
-		_invoke_button.text = "%s 降乩！" % dname
+		_invoke_button.text = tr("combat.invoked") % dname
 		_invoke_button.disabled = false
 		HUD_FOCUS.set_operational(_invoke_button, true)	# 滿槽=本回合可操作 → 恆亮
 		if is_instance_valid(_invoke_fill):
@@ -776,7 +776,7 @@ func _on_deity_charge_changed(current: int, max_charge: int) -> void:
 		_start_invoke_glow()	# Q1-E：滿槽金光脈動
 	else:
 		var _prev_text: String = _invoke_button.text
-		_invoke_button.text = "%s 請神 %d/%d" % [dname, current, max_charge]
+		_invoke_button.text = tr("combat.charge") % [dname, current, max_charge]
 		_invoke_button.disabled = true
 		HUD_FOCUS.set_operational(_invoke_button, false)
 		_stop_invoke_glow()
@@ -794,7 +794,7 @@ func _on_invoke_button_pressed() -> void:
 	var next_id: String = Global.advance_deity_queue()
 	if next_id != "":
 		_deity_controller.setup(DeityInvocationSystem.load_deity(next_id))
-		show_combat_toast("備援神位 — %s 接掌請神盤" % str(_deity_controller.deity.deity_name if _deity_controller.deity != null else next_id))
+		show_combat_toast(tr("combat.backup_deity") % str(_deity_controller.deity.deity_name if _deity_controller.deity != null else next_id))
 
 ## 降乩效果分派（資料驅動鍵 → 效果）。MVP：虎爺 tiger_roar；其他神明屬 Phase 1D+。
 func _execute_deity_invocation(deity: DeityData) -> void:

@@ -260,7 +260,7 @@ func _on_ward_broken() -> void:
 		_proc_anim.trigger_hurt()
 	var text_fade: TextFade = Scenes.TEXT_FADE.instantiate()
 	fade_container.add_child(text_fade)
-	text_fade.init("破煞！")
+	text_fade.init(tr("enemy.broken"))
 	# 連通請神（1D）：破煞為 on_enemy_broken 神明（虎爺）累積請神值
 	Signals.enemy_broken.emit(self)
 
@@ -290,13 +290,13 @@ func _refresh_ward_ui() -> void:
 	if _ward_label == null or enemy_data == null:
 		return
 	if enemy_data.enemy_is_broken:
-		_ward_label.text = "破煞！(%d)" % enemy_data.enemy_broken_turns_remaining
+		_ward_label.text = tr("enemy.broken_turns") % enemy_data.enemy_broken_turns_remaining
 		_ward_label.add_theme_color_override("font_color", Color(1.0, 0.55, 0.2))
 		if is_instance_valid(_weakness_chips):
 			_weakness_chips.visible = false	# 破煞窗口：弱點資訊退場，聚焦輸出
 	else:
 		# Q1-E：弱點改璽印章 icon（文字僅留煞盾數值）
-		_ward_label.text = "煞盾 %d/%d" % [enemy_data.enemy_ward_shield, enemy_data.enemy_max_ward_shield]
+		_ward_label.text = tr("enemy.ward") % [enemy_data.enemy_ward_shield, enemy_data.enemy_max_ward_shield]
 		_ward_label.add_theme_color_override("font_color", Color(0.72, 0.82, 1.0))
 		if is_instance_valid(_weakness_chips):
 			_weakness_chips.visible = true

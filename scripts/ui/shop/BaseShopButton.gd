@@ -20,7 +20,7 @@ func init(_action_on_click: BaseAction) -> void:
 	
 	var price: int = action_on_click.get_action_value("money_amount", 0)
 	is_unaffordable = price > Global.player_data.player_money
-	price_label.text = "購買  金" + str(price)
+	price_label.text = tr("shop.buy_gold") + str(price)
 	_apply_shop_visual_style(is_unaffordable)
 	TOUCH_FEEDBACK.install_long_press_detail(self, _make_shop_detail_payload())
 

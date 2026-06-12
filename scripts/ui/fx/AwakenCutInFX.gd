@@ -111,7 +111,7 @@ static func play(host: Node, enemy_data: EnemyData) -> void:
 	# 5) 覺醒標題（右側對位；JSON enemy_awaken_title，缺省「{名}・煞變」）
 	var title_text: String = str(enemy_data.enemy_awaken_title)
 	if title_text == "":
-		title_text = "%s・煞變" % enemy_data.enemy_name
+		title_text = TranslationServer.translate("fx.awaken_title") % enemy_data.enemy_name
 	var title := Label.new()
 	title.text = title_text
 	title.add_theme_font_size_override("font_size", 54)

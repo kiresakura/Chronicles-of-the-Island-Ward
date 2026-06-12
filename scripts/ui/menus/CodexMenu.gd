@@ -14,23 +14,23 @@ const CARD_ART_REGISTRY := preload("res://scripts/ui/theme/CardArtRegistry.gd")
 
 # (sid, 中文標題, 副標)
 const JIAJIANG_LIST: Array = [
-	["gan_general", "甘將軍", "紅黑面"],
-	["liu_general", "柳將軍", "綠面儒將"],
-	["xie_general", "謝將軍", "白無常"],
-	["fan_general", "范將軍", "黑無常"],
-	["spring_god", "春神", "桃花面"],
-	["summer_god", "夏神", "烈日面"],
-	["autumn_god", "秋神", "金楓面"],
-	["winter_god", "冬神", "雪霜面"],
+	["gan_general", "codex.gan_general.name", "codex.gan_general.title"],
+	["liu_general", "codex.liu_general.name", "codex.liu_general.title"],
+	["xie_general", "codex.xie_general.name", "codex.xie_general.title"],
+	["fan_general", "codex.fan_general.name", "codex.fan_general.title"],
+	["spring_god", "codex.spring_god.name", "codex.spring_god.title"],
+	["summer_god", "codex.summer_god.name", "codex.summer_god.title"],
+	["autumn_god", "codex.autumn_god.name", "codex.autumn_god.title"],
+	["winter_god", "codex.winter_god.name", "codex.winter_god.title"],
 ]
 
 const DEITY_LIST: Array = [
-	["mazu", "媽祖", "天后娘娘"],
-	["guanyin", "觀音", "慈悲菩薩"],
-	["wangye", "王爺", "代天巡狩"],
-	["chenghuang", "城隍", "陰陽判官"],
-	["tudi", "土地公", "福德正神"],
-	["huye", "虎爺", "鎮殿神獸"],
+	["mazu", "codex.mazu.name", "codex.mazu.title"],
+	["guanyin", "codex.guanyin.name", "codex.guanyin.title"],
+	["wangye", "codex.wangye.name", "codex.wangye.title"],
+	["chenghuang", "codex.chenghuang.name", "codex.chenghuang.title"],
+	["tudi", "codex.tudi.name", "codex.tudi.title"],
+	["huye", "codex.huye.name", "codex.huye.title"],
 ]
 
 @onready var title_screen: Control = $%TitleScreen
@@ -100,8 +100,8 @@ func _populate_cards() -> void:
 func _populate_portraits(spec_list: Array, base_dir: String) -> void:
 	for entry in spec_list:
 		var sid: String = entry[0]
-		var title: String = entry[1]
-		var subtitle: String = entry[2]
+		var title: String = tr(entry[1])
+		var subtitle: String = tr(entry[2])
 		var portrait: Control = _make_portrait_card(sid, title, subtitle, base_dir)
 		codex_card_container.add_child(portrait)
 

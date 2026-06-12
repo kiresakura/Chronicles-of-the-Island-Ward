@@ -125,7 +125,7 @@ static func _play_verdict(layer: CanvasLayer, center: Vector2) -> void:
 
 	var label := Label.new()
 	label.name = "VerdictLabel"
-	label.text = "聖筊！"
+	label.text = TranslationServer.translate("fx.shengjiao")
 	label.add_theme_font_size_override("font_size", 46)
 	label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.55))
 	label.add_theme_color_override("font_shadow_color", Color(0.3, 0.05, 0.04, 0.95))

@@ -267,8 +267,8 @@ static func _sfx_pitch(hook: String) -> float:
 
 static func _payload_title(payload: Variant) -> String:
 	if payload is Dictionary:
-		return str(payload.get("name", payload.get("label", payload.get("type", "詳情"))))
-	return "詳情"
+		return str(payload.get("name", payload.get("label", payload.get("type", TranslationServer.translate("touch.detail")))))
+	return TranslationServer.translate("touch.detail")
 
 static func _payload_body(payload: Variant) -> String:
 	if payload is Dictionary:
