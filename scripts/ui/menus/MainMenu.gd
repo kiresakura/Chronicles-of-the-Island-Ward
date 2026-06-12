@@ -431,8 +431,11 @@ func _layout_pixel_skin() -> void:
 		var bsize: Vector2 = inner.get_combined_minimum_size() if inner != null else Vector2(220, 180)
 		_activity_banner.size = bsize
 		_activity_banner.pivot_offset = bsize * 0.5	# 呼吸縮放以中心為軸
-		_activity_banner.position = Vector2(stage_size.x - bsize.x - 40,
-											stage_size.y * (0.27 if on_tablet else 0.32))
+		# 定位錨定「安全區」右緣（非 stage 物理右緣）— 模擬器實測 stage 錨定
+		# 會壓進橫向動態島區（島在 stage 右側、safe_rect 已扣除）
+		var safe_b: Rect2 = Responsive.safe_rect
+		_activity_banner.position = Vector2(safe_b.position.x + safe_b.size.x - bsize.x - 24,
+											safe_b.position.y + safe_b.size.y * (0.24 if on_tablet else 0.28))
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):
