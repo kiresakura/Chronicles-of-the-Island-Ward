@@ -792,11 +792,18 @@ func _build_utilities() -> void:
 		ic.texture = _load_icon(str(_utility_definitions[i].get("icon", "")))
 		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		ic.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		ic.offset_left = 9; ic.offset_top = 9; ic.offset_right = -9; ic.offset_bottom = -9
 		ic.modulate = GOLD
 		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		u.add_child(ic)
+		# P1-7：補文字標籤（比照底部 slot 樣式 icon 上/label 下 — 原三鈕無標籤功能不明）
+		var ulbl := Label.new()
+		ulbl.name = "Label"
+		ulbl.text = str(_utility_definitions[i].get("name", ""))
+		ulbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ulbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		ulbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_gold_font(ulbl, 14)
+		u.add_child(ulbl)
 		if str(_utility_definitions[i].get("act", "")) == "temple":
 			u.button_up.connect(_open_temple_screen)	# Q2-D：修廟入口
 		else:
@@ -933,6 +940,16 @@ func _relayout() -> void:
 		u.position = Vector2(uxp, safe.position.y + pad)
 		u.size = Vector2(ux, ux)
 		u.pivot_offset = u.size * 0.5
+		# P1-7：icon 上 / label 下（比照 slot 排法）
+		var u_ic := u.get_node_or_null("Icon") as TextureRect
+		if u_ic:
+			var u_isz: float = roundf(ux * 0.46)
+			u_ic.position = Vector2((ux - u_isz) * 0.5, ux * 0.10)
+			u_ic.size = Vector2(u_isz, u_isz)
+		var u_lbl := u.get_node_or_null("Label") as Label
+		if u_lbl:
+			u_lbl.position = Vector2(0, ux * 0.60)
+			u_lbl.size = Vector2(ux, ux * 0.32)
 
 	# 底部：6 格 slot + 中央起駕（貼安全區下緣）
 	# tokens：slot ≥ minimum 88×88；primary CTA = cta_height 112
