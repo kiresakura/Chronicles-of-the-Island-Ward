@@ -63,7 +63,8 @@ window/handheld/orientation="landscape"
 
 [gui]
 
-theme/custom_font="res://assets/fonts/NotoSansTC-Regular.otf"
+theme/custom="res://ui/theme/main_theme.tres"
+theme/custom_font="res://assets/fonts/cubic11/Cubic_11.ttf"
 
 [input]
 
