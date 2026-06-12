@@ -1,6 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M20 10v44"/>
-  <path d="M20 13h26l-7 9 7 9H20" fill="#ffffff" fill-opacity="0.18"/>
-  <circle cx="20" cy="9" r="3" fill="#ffffff" stroke="none"/>
-  <path d="M14 54h12"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges">
+<!-- TODO(美術): 佔位像素令旗（起駕 CTA）— 換正式素材時同名覆蓋即可（P1-8） -->
+<rect x="3" y="1" width="2" height="14" fill="#4B2D22"/>
+<rect x="3" y="0" width="2" height="2" fill="#E8C56A"/>
+<rect x="5" y="2" width="9" height="2" fill="#D94A2B"/>
+<rect x="5" y="4" width="8" height="2" fill="#D94A2B"/>
+<rect x="5" y="6" width="6" height="2" fill="#A62F1F"/>
+<rect x="5" y="2" width="1" height="6" fill="#E8C56A"/>
+<rect x="11" y="3" width="2" height="2" fill="#E8C56A"/>
 </svg>
