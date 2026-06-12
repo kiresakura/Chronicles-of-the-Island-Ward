@@ -585,10 +585,31 @@ func _on_resource_plus(row_idx: int) -> void:
 				UI_TOAST.show_toast(self, str(d.get("unlock_hint", tr("menu.coming_soon") % str(d.get("label", "")))))
 			return
 
+# P2-9：新局防呆 — 有進行中存檔時 ConfirmationDialog 確認（覆蓋後果明示）。
+# 後果語意（勘查證實）：存檔僅於勝/敗刪除，中途退出保留；開新局後
+# 首次自動存檔即覆蓋舊進度。
+var _new_run_confirm: ConfirmationDialog = null
+
+func _confirm_new_run() -> void:
+	if not FileLoader.has_save_file():
+		_on_new_run_button_up()	# 無進度可覆蓋 → 直入
+		return
+	if _new_run_confirm == null:
+		_new_run_confirm = ConfirmationDialog.new()
+		_new_run_confirm.name = "NewRunConfirm"
+		_new_run_confirm.dialog_text = tr("menu.newrun_confirm_body")
+		_new_run_confirm.ok_button_text = tr("menu.confirm_ok")
+		_new_run_confirm.cancel_button_text = tr("menu.confirm_cancel")
+		_new_run_confirm.dialog_autowrap = true
+		_new_run_confirm.min_size = Vector2i(420, 0)
+		_new_run_confirm.confirmed.connect(_on_new_run_button_up)
+		add_child(_new_run_confirm)
+	_new_run_confirm.popup_centered()
+
 ## slot act 執行（P1-5 抽共用 — slot 按鈕與「+」捷徑同路）
 func _perform_slot_act(data: Dictionary) -> void:
 	match str(data.get("act", "")):
-		"run": _on_new_run_button_up()
+		"run": _confirm_new_run()	# P2-9 防呆：有進行中存檔先確認
 		"codex": _on_codex_button_up()
 		"character": _on_character_button_up()
 		"temple": _open_temple_screen()
@@ -971,10 +992,16 @@ func _relayout() -> void:
 			continue
 		var col: int = i if i < 3 else i - 3
 		var gx: float = (lx if i < 3 else rx2) + col * (sw + sgap)
-		btn.position = Vector2(gx, by)
-		btn.size = Vector2(sw, sh)
+		# P2-9 方案 A：新局（BtnBattle）視覺降權 — 縮 91%（80px 守觸控舒適線）底對齊 + 輕降彩；
+		# 防呆主力在 ConfirmationDialog，降權只削「誤觸吸引力」
+		var is_new_run: bool = btn.name == "BtnBattle"
+		var bw2: float = roundf(sw * (0.91 if is_new_run else 1.0))
+		var bh2: float = roundf(sh * (0.91 if is_new_run else 1.0))
+		btn.position = Vector2(gx + (sw - bw2) * 0.5, by + (sh - bh2))
+		btn.size = Vector2(bw2, bh2)
+		btn.modulate = Color(0.90, 0.88, 0.86) if is_new_run else Color.WHITE
 		btn.pivot_offset = btn.size * 0.5
-		_layout_slot_content(btn, sw, sh)
+		_layout_slot_content(btn, bw2, bh2)
 
 	if qi_jia_button:
 		qi_jia_button.position = Vector2(cx - pw * 0.5, safe.position.y + safe.size.y - ph - pad)
