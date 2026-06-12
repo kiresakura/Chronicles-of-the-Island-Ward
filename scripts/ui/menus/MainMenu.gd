@@ -37,7 +37,6 @@ var _mascot_selector: MascotSelector = null
 # 自適應重排用的節點參照
 var _backdrop: Control
 var _avatar_frame: Panel
-var _avatar_lv: Label
 var _res_rows: Array = []          # 每列 {icon,pill,label,fill}
 var _resource_tray: Panel
 var _slot_btns: Array[Button] = []
@@ -502,12 +501,8 @@ func _build_avatar() -> void:
 	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_avatar_frame.add_child(ic)
 
-	_avatar_lv = Label.new()
-	_avatar_lv.name = "AvatarLv"
-	_avatar_lv.text = tr("ui.avatar_level") % 1
-	_avatar_lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_gold_font(_avatar_lv, 16)
-	add_child(_avatar_lv)
+	# P1-4：原「等級 N」標籤與頂部膠囊同為勝場制等級 — 重複顯示已移除
+	# （憲龍拍板③：等級資訊單一顯示點 = 頂部膠囊「香客 Lv」）
 
 func _build_resource_bars() -> void:
 	_resource_tray = Panel.new()
@@ -521,6 +516,10 @@ func _build_resource_bars() -> void:
 	_res_incense = _make_resource_row(0, "icon_incense", GOLD)
 	_res_level = _make_resource_row(1, "icon_level", Color(0.96, 0.78, 0.40))
 	_res_yuanbao = _make_resource_row(2, "icon_yuanbao", Color(0.55, 0.78, 0.95))
+	# P1-4：「晉升 0/3」語意說明（桌面 hover；手機長按由 TouchFeedback 接手）
+	if _res_rows.size() > 1 and _res_rows[1].get("pill") != null:
+		(_res_rows[1]["pill"] as Control).tooltip_text = tr("ui.level_tooltip")
+		(_res_rows[1]["label"] as Control).tooltip_text = tr("ui.level_tooltip")
 
 func _make_resource_row(idx: int, icon: String, tint: Color) -> Label:
 	var ic := TextureRect.new()
@@ -855,9 +854,6 @@ func _relayout() -> void:
 	if _avatar_frame:
 		_avatar_frame.position = Vector2(ax, ay)
 		_avatar_frame.size = Vector2(av, av)
-	if _avatar_lv:
-		_avatar_lv.position = Vector2(ax - 4, ay + av + 2)
-		_avatar_lv.size = Vector2(av + 8, 20)
 
 	# 上中：3 條資源列（水平排列，置中於螢幕頂部，HUD 4 區「資源區」）
 	var icon_sz: float = roundf(28.0 * ts)
@@ -1023,7 +1019,6 @@ func _refresh_resources() -> void:
 	if _res_incense: _res_incense.text = tr("temple.incense_badge") % incense
 	if _res_yuanbao: _res_yuanbao.text = tr("menu.yuanbao") % yuanbao
 	if _res_level: _res_level.text = tr("ui.level_progress") % [level, xp_in_level]
-	if _avatar_lv: _avatar_lv.text = tr("ui.avatar_level") % level
 	_refresh_plaque()	# P0-1：修廟等級變動同步匾額
 	# 進度填充寬度交由 _relayout 依 _level_ratio() 重算
 	_relayout()

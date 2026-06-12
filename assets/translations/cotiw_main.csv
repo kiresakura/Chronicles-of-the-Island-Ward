@@ -43,7 +43,7 @@ mascot.luannu.q4,再寫一張符，需要些時間。,再写一张符，需要�
 mascot.luannu.q5,今日香爐還旺，可祈福。,今日香炉还旺，可祈福。,The censer still glows—good for prayer.,香炉はまだ燃えている、祈りに好ましい。
 ui.level,等級,等级,Level,レベル
 ui.avatar_level,等級 %d,等级 %d,Lv %d,Lv %d
-ui.level_progress,等級 %d　%d/3,等级 %d　%d/3,Lv %d   %d/3,Lv %d   %d/3
+ui.level_progress,香客 Lv.%d　晉升 %d/3,香客 Lv.%d　晋升 %d/3,Pilgrim Lv.%d  Rank-up %d/3,香客 Lv.%d　昇格 %d/3
 ui.leave,離開,离开,Leave,離れる
 ui.back,返回,返回,Back,戻る
 ui.back_to_main_menu,返回主選單,返回主菜单,Back To Main Menu,メインメニューへ戻る
@@ -290,3 +290,4 @@ menu.plaque_with_level,鎮島廟　Lv.%d,镇岛庙　Lv.%d,Island Ward Temple Lv
 menu.event_jiaobei_title,限時擲筊,限时掷筊,Limited Jiaobei,期間限定ジャオベイ
 menu.event_jiaobei_sub,三選一賜禮,三选一赐礼,Pick 1 of 3 Gifts,3択の授かり物
 menu.event_ended,已結束,已结束,Ended,終了
+ui.level_tooltip,每累計 3 場勝利晉升 1 級,每累计 3 场胜利晋升 1 级,Advance 1 level every 3 total wins,勝利3回ごとに1レベル昇格
