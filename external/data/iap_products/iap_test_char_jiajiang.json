@@ -1,0 +1,11 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "iap_test_char_jiajiang",
+		"iap_type": "non_consumable",
+		"grant_type": "character_unlock",
+		"grant_unlock_id": "character_jiajiang",
+		"store_price_label": "NT$170",
+		"is_test_product": true
+	}
+}

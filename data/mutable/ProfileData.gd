@@ -20,9 +20,27 @@ class_name ProfileData
 @export var profile_incense_balance: int = 0
 @export var profile_building_id_to_level: Dictionary[String, int] = {}
 
+## Q4-C IAP：元寶（付費貨幣）。紅線：元寶只買外觀/角色解鎖 —
+## 香火與戰力不可販售，授與路由在 IAPManager 以白名單強制。
+@export var profile_yuanbao: int = 0
+## 已購非消耗性商品 sku（防重複授與 + restore 還原依據）
+@export var profile_owned_iap_skus: Array[String] = []
+## IAP 授與的解鎖 token（如 character_daoshi / skin_xxx — 遊戲端查詢用）
+@export var profile_iap_unlock_ids: Array[String] = []
+
 ## 香火加成（戰後結算 / 土地公被動等）。
 func add_incense(amount: int) -> void:
 	profile_incense_balance = maxi(0, profile_incense_balance + amount)
+
+func add_yuanbao(amount: int) -> void:
+	profile_yuanbao = maxi(0, profile_yuanbao + amount)
+
+func has_iap_unlock(unlock_id: String) -> bool:
+	return unlock_id in profile_iap_unlock_ids
+
+func grant_iap_unlock(unlock_id: String) -> void:
+	if unlock_id != "" and unlock_id not in profile_iap_unlock_ids:
+		profile_iap_unlock_ids.append(unlock_id)
 
 func get_building_level(building_id: String) -> int:
 	return profile_building_id_to_level.get(building_id, 0)

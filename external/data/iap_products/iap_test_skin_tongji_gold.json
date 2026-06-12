@@ -1,0 +1,11 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "iap_test_skin_tongji_gold",
+		"iap_type": "non_consumable",
+		"grant_type": "cosmetic_unlock",
+		"grant_unlock_id": "skin_tongji_gold",
+		"store_price_label": "NT$90",
+		"is_test_product": true
+	}
+}
