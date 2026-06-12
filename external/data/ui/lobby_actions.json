@@ -36,13 +36,15 @@
     "label": "商店",
     "icon": "shop",
     "ready": false,
-    "priority": "low"
+    "priority": "low",
+    "unlock_hint": "商店整備中，下次更新開放"
   },
   {
     "node": "BtnRecruit",
     "label": "招募",
     "icon": "recruit",
     "ready": false,
-    "priority": "low"
+    "priority": "low",
+    "unlock_hint": "招募名冊整備中，下次更新開放"
   }
 ]
