@@ -41,8 +41,6 @@ var _res_rows: Array = []          # 每列 {icon,pill,label,fill}
 var _resource_tray: Panel
 var _slot_btns: Array[Button] = []
 var _util_btns: Array[Button] = []
-var _toast: Label
-var _toast_tween: Tween
 var _res_incense: Label
 var _res_level: Label
 var _res_yuanbao: Label
@@ -65,7 +63,6 @@ func _ready() -> void:
 	_build_slots()
 	_build_utilities()
 	_build_primary()
-	_build_toast()
 
 	Signals.run_ended.connect(_on_run_ended)
 	Responsive.changed.connect(_relayout)
@@ -106,6 +103,7 @@ var _pixel_title: TextureRect
 var _plaque_label: Label = null			# P0-1 匾額文字（廟名+廟級）
 var _plaque_shown_once: bool = false	# 首次顯示才淡入（之後刷新不重播）
 const RITUAL_TEMPLE := preload("res://scripts/systems/ritual/RitualTemple.gd")
+const UI_TOAST := preload("res://ui/components/toast.gd")	# P1-5 可重用 toast
 
 func _apply_pixel_skin() -> void:
 	# 1. 隱藏舊向量 backdrop
@@ -549,8 +547,51 @@ func _make_resource_row(idx: int, icon: String, tint: Color) -> Label:
 	_gold_font(lbl, 16)
 	add_child(lbl)
 
-	_res_rows.append({"icon": ic, "pill": pill, "label": lbl, "fill": fill})
+	# P1-5：貨幣膠囊右端內嵌「+」（取得途徑入口）— 等級列（idx 1）不給。
+	# 結構 = Button 64px 透明熱區（觸控鐵則 ≥64）+ 28px icon child（視覺尺寸照規格）
+	var plus: Button = null
+	if idx != 1:
+		plus = Button.new()
+		plus.name = "RowPlus%d" % idx
+		plus.flat = true
+		plus.focus_mode = Control.FOCUS_NONE
+		plus.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		plus.button_up.connect(_on_resource_plus.bind(idx))
+		var plus_ic := TextureRect.new()
+		plus_ic.name = "PlusIcon"
+		plus_ic.texture = load("res://assets/ui/icons/ui_icon_plus.svg")
+		plus_ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		plus_ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		plus_ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		plus.add_child(plus_ic)
+		_hook_hover(plus)
+		add_child(plus)
+
+	_res_rows.append({"icon": ic, "pill": pill, "label": lbl, "fill": fill, "plus": plus})
 	return lbl
+
+## P1-5：「+」行為 — 香火 → 修廟（香火回報來源）；元寶 → 商店（鎖定時 toast 解鎖說明）
+func _on_resource_plus(row_idx: int) -> void:
+	if row_idx == 0:
+		_open_temple_screen()
+		return
+	# 元寶：商店 slot 定義（資料層 unlock_hint）決定提示
+	for d: Variant in _slot_definitions:
+		if str(d.get("node", "")) == "BtnShop":
+			if bool(d.get("ready", false)):
+				_perform_slot_act(d)	# 商店開放後直接進（目前資料 ready=false）
+			else:
+				UI_TOAST.show_toast(self, str(d.get("unlock_hint", tr("menu.coming_soon") % str(d.get("label", "")))))
+			return
+
+## slot act 執行（P1-5 抽共用 — slot 按鈕與「+」捷徑同路）
+func _perform_slot_act(data: Dictionary) -> void:
+	match str(data.get("act", "")):
+		"run": _on_new_run_button_up()
+		"codex": _on_codex_button_up()
+		"character": _on_character_button_up()
+		"temple": _open_temple_screen()
+		_: _show_coming_soon(str(data.get("label", "")))
 
 func _build_slots() -> void:
 	for i in _slot_definitions.size():
@@ -569,15 +610,7 @@ func _build_slots() -> void:
 		for c in btn.button_up.get_connections():
 			btn.button_up.disconnect(c["callable"])
 		if data["ready"]:
-			var act: String = data.get("act", "")
-			if act == "run":
-				btn.button_up.connect(_on_new_run_button_up)
-			elif act == "codex":
-				btn.button_up.connect(_on_codex_button_up)
-			elif act == "character":
-				btn.button_up.connect(_on_character_button_up)
-			elif act == "temple":
-				btn.button_up.connect(_open_temple_screen)	# Q2-D：修廟主行動格
+			btn.button_up.connect(_perform_slot_act.bind(data))
 		else:
 			btn.button_up.connect(_show_coming_soon.bind(data["label"]))
 		_slot_btns.append(btn)
@@ -800,16 +833,6 @@ func _build_utilities() -> void:
 		btn_exit_x.button_up.connect(_on_exit_button_up)
 		_hook_hover(btn_exit_x)
 
-func _build_toast() -> void:
-	_toast = Label.new()
-	_toast.name = "Toast"
-	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_toast.add_theme_stylebox_override("normal", _sb(Color(0.10, 0.05, 0.05, 0.94), GOLD, 2, 10))
-	_gold_font(_toast, 22)
-	_toast.modulate = Color(1, 1, 1, 0)
-	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_toast)
 
 func _load_ui_definition_array(path: String) -> Array:
 	if not FileAccess.file_exists(path):
@@ -862,7 +885,11 @@ func _relayout() -> void:
 	var pill_gap: float = roundf(14.0 * ts)
 	var group_w: float = pill_w + icon_sz + roundf(6.0 * ts)  # 單組（icon + pill）寬度
 	var pills_total_w: float = group_w * _res_rows.size() + pill_gap * (_res_rows.size() - 1)
-	var pills_start_x: float = safe.position.x + (safe.size.x - pills_total_w) * 0.5
+	# P1-5：置中帶 = avatar 右緣 ↔ 右上工具列左緣（全幅置中在 1244 寬時
+	# 元寶尾端「+」會嵌進 Util 鈕 — 審計實測）
+	var band_left: float = safe.position.x + roundf(96.0 * ts)
+	var band_right: float = safe.position.x + safe.size.x - roundf(3.0 * (80.0 + 6.0) * ts) - roundf(80.0 * ts)
+	var pills_start_x: float = band_left + maxf(0.0, (band_right - band_left - pills_total_w) * 0.5)
 	var pills_y: float = safe.position.y + roundf(pad * 0.5)
 	if is_instance_valid(_resource_tray):
 		_resource_tray.position = Vector2(pills_start_x - roundf(18.0 * ts), pills_y - roundf(8.0 * ts))
@@ -880,6 +907,23 @@ func _relayout() -> void:
 			r["fill"].size = Vector2(maxf(4.0, (pill_w - 6) * _level_ratio()), row_h - 6)
 		r["label"].position = Vector2(px + 8, pills_y)
 		r["label"].size = Vector2(pill_w - 12, row_h)
+		# P1-5：「+」熱區 64px（觸控鐵則）對齊 pill 右端、icon 28px 視覺居中；
+		# label 讓出右側避免壓字
+		if r.get("plus") != null:
+			var hit_sz: float = roundf(80.0 * ts)	# 80 = 舒適線（W 級守則）
+			var vis_sz: float = roundf(28.0 * ts)
+			var plus_btn: Control = r["plus"]
+			plus_btn.size = Vector2(hit_sz, hit_sz)
+			# 熱區夾安全區上緣（pill 貼頂 — 置中會頂出視口）；icon 自行對齊 pill 中心
+			var hit_y: float = maxf(pills_y + (row_h - hit_sz) * 0.5, safe.position.y)
+			plus_btn.position = Vector2(px + pill_w - vis_sz - 4.0 - (hit_sz - vis_sz) * 0.5, hit_y)
+			plus_btn.pivot_offset = Vector2(hit_sz, hit_sz) * 0.5
+			var plus_icon: Control = plus_btn.get_node_or_null("PlusIcon")
+			if plus_icon != null:
+				plus_icon.size = Vector2(vis_sz, vis_sz)
+				plus_icon.position = Vector2((hit_sz - vis_sz) * 0.5,
+											pills_y + (row_h - vis_sz) * 0.5 - hit_y)
+			r["label"].size = Vector2(pill_w - vis_sz - 14.0, row_h)
 
 	# 右上：✕ + 3 工具鈕（貼安全區右上）
 	# tokens.touch_targets：min 88 / comfortable 96 / cta 112
@@ -935,11 +979,6 @@ func _relayout() -> void:
 			qic.position = Vector2(roundf(20 * ts), (ph - roundf(44 * ts)) * 0.5)
 			qic.size = Vector2(roundf(44 * ts), roundf(44 * ts))
 
-	# Toast 置中於安全區
-	if _toast:
-		var tw: float = clampf(safe.size.x * 0.34, 300.0, 460.0)
-		_toast.size = Vector2(tw, roundf(52 * ts))
-		_toast.position = Vector2(cx - tw * 0.5, safe.position.y + safe.size.y * 0.62)
 
 	# Pixel skin (altar + title plaque + 看板娘) 也要重排
 	_relayout_pixel_skin_safe()
@@ -966,18 +1005,8 @@ func _level_ratio() -> float:
 # ---------- Toast ----------
 
 func _show_coming_soon(feature_name: String) -> void:
-	_toast.text = tr("menu.coming_soon") % feature_name
-	if _toast_tween and _toast_tween.is_valid():
-		_toast_tween.kill()
-	var base_y: float = _toast.position.y
-	_toast.modulate = Color(1, 1, 1, 0)
-	_toast_tween = create_tween()
-	_toast_tween.set_trans(Tween.TRANS_SINE)
-	_toast_tween.tween_property(_toast, "modulate:a", 1.0, 0.18)
-	_toast_tween.parallel().tween_property(_toast, "position:y", base_y - 18.0, 0.18)
-	_toast_tween.tween_interval(1.1)
-	_toast_tween.tween_property(_toast, "modulate:a", 0.0, 0.4)
-	_toast_tween.tween_callback(func(): _toast.position.y = base_y)
+	# P1-5：遷移至可重用 UiToast 元件（ui/components/toast.tscn — 上方安全區）
+	UI_TOAST.show_toast(self, tr("menu.coming_soon") % feature_name)
 
 # ---------- 互動回饋 ----------
 
