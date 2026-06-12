@@ -104,6 +104,9 @@ const PIXEL_CTA_PATH := "res://assets/generated/ui_v3/cta_button_frame.png"
 var _pixel_bg: TextureRect
 var _pixel_altar: TextureRect
 var _pixel_title: TextureRect
+var _plaque_label: Label = null			# P0-1 匾額文字（廟名+廟級）
+var _plaque_shown_once: bool = false	# 首次顯示才淡入（之後刷新不重播）
+const RITUAL_TEMPLE := preload("res://scripts/systems/ritual/RitualTemple.gd")
 
 func _apply_pixel_skin() -> void:
 	# 1. 隱藏舊向量 backdrop
@@ -164,12 +167,27 @@ func _apply_pixel_skin() -> void:
 		_pixel_title.name = "PixelTitlePlaque"
 		_pixel_title.texture = load(PIXEL_TITLE_PATH)
 		_pixel_title.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		_pixel_title.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		_pixel_title.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		_pixel_title.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST	# P0-2 像素素材銳利取樣
 		_pixel_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_pixel_title.z_index = -40
 		_pixel_title.z_as_relative = false
+		_pixel_title.visible = false	# P0-1 空狀態鐵則：資料就緒前整組不可見
 		add_child(_pixel_title)
+		# P0-1：匾額文字 — 廟名 + 廟級（方案 A，接修廟系統真資料）
+		_plaque_label = Label.new()
+		_plaque_label.name = "PlaqueText"
+		_plaque_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_plaque_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		# 不設 anchors — 位置/尺寸由 _relayout 對齊「實繪匾面」計算
+		_plaque_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_plaque_label.add_theme_font_size_override("font_size", COTIW_UI_THEME.get_typography_size("h2", 28))
+		_plaque_label.add_theme_color_override("font_color", GOLD)
+		_plaque_label.add_theme_color_override("font_shadow_color", Color(0.07, 0.03, 0.02, 0.95))
+		_plaque_label.add_theme_constant_override("shadow_offset_x", 2)
+		_plaque_label.add_theme_constant_override("shadow_offset_y", 2)
+		_pixel_title.add_child(_plaque_label)
+		_refresh_plaque()
 
 	# 5. CTA「起駕」按鈕 — 改用 CotiwUiTheme 程序化 StyleBox（紅金圓角）。
 	# 原 cta_button_frame.png 是 NBP「去背圖」，實際把透明格紋畫進圖裡（非真 alpha），
@@ -347,6 +365,17 @@ func _layout_pixel_skin() -> void:
 		var title_h: float = title_w * 0.30
 		_pixel_title.size = Vector2(title_w, title_h)
 		_pixel_title.position = Vector2((stage_size_t.x - title_w) * 0.5, stage_size_t.y * 0.02)
+		# P0-1：匾額文字對齊「實繪匾面」。貼圖（1584×672）上下有透明 padding，
+		# 米色匾面實測佔圖高 25%~61%（tools 掃描）— 文字帶按繪區同比例放，
+		# 非容器置中（KEEP_ASPECT_CENTERED：繪區置中，繪縮放 = min(w/texw, h/texh)）
+		if _plaque_label != null and _pixel_title.texture != null:
+			var tw_px: float = float(_pixel_title.texture.get_width())
+			var th_px: float = float(_pixel_title.texture.get_height())
+			var s: float = minf(title_w / tw_px, title_h / th_px)
+			var drawn: Vector2 = Vector2(tw_px, th_px) * s
+			var origin: Vector2 = (Vector2(title_w, title_h) - drawn) * 0.5
+			_plaque_label.position = origin + Vector2(0, drawn.y * 0.25)
+			_plaque_label.size = Vector2(drawn.x, drawn.y * 0.36)
 
 # ---------- 清掉舊 V4 / 點陣節點 ----------
 
@@ -914,8 +943,28 @@ func _refresh_resources() -> void:
 	if _res_yuanbao: _res_yuanbao.text = tr("menu.yuanbao") % yuanbao
 	if _res_level: _res_level.text = tr("ui.level_progress") % [level, xp_in_level]
 	if _avatar_lv: _avatar_lv.text = tr("ui.avatar_level") % level
+	_refresh_plaque()	# P0-1：修廟等級變動同步匾額
 	# 進度填充寬度交由 _relayout 依 _level_ratio() 重算
 	_relayout()
+
+## P0-1 匾額資料綁定：廟名「鎮島廟」+ 廟級（建築等級總和；方案 A）。
+## 空狀態鐵則：profile 未就緒（temple_level=-1）→ 整組隱藏；
+## 就緒 → 填字後顯示，首次以 0.3s 淡入（之後資源刷新不重播）。
+func _refresh_plaque() -> void:
+	if not is_instance_valid(_pixel_title) or _plaque_label == null:
+		return
+	var lvl: int = RITUAL_TEMPLE.temple_level(Global.profile_data)
+	if lvl < 0:
+		_pixel_title.visible = false
+		return
+	_plaque_label.text = tr("menu.plaque_with_level") % lvl if lvl > 0 else tr("menu.plaque_temple_name")
+	if not _pixel_title.visible:
+		_pixel_title.visible = true
+		if not _plaque_shown_once:
+			_plaque_shown_once = true
+			_pixel_title.modulate = Color(1, 1, 1, 0)
+			var tw := create_tween()
+			tw.tween_property(_pixel_title, "modulate:a", 1.0, 0.3)
 
 const TEMPLE_SCREEN := preload("res://scripts/ui/menus/TempleScreen.gd")	# class_name 全域註冊 headless 不可靠 → preload 慣例
 var _temple_screen: Control = null

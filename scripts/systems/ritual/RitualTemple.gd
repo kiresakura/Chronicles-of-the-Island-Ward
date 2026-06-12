@@ -40,6 +40,16 @@ static func list_building_ids() -> Array[String]:
 static func repair_cost(building_props: Dictionary, current_level: int) -> int:
 	return int(building_props.get("repair_cost_incense", 0)) * (current_level + 1)
 
+## 廟級 = 各建築修復等級總和（UI 重修 P0-1：主畫面匾額顯示用）。
+## profile 未就緒回 -1（呼叫端據此走「空狀態隱藏」，與 0 級「只顯廟名」區分）。
+static func temple_level(profile: ProfileData) -> int:
+	if profile == null:
+		return -1
+	var total: int = 0
+	for lvl: int in profile.profile_building_id_to_level.values():
+		total += lvl
+	return total
+
 ## 是否可修（未滿級 + 香火足夠）。
 static func can_repair(profile: ProfileData, building_id: String) -> bool:
 	if profile == null:

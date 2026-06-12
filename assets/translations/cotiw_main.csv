@@ -285,3 +285,5 @@ enemy.broken_turns,破煞！(%d),破煞！(%d),Ward Broken! (%d),破煞！(%d)
 enemy.ward,煞盾 %d/%d,煞盾 %d/%d,Sha Ward %d/%d,煞盾 %d/%d
 pick.cards,選擇 {0} 張卡（已選 {1}）,选择 {0} 张卡（已选 {1}）,Pick {0} cards (chosen {1}),カードを{0}枚選択（選択済み{1}）
 fortune.summary,%s【%s】　利：%s　忌：%s,%s【%s】　利：%s　忌：%s,%s [%s]  Boon: %s  Bane: %s,%s【%s】　利：%s　忌：%s
+menu.plaque_temple_name,鎮島廟,镇岛庙,Island Ward Temple,鎮島廟
+menu.plaque_with_level,鎮島廟　Lv.%d,镇岛庙　Lv.%d,Island Ward Temple Lv.%d,鎮島廟　Lv.%d
