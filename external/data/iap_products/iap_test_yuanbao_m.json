@@ -1,0 +1,11 @@
+{
+	"patch_data": {},
+	"properties": {
+		"object_id": "iap_test_yuanbao_m",
+		"iap_type": "consumable",
+		"grant_type": "yuanbao",
+		"grant_amount": 330,
+		"store_price_label": "NT$170",
+		"is_test_product": true
+	}
+}

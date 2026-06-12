@@ -106,6 +106,9 @@ func is_character_unlocked(character_id: String) -> bool:
 		return true
 	if profile_data == null:
 		return false
+	# Q4-C：IAP 解鎖為第二路徑（與勝場解鎖並行 — 角色解鎖在紅線白名單內）
+	if profile_data.has_iap_unlock(character_id):
+		return true
 	return profile_data.profile_total_wins >= req
 
 func get_unlock_hint(character_id: String) -> String:
