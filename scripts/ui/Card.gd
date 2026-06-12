@@ -45,11 +45,11 @@ const CARD_TYPE_COLORS: Dictionary = {
 }
 ## 中文卡牌類型標籤（Figma 頂右 pill badge 顯示）
 const CARD_TYPE_LABELS: Dictionary = {
-	CardData.CARD_TYPES.ATTACK: "攻擊",
-	CardData.CARD_TYPES.SKILL:  "技能",
-	CardData.CARD_TYPES.POWER:  "能力",
-	CardData.CARD_TYPES.STATUS: "狀態",
-	CardData.CARD_TYPES.CURSE:  "詛咒",
+	CardData.CARD_TYPES.ATTACK: "card.type.attack",
+	CardData.CARD_TYPES.SKILL:  "card.type.skill",
+	CardData.CARD_TYPES.POWER:  "card.type.power",
+	CardData.CARD_TYPES.STATUS: "card.type.status",
+	CardData.CARD_TYPES.CURSE:  "card.type.curse",
 }
 
 signal card_selected(Card)
@@ -152,7 +152,7 @@ func update_card_display(selected_enemy: Enemy = null) -> void:
 	var desc_bbcode: String = get_card_description(selected_enemy)
 	card_description.set_bbcode(desc_bbcode)
 	card_description.visible = desc_bbcode.strip_edges() != ""	# UIQA P2-4：空敘述不留白框
-	card_type.text = CARD_TYPE_LABELS.get(card_data.card_type, "？")
+	card_type.text = tr(CARD_TYPE_LABELS.get(card_data.card_type, "？"))
 	card_name.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("incense_gold", Color.GOLD))
 	card_type.add_theme_color_override("font_color", Color(0.96, 0.90, 0.80, 1.0))
 	card_description.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("paper_warm", Color(0.96, 0.90, 0.80)))
@@ -259,7 +259,7 @@ func get_card_description(selected_target: BaseCombatant = null) -> String:
 
 func _make_card_detail_payload() -> Dictionary:
 	if card_data == null:
-		return {"type": "card", "label": "未知卡牌"}
+		return {"type": "card", "label": tr("card.unknown")}
 	return {
 		"type": "card",
 		"id": card_data.object_id,

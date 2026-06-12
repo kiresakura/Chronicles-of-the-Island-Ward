@@ -47,7 +47,7 @@ static func draw_stick_id(rng: RandomNumberGenerator) -> String:
 static func stick_summary(props: Dictionary) -> String:
 	if props.is_empty():
 		return ""
-	return "%s【%s】　利：%s　忌：%s" % [
+	return TranslationServer.translate("fortune.summary") % [
 		str(props.get("stick_name", "")), str(props.get("stick_grade", "")),
 		str(props.get("stick_up_text", "")), str(props.get("stick_down_text", "")),
 	]

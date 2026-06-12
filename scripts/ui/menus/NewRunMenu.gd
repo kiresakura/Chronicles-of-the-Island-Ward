@@ -120,9 +120,9 @@ func _style_static_controls() -> void:
 	COTIW_UI_THEME.apply_secondary_button_style(back_button)
 	COTIW_UI_THEME.apply_secondary_button_style(decrease_difficulty_button)
 	COTIW_UI_THEME.apply_secondary_button_style(increase_difficulty_button)
-	start_run_button.text = "開始開壇"
-	back_button.text = "返回正殿"
-	seed_input.placeholder_text = "留白則隨機起局"
+	start_run_button.text = tr("newrun.start")
+	back_button.text = tr("temple.back")
+	seed_input.placeholder_text = tr("newrun.seed_hint")
 	seed_input.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	character_button_container.visible = false
 	_update_difficulty_label()
@@ -158,21 +158,21 @@ func _build_runtime_chrome() -> void:
 	if _info_heading_label == null:
 		_info_heading_label = Label.new()
 		_info_heading_label.name = "InfoHeadingLabel"
-		_info_heading_label.text = "選誰・得到什麼"
+		_info_heading_label.text = tr("newrun.who_gets_what")
 		_info_heading_label.add_theme_font_size_override("font_size", 16)
 		_info_heading_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
 		add_child(_info_heading_label)
 	if _run_heading_label == null:
 		_run_heading_label = Label.new()
 		_run_heading_label.name = "RunHeadingLabel"
-		_run_heading_label.text = "如何開始"
+		_run_heading_label.text = tr("newrun.how_to_start")
 		_run_heading_label.add_theme_font_size_override("font_size", 16)
 		_run_heading_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
 		add_child(_run_heading_label)
 	if _selection_bridge == null:
 		_selection_bridge = Label.new()
 		_selection_bridge.name = "SelectionBridgeLabel"
-		_selection_bridge.text = "← 神壇燈光落在哪位，左側就寫誰的起手命格。"
+		_selection_bridge.text = tr("newrun.altar_hint")
 		_selection_bridge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_selection_bridge.add_theme_font_size_override("font_size", 13)
 		_selection_bridge.add_theme_color_override("font_color", Color(0.96, 0.88, 0.72, 0.82))
@@ -296,7 +296,7 @@ func _on_increase_difficulty_button() -> void:
 	_update_difficulty_label()
 
 func _update_difficulty_label() -> void:
-	difficulty_label.text = "難度 %d" % selected_difficulty_level
+	difficulty_label.text = tr("newrun.difficulty") % selected_difficulty_level
 
 func populate_new_run_menu() -> void:
 	custom_run_modifier_button_container.populate_custom_run_modifiers()
@@ -306,24 +306,24 @@ func populate_new_run_menu() -> void:
 func populate_character_info(character_object_id: String) -> void:
 	var character_data: CharacterData = Global.get_character_data(character_object_id)
 	if character_data == null:
-		character_name_label.text = "請先選角"
-		character_health_label.text = "元神：—"
-		character_money_label.text = "銀兩：—"
-		character_description_label.text = "神壇還沒選定主位。"
+		character_name_label.text = tr("newrun.pick_first")
+		character_health_label.text = tr("newrun.hp_empty")
+		character_money_label.text = tr("newrun.money_empty")
+		character_description_label.text = tr("newrun.altar_unset")
 		character_artifact_texture_rect.texture = null
-		character_artifact_name_label.text = "起手護符：待定"
-		character_artifact_description_label.text = "先選角色，再看祂帶來什麼。"
+		character_artifact_name_label.text = tr("newrun.charm_tbd")
+		character_artifact_description_label.text = tr("newrun.pick_to_see")
 		_populate_character_tags([])
-		_start_hint_label.text = "先從中央 gallery 點一位角色，再決定難度、種子；右側這欄會告訴你祂適合怎麼開局。"
+		_start_hint_label.text = tr("newrun.guide")
 		return
 
 	character_name_label.text = character_data.character_name
-	character_health_label.text = "元神：%d" % character_data.character_starting_health
-	character_money_label.text = "銀兩：%d" % character_data.character_starting_money
+	character_health_label.text = tr("newrun.hp") % character_data.character_starting_health
+	character_money_label.text = tr("newrun.money") % character_data.character_starting_money
 	character_description_label.text = character_data.character_description
 	_populate_character_tags(_tags_for_character(character_object_id))
 
-	var starter_artifact_name: String = "無起手護符"
+	var starter_artifact_name: String = tr("newrun.no_charm")
 	var starter_artifact_description: String = ""
 	character_artifact_texture_rect.texture = null
 	if len(character_data.character_starting_artifact_ids) > 0:
@@ -333,12 +333,12 @@ func populate_character_info(character_object_id: String) -> void:
 			starter_artifact_name = artifact_data.artifact_name
 			starter_artifact_description = artifact_data.artifact_description
 	character_artifact_name_label.text = starter_artifact_name
-	character_artifact_description_label.text = starter_artifact_description if not starter_artifact_description.is_empty() else "此角色不帶額外起手遺物。"
+	character_artifact_description_label.text = starter_artifact_description if not starter_artifact_description.is_empty() else tr("newrun.no_relic")
 	var build_hint: String = _build_hint_for_character(character_object_id)
 	if build_hint.is_empty():
-		_start_hint_label.text = "已選中【%s】。確認難度與種子後，按下〈開始開壇〉立刻進局。" % character_data.character_name
+		_start_hint_label.text = tr("newrun.selected_simple") % character_data.character_name
 	else:
-		_start_hint_label.text = "已選中【%s】。核心開局：%s\n確認難度與種子後，按下〈開始開壇〉立刻進局。" % [character_data.character_name, build_hint]
+		_start_hint_label.text = tr("newrun.selected_core") % [character_data.character_name, build_hint]
 
 func _populate_character_tags(tags: Array) -> void:
 	if _character_tags_flow == null:
@@ -399,7 +399,7 @@ func _build_gallery_entries() -> Array:
 					entry["starter_name"] = artifact_data.artifact_name
 					entry["starter_description"] = artifact_data.artifact_description
 		else:
-			entry["description"] = str(entry.get("locked_copy", "神像尚未開眼。"))
+			entry["description"] = str(entry.get("locked_copy", tr("newrun.eye_unopened")))
 		entries.append(entry)
 	return entries
 
@@ -473,10 +473,10 @@ func _start_run_button_state(can_start: bool) -> void:
 func _build_loadout_pickers() -> void:
 	if _guardian_picker != null:
 		return
-	_guardian_picker = _make_loadout_picker(RitualLoadout.list_guardian_ids(), "護壇", true)
+	_guardian_picker = _make_loadout_picker(RitualLoadout.list_guardian_ids(), tr("newrun.guardian"), true)
 	_guardian_picker.item_selected.connect(_on_guardian_picked)
 	add_child(_guardian_picker)
-	_tool_picker = _make_loadout_picker(RitualLoadout.list_tool_ids_unlocked(Global.profile_data), "法器", false)	# Q2-D：破煞法器需虎爺殿解鎖
+	_tool_picker = _make_loadout_picker(RitualLoadout.list_tool_ids_unlocked(Global.profile_data), tr("newrun.tool"), false)	# Q2-D：破煞法器需虎爺殿解鎖
 	_tool_picker.item_selected.connect(_on_tool_picked)
 	add_child(_tool_picker)
 
@@ -485,7 +485,7 @@ func _make_loadout_picker(ids: Array, prefix: String, is_guardian: bool) -> Opti
 	ob.name = prefix + "Picker"
 	ob.clip_text = true	# UIQA P1-2：min width 不得撐爆排版（曾壓到開始開壇）
 	ob.fit_to_longest_item = false
-	ob.add_item("%s：（角色預設）" % prefix)
+	ob.add_item(tr("newrun.default_pick") % prefix)
 	ob.set_item_metadata(0, "")
 	for id: String in ids:
 		var disp: String = id

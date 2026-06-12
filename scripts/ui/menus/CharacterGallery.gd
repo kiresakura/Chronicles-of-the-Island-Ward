@@ -49,7 +49,7 @@ func _build_once() -> void:
 
 	_header_label = Label.new()
 	_header_label.name = "HeaderLabel"
-	_header_label.text = "請神入位"
+	_header_label.text = tr("gallery.title")
 	_header_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_header_label.add_theme_font_size_override("font_size", 24)
 	_header_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
@@ -57,7 +57,7 @@ func _build_once() -> void:
 
 	_subhead_label = Label.new()
 	_subhead_label.name = "SubheadLabel"
-	_subhead_label.text = "神位會依序亮起；燈落在哪位，今晚就請哪位開壇。"
+	_subhead_label.text = tr("gallery.hint")
 	_subhead_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_subhead_label.add_theme_font_size_override("font_size", 13)
 	_subhead_label.add_theme_color_override("font_color", Color(0.95, 0.88, 0.76, 0.82))

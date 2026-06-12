@@ -82,13 +82,13 @@ const PANEL_MATERIAL_RULE_BY_KIND: Dictionary = {
 ## Q2-A：節點短標走民俗語彙（遇煞/惡煞據點/鎮煞大醮/民俗問事/寶匣/夜市香鋪/入廟安神），
 ## 與遶境敘事同一套符號系統（基準 Q-4），不用通用 roguelike 字。
 const LOCATION_LABELS: Dictionary = {
-	LocationData.LOCATION_TYPES.COMBAT: "煞",
-	LocationData.LOCATION_TYPES.MINIBOSS: "惡",
-	LocationData.LOCATION_TYPES.BOSS: "醮",
-	LocationData.LOCATION_TYPES.EVENT: "問",
-	LocationData.LOCATION_TYPES.TREASURE: "寶",
-	LocationData.LOCATION_TYPES.SHOP: "市",
-	LocationData.LOCATION_TYPES.REST_SITE: "廟",
+	LocationData.LOCATION_TYPES.COMBAT: "map.label.combat",
+	LocationData.LOCATION_TYPES.MINIBOSS: "map.label.miniboss",
+	LocationData.LOCATION_TYPES.BOSS: "map.label.boss",
+	LocationData.LOCATION_TYPES.EVENT: "map.label.event",
+	LocationData.LOCATION_TYPES.TREASURE: "map.label.treasure",
+	LocationData.LOCATION_TYPES.SHOP: "map.label.shop",
+	LocationData.LOCATION_TYPES.REST_SITE: "map.label.rest",
 }
 
 ## Q2-A：節點型別色環 — 地圖辨型別的第二符號軸（色 + 字 + 圖三重編碼，遠看靠色近看靠圖）。
@@ -184,7 +184,8 @@ static func get_card_type_accent(card_type: int) -> Color:
 	return get_color(token_name, get_color("festival_red", Color(0.85, 0.29, 0.17)))
 
 static func get_location_short_label(location_type: int) -> String:
-	return LOCATION_LABELS.get(location_type, "？")
+	# Q4-A i18n：const 存 key、讀取點翻譯（static context 用 TranslationServer）
+	return TranslationServer.translate(LOCATION_LABELS.get(location_type, "？"))
 
 static func apply_primary_button_style(button: Button) -> void:
 	button.add_theme_stylebox_override("normal", _create_button_stylebox(

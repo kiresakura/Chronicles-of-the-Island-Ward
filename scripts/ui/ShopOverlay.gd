@@ -5,10 +5,10 @@ const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
 # NPC 報價台詞池 — 隨機挑一條顯示於頂部資訊欄
 const _NPC_QUOTES: Array[String] = [
-	"🏮 城隍廟口雜貨鋪  —  「好物不怕無緣客，緣到自然留」",
-	"🏮 城隍廟口雜貨鋪  —  「神明庇佑，出入平安，買賣順利」",
-	"🏮 城隍廟口雜貨鋪  —  「香火鼎盛，老闆開心，價錢好說」",
-	"🏮 城隍廟口雜貨鋪  —  「有緣千里來相逢，無緣空袋走一趟」",
+	"shop.slogan1",
+	"shop.slogan2",
+	"shop.slogan3",
+	"shop.slogan4",
 ]
 
 @onready var card_container: HBoxContainer = $CardContainer
@@ -34,7 +34,7 @@ func _ready():
 	Signals.consumable_purchased.connect(_on_consumable_purchased)
 
 	# 隨機 NPC 報價台詞
-	npc_info_bar.text = _NPC_QUOTES[randi() % _NPC_QUOTES.size()]
+	npc_info_bar.text = tr(_NPC_QUOTES[randi() % _NPC_QUOTES.size()])
 
 	continue_button.text = tr("ui.leave")
 	continue_button.button_up.connect(_on_continue_button_up)

@@ -20,12 +20,8 @@ const BUILDING_BADGE_COLOR: Dictionary = {
 	"building_fortune_pavilion": Color(0.36, 0.62, 0.74), "building_night_market": Color(0.93, 0.72, 0.30),
 	"building_stage": Color(0.60, 0.36, 0.62), "building_bell_tower": Color(0.45, 0.58, 0.38),
 }
-## Q3 才有承載系統的解鎖鍵 → 卡上標注，避免「修了沒感」的誠信缺口
-const CONTENT_PENDING_NOTE: Dictionary = {
-	"building_main_hall": "神明位擴充於 Q3 內容關開放",
-	"building_fortune_pavilion": "開局籤詩於 Q3 內容關開放",
-	"building_bell_tower": "開局被動於 Q3 內容關開放",
-}
+## 未實套解鎖鍵的開放時程標注（Q3-E 後六棟全實套 → 目前為空；新建築未接系統時填 key）
+const CONTENT_PENDING_NOTE: Dictionary = {}
 
 signal temple_changed	# 修復成功（MainMenu 接這個刷新香火列）
 
@@ -68,7 +64,7 @@ func _build() -> void:
 
 	var title := Label.new()
 	title.name = "TempleTitle"
-	title.text = "修復鎮島廟"
+	title.text = tr("temple.title")
 	title.add_theme_font_size_override("font_size", 34)
 	title.add_theme_color_override("font_color", GOLD)
 	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
@@ -78,7 +74,7 @@ func _build() -> void:
 
 	var subtitle := Label.new()
 	subtitle.name = "TempleSubtitle"
-	subtitle.text = "一磚一瓦，香火重光 — 廟越完整，出巡的選項越多"
+	subtitle.text = tr("temple.subtitle")
 	subtitle.add_theme_font_size_override("font_size", 15)
 	subtitle.add_theme_color_override("font_color", Color(0.85, 0.78, 0.66))
 	add_child(subtitle)
@@ -98,7 +94,7 @@ func _build() -> void:
 
 	_back_btn = Button.new()
 	_back_btn.name = "TempleBackButton"
-	_back_btn.text = "返回正殿"
+	_back_btn.text = tr("temple.back")
 	_back_btn.custom_minimum_size = Vector2(200, 80)
 	_back_btn.focus_mode = Control.FOCUS_NONE
 	COTIW_UI_THEME.apply_primary_button_style(_back_btn)
@@ -196,11 +192,11 @@ func _make_building_card(bid: String) -> PanelContainer:
 	var note := Label.new()
 	note.name = "NoteLabel"
 	if CONTENT_PENDING_NOTE.has(bid):
-		note.text = "※ " + str(CONTENT_PENDING_NOTE[bid])
+		note.text = "※ " + tr(str(CONTENT_PENDING_NOTE[bid]))
 	elif bool(props.get("is_cosmetic_only", false)):
-		note.text = "※ 純氛圍建築（外觀／劇情／音樂）"
+		note.text = tr("temple.note_cosmetic")
 	else:
-		note.text = "※ 修復後即刻生效"
+		note.text = tr("temple.note_immediate")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.add_theme_font_size_override("font_size", 13)
 	note.add_theme_color_override("font_color", Color(0.66, 0.58, 0.48))
@@ -230,7 +226,7 @@ func _make_building_card(bid: String) -> PanelContainer:
 func refresh() -> void:
 	var profile: ProfileData = Global.profile_data
 	if _incense_lbl != null:
-		_incense_lbl.text = "香火  %d" % (profile.profile_incense_balance if profile != null else 0)
+		_incense_lbl.text = tr("temple.incense_badge") % (profile.profile_incense_balance if profile != null else 0)
 	for bid: String in _cards.keys():
 		var props: Dictionary = RitualTemple.load_building(bid)
 		var entry: Dictionary = _cards[bid]
@@ -240,17 +236,17 @@ func refresh() -> void:
 		var btn: Button = entry["btn"] as Button
 		var cost_lbl: Label = entry["cost"] as Label
 		if lvl >= max_lvl:
-			cost_lbl.text = "圓滿"
+			cost_lbl.text = tr("temple.maxed_cost")
 			cost_lbl.add_theme_color_override("font_color", GOLD)
-			btn.text = "已圓滿"
+			btn.text = tr("temple.maxed_btn")
 			btn.disabled = true
 		else:
 			var cost: int = RitualTemple.repair_cost(props, lvl)
-			cost_lbl.text = "香火 %d" % cost
+			cost_lbl.text = tr("temple.cost") % cost
 			var affordable: bool = RitualTemple.can_repair(profile, bid)
 			cost_lbl.add_theme_color_override("font_color",
 				Color(0.93, 0.86, 0.66) if affordable else Color(0.85, 0.42, 0.36))
-			btn.text = "修復" if lvl == 0 else "升級"
+			btn.text = tr("temple.repair") if lvl == 0 else tr("temple.upgrade")
 			btn.disabled = not affordable
 
 func _on_repair_pressed(bid: String) -> void:

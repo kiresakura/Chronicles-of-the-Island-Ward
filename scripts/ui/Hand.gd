@@ -326,7 +326,7 @@ func _ensure_cancel_target_button() -> void:
 		return
 	_cancel_target_button = Button.new()
 	_cancel_target_button.name = "CancelTargetButton"
-	_cancel_target_button.text = "取消"
+	_cancel_target_button.text = tr("hand.cancel")
 	_cancel_target_button.focus_mode = Control.FOCUS_NONE
 	_cancel_target_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_cancel_target_button.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -355,10 +355,10 @@ func _on_cancel_target_button_up() -> void:
 ## P0：不可出牌 feedback —— TouchFeedback ash/disabled + 灰燼粒子 + Combat toast 文案
 func _feedback_card_unplayable(card: Card) -> void:
 	# 判斷原因：神力不足 vs 其他（validator 未過）
-	var reason: String = "此牌暫不可用"
+	var reason: String = tr("hand.card_unavailable")
 	if card != null and card.card_data != null:
 		if Global.player_data.player_energy < card.card_data.get_card_energy_cost():
-			reason = "神力不足"
+			reason = tr("hand.no_energy")
 	# 卡牌本體 ash/disabled 視覺 + 悶聲 sfx + 灰燼粒子
 	var btn: Control = card.card_button if (card != null and is_instance_valid(card.card_button)) else card
 	if is_instance_valid(btn):
@@ -857,7 +857,7 @@ func _try_merge_card(card: Card) -> bool:
 	# P1-2：有夥伴但本回合限額用完 → toast +「攔截」（不落回 right-click / 詳情）
 	if _merges_used_this_turn >= MERGES_PER_TURN:
 		if is_instance_valid(combat) and combat.has_method("show_combat_toast"):
-			combat.show_combat_toast("本回合已合符")
+			combat.show_combat_toast(tr("hand.merge_used"))
 		return true
 	return merge_cards(card.card_data, partner)
 
@@ -894,7 +894,7 @@ func merge_cards(card_a: CardData, card_b: CardData) -> bool:
 	if Global.run_merge_energy_cost > 0 and Global.player_data.player_energy < Global.run_merge_energy_cost:
 		var combat_node: Node = get_node_or_null("../")
 		if is_instance_valid(combat_node) and combat_node.has_method("show_combat_toast"):
-			combat_node.show_combat_toast("神力不足，無法合符")
+			combat_node.show_combat_toast(tr("hand.merge_no_energy"))
 		return false
 	if not TalismanMergeSystem.can_merge(card_a, card_b):
 		return false

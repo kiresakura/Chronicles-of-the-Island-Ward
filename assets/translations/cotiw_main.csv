@@ -31,16 +31,16 @@ map.node.shop,夜市攤,夜市摊,Night Market,夜市
 map.node.rest,廟宇,庙宇,Temple Rest,休息
 map.node.event,民俗遭遇,民俗遭遇,Folk Event,イベント
 map.node.boss,章節王,章节王,Boss,ボス
-mascot.tongji.q1,"神明附體中…別吵我。","神明附体中…别吵我。","Possessed by gods… don't disturb me.","神の依り代だ…邪魔するな。"
-mascot.tongji.q2,"今日香火旺，諸神皆喜。","今日香火旺，诸神皆喜。","The incense burns strong today; the gods are pleased.","今日は香の煙が濃く、神々もご機嫌だ。"
-mascot.tongji.q3,"打架的事，交給我！","打架的事，交给我！","Leave the fighting to me!","戦いは俺に任せろ！"
-mascot.tongji.q4,"七星劍出鞘，邪祟莫近！","七星剑出鞘，邪祟莫近！","Seven-Star Sword drawn—evil keep away!","七星剣を抜く、邪はくるな！"
-mascot.tongji.q5,"擲筊問問再說。","掷筊问问再说。","Let's ask the jiaobei first.","擲筊で占ってみよう。"
-mascot.luannu.q1,"願鸞神庇佑你今日順遂。","愿鸾神庇佑你今日顺遂。","May the Luan spirits bless your day.","鸞神のご加護を、今日もあなたに。"
-mascot.luannu.q2,"靈符已備，可去除邪祟。","灵符已备，可去除邪祟。","Talismans are ready, to ward off evil.","霊符は整った、邪を祓いましょう。"
-mascot.luannu.q3,"鸞堂之事，皆有定數。","鸾堂之事，皆有定数。","All things in Luan-tang follow destiny.","鸞堂のことは、すべて天命です。"
-mascot.luannu.q4,"再寫一張符，需要些時間。","再写一张符，需要些时间。","Drawing another talisman takes time.","もう一枚、符を書くには時間が要る。"
-mascot.luannu.q5,"今日香爐還旺，可祈福。","今日香炉还旺，可祈福。","The censer still glows—good for prayer.","香炉はまだ燃えている、祈りに好ましい。"
+mascot.tongji.q1,神明附體中…別吵我。,神明附体中…别吵我。,Possessed by gods… don't disturb me.,神の依り代だ…邪魔するな。
+mascot.tongji.q2,今日香火旺，諸神皆喜。,今日香火旺，诸神皆喜。,The incense burns strong today; the gods are pleased.,今日は香の煙が濃く、神々もご機嫌だ。
+mascot.tongji.q3,打架的事，交給我！,打架的事，交给我！,Leave the fighting to me!,戦いは俺に任せろ！
+mascot.tongji.q4,七星劍出鞘，邪祟莫近！,七星剑出鞘，邪祟莫近！,Seven-Star Sword drawn—evil keep away!,七星剣を抜く、邪はくるな！
+mascot.tongji.q5,擲筊問問再說。,掷筊问问再说。,Let's ask the jiaobei first.,擲筊で占ってみよう。
+mascot.luannu.q1,願鸞神庇佑你今日順遂。,愿鸾神庇佑你今日顺遂。,May the Luan spirits bless your day.,鸞神のご加護を、今日もあなたに。
+mascot.luannu.q2,靈符已備，可去除邪祟。,灵符已备，可去除邪祟。,"Talismans are ready, to ward off evil.",霊符は整った、邪を祓いましょう。
+mascot.luannu.q3,鸞堂之事，皆有定數。,鸾堂之事，皆有定数。,All things in Luan-tang follow destiny.,鸞堂のことは、すべて天命です。
+mascot.luannu.q4,再寫一張符，需要些時間。,再写一张符，需要些时间。,Drawing another talisman takes time.,もう一枚、符を書くには時間が要る。
+mascot.luannu.q5,今日香爐還旺，可祈福。,今日香炉还旺，可祈福。,The censer still glows—good for prayer.,香炉はまだ燃えている、祈りに好ましい。
 ui.level,等級,等级,Level,レベル
 ui.avatar_level,等級 %d,等级 %d,Lv %d,Lv %d
 ui.level_progress,等級 %d　%d/3,等级 %d　%d/3,Lv %d   %d/3,Lv %d   %d/3
@@ -64,3 +64,224 @@ run.modifier_name,自訂修正,自定义修正,Run Modifier,ラン修正
 keyword.boss,章節王,章节王,Boss,ボス
 keyword.hp_short,元神,元神,HP,HP
 ui.placeholder.desc,說明,说明,Description,説明
+temple.title,修復鎮島廟,修复镇岛庙,Restore the Island Ward Temple,鎮島廟を修復する
+temple.subtitle,一磚一瓦，香火重光 — 廟越完整，出巡的選項越多,一砖一瓦，香火重光 — 庙越完整，出巡的选项越多,"Brick by brick, the incense burns anew — a fuller temple means more choices on patrol",一磚一瓦、香火再び — 廟が整うほど巡行の選択肢が増える
+temple.back,返回正殿,返回正殿,Back to Main Hall,本殿に戻る
+temple.note_cosmetic,※ 純氛圍建築（外觀／劇情／音樂）,※ 纯氛围建筑（外观／剧情／音乐）,* Ambience only (visuals / story / music),※ 雰囲気専用（外観／物語／音楽）
+temple.note_immediate,※ 修復後即刻生效,※ 修复后即刻生效,* Takes effect immediately after repair,※ 修復後すぐに有効
+temple.incense_badge,香火  %d,香火  %d,Incense  %d,香火  %d
+temple.maxed_cost,圓滿,圆满,Complete,円満
+temple.maxed_btn,已圓滿,已圆满,Completed,円満済み
+temple.cost,香火 %d,香火 %d,Incense %d,香火 %d
+temple.repair,修復,修复,Repair,修復
+temple.upgrade,升級,升级,Upgrade,強化
+menu.hotspot_censer,香爐 — 還燒著呢,香炉 — 还烧着呢,Censer — still burning,香炉 — まだ燃えている
+menu.hotspot_lantern,紅燈籠 — 招運招福,红灯笼 — 招运招福,Red lantern — fortune and luck,紅提灯 — 福を招く
+menu.banner_event,"限時擲筊
+三選一賜禮","限时掷筊
+三选一赐礼","Limited Jiaobei Event
+Pick 1 of 3 Gifts","期間限定ジャオベイ
+3択の授かり物"
+menu.banner_tag,活動,活动,Event,イベント
+menu.locked,鎖,锁,Locked,鍵
+menu.feature,功能,功能,Feature,機能
+menu.coming_soon,「%s」即將推出,「%s」即将推出,"""%s"" coming soon",「%s」近日公開
+menu.yuanbao,元寶  %d,元宝  %d,Sycee  %d,元宝  %d
+menu.continue,繼續,继续,Continue,続ける
+menu.depart,起駕,起驾,Set Forth,出立
+map.label.combat,煞,煞,Sha,煞
+map.label.miniboss,惡,恶,Elite,悪
+map.label.boss,醮,醮,Rite,醮
+map.label.event,問,问,Ask,問
+map.label.treasure,寶,宝,Loot,宝
+map.label.shop,市,市,Shop,市
+map.label.rest,廟,庙,Rest,廟
+rarity.gold,金,金,G,金
+rarity.tool,器,器,T,器
+rarity.rare,稀,稀,R,稀
+rarity.uncommon,奇,奇,U,奇
+rarity.basic,基,基,B,基
+rarity.common,常,常,C,常
+newrun.start,開始開壇,开始开坛,Begin the Rite,開壇する
+newrun.seed_hint,留白則隨機起局,留白则随机起局,Leave blank for random seed,空欄でランダム開始
+newrun.who_gets_what,選誰・得到什麼,选谁・得到什么,"Who You Pick, What You Get",誰を選び・何を得るか
+newrun.how_to_start,如何開始,如何开始,How to Start,始め方
+newrun.altar_hint,← 神壇燈光落在哪位，左側就寫誰的起手命格。,← 神坛灯光落在哪位，左侧就写谁的起手命格。,← The altar light shows whose starting fate is written here.,← 祭壇の光が当たる者の初期運勢が左に示される。
+newrun.difficulty,難度 %d,难度 %d,Difficulty %d,難易度 %d
+newrun.pick_first,請先選角,请先选角,Pick a character first,まずキャラを選択
+newrun.hp_empty,元神：—,元神：—,Spirit: —,元神：—
+newrun.money_empty,銀兩：—,银两：—,Silver: —,銀両：—
+newrun.altar_unset,神壇還沒選定主位。,神坛还没选定主位。,The altar seat is not yet chosen.,祭壇の主はまだ決まっていない。
+newrun.charm_tbd,起手護符：待定,起手护符：待定,Starting charm: TBD,初期護符：未定
+newrun.pick_to_see,先選角色，再看祂帶來什麼。,先选角色，再看祂带来什么。,Pick a character to see what they bring.,キャラを選ぶと持ち物が見える。
+newrun.guide,先從中央 gallery 點一位角色，再決定難度、種子；右側這欄會告訴你祂適合怎麼開局。,先从中央 gallery 点一位角色，再决定难度、种子；右侧这栏会告诉你祂适合怎么开局。,"Pick a character from the gallery, then set difficulty and seed; this panel shows how they like to start.",中央のギャラリーからキャラを選び、難易度とシードを決める。右欄に開幕の指針が表示される。
+newrun.hp,元神：%d,元神：%d,Spirit: %d,元神：%d
+newrun.money,銀兩：%d,银两：%d,Silver: %d,銀両：%d
+newrun.no_charm,無起手護符,无起手护符,No starting charm,初期護符なし
+newrun.no_relic,此角色不帶額外起手遺物。,此角色不带额外起手遗物。,This character starts with no extra relic.,このキャラは追加の初期遺物を持たない。
+newrun.selected_simple,已選中【%s】。確認難度與種子後，按下〈開始開壇〉立刻進局。,已选中【%s】。确认难度与种子后，按下〈开始开坛〉立刻进局。,"Selected [%s]. Confirm difficulty and seed, then press Begin the Rite.",【%s】を選択。難易度とシードを確認し〈開壇する〉で開始。
+newrun.selected_core,"已選中【%s】。核心開局：%s
+確認難度與種子後，按下〈開始開壇〉立刻進局。","已选中【%s】。核心开局：%s
+确认难度与种子后，按下〈开始开坛〉立刻进局。","Selected [%s]. Core opening: %s
+Confirm difficulty and seed, then press Begin the Rite.","【%s】を選択。コア戦術：%s
+難易度とシードを確認し〈開壇する〉で開始。"
+newrun.eye_unopened,神像尚未開眼。,神像尚未开眼。,The idol's eyes are not yet opened.,神像はまだ開眼していない。
+newrun.guardian,護壇,护坛,Guardian,護壇
+newrun.tool,法器,法器,Ritual Tool,法器
+newrun.default_pick,%s：（角色預設）,%s：（角色预设）,%s: (character default),%s：（キャラ既定）
+menu.wins,%d / %d 勝場,%d / %d 胜场,%d / %d wins,%d / %d 勝利
+codex.gan_general.name,甘將軍,甘将军,General Gan,甘将軍
+codex.gan_general.title,紅黑面,红黑面,Red-Black Face,紅黒の面
+codex.liu_general.name,柳將軍,柳将军,General Liu,柳将軍
+codex.liu_general.title,綠面儒將,绿面儒将,Green-Faced Scholar General,緑面の儒将
+codex.xie_general.name,謝將軍,谢将军,General Xie,謝将軍
+codex.xie_general.title,白無常,白无常,White Impermanence,白無常
+codex.fan_general.name,范將軍,范将军,General Fan,范将軍
+codex.fan_general.title,黑無常,黑无常,Black Impermanence,黒無常
+codex.spring_god.name,春神,春神,Spring Deity,春の神
+codex.spring_god.title,桃花面,桃花面,Peach Blossom Face,桃花の面
+codex.summer_god.name,夏神,夏神,Summer Deity,夏の神
+codex.summer_god.title,烈日面,烈日面,Blazing Sun Face,烈日の面
+codex.autumn_god.name,秋神,秋神,Autumn Deity,秋の神
+codex.autumn_god.title,金楓面,金枫面,Golden Maple Face,金楓の面
+codex.winter_god.name,冬神,冬神,Winter Deity,冬の神
+codex.winter_god.title,雪霜面,雪霜面,Frost Face,雪霜の面
+codex.mazu.name,媽祖,妈祖,Mazu,媽祖
+codex.mazu.title,天后娘娘,天后娘娘,Empress of Heaven,天后娘娘
+codex.guanyin.name,觀音,观音,Guanyin,観音
+codex.guanyin.title,慈悲菩薩,慈悲菩萨,Bodhisattva of Mercy,慈悲の菩薩
+codex.wangye.name,王爺,王爷,Wangye,王爺
+codex.wangye.title,代天巡狩,代天巡狩,Heaven's Inspector,代天巡狩
+codex.chenghuang.name,城隍,城隍,Chenghuang,城隍
+codex.chenghuang.title,陰陽判官,阴阳判官,Judge of Yin and Yang,陰陽の判官
+codex.tudi.name,土地公,土地公,Tudigong,土地公
+codex.tudi.title,福德正神,福德正神,God of Land and Fortune,福徳正神
+codex.huye.name,虎爺,虎爷,Huye the Tiger,虎爺
+codex.huye.title,鎮殿神獸,镇殿神兽,Guardian Beast of the Hall,鎮殿の神獣
+event.priest.opt_bless,「謝謝前輩，請賜香火。」  [color=green]恢復 8 點元神[/color],「谢谢前辈，请赐香火。」  [color=green]恢复 8 点元神[/color],"""Thank you, elder. Please grant me your blessing.""  [color=green]Restore 8 Spirit[/color]",「ありがとうございます。香火をお授けください。」  [color=green]元神を8回復[/color]
+event.priest.opt_divine,「老前輩，可否為我占上一卦？」  [color=green]獲得 1 張隨機稀有牌[/color]  [color=red]-40 銀兩[/color],「老前辈，可否为我占上一卦？」  [color=green]获得 1 张随机稀有牌[/color]  [color=red]-40 银两[/color],"""Elder, would you cast a divination for me?""  [color=green]Gain 1 random Rare card[/color]  [color=red]-40 Silver[/color]",「ご老人、占っていただけますか？」  [color=green]ランダムなレアカードを1枚獲得[/color]  [color=red]銀両-40[/color]
+event.priest.opt_divine_poor,[color=grey][無法選擇]: 銀兩不足（需 40）[/color],[color=grey][无法选择]: 银两不足（需 40）[/color],[color=grey][Unavailable]: Not enough Silver (need 40)[/color],[color=grey][選択不可]：銀両不足（40必要）[/color]
+event.priest.opt_leave,「我趕時間，先走了。」  離開,「我赶时间，先走了。」  离开,"""I'm in a hurry. Farewell.""  Leave",「急いでいるので失礼します。」  立ち去る
+event.priest.bye_bless,「謝謝前輩。」  告別,「谢谢前辈。」  告别,"""Thank you, elder.""  Farewell",「ありがとうございました。」  別れる
+event.priest.bye_divine,「...謝了，前輩。」  告別,「...谢了，前辈。」  告别,"""...Thanks, elder.""  Farewell",「…どうも、ご老人。」  別れる
+event.priest.intro,"廟口的老廟祝攔住去路，慈眉善目，手持清香。
+「年輕人，山中妖氣近日大盛，你要去山上，老朽這裡有些香火能保你平安……」","庙口的老庙祝拦住去路，慈眉善目，手持清香。
+「年轻人，山中妖气近日大盛，你要去山上，老朽这里有些香火能保你平安……」","An old temple keeper blocks your path, kind-eyed, incense in hand.
+""Young one, the mountain's miasma grows thick these days. If you must go up, my incense may keep you safe...""","廟の入口で老いた廟守が道を塞ぐ。慈悲深い眼差しで、清香を手にしている。
+「お若いの、近頃山の妖気が強い。山へ行くなら、この香火がお守りになろう……」"
+event.priest.blessed,"廟祝點頭微笑，取出一把線香為你念咒。你感到一股溫暖之氣流遍全身，精神頓時好了許多。
+「善哉善哉，此去山中，望你多加保重。」","庙祝点头微笑，取出一把线香为你念咒。你感到一股温暖之气流遍全身，精神顿时好了许多。
+「善哉善哉，此去山中，望你多加保重。」","The keeper smiles and chants over a bundle of incense. Warmth flows through your body, and your spirit lifts.
+""Good, good. Take care on the mountain path.""","廟守は微笑み、線香を取り出して祈りを唱える。温かな気が全身を巡り、心が軽くなる。
+「善き哉、善き哉。山ではくれぐれも気をつけなされ。」"
+event.priest.divined,"廟祝搖頭嘆氣，從香案上取出一張古舊的符牌遞給你。
+「老朽在此守廟五十年，見過許多像你這樣的年輕人。希望這張符能對你有所幫助。」","庙祝摇头叹气，从香案上取出一张古旧的符牌递给你。
+「老朽在此守庙五十年，见过许多像你这样的年轻人。希望这张符能对你有所帮助。」","The keeper sighs and hands you an ancient talisman from the altar.
+""Fifty years I have kept this temple, and seen many like you. May this talisman serve you well.""","廟守はため息をつき、香案から古びた符牌を取り出して渡す。
+「五十年この廟を守り、お主のような若者を何人も見てきた。この符が役に立つことを願う。」"
+event.umbrella.opt_help,「老人家放心，我若見到定告知於你。」  [color=green]+60 銀兩[/color],「老人家放心，我若见到定告知于你。」  [color=green]+60 银两[/color],"""Rest easy. If I see them, I will send word.""  [color=green]+60 Silver[/color]",「ご安心を。見かけたら必ずお知らせします。」  [color=green]銀両+60[/color]
+event.umbrella.opt_refuse,「抱歉，自顧不暇。」  離開,「抱歉，自顾不暇。」  离开,"""I'm sorry — I can barely look after myself.""  Leave",「すみません、自分のことで手一杯で。」  立ち去る
+event.umbrella.opt_continue,「這……竟是神明？」  繼續前行,「这……竟是神明？」  继续前行,"""Could she have been... a deity?""  Continue on",「まさか…神様だったのか？」  先へ進む
+event.umbrella.intro,"山路上，你遇到一位老婆婆坐在路邊，手持紙傘，神情哀戚。
+「年輕人啊，老身的孩子在山上失蹤多日，你若往山上去，能否幫我打聽一聲？」","山路上，你遇到一位老婆婆坐在路边，手持纸伞，神情哀戚。
+「年轻人啊，老身的孩子在山上失踪多日，你若往山上去，能否帮我打听一声？」","On the mountain road sits an old woman with a paper umbrella, sorrow in her eyes.
+""Young one, my child has been missing on the mountain for days. If you go up, could you ask after them?""","山道の傍らに、紙傘を手にした老婆が悲しげに座っている。
+「お若いの、わしの子が山で行方知れずになって幾日も経つ。山へ行くなら、消息を尋ねてはくれまいか？」"
+event.umbrella.reward,"老婆婆眼中閃過一道奇光，嫣然一笑。「你有善念，便賜你一份見面禮。」
+話音未落，老婆婆消失無蹤，地上留下一串銀兩，空氣中殘留著淡淡的香燭氣息。","老婆婆眼中闪过一道奇光，嫣然一笑。「你有善念，便赐你一份见面礼。」
+话音未落，老婆婆消失无踪，地上留下一串银两，空气中残留着淡淡的香烛气息。","A strange light flashes in the old woman's eyes as she smiles. ""You have a kind heart. Take this gift.""
+Before the words fade she is gone, leaving a string of silver and the faint scent of incense.","老婆の瞳に不思議な光がよぎり、にっこりと笑う。「善き心の持ち主じゃ。これは出会いの礼。」
+言葉が消えぬうちに老婆の姿はなく、地面には銀両の束と、かすかな香燭の香りだけが残った。"
+event.landgod.opt_pray,上香祭拜。  [color=red]-30 銀兩[/color]  [color=green]恢復 15 點元神[/color],上香祭拜。  [color=red]-30 银两[/color]  [color=green]恢复 15 点元神[/color],Offer incense and pray.  [color=red]-30 Silver[/color]  [color=green]Restore 15 Spirit[/color],香を供えて祈る。  [color=red]銀両-30[/color]  [color=green]元神を15回復[/color]
+event.landgod.opt_pray_poor,[color=grey][無法選擇]: 銀兩不足（需 30）[/color],[color=grey][无法选择]: 银两不足（需 30）[/color],[color=grey][Unavailable]: Not enough Silver (need 30)[/color],[color=grey][選択不可]：銀両不足（30必要）[/color]
+event.landgod.opt_steal,取走供品碎銀。  [color=green]+20 銀兩[/color],取走供品碎银。  [color=green]+20 银两[/color],Take the offering silver.  [color=green]+20 Silver[/color],供物の銀をくすねる。  [color=green]銀両+20[/color]
+event.landgod.opt_leave,默默離去。,默默离去。,Quietly leave.,黙って立ち去る。
+event.landgod.bye_pray,「感謝土地公指引！」  告別,「感谢土地公指引！」  告别,"""Thank you, Tudigong, for your guidance!""  Farewell",「土地公様、お導き感謝します！」  別れる
+event.landgod.bye_steal,趕緊離去……,赶紧离去……,Hurry away...,急いで立ち去る……
+event.landgod.intro,半山腰有座廢棄的土地廟，香爐殘灰猶在，神明金身落滿塵埃。微弱的靈氣在廢墟中流動，彷彿仍有什麼在此守護……,半山腰有座废弃的土地庙，香炉残灰犹在，神明金身落满尘埃。微弱的灵气在废墟中流动，仿佛仍有什么在此守护……,"Halfway up the mountain stands an abandoned land-god shrine. Ash lingers in the censer; dust coats the gilded idol. A faint spiritual presence stirs in the ruins, as if something still keeps watch...",山の中腹に打ち捨てられた土地廟がある。香炉には灰が残り、金色の神像は埃をかぶっている。廃墟の中をかすかな霊気が流れ、今もなお何かが守っているかのようだ……
+event.landgod.blessed,"土地公現身，是位慈祥的白鬚老者，笑道：
+「汝有禮儀，老夫便賜你些許陰德，保你此行平安。」
+你感到全身暖意流遍，傷勢好了不少。","土地公现身，是位慈祥的白须老者，笑道：
+「汝有礼仪，老夫便赐你些许阴德，保你此行平安。」
+你感到全身暖意流遍，伤势好了不少。","Tudigong appears — a kindly white-bearded elder. He smiles:
+""You honor the old ways. I grant you a measure of merit to keep you safe.""
+Warmth spreads through you, and your wounds mend.","土地公が現れる。白い髭の柔和な老人だ。笑って言う。
+「礼節を知る者よ、わずかながら陰徳を授けよう。道中の無事を祈る。」
+全身に温もりが広がり、傷がだいぶ癒えた。"
+event.landgod.cursed,"你拿走供品的瞬間，廟中陰風大作，神牌微微震動。
+「汝敢褻瀆！」一道怒意從廢墟中透出，你感到寒意刺骨——好在隨即消散，或許土地公念你年輕無知，暫且放過。","你拿走供品的瞬间，庙中阴风大作，神牌微微震动。
+「汝敢亵渎！」一道怒意从废墟中透出，你感到寒意刺骨——好在随即消散，或许土地公念你年轻无知，暂且放过。","The moment you take the offering, a cold wind howls and the spirit tablet trembles.
+""You dare desecrate this place!"" Fury radiates from the ruins — a bone-deep chill that mercifully fades. Perhaps Tudigong spared you for your youth and ignorance.","供物を手にした瞬間、廟に陰風が吹き荒れ、神牌がかすかに震えた。
+「冒涜する気か！」廃墟から怒気がほとばしり、骨まで凍る寒気が走る——だがすぐに消えた。土地公が若さゆえの無知と見て、見逃してくれたのかもしれない。"
+card.type.attack,攻擊,攻击,Attack,攻撃
+card.type.skill,技能,技能,Skill,スキル
+card.type.power,能力,能力,Power,パワー
+card.type.status,狀態,状态,Status,状態
+card.type.curse,詛咒,诅咒,Curse,呪い
+card.unknown,未知卡牌,未知卡牌,Unknown Card,不明なカード
+map.boss_gate,虎爺關,虎爷关,Tiger Gate,虎爺の関
+reward.title,神示供桌,神示供桌,Altar of Divine Gifts,神示の供卓
+reward.hint,三份神示只能領一份；長按可看細節。,三份神示只能领一份；长按可看细节。,Choose one of three gifts; long-press for details.,三つの神示から一つだけ。長押しで詳細。
+hand.cancel,取消,取消,Cancel,キャンセル
+hand.card_unavailable,此牌暫不可用,此牌暂不可用,This card can't be played now,このカードは今使えない
+hand.no_energy,神力不足,神力不足,Not enough Power,神力不足
+hand.merge_used,本回合已合符,本回合已合符,Already merged this turn,このターンは合符済み
+hand.merge_no_energy,神力不足，無法合符,神力不足，无法合符,Not enough Power to merge,神力不足で合符できない
+shop.slogan1,🏮 城隍廟口雜貨鋪  —  「好物不怕無緣客，緣到自然留」,🏮 城隍庙口杂货铺  —  「好物不怕无缘客，缘到自然留」,"🏮 Temple Gate Sundries — ""Good wares wait for fated buyers.""",🏮 城隍廟前の雑貨舗 —「良き品は縁ある客を待つ」
+shop.slogan2,🏮 城隍廟口雜貨鋪  —  「神明庇佑，出入平安，買賣順利」,🏮 城隍庙口杂货铺  —  「神明庇佑，出入平安，买卖顺利」,"🏮 Temple Gate Sundries — ""Blessed travels, fair trades.""",🏮 城隍廟前の雑貨舗 —「神のご加護、商売繁盛」
+shop.slogan3,🏮 城隍廟口雜貨鋪  —  「香火鼎盛，老闆開心，價錢好說」,🏮 城隍庙口杂货铺  —  「香火鼎盛，老板开心，价钱好说」,"🏮 Temple Gate Sundries — ""Busy incense, happy keeper, friendly prices.""",🏮 城隍廟前の雑貨舗 —「香火盛んで店主上機嫌、お値段相談可」
+shop.slogan4,🏮 城隍廟口雜貨鋪  —  「有緣千里來相逢，無緣空袋走一趟」,🏮 城隍庙口杂货铺  —  「有缘千里来相逢，无缘空袋走一趟」,"🏮 Temple Gate Sundries — ""Fate brings buyers from afar; the fateless leave empty-handed.""",🏮 城隍廟前の雑貨舗 —「縁あれば千里より、縁なくば手ぶらで帰る」
+omen.head1,甲子籤【中平】,甲子签【中平】,Stick I [Even],甲子籤【中平】
+omen.head2,乙丑籤【中平】,乙丑签【中平】,Stick II [Even],乙丑籤【中平】
+omen.head3,丙寅籤【中平】,丙寅签【中平】,Stick III [Even],丙寅籤【中平】
+omen.head4,丁卯籤【上上】,丁卯签【上上】,Stick IV [Great Fortune],丁卯籤【上上】
+rso.fortune_prefix,籤詩亭 ┃ ,签诗亭 ┃ ,Fortune Pavilion ┃ ,籤詩亭 ┃ 
+combat.my_turn,我方回合,我方回合,Your Turn,自分のターン
+combat.pick_target,選擇目標,选择目标,Choose a Target,対象を選択
+combat.processing,行動處理中,行动处理中,Resolving...,処理中…
+combat.enemy_turn,敵方回合,敌方回合,Enemy Turn,敵のターン
+combat.deity,神明,神明,Deity,神明
+combat.invoked,%s 降乩！,%s 降乩！,%s Descends!,%s 降臨！
+combat.charge,%s 請神 %d/%d,%s 请神 %d/%d,%s Invocation %d/%d,%s 請神 %d/%d
+combat.backup_deity,備援神位 — %s 接掌請神盤,备援神位 — %s 接掌请神盘,Reserve Seat — %s takes the altar,控えの神位 — %s が請神盤を引き継ぐ
+fx.shengjiao,聖筊！,圣筊！,Shengjiao!,聖筊！
+fx.invoke_title,%s・降乩,%s・降乩,%s · Descends,%s・降臨
+fx.awaken_title,%s・煞變,%s・煞变,%s · Sha Awakening,%s・煞変
+shop.buy_gold,購買  金,购买  金,Buy  G,購入  金
+touch.detail,詳情,详情,Details,詳細
+hud.energy,神力,神力,Power,神力
+hud.block,護,护,Guard,護
+hud.omen,預兆,预兆,Omen,予兆
+gallery.title,請神入位,请神入位,Invite the Deity,神を迎える
+gallery.hint,神位會依序亮起；燈落在哪位，今晚就請哪位開壇。,神位会依序亮起；灯落在哪位，今晚就请哪位开坛。,Seats light up in turn; whoever the lantern rests on leads tonight's rite.,神位は順に灯る。灯が留まった者が今宵の儀を執り行う。
+mascot.tongji,乩童,乩童,Spirit Medium,タンキー
+mascot.luannu,鸞女,鸾女,Oracle Maiden,鸞女
+mascot.daoshi,道士,道士,Taoist Priest,道士
+mascot.jiajiang,家將,家将,Temple Guard,家将
+mascot.pick_title,選看板娘,选看板娘,Choose Your Greeter,看板娘を選ぶ
+mascot.locked,（鎖）,（锁）,(Locked),（鍵）
+mascot.current,★ 目前,★ 目前,★ Current,★ 現在
+mascot.back,← 返回,← 返回,← Back,← 戻る
+char.training,（修煉中…）,（修炼中…）,(In training...),（修行中…）
+char.master,（鎮島之師…）,（镇岛之师…）,(Master of the Ward...),（鎮島の師…）
+char.title,角色,角色,Characters,キャラクター
+char.is_mascot,★ 看板娘中,★ 看板娘中,★ Current Greeter,★ 看板娘中
+char.set_mascot,設為看板娘,设为看板娘,Set as Greeter,看板娘にする
+title.loading1,香火已燃,香火已燃,The incense is lit,香火は灯った
+title.loading2,聖筊已應,圣筊已应,The blocks have answered,聖筊は応えた
+title.loading3,鎮島降乩,镇岛降乩,The island's deity descends,鎮島に神降ろし
+title.game,鎮島錄,镇岛录,Chronicles of the Island Ward,鎮島録
+slot.sealed_glyph,封,封,Sealed,封
+slot.unnamed,未命名,未命名,Unnamed,名称未設定
+slot.sealed_name,符紙封印中 · %s,符纸封印中 · %s,Sealed by Talisman · %s,符紙封印中・%s
+slot.sealed_hint,符紙封印中，尚待開壇。,符纸封印中，尚待开坛。,Sealed away — awaiting the rite.,符紙に封印中。開壇を待つ。
+slot.start_charm,起手護身：%s,起手护身：%s,Starting charm: %s,初期護符：%s
+slot.tap_hint,點選請神，長按看細節。,点选请神，长按看细节。,"Tap to invite, long-press for details.",タップで選択、長押しで詳細。
+slot.playstyle,玩法：%s,玩法：%s,Playstyle: %s,プレイスタイル：%s
+slot.init_charm,初始護符：%s,初始护符：%s,Initial charm: %s,初期護符：%s
+slot.unlock_cond,解鎖條件：%s,解锁条件：%s,Unlock: %s,解放条件：%s
+enemy.broken,破煞！,破煞！,Ward Broken!,破煞！
+enemy.broken_turns,破煞！(%d),破煞！(%d),Ward Broken! (%d),破煞！(%d)
+enemy.ward,煞盾 %d/%d,煞盾 %d/%d,Sha Ward %d/%d,煞盾 %d/%d
+pick.cards,選擇 {0} 張卡（已選 {1}）,选择 {0} 张卡（已选 {1}）,Pick {0} cards (chosen {1}),カードを{0}枚選択（選択済み{1}）
+fortune.summary,%s【%s】　利：%s　忌：%s,%s【%s】　利：%s　忌：%s,%s [%s]  Boon: %s  Bane: %s,%s【%s】　利：%s　忌：%s

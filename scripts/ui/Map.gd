@@ -457,7 +457,7 @@ static func make_boss_omen_marker(boss_center: Vector2) -> Control:
 
 	var omen_label := Label.new()
 	omen_label.name = "BossOmenLabel"
-	omen_label.text = "虎爺關"
+	omen_label.text = TranslationServer.translate("map.boss_gate")
 	omen_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	omen_label.position = Vector2(122.0, 0.0)
 	omen_label.size = Vector2(176.0, 30.0)

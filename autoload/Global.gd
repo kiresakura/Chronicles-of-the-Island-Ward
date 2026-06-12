@@ -113,7 +113,7 @@ func get_unlock_hint(character_id: String) -> String:
 	if req <= 0 or is_character_unlocked(character_id):
 		return ""
 	var wins: int = profile_data.profile_total_wins if profile_data != null else 0
-	return "%d / %d 勝場" % [wins, req]
+	return tr("menu.wins") % [wins, req]
 
 func get_mascot_character_id() -> String:
 	if profile_data == null:
@@ -1479,7 +1479,7 @@ func add_test_dialogue() -> void:
 	register_rod(dialogue_shrine_inquiry)
 
 	var shrine_opt_heal: DialogueOptionData = DialogueOptionData.new("shrine_opt_heal")
-	shrine_opt_heal.dialogue_option_bbcode = "「謝謝前輩，請賜香火。」  [color=green]恢復 8 點元神[/color]"
+	shrine_opt_heal.dialogue_option_bbcode = tr("event.priest.opt_bless")
 	shrine_opt_heal.dialogue_option_failed_validator_bbcode = ""
 	shrine_opt_heal.dialogue_option_actions = [{Scripts.ACTION_ADD_HEALTH: {"health_amount": 8}}]
 	shrine_opt_heal.dialogue_option_validators = []
@@ -1487,8 +1487,8 @@ func add_test_dialogue() -> void:
 	dialogue_shrine_inquiry._assign_option(shrine_opt_heal)
 
 	var shrine_opt_card: DialogueOptionData = DialogueOptionData.new("shrine_opt_card")
-	shrine_opt_card.dialogue_option_bbcode = "「老前輩，可否為我占上一卦？」  [color=green]獲得 1 張隨機稀有牌[/color]  [color=red]-40 銀兩[/color]"
-	shrine_opt_card.dialogue_option_failed_validator_bbcode = "[color=grey][無法選擇]: 銀兩不足（需 40）[/color]"
+	shrine_opt_card.dialogue_option_bbcode = tr("event.priest.opt_divine")
+	shrine_opt_card.dialogue_option_failed_validator_bbcode = tr("event.priest.opt_divine_poor")
 	shrine_opt_card.dialogue_option_actions = [
 		{Scripts.ACTION_PICK_CARDS: {
 			"card_pick_type": ActionBasePickCards.CARD_PICK_TYPES.DRAFT,
@@ -1515,41 +1515,41 @@ func add_test_dialogue() -> void:
 	dialogue_shrine_inquiry._assign_option(shrine_opt_card)
 
 	var shrine_opt_leave_now: DialogueOptionData = DialogueOptionData.new("shrine_opt_leave_now")
-	shrine_opt_leave_now.dialogue_option_bbcode = "「我趕時間，先走了。」  離開"
+	shrine_opt_leave_now.dialogue_option_bbcode = tr("event.priest.opt_leave")
 	shrine_opt_leave_now.dialogue_option_actions = []
 	shrine_opt_leave_now.dialogue_option_validators = []
 	shrine_opt_leave_now.dialogue_option_next_dialogue_state_id = ""
 	dialogue_shrine_inquiry._assign_option(shrine_opt_leave_now)
 
 	var shrine_opt_leave_a: DialogueOptionData = DialogueOptionData.new("shrine_opt_leave_a")
-	shrine_opt_leave_a.dialogue_option_bbcode = "「謝謝前輩。」  告別"
+	shrine_opt_leave_a.dialogue_option_bbcode = tr("event.priest.bye_bless")
 	shrine_opt_leave_a.dialogue_option_actions = []
 	shrine_opt_leave_a.dialogue_option_validators = []
 	shrine_opt_leave_a.dialogue_option_next_dialogue_state_id = ""
 	dialogue_shrine_inquiry._assign_option(shrine_opt_leave_a)
 
 	var shrine_opt_leave_b: DialogueOptionData = DialogueOptionData.new("shrine_opt_leave_b")
-	shrine_opt_leave_b.dialogue_option_bbcode = "「...謝了，前輩。」  告別"
+	shrine_opt_leave_b.dialogue_option_bbcode = tr("event.priest.bye_divine")
 	shrine_opt_leave_b.dialogue_option_actions = []
 	shrine_opt_leave_b.dialogue_option_validators = []
 	shrine_opt_leave_b.dialogue_option_next_dialogue_state_id = ""
 	dialogue_shrine_inquiry._assign_option(shrine_opt_leave_b)
 
 	var shrine_state_initial: DialogueStateData = DialogueStateData.new("shrine_state_initial")
-	shrine_state_initial.dialogue_state_prompt_bbcode = "廟口的老廟祝攔住去路，慈眉善目，手持清香。\n「年輕人，山中妖氣近日大盛，你要去山上，老朽這裡有些香火能保你平安……」"
+	shrine_state_initial.dialogue_state_prompt_bbcode = tr("event.priest.intro")
 	shrine_state_initial.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/shrine_inquiry.png"
 	shrine_state_initial.dialogue_state_dialogue_option_object_ids = [shrine_opt_heal.object_id, shrine_opt_card.object_id, shrine_opt_leave_now.object_id]
 	dialogue_shrine_inquiry._assign_state(shrine_state_initial)
 	dialogue_shrine_inquiry._assign_initial_state(shrine_state_initial)
 
 	var shrine_state_blessed: DialogueStateData = DialogueStateData.new("shrine_state_blessed")
-	shrine_state_blessed.dialogue_state_prompt_bbcode = "廟祝點頭微笑，取出一把線香為你念咒。你感到一股溫暖之氣流遍全身，精神頓時好了許多。\n「善哉善哉，此去山中，望你多加保重。」"
+	shrine_state_blessed.dialogue_state_prompt_bbcode = tr("event.priest.blessed")
 	shrine_state_blessed.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/shrine_inquiry.png"
 	shrine_state_blessed.dialogue_state_dialogue_option_object_ids = [shrine_opt_leave_a.object_id]
 	dialogue_shrine_inquiry._assign_state(shrine_state_blessed)
 
 	var shrine_state_wisdom: DialogueStateData = DialogueStateData.new("shrine_state_wisdom")
-	shrine_state_wisdom.dialogue_state_prompt_bbcode = "廟祝搖頭嘆氣，從香案上取出一張古舊的符牌遞給你。\n「老朽在此守廟五十年，見過許多像你這樣的年輕人。希望這張符能對你有所幫助。」"
+	shrine_state_wisdom.dialogue_state_prompt_bbcode = tr("event.priest.divined")
 	shrine_state_wisdom.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/shrine_inquiry.png"
 	shrine_state_wisdom.dialogue_state_dialogue_option_object_ids = [shrine_opt_leave_b.object_id]
 	dialogue_shrine_inquiry._assign_state(shrine_state_wisdom)
@@ -1559,35 +1559,35 @@ func add_test_dialogue() -> void:
 	register_rod(dialogue_lost_soul)
 
 	var lost_opt_help: DialogueOptionData = DialogueOptionData.new("lost_opt_help")
-	lost_opt_help.dialogue_option_bbcode = "「老人家放心，我若見到定告知於你。」  [color=green]+60 銀兩[/color]"
+	lost_opt_help.dialogue_option_bbcode = tr("event.umbrella.opt_help")
 	lost_opt_help.dialogue_option_actions = [{Scripts.ACTION_ADD_MONEY: {"money_amount": 60}}]
 	lost_opt_help.dialogue_option_validators = []
 	lost_opt_help.dialogue_option_next_dialogue_state_id = "lost_state_reward"
 	dialogue_lost_soul._assign_option(lost_opt_help)
 
 	var lost_opt_refuse: DialogueOptionData = DialogueOptionData.new("lost_opt_refuse")
-	lost_opt_refuse.dialogue_option_bbcode = "「抱歉，自顧不暇。」  離開"
+	lost_opt_refuse.dialogue_option_bbcode = tr("event.umbrella.opt_refuse")
 	lost_opt_refuse.dialogue_option_actions = []
 	lost_opt_refuse.dialogue_option_validators = []
 	lost_opt_refuse.dialogue_option_next_dialogue_state_id = ""
 	dialogue_lost_soul._assign_option(lost_opt_refuse)
 
 	var lost_opt_leave: DialogueOptionData = DialogueOptionData.new("lost_opt_leave")
-	lost_opt_leave.dialogue_option_bbcode = "「這……竟是神明？」  繼續前行"
+	lost_opt_leave.dialogue_option_bbcode = tr("event.umbrella.opt_continue")
 	lost_opt_leave.dialogue_option_actions = []
 	lost_opt_leave.dialogue_option_validators = []
 	lost_opt_leave.dialogue_option_next_dialogue_state_id = ""
 	dialogue_lost_soul._assign_option(lost_opt_leave)
 
 	var lost_state_initial: DialogueStateData = DialogueStateData.new("lost_state_initial")
-	lost_state_initial.dialogue_state_prompt_bbcode = "山路上，你遇到一位老婆婆坐在路邊，手持紙傘，神情哀戚。\n「年輕人啊，老身的孩子在山上失蹤多日，你若往山上去，能否幫我打聽一聲？」"
+	lost_state_initial.dialogue_state_prompt_bbcode = tr("event.umbrella.intro")
 	lost_state_initial.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/lost_soul.png"
 	lost_state_initial.dialogue_state_dialogue_option_object_ids = [lost_opt_help.object_id, lost_opt_refuse.object_id]
 	dialogue_lost_soul._assign_state(lost_state_initial)
 	dialogue_lost_soul._assign_initial_state(lost_state_initial)
 
 	var lost_state_reward: DialogueStateData = DialogueStateData.new("lost_state_reward")
-	lost_state_reward.dialogue_state_prompt_bbcode = "老婆婆眼中閃過一道奇光，嫣然一笑。「你有善念，便賜你一份見面禮。」\n話音未落，老婆婆消失無蹤，地上留下一串銀兩，空氣中殘留著淡淡的香燭氣息。"
+	lost_state_reward.dialogue_state_prompt_bbcode = tr("event.umbrella.reward")
 	lost_state_reward.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/lost_soul.png"
 	lost_state_reward.dialogue_state_dialogue_option_object_ids = [lost_opt_leave.object_id]
 	dialogue_lost_soul._assign_state(lost_state_reward)
@@ -1597,8 +1597,8 @@ func add_test_dialogue() -> void:
 	register_rod(dialogue_earth_shrine)
 
 	var earth_opt_pray: DialogueOptionData = DialogueOptionData.new("earth_opt_pray")
-	earth_opt_pray.dialogue_option_bbcode = "上香祭拜。  [color=red]-30 銀兩[/color]  [color=green]恢復 15 點元神[/color]"
-	earth_opt_pray.dialogue_option_failed_validator_bbcode = "[color=grey][無法選擇]: 銀兩不足（需 30）[/color]"
+	earth_opt_pray.dialogue_option_bbcode = tr("event.landgod.opt_pray")
+	earth_opt_pray.dialogue_option_failed_validator_bbcode = tr("event.landgod.opt_pray_poor")
 	earth_opt_pray.dialogue_option_actions = [
 		{Scripts.ACTION_ADD_MONEY: {"money_amount": -30}},
 		{Scripts.ACTION_ADD_HEALTH: {"health_amount": 15}},
@@ -1608,48 +1608,48 @@ func add_test_dialogue() -> void:
 	dialogue_earth_shrine._assign_option(earth_opt_pray)
 
 	var earth_opt_take: DialogueOptionData = DialogueOptionData.new("earth_opt_take")
-	earth_opt_take.dialogue_option_bbcode = "取走供品碎銀。  [color=green]+20 銀兩[/color]"
+	earth_opt_take.dialogue_option_bbcode = tr("event.landgod.opt_steal")
 	earth_opt_take.dialogue_option_actions = [{Scripts.ACTION_ADD_MONEY: {"money_amount": 20}}]
 	earth_opt_take.dialogue_option_validators = []
 	earth_opt_take.dialogue_option_next_dialogue_state_id = "earth_state_warning"
 	dialogue_earth_shrine._assign_option(earth_opt_take)
 
 	var earth_opt_pass: DialogueOptionData = DialogueOptionData.new("earth_opt_pass")
-	earth_opt_pass.dialogue_option_bbcode = "默默離去。"
+	earth_opt_pass.dialogue_option_bbcode = tr("event.landgod.opt_leave")
 	earth_opt_pass.dialogue_option_actions = []
 	earth_opt_pass.dialogue_option_validators = []
 	earth_opt_pass.dialogue_option_next_dialogue_state_id = ""
 	dialogue_earth_shrine._assign_option(earth_opt_pass)
 
 	var earth_opt_end_a: DialogueOptionData = DialogueOptionData.new("earth_opt_end_a")
-	earth_opt_end_a.dialogue_option_bbcode = "「感謝土地公指引！」  告別"
+	earth_opt_end_a.dialogue_option_bbcode = tr("event.landgod.bye_pray")
 	earth_opt_end_a.dialogue_option_actions = []
 	earth_opt_end_a.dialogue_option_validators = []
 	earth_opt_end_a.dialogue_option_next_dialogue_state_id = ""
 	dialogue_earth_shrine._assign_option(earth_opt_end_a)
 
 	var earth_opt_end_b: DialogueOptionData = DialogueOptionData.new("earth_opt_end_b")
-	earth_opt_end_b.dialogue_option_bbcode = "趕緊離去……"
+	earth_opt_end_b.dialogue_option_bbcode = tr("event.landgod.bye_steal")
 	earth_opt_end_b.dialogue_option_actions = []
 	earth_opt_end_b.dialogue_option_validators = []
 	earth_opt_end_b.dialogue_option_next_dialogue_state_id = ""
 	dialogue_earth_shrine._assign_option(earth_opt_end_b)
 
 	var earth_state_initial: DialogueStateData = DialogueStateData.new("earth_state_initial")
-	earth_state_initial.dialogue_state_prompt_bbcode = "半山腰有座廢棄的土地廟，香爐殘灰猶在，神明金身落滿塵埃。微弱的靈氣在廢墟中流動，彷彿仍有什麼在此守護……"
+	earth_state_initial.dialogue_state_prompt_bbcode = tr("event.landgod.intro")
 	earth_state_initial.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/earth_shrine.png"
 	earth_state_initial.dialogue_state_dialogue_option_object_ids = [earth_opt_pray.object_id, earth_opt_take.object_id, earth_opt_pass.object_id]
 	dialogue_earth_shrine._assign_state(earth_state_initial)
 	dialogue_earth_shrine._assign_initial_state(earth_state_initial)
 
 	var earth_state_blessed: DialogueStateData = DialogueStateData.new("earth_state_blessed")
-	earth_state_blessed.dialogue_state_prompt_bbcode = "土地公現身，是位慈祥的白鬚老者，笑道：\n「汝有禮儀，老夫便賜你些許陰德，保你此行平安。」\n你感到全身暖意流遍，傷勢好了不少。"
+	earth_state_blessed.dialogue_state_prompt_bbcode = tr("event.landgod.blessed")
 	earth_state_blessed.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/earth_shrine.png"
 	earth_state_blessed.dialogue_state_dialogue_option_object_ids = [earth_opt_end_a.object_id]
 	dialogue_earth_shrine._assign_state(earth_state_blessed)
 
 	var earth_state_warning: DialogueStateData = DialogueStateData.new("earth_state_warning")
-	earth_state_warning.dialogue_state_prompt_bbcode = "你拿走供品的瞬間，廟中陰風大作，神牌微微震動。\n「汝敢褻瀆！」一道怒意從廢墟中透出，你感到寒意刺骨——好在隨即消散，或許土地公念你年輕無知，暫且放過。"
+	earth_state_warning.dialogue_state_prompt_bbcode = tr("event.landgod.cursed")
 	earth_state_warning.dialogue_state_dialogue_texture_path = "res://assets/generated/events_v1/earth_shrine.png"
 	earth_state_warning.dialogue_state_dialogue_option_object_ids = [earth_opt_end_b.object_id]
 	dialogue_earth_shrine._assign_state(earth_state_warning)

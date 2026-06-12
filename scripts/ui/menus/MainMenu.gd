@@ -193,12 +193,12 @@ var _hotspot_lantern: Button = null
 func _build_foreground_hotspots() -> void:
 	# 香爐 hot zone（右下，廟宇前空地）
 	_hotspot_censer = _make_invisible_hotspot("CenserHot")
-	_hotspot_censer.button_up.connect(func(): _show_coming_soon("香爐 — 還燒著呢"))
+	_hotspot_censer.button_up.connect(func(): _show_coming_soon(tr("menu.hotspot_censer")))
 	add_child(_hotspot_censer)
 
 	# 燈籠 hot zone（右上方紅燈籠群）
 	_hotspot_lantern = _make_invisible_hotspot("LanternHot")
-	_hotspot_lantern.button_up.connect(func(): _show_coming_soon("紅燈籠 — 招運招福"))
+	_hotspot_lantern.button_up.connect(func(): _show_coming_soon(tr("menu.hotspot_lantern")))
 	add_child(_hotspot_lantern)
 
 func _make_invisible_hotspot(node_name: String) -> Button:
@@ -238,7 +238,7 @@ func _build_activity_banner() -> void:
 	add_child(_activity_banner)
 
 	_activity_banner_label = Label.new()
-	_activity_banner_label.text = "限時擲筊\n三選一賜禮"
+	_activity_banner_label.text = tr("menu.banner_event")
 	_activity_banner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_activity_banner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_gold_font(_activity_banner_label, 26)
@@ -252,7 +252,7 @@ func _build_activity_banner() -> void:
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.self_modulate = Color(1, 1, 1, 0)
 	_activity_banner.add_child(btn)
-	btn.button_up.connect(func(): _show_coming_soon("活動"))
+	btn.button_up.connect(func(): _show_coming_soon(tr("menu.banner_tag")))
 	# btn size 在 _layout_activity_banner 內同步
 
 ## 看板娘 v3：全螢幕 MascotPanel，bust 高度撐滿，底邊接觸畫面下緣。
@@ -521,7 +521,7 @@ func _add_lock_badge(btn: Button) -> void:
 		return
 	var lock := Label.new()
 	lock.name = "Lock"
-	lock.text = "鎖"
+	lock.text = tr("menu.locked")
 	lock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lock.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_gold_font(lock, 13)
@@ -673,7 +673,7 @@ func _build_utilities() -> void:
 		if str(_utility_definitions[i].get("act", "")) == "temple":
 			u.button_up.connect(_open_temple_screen)	# Q2-D：修廟入口
 		else:
-			u.button_up.connect(_show_coming_soon.bind(str(_utility_definitions[i].get("name", "功能"))))
+			u.button_up.connect(_show_coming_soon.bind(str(_utility_definitions[i].get("name", tr("menu.feature")))))
 		_hook_hover(u)
 		_util_btns.append(u)
 
@@ -855,7 +855,7 @@ func _level_ratio() -> float:
 # ---------- Toast ----------
 
 func _show_coming_soon(feature_name: String) -> void:
-	_toast.text = "「%s」即將推出" % feature_name
+	_toast.text = tr("menu.coming_soon") % feature_name
 	if _toast_tween and _toast_tween.is_valid():
 		_toast_tween.kill()
 	var base_y: float = _toast.position.y
@@ -905,8 +905,8 @@ func _refresh_resources() -> void:
 	var wins := _profile_int("profile_total_wins", 0)
 	var level: int = 1 + int(wins / 3)
 	var xp_in_level: int = wins % 3
-	if _res_incense: _res_incense.text = "香火  %d" % incense
-	if _res_yuanbao: _res_yuanbao.text = "元寶  %d" % yuanbao
+	if _res_incense: _res_incense.text = tr("temple.incense_badge") % incense
+	if _res_yuanbao: _res_yuanbao.text = tr("menu.yuanbao") % yuanbao
 	if _res_level: _res_level.text = tr("ui.level_progress") % [level, xp_in_level]
 	if _avatar_lv: _avatar_lv.text = tr("ui.avatar_level") % level
 	# 進度填充寬度交由 _relayout 依 _level_ratio() 重算
@@ -977,7 +977,7 @@ func _on_exit_button_up() -> void:
 func update_continue_button_visibility() -> void:
 	var has_save: bool = FileLoader.has_save_file()
 	if qi_jia_button:
-		qi_jia_button.text = "繼續" if has_save else "起駕"
+		qi_jia_button.text = tr("menu.continue") if has_save else tr("menu.depart")
 	if continue_button: continue_button.visible = has_save
 	if forfeit_run_button: forfeit_run_button.visible = has_save
 	if new_run_button: new_run_button.visible = not has_save

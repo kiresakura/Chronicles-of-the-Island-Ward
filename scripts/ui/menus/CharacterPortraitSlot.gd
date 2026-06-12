@@ -255,14 +255,14 @@ func _apply_entry() -> void:
 	else:
 		_portrait_rect.texture = null
 
-	_name_label.text = str(_entry.get("label", "未命名"))
+	_name_label.text = str(_entry.get("label", tr("slot.unnamed")))
 	_hint_label.text = _compose_hint_text()
 	_select_button.tooltip_text = str(_entry.get("tooltip", _entry.get("description", "")))
 	_select_button.mouse_default_cursor_shape = Control.CURSOR_ARROW if is_locked() else Control.CURSOR_POINTING_HAND
 	TOUCH_FEEDBACK.mark_disabled(_select_button, is_locked())
 	TOUCH_FEEDBACK.install_long_press_detail(_select_button, {
 		"type": "character",
-		"name": _entry.get("label", "角色"),
+		"name": _entry.get("label", tr("char.title")),
 		"description": _compose_detail_body(),
 	})
 	_rebuild_tags()
@@ -407,12 +407,12 @@ func _compose_hint_text() -> String:
 	if is_locked():
 		var unlock_hint: String = str(_entry.get("unlock_hint", ""))
 		if not unlock_hint.is_empty():
-			return "符紙封印中 · %s" % unlock_hint
-		return "符紙封印中，尚待開壇。"
+			return tr("slot.sealed_name") % unlock_hint
+		return tr("slot.sealed_hint")
 	var starter_name: String = str(_entry.get("starter_name", ""))
 	if not starter_name.is_empty():
-		return "起手護身：%s" % starter_name
-	return "點選請神，長按看細節。"
+		return tr("slot.start_charm") % starter_name
+	return tr("slot.tap_hint")
 
 func _compose_detail_body() -> String:
 	var lines: Array[String] = []
@@ -421,17 +421,17 @@ func _compose_detail_body() -> String:
 		lines.append(description)
 	var tags: Array = _entry.get("tags", [])
 	if not tags.is_empty():
-		lines.append("玩法：%s" % " / ".join(PackedStringArray(tags)))
+		lines.append(tr("slot.playstyle") % " / ".join(PackedStringArray(tags)))
 	var starter_name: String = str(_entry.get("starter_name", ""))
 	var starter_desc: String = str(_entry.get("starter_description", ""))
 	if not starter_name.is_empty():
-		lines.append("初始護符：%s" % starter_name)
+		lines.append(tr("slot.init_charm") % starter_name)
 		if not starter_desc.is_empty():
 			lines.append(starter_desc)
 	if is_locked():
 		var unlock_hint: String = str(_entry.get("unlock_hint", ""))
 		if not unlock_hint.is_empty():
-			lines.append("解鎖條件：%s" % unlock_hint)
+			lines.append(tr("slot.unlock_cond") % unlock_hint)
 	return "\n".join(PackedStringArray(lines))
 
 func _on_select_button_up() -> void:

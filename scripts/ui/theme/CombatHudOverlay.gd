@@ -226,7 +226,7 @@ static func make_bagua_ring(energy: int, energy_max: int = 0) -> Control:
 	energy_sub.name = "EnergySub"
 	energy_sub.position = Vector2(0, 80)
 	energy_sub.size = Vector2(RING_SIZE.x, 20)
-	energy_sub.text = "神力"
+	energy_sub.text = TranslationServer.translate("hud.energy")
 	energy_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	energy_sub.add_theme_font_size_override("font_size", 15)
 	energy_sub.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("paper_warm", Color(0.96, 0.91, 0.81)))
@@ -354,8 +354,8 @@ static func _update_status_strip(strip: Control, state: Dictionary) -> void:
 		child.queue_free()
 	var entries := [
 		{"key": "health", "name": "HP", "display": TranslationServer.translate("keyword.hp_short"), "value": "%d/%d" % [int(state.get("health", 0)), int(state.get("health_max", 0))], "color": "hp_red", "role": "life_total"},
-		{"key": "block", "name": "護", "value": str(int(state.get("block", 0))), "color": "armor_gold", "role": "protection"},
-		{"key": "incoming_damage", "name": "預兆", "value": str(int(state.get("incoming_damage", 0))), "color": "warning_orange", "role": "incoming_intent"},
+		{"key": "block", "name": TranslationServer.translate("hud.block"), "value": str(int(state.get("block", 0))), "color": "armor_gold", "role": "protection"},
+		{"key": "incoming_damage", "name": TranslationServer.translate("hud.omen"), "value": str(int(state.get("incoming_damage", 0))), "color": "warning_orange", "role": "incoming_intent"},
 	]
 	var x := 0.0
 	for e: Dictionary in entries:
