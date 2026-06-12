@@ -898,12 +898,19 @@ func _relayout() -> void:
 	var row_h: float = roundf(28.0 * ts)
 	var pill_w: float = clampf(safe.size.x * 0.13, 130.0, 200.0) * ts
 	var pill_gap: float = roundf(14.0 * ts)
+	# P1-5：置中帶 = avatar 右緣 ↔ 右上工具列左緣（全幅置中在寬螢幕時
+	# 元寶尾端「+」會嵌進 Util 鈕 — 審計實測）。
+	# band_right 與下方 utils 段同一推導（right→✕→3 工具鈕）— 兩處同步改！
+	var band_left: float = safe.position.x + roundf(96.0 * ts)
+	var band_right: float = (safe.position.x + safe.size.x - pad) \
+		- roundf(80.0 * ts) - roundf(10.0 * ts) \
+		- 3.0 * (roundf(80.0 * ts) + roundf(6.0 * ts)) - roundf(12.0 * ts)
+	# P2-10：pill 寬隨帶寬收縮 — tablet（ts=1.15）放大後三膠囊總寬可能
+	# 超帶（1200x900 審計實測尾端嵌進 Util 鈕），夾住確保任何解析度不溢出
+	var max_group_w: float = (band_right - band_left - pill_gap * (_res_rows.size() - 1)) / maxf(1.0, float(_res_rows.size()))
+	pill_w = minf(pill_w, max_group_w - icon_sz - roundf(6.0 * ts))
 	var group_w: float = pill_w + icon_sz + roundf(6.0 * ts)  # 單組（icon + pill）寬度
 	var pills_total_w: float = group_w * _res_rows.size() + pill_gap * (_res_rows.size() - 1)
-	# P1-5：置中帶 = avatar 右緣 ↔ 右上工具列左緣（全幅置中在 1244 寬時
-	# 元寶尾端「+」會嵌進 Util 鈕 — 審計實測）
-	var band_left: float = safe.position.x + roundf(96.0 * ts)
-	var band_right: float = safe.position.x + safe.size.x - roundf(3.0 * (80.0 + 6.0) * ts) - roundf(80.0 * ts)
 	var pills_start_x: float = band_left + maxf(0.0, (band_right - band_left - pills_total_w) * 0.5)
 	var pills_y: float = safe.position.y + roundf(pad * 0.5)
 	if is_instance_valid(_resource_tray):
