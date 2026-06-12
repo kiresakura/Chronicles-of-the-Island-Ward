@@ -211,6 +211,75 @@ func save_json(directory_partial_path: String, filename: String, data_dict: Dict
 	file.store_string(json_text)
 
 
+### 加密進度檔（Q4-B）
+# 範圍：只加密「玩家進度」（run 存檔 + profile）。external/data 模組 JSON 與
+# user_settings 維持明文 — 資料驅動鐵律（數值可手調）與可改裝性不受影響。
+# 威脅模型：防君子不防駭客。金鑰必然隨 app 出貨，目標只是擋
+# 「記事本開 profile.json 改香火」這級的竄改；正版防護不在本層。
+# 金鑰刻意不綁裝置：iOS 重裝/換機/iCloud 還原後 IDFV 會變，
+# 裝置綁定金鑰會把還原回來的存檔變磚（Q4-D 雲端存檔也需跨裝置可讀）。
+const _SAVE_PASS_PARTS: Array[String] = ["c0t1w", "zhen-dao-lu", "q4b", "2026"]
+
+func _get_save_password() -> String:
+	return "::".join(_SAVE_PASS_PARTS)
+
+## 加密寫進度 JSON（Godot 內建 AES-256；目錄自動建立）。
+func save_json_encrypted(directory_partial_path: String, filename: String, data_dict: Dictionary) -> void:
+	var directory_full_path: String = _get_modified_filepath(directory_partial_path)
+	var full_path: String = directory_full_path + filename
+	if not DirAccess.dir_exists_absolute(directory_full_path):
+		DirAccess.make_dir_recursive_absolute(directory_full_path)
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(full_path, FileAccess.WRITE, _get_save_password())
+	if file == null:
+		push_error("Encrypted save failed to open for write: ", full_path)
+		return
+	file.store_string(JSON.stringify(data_dict, "\t"))
+
+## 讀進度 JSON：先驗 4-byte magic（"GDEC"）決定加密/明文路徑 —
+## 不對明文檔呼叫 open_encrypted（core 層會 push_error，炸 log 乾淨契約）；
+## JSON 解析走 JSON.new().parse() 實例 API（parse_string 對壞檔同樣 core 報錯）。
+## 舊明文檔自動相容：升級後首讀走明文，下次存檔即轉加密，免一次性遷移。
+## 毀損回空 dict，上層以預設值起新檔，不炸開機流程。
+func load_json_encrypted(directory_partial_path: String, filename: String) -> Dictionary:
+	var full_path: String = _get_modified_filepath(directory_partial_path + filename)
+	if not FileAccess.file_exists(full_path):
+		return {}
+	if _file_has_encryption_magic(full_path):
+		var file: FileAccess = FileAccess.open_encrypted_with_pass(full_path, FileAccess.READ, _get_save_password())
+		if file != null:
+			var parsed: Variant = _parse_json_silent(file.get_as_text())
+			if typeof(parsed) == TYPE_DICTIONARY:
+				return parsed
+		# 注：GDEC 頭存在但解密/解析失敗（半寫毀損）時 Godot core 仍會印一行 ERROR —
+		# 屬玩家端異常事件，不在 QA 跑流程內；此處保證的是「不炸、以預設值重建」
+		DebugLogger.log_line("[存檔] 加密進度檔毀損或金鑰不符，以預設值重建：" + full_path, Color.ORANGE)
+		return {}
+	# 舊明文相容
+	var plain: FileAccess = FileAccess.open(full_path, FileAccess.READ)
+	if plain != null:
+		var parsed_plain: Variant = _parse_json_silent(plain.get_as_text())
+		if typeof(parsed_plain) == TYPE_DICTIONARY:
+			DebugLogger.log_line("[存檔] 讀到舊版明文進度檔（下次存檔自動轉加密）：" + filename, Color.LIGHT_BLUE)
+			return parsed_plain
+	DebugLogger.log_line("[存檔] 進度檔無法解讀（毀損），以預設值重建：" + full_path, Color.ORANGE)
+	return {}
+
+## Godot 加密檔頭 "GDEC"（0x43454447 LE）。
+func _file_has_encryption_magic(full_path: String) -> bool:
+	var f: FileAccess = FileAccess.open(full_path, FileAccess.READ)
+	if f == null:
+		return false
+	var magic: PackedByteArray = f.get_buffer(4)
+	return magic.size() == 4 and magic[0] == 0x47 and magic[1] == 0x44 \
+		and magic[2] == 0x45 and magic[3] == 0x43
+
+## 不經 core push_error 的 JSON 解析（壞檔回 null）。
+func _parse_json_silent(text: String) -> Variant:
+	var json := JSON.new()
+	if json.parse(text) != OK:
+		return null
+	return json.data
+
 
 #region Mod Pipeline
 
@@ -428,16 +497,16 @@ func test_serialization() -> void:
 ## Gets all data on the player and converts it into a json safe format
 func save_game(file_dir: String = SAVE_DIR_PATH, file_name: String = SAVE_FILE_NAME) -> void:
 	var player_dict: Dictionary = Global.player_data.get_serializable_properties_to_json_patch()
-	save_json(file_dir, file_name, player_dict)
+	save_json_encrypted(file_dir, file_name, player_dict)	# Q4-B 進度檔加密
 
 ## Takes json file and converts is back into player data
 func load_game(file_dir: String = SAVE_DIR_PATH, file_name: String = SAVE_FILE_NAME) -> void:
 	if not has_save_file():
 		DebugLogger.log_error("No save file found")
 	else:
-		# load from json
+		# load from json（加密優先、舊明文相容 — Q4-B）
 		var player_data: PlayerData = PlayerData.new()
-		var player_dict: Dictionary = load_json(file_dir, file_name)
+		var player_dict: Dictionary = load_json_encrypted(file_dir, file_name)
 		player_data.set_serializable_properties_from_json_patch(player_dict)
 		
 		# hook everything back up and regenerate caches
@@ -493,11 +562,12 @@ func has_profile_file() -> bool:
 	
 func load_profile() -> void:
 	if has_profile_file():
-		var dict_repr: Dictionary = load_json(PROFILE_DIR_PATH, PROFILE_FILE_NAME)
+		# 加密優先、舊明文相容（Q4-B）
+		var dict_repr: Dictionary = load_json_encrypted(PROFILE_DIR_PATH, PROFILE_FILE_NAME)
 		Global.profile_data.set_serializable_properties(dict_repr, true)
 	else:
 		save_profile()
 
 func save_profile() -> void:
 	var dict_repr: Dictionary = Global.profile_data.get_serializable_properties(true)
-	save_json(PROFILE_DIR_PATH, PROFILE_FILE_NAME, dict_repr)
+	save_json_encrypted(PROFILE_DIR_PATH, PROFILE_FILE_NAME, dict_repr)	# Q4-B 進度檔加密
