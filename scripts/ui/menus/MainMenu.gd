@@ -955,8 +955,10 @@ func _relayout() -> void:
 	# tokens：slot ≥ minimum 88×88；primary CTA = cta_height 112
 	var sw: float = roundf(88.0 * ts)
 	var sh: float = roundf(88.0 * ts)
-	var pw: float = roundf(284.0 * ts)
-	var ph: float = roundf(112.0 * ts)
+	# P1-8：CTA 微縮（284×112 → 256×100）減少對看板娘雙腿的遮擋
+	# （細部構圖與匾額位置調整在 P2-10 一併處理）
+	var pw: float = roundf(256.0 * ts)
+	var ph: float = roundf(100.0 * ts)
 	var by: float = safe.position.y + safe.size.y - sh - pad
 	var sgap: float = roundf(10.0 * ts)
 	var cx: float = safe.position.x + safe.size.x * 0.5
