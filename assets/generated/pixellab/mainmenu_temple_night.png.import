@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dv3olm4ln7bnq"
-path="res://.godot/imported/mainmenu_temple_night.png-93fb908c8051690054a3f4aeefbb12fb.ctex"
+path.s3tc="res://.godot/imported/mainmenu_temple_night.png-93fb908c8051690054a3f4aeefbb12fb.s3tc.ctex"
+path.etc2="res://.godot/imported/mainmenu_temple_night.png-93fb908c8051690054a3f4aeefbb12fb.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/pixellab/mainmenu_temple_night.png"
-dest_files=["res://.godot/imported/mainmenu_temple_night.png-93fb908c8051690054a3f4aeefbb12fb.ctex"]
+dest_files=["res://.godot/imported/mainmenu_temple_night.png-93fb908c8051690054a3f4aeefbb12fb.s3tc.ctex", "res://.godot/imported/mainmenu_temple_night.png-93fb908c8051690054a3f4aeefbb12fb.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wcovigd42lae"
-path="res://.godot/imported/fx_slash_red.png-19049752eb2922f3a52a9a727ddf79d3.ctex"
+path.s3tc="res://.godot/imported/fx_slash_red.png-19049752eb2922f3a52a9a727ddf79d3.s3tc.ctex"
+path.etc2="res://.godot/imported/fx_slash_red.png-19049752eb2922f3a52a9a727ddf79d3.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/fx_v3/fx_slash_red.png"
-dest_files=["res://.godot/imported/fx_slash_red.png-19049752eb2922f3a52a9a727ddf79d3.ctex"]
+dest_files=["res://.godot/imported/fx_slash_red.png-19049752eb2922f3a52a9a727ddf79d3.s3tc.ctex", "res://.godot/imported/fx_slash_red.png-19049752eb2922f3a52a9a727ddf79d3.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

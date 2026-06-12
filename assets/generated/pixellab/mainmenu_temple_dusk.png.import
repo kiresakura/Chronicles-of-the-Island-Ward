@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://da858aho51ths"
-path="res://.godot/imported/mainmenu_temple_dusk.png-91348507454dc2335f1936e50f9b2422.ctex"
+path.s3tc="res://.godot/imported/mainmenu_temple_dusk.png-91348507454dc2335f1936e50f9b2422.s3tc.ctex"
+path.etc2="res://.godot/imported/mainmenu_temple_dusk.png-91348507454dc2335f1936e50f9b2422.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/pixellab/mainmenu_temple_dusk.png"
-dest_files=["res://.godot/imported/mainmenu_temple_dusk.png-91348507454dc2335f1936e50f9b2422.ctex"]
+dest_files=["res://.godot/imported/mainmenu_temple_dusk.png-91348507454dc2335f1936e50f9b2422.s3tc.ctex", "res://.godot/imported/mainmenu_temple_dusk.png-91348507454dc2335f1936e50f9b2422.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
