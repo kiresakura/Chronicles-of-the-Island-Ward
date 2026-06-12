@@ -104,6 +104,7 @@ var _plaque_label: Label = null			# P0-1 匾額文字（廟名+廟級）
 var _plaque_shown_once: bool = false	# 首次顯示才淡入（之後刷新不重播）
 const RITUAL_TEMPLE := preload("res://scripts/systems/ritual/RitualTemple.gd")
 const UI_TOAST := preload("res://ui/components/toast.gd")	# P1-5 可重用 toast
+const LOCKED_OVERLAY := preload("res://ui/components/locked_overlay.gd")	# P1-6 鎖定覆蓋
 
 func _apply_pixel_skin() -> void:
 	# 1. 隱藏舊向量 backdrop
@@ -612,7 +613,8 @@ func _build_slots() -> void:
 		if data["ready"]:
 			btn.button_up.connect(_perform_slot_act.bind(data))
 		else:
-			btn.button_up.connect(_show_coming_soon.bind(data["label"]))
+			# P1-6：鎖定視覺/回饋交給 LockedOverlay 元件（灰階 shader + 鎖頭 + toast）
+			LOCKED_OVERLAY.apply(btn, str(data.get("unlock_hint", tr("menu.coming_soon") % str(data.get("label", "")))))
 		_slot_btns.append(btn)
 
 func _apply_slot_style(btn: Button, ready: bool) -> void:
@@ -626,7 +628,7 @@ func _apply_slot_style(btn: Button, ready: bool) -> void:
 
 func _set_slot_content(btn: Button, icon: String, label_text: String, ready: bool) -> void:
 	btn.text = ""
-	var tint := GOLD if ready else Color(0.6, 0.55, 0.45)
+	var tint := GOLD	# P1-6：鎖定態的去飽和由 LockedOverlay shader 全管，不再手動壓灰
 	var ic := btn.get_node_or_null("Icon") as TextureRect
 	if ic == null:
 		ic = TextureRect.new()
@@ -638,7 +640,7 @@ func _set_slot_content(btn: Button, icon: String, label_text: String, ready: boo
 	# Q2-C：v2 彩色 Q 版 icon 不吃金染（會黃偏）— 白底直出；鎖定壓灰。v1 白線稿維持金染。
 	var has_v2_icon: bool = ResourceLoader.exists("res://assets/generated/icons_v2/icon_%s.svg" % icon)
 	if has_v2_icon:
-		ic.modulate = Color.WHITE if ready else Color(0.46, 0.42, 0.38)
+		ic.modulate = Color.WHITE
 	else:
 		ic.modulate = tint
 	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -654,21 +656,6 @@ func _set_slot_content(btn: Button, icon: String, label_text: String, ready: boo
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_gold_font(lbl, 17)
 	lbl.add_theme_color_override("font_color", tint)
-	if not ready:
-		_add_lock_badge(btn)
-
-func _add_lock_badge(btn: Button) -> void:
-	if btn.has_node("Lock"):
-		return
-	var lock := Label.new()
-	lock.name = "Lock"
-	lock.text = tr("menu.locked")
-	lock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lock.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_gold_font(lock, 13)
-	lock.add_theme_color_override("font_color", Color(0.85, 0.75, 0.55))
-	lock.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	btn.add_child(lock)
 
 func _build_primary() -> void:
 	if qi_jia_button == null:
