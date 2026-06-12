@@ -127,6 +127,7 @@ func _apply_pixel_skin() -> void:
 		_pixel_bg.texture = load(bg_picked)
 		_pixel_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_pixel_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_pixel_bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST	# P0-2 像素素材銳利取樣（全域 filter 維持 Linear — 高解析卡圖/bust 不受害）
 		_pixel_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		# 與 PixelSkin 相同：在 CanvasLayer 下改用絕對 size 控制，不用 (0,0,1,1) anchors，
 		# 避免引擎於 _ready 後回寫尺寸而觸發 Control anchor warning。
@@ -164,6 +165,7 @@ func _apply_pixel_skin() -> void:
 		_pixel_title.texture = load(PIXEL_TITLE_PATH)
 		_pixel_title.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_pixel_title.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		_pixel_title.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST	# P0-2 像素素材銳利取樣
 		_pixel_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_pixel_title.z_index = -40
 		_pixel_title.z_as_relative = false
@@ -227,12 +229,9 @@ func _build_activity_banner() -> void:
 	sb.border_width_top = 3
 	sb.border_width_right = 3
 	sb.border_width_bottom = 3
-	sb.corner_radius_top_left = 16
-	sb.corner_radius_top_right = 16
-	sb.corner_radius_bottom_left = 16
-	sb.corner_radius_bottom_right = 16
 	sb.shadow_color = Color(0, 0, 0, 0.5)
-	sb.shadow_size = 8
+	sb.shadow_size = 2
+	sb.shadow_offset = Vector2(2, 2)	# P0-2 像素硬影
 	_activity_banner.add_theme_stylebox_override("panel", sb)
 	_activity_banner.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	add_child(_activity_banner)
@@ -583,7 +582,7 @@ func _dress_plaque_cta(b: Button) -> void:
 	sbi.bg_color = Color.TRANSPARENT
 	sbi.border_color = Color(0.95, 0.82, 0.45, 0.55)
 	sbi.set_border_width_all(1)
-	sbi.set_corner_radius_all(10)
+	sbi.set_corner_radius_all(0)	# P0-2 像素硬邊
 	inner.add_theme_stylebox_override("panel", sbi)
 	deco.add_child(inner)
 	# 四角金釘
@@ -593,7 +592,7 @@ func _dress_plaque_cta(b: Button) -> void:
 		nail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var sbn := StyleBoxFlat.new()
 		sbn.bg_color = Color(0.95, 0.82, 0.45)
-		sbn.set_corner_radius_all(5)
+		sbn.set_corner_radius_all(0)	# P0-2 方釘（像素風）
 		sbn.border_color = Color(0.45, 0.30, 0.10)
 		sbn.set_border_width_all(1)
 		nail.add_theme_stylebox_override("panel", sbn)
@@ -622,8 +621,7 @@ func _dress_plaque_cta(b: Button) -> void:
 		sbr.border_width_left = 2
 		sbr.border_width_right = 2
 		sbr.border_width_bottom = 3
-		sbr.corner_radius_bottom_left = 4
-		sbr.corner_radius_bottom_right = 4
+
 		ribbon.add_theme_stylebox_override("panel", sbr)
 		ribbon.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		ribbon.anchor_left = 0.18 if side == 0 else 0.82

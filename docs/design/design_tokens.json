@@ -79,10 +79,10 @@
     "xxl": 48
   },
   "radii": {
-    "sm": 10,
-    "md": 12,
-    "lg": 16,
-    "pill": 999
+    "sm": 0,
+    "md": 0,
+    "lg": 0,
+    "pill": 0
   },
   "borders": {
     "default": 2,

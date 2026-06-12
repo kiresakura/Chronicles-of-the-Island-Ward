@@ -248,13 +248,12 @@ static func apply_secondary_button_style(button: Button) -> void:
 ## 共用 focus 樣式：incense_gold 半透明邊+微光暈。
 ## 觸控優先畫面可用 button.focus_mode = FOCUS_NONE 或覆寫 StyleBoxEmpty opt-out。
 static func make_focus_stylebox(border_color: Color = Color(0.91, 0.77, 0.42, 0.85), radius: int = 12) -> StyleBoxFlat:
+	# P0-2 像素化：focus 框同樣硬邊無光暈（radius 參數保留簽名相容，值忽略）
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0, 0, 0, 0)  # 僅邊框與光暈，不蓋背景
+	s.bg_color = Color(0, 0, 0, 0)  # 僅邊框，不蓋背景
 	s.border_color = border_color
 	s.set_border_width_all(2)
-	s.set_corner_radius_all(radius)
-	s.shadow_color = Color(border_color.r, border_color.g, border_color.b, 0.30)
-	s.shadow_size = 6
+	s.set_corner_radius_all(0)
 	return s
 
 static func apply_focus_style(button: Button) -> void:
@@ -436,6 +435,8 @@ static func _ensure_map_node_type_ring(node: TextureButton, location_type: int, 
 	sb.border_color = MAP_NODE_RING_BY_TYPE.get(location_type, Color(0.6, 0.6, 0.6, 0.9))
 	sb.set_border_width_all(4)
 	sb.anti_aliasing = true
+	# P0-2 例外保留：此處 radius = 尺寸一半 → 幾何「圓形節點環」（地圖節點造型），
+	# 非圓角面板元件 — 像素化鐵則不適用（圓環是地圖視覺語彙，動它=改地圖設計）
 	var radius: int = int(ring.size.x * 0.5)
 	sb.corner_radius_top_left = radius
 	sb.corner_radius_top_right = radius
@@ -532,13 +533,19 @@ static func _get_component_color(component_name: String, key: String, fallback: 
 ## 全專案唯一的 StyleBoxFlat 建構入口。任何 UI（含主畫面 MainMenu）
 ## 都應透過此函式建立面板/按鈕底框，確保圓角/邊框/陰影語言一致。
 static func make_stylebox(fill_color: Color, border_color: Color, radius: int, border_width: int, shadow_alpha: float = 0.30) -> StyleBoxFlat:
+	# P0-2 像素化鐵則：工廠入口統一硬邊 — 圓角/柔影一律歸零（radius 參數保留
+	# 簽名相容，值被忽略）。柔影改為 1px 硬位移影（保留層次感、無漸層柔邊）。
+	# TODO(美術): 像素 9-slice 素材到位後，本工廠改回傳 StyleBoxTexture
+	# （region/margin 由素材定義），呼叫端零改動。
 	var style := StyleBoxFlat.new()
 	style.bg_color = fill_color
 	style.border_color = border_color
 	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.shadow_color = Color(0, 0, 0, shadow_alpha)
-	style.shadow_size = 4
+	style.set_corner_radius_all(0)
+	if shadow_alpha > 0.0:
+		style.shadow_color = Color(0, 0, 0, shadow_alpha)
+		style.shadow_size = 2
+		style.shadow_offset = Vector2(2, 2)	# 位移硬影（像素風）取代四向柔暈
 	return style
 
 static func _create_button_stylebox(fill_color: Color, border_color: Color, radius: int, border_width: int) -> StyleBoxFlat:
