@@ -678,6 +678,10 @@ func _build_utilities() -> void:
 		_util_btns.append(u)
 
 	if btn_exit_x:
+		# 手機平台不給「離開遊戲」鈕：iOS HIG 視程式自退為 crash（上架紅線），
+		# Android 也有系統返回手勢 — ✕ 只留桌面（fork 遺產，實機驗收回報「意義不明的 X」）
+		if OS.has_feature("mobile"):
+			btn_exit_x.visible = false
 		btn_exit_x.flat = true
 		btn_exit_x.focus_mode = Control.FOCUS_NONE
 		btn_exit_x.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -783,7 +787,10 @@ func _relayout() -> void:
 	if btn_exit_x:
 		btn_exit_x.position = Vector2(right - ex, safe.position.y + pad)
 		btn_exit_x.size = Vector2(ex, ex)
-	var util_right: float = right - ex - roundf(10.0 * ts)
+	# 手機上 ✕ 隱藏（無離開鈕）→ 工具列直接貼安全區右緣，不留幽靈空位
+	var util_right: float = right
+	if btn_exit_x and btn_exit_x.visible:
+		util_right = right - ex - roundf(10.0 * ts)
 	for i in _util_btns.size():
 		var u: Button = _util_btns[i]
 		# 由右往左排：i=0(設定) 最靠近 ✕

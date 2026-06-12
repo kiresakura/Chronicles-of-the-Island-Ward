@@ -12,6 +12,10 @@ config_version=5
 
 compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
+[audio]
+
+general/ios/session_category=3
+
 [application]
 
 config/name="鎮島錄"
