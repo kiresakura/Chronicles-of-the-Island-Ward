@@ -204,6 +204,8 @@ func _ready():
 	### Load Profile and User Settings
 	FileLoader.load_profile()
 	FileLoader.load_user_settings()
+	# Q4-D：本機載入後與雲端對帳（unavailable 時 no-op；iCloud KV 適配排 Q4-F）
+	preload("res://scripts/systems/cloud/CloudSave.gd").reconcile_on_boot()
 	
 	### Test data generators
 	add_test_artifacts()
