@@ -329,6 +329,11 @@ func _build_activity_banner() -> void:
 	_banner_breath_tween.tween_property(_activity_banner, "scale", Vector2(1.03, 1.03), 1.0)
 	_banner_breath_tween.tween_property(_activity_banner, "scale", Vector2.ONE, 1.0)
 
+	# P2-11 badge 示範：限時活動入口紅點（活動進行中=亮；正式接入後由
+	# 活動系統依「未領獎/新活動」狀態驅動 set_badge）
+	BadgeManager.register_button("event_" + _event_id, _activity_banner)
+	BadgeManager.set_badge("event_" + _event_id, true)
+
 ## 活動結束時間注入點（unix 秒）。正式接入：活動系統/伺服器下發後呼叫本函式。
 func set_event_end_time(unix_ts: int) -> void:
 	_event_end_unix = unix_ts
