@@ -71,6 +71,10 @@ func _ready():
 	Responsive.changed.connect(_relayout_root_loading_overlay)
 	_begin_root_transition()
 
+	# 冷啟動 BGM 提前到品牌過場期（原本等 _finish_root_transition → show_main_menu
+	# 才起音，晚 ~0.5s）；play_bgm 同場景冪等，過場後的重複呼叫無害
+	AudioManager.play_bgm("main_menu")
+
 
 func hide_menus():
 	main_menu.visible = false
