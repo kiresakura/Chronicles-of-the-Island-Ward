@@ -291,3 +291,6 @@ menu.event_jiaobei_title,限時擲筊,限时掷筊,Limited Jiaobei,期間限定�
 menu.event_jiaobei_sub,三選一賜禮,三选一赐礼,Pick 1 of 3 Gifts,3択の授かり物
 menu.event_ended,已結束,已结束,Ended,終了
 ui.level_tooltip,每累計 3 場勝利晉升 1 級,每累计 3 场胜利晋升 1 级,Advance 1 level every 3 total wins,勝利3回ごとに1レベル昇格
+menu.newrun_confirm_body,目前有進行中的遶境，開新局將覆蓋該進度。確定開新局？,目前有进行中的绕境，开新局将覆盖该进度。确定开新局？,"A pilgrimage is in progress. Starting anew will overwrite it. Continue?",進行中の遶境があります。新規開始で上書きされます。よろしいですか？
+menu.confirm_ok,確定,确定,Confirm,はい
+menu.confirm_cancel,取消,取消,Cancel,キャンセル
