@@ -1,0 +1,10 @@
+[
+	{
+		"event_id": "limited_jiaobei",
+		"title_key": "menu.event_jiaobei_title",
+		"subtitle_key": "menu.event_jiaobei_sub",
+		"reward_icon": "res://assets/ui/fx/jiaobei_round.svg",
+		"duration_hours": 24,
+		"act": ""
+	}
+]

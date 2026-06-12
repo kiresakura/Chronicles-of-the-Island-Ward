@@ -231,46 +231,130 @@ func _make_invisible_hotspot(node_name: String) -> Button:
 	return b
 
 # ────────────────────────────────────────────────
-# 活動 banner（HUD 4 區「活動區」）
+# 活動 banner（UI 重修 P0-3：可點 Button 根 + 倒數 + 獎勵預覽，包覆內容）
+# 資料：external/data/ui/lobby_events.json（假活動資料 — 鐵律 1 數值在資料層）
+# TODO(正式接入點): 未來活動系統/伺服器下發 end_ts 後，改呼叫
+#   set_event_end_time(server_ts) 取代 JSON duration 推算（QUESTIONS 待立項）
 # ────────────────────────────────────────────────
-var _activity_banner: Panel = null
-var _activity_banner_label: Label = null
+const LOBBY_EVENTS_PATH := "res://external/data/ui/lobby_events.json"
+
+## 活動入口被點擊（入口場景尚未存在 — 接收端暫走 coming_soon toast；
+## TODO(正式接入點): 活動 overlay 場景落地後改開該場景）
+signal event_panel_pressed(event_id: String)
+
+var _activity_banner: Button = null
+var _event_id: String = ""
+var _event_end_unix: int = 0
+var _event_countdown_label: Label = null
+var _event_timer: Timer = null
+var _banner_breath_tween: Tween = null
 
 func _build_activity_banner() -> void:
-	_activity_banner = Panel.new()
+	var events: Array = _load_ui_definition_array(LOBBY_EVENTS_PATH)
+	if events.is_empty():
+		return	# 無活動資料 → 不建面板（空狀態 = 不存在，與匾額同哲學）
+	var ev: Dictionary = events[0]
+	_event_id = str(ev.get("event_id", ""))
+
+	# 根 = Button：theme 四態（P0-2）自帶 normal/hover/pressed 視覺回饋
+	_activity_banner = Button.new()
 	_activity_banner.name = "ActivityBanner"
-	# 漸層 / 金邊 stylebox
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.32, 0.07, 0.05, 0.92)
-	sb.border_color = GOLD
-	sb.border_width_left = 3
-	sb.border_width_top = 3
-	sb.border_width_right = 3
-	sb.border_width_bottom = 3
-	sb.shadow_color = Color(0, 0, 0, 0.5)
-	sb.shadow_size = 2
-	sb.shadow_offset = Vector2(2, 2)	# P0-2 像素硬影
-	_activity_banner.add_theme_stylebox_override("panel", sb)
+	_activity_banner.focus_mode = Control.FOCUS_NONE
 	_activity_banner.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_activity_banner.button_up.connect(func() -> void: event_panel_pressed.emit(_event_id))
+	event_panel_pressed.connect(_on_event_panel_pressed)
 	add_child(_activity_banner)
 
-	_activity_banner_label = Label.new()
-	_activity_banner_label.text = tr("menu.banner_event")
-	_activity_banner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_activity_banner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_gold_font(_activity_banner_label, 26)
-	_activity_banner_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_activity_banner.add_child(_activity_banner_label)
+	# 內容：Margin(14) > VBox：標題 → 獎勵縮圖 → 副題 → 倒數
+	var margin := MarginContainer.new()
+	margin.name = "EventMargin"
+	for side: String in ["left", "top", "right", "bottom"]:
+		margin.add_theme_constant_override("margin_" + side, 14)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)	# 隨 Button 撐滿
+	_activity_banner.add_child(margin)
 
-	# 點擊→toast「即將推出」
-	var btn := Button.new()
-	btn.flat = true
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	btn.self_modulate = Color(1, 1, 1, 0)
-	_activity_banner.add_child(btn)
-	btn.button_up.connect(func(): _show_coming_soon(tr("menu.banner_tag")))
-	# btn size 在 _layout_activity_banner 內同步
+	var vbox := VBoxContainer.new()
+	vbox.name = "EventVBox"
+	vbox.add_theme_constant_override("separation", 6)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(vbox)
+
+	var title := Label.new()
+	title.name = "EventTitle"
+	title.text = tr(str(ev.get("title_key", "menu.banner_event")))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_gold_font(title, 24)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(title)
+
+	# 獎勵縮圖（56px；佔位 = 筊杯 svg。TODO(美術): 換正式活動獎勵圖）
+	var reward := TextureRect.new()
+	reward.name = "EventRewardIcon"
+	var icon_path: String = str(ev.get("reward_icon", ""))
+	if icon_path != "" and ResourceLoader.exists(icon_path):
+		reward.texture = load(icon_path)
+	reward.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	reward.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	reward.custom_minimum_size = Vector2(56, 56)
+	reward.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(reward)
+
+	var sub := Label.new()
+	sub.name = "EventSubtitle"
+	sub.text = tr(str(ev.get("subtitle_key", "menu.banner_tag")))
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_gold_font(sub, 18)
+	sub.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(sub)
+
+	_event_countdown_label = Label.new()
+	_event_countdown_label.name = "EventCountdown"
+	_event_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_event_countdown_label.add_theme_font_size_override("font_size", 20)
+	_event_countdown_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("paper_warm", Color.WHITE))
+	_event_countdown_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(_event_countdown_label)
+
+	# 倒數心跳（1s）；demo 結束時間 = 現在 + JSON duration_hours
+	_event_timer = Timer.new()
+	_event_timer.name = "EventTimer"
+	_event_timer.wait_time = 1.0
+	_event_timer.timeout.connect(_update_event_countdown)
+	_activity_banner.add_child(_event_timer)
+	set_event_end_time(int(Time.get_unix_time_from_system()) + int(ev.get("duration_hours", 24)) * 3600)
+
+	# 呼吸縮放（2s 週期 1.0↔1.03 — 可互動提示；hover/pressed 交給 theme 四態）
+	_banner_breath_tween = create_tween().set_loops()
+	_banner_breath_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_banner_breath_tween.tween_property(_activity_banner, "scale", Vector2(1.03, 1.03), 1.0)
+	_banner_breath_tween.tween_property(_activity_banner, "scale", Vector2.ONE, 1.0)
+
+## 活動結束時間注入點（unix 秒）。正式接入：活動系統/伺服器下發後呼叫本函式。
+func set_event_end_time(unix_ts: int) -> void:
+	_event_end_unix = unix_ts
+	if _event_timer != null:
+		_event_timer.start()
+	_update_event_countdown()
+
+func _update_event_countdown() -> void:
+	if _event_countdown_label == null or not is_instance_valid(_activity_banner):
+		return
+	var remain: int = _event_end_unix - int(Time.get_unix_time_from_system())
+	if remain <= 0:
+		# 歸零收場：隱藏面板（憲龍拍板⑤）；timer 停止避免空轉
+		_activity_banner.visible = false
+		_event_timer.stop()
+		if _banner_breath_tween != null and _banner_breath_tween.is_valid():
+			_banner_breath_tween.kill()
+		return
+	@warning_ignore("integer_division")
+	_event_countdown_label.text = "%02d:%02d:%02d" % [remain / 3600, (remain % 3600) / 60, remain % 60]
+
+func _on_event_panel_pressed(_pressed_event_id: String) -> void:
+	# TODO(正式接入點): 活動入口場景（擲筊活動 overlay）落地後改開場景
+	_show_coming_soon(tr("menu.banner_tag"))
 
 ## 看板娘 v3：全螢幕 MascotPanel，bust 高度撐滿，底邊接觸畫面下緣。
 ## move_child 到第一順位 → 渲染在所有 UI 之下（slot bar / CTA 浮在上面，
@@ -338,23 +422,17 @@ func _layout_pixel_skin() -> void:
 		_hotspot_lantern.position = Vector2(stage_size.x * 0.72, stage_size.y * 0.06)
 		_hotspot_lantern.size = Vector2(stage_size.x * 0.08, stage_size.y * 0.12)
 
-	# 活動 banner：右側中部，~18% 寬 × 28% 高，避免擋 mascot
-	# Q2-F：tablet（4:3）改直式看板 — 吃掉右側中段空帶（專屬構圖，非等比放大）
-	if is_instance_valid(_activity_banner):
+	# 活動 banner（P0-3）：包覆內容 — 尺寸由 Margin+VBox 內容自然撐開，
+	# 不再給固定大框（原 18%×28% 留白超七成）。右側中段定位維持 Responsive 計算。
+	if is_instance_valid(_activity_banner) and _activity_banner.visible:
 		var on_tablet: bool = Responsive.is_tablet()
-		var bw: float = clampf(stage_size.x * 0.16, 220.0, 320.0)
-		var bh: float = clampf(stage_size.y * (0.40 if on_tablet else 0.28), 200.0, 384.0 if on_tablet else 280.0)
-		_activity_banner.size = Vector2(bw, bh)
-		_activity_banner.position = Vector2(stage_size.x - bw - 40,
-											stage_size.y * (0.27 if on_tablet else 0.34))
-		# 內部 label + button 同步
-		if is_instance_valid(_activity_banner_label):
-			_activity_banner_label.size = Vector2(bw, bh)
-			_activity_banner_label.position = Vector2.ZERO
-		for child in _activity_banner.get_children():
-			if child is Button:
-				child.size = Vector2(bw, bh)
-				child.position = Vector2.ZERO
+		# Button 不自動佈局子節點 — 尺寸以內容容器（Margin>VBox）最小需求為準
+		var inner: Control = _activity_banner.get_node_or_null("EventMargin")
+		var bsize: Vector2 = inner.get_combined_minimum_size() if inner != null else Vector2(220, 180)
+		_activity_banner.size = bsize
+		_activity_banner.pivot_offset = bsize * 0.5	# 呼吸縮放以中心為軸
+		_activity_banner.position = Vector2(stage_size.x - bsize.x - 40,
+											stage_size.y * (0.27 if on_tablet else 0.32))
 
 	# 標題匾：頂部置中
 	if is_instance_valid(_pixel_title):
