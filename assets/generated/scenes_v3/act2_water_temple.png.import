@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://clkpgsevaqsqc"
-path="res://.godot/imported/act2_water_temple.png-70c4739c914aa0f1c8dfa126689b8d43.ctex"
+path.s3tc="res://.godot/imported/act2_water_temple.png-70c4739c914aa0f1c8dfa126689b8d43.s3tc.ctex"
+path.etc2="res://.godot/imported/act2_water_temple.png-70c4739c914aa0f1c8dfa126689b8d43.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/scenes_v3/act2_water_temple.png"
-dest_files=["res://.godot/imported/act2_water_temple.png-70c4739c914aa0f1c8dfa126689b8d43.ctex"]
+dest_files=["res://.godot/imported/act2_water_temple.png-70c4739c914aa0f1c8dfa126689b8d43.s3tc.ctex", "res://.godot/imported/act2_water_temple.png-70c4739c914aa0f1c8dfa126689b8d43.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

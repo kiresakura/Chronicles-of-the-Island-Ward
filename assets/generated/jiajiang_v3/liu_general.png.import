@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cf8ut2clix4td"
-path="res://.godot/imported/liu_general.png-69114b3dc89222f80bb11d7087c8dc77.ctex"
+path.s3tc="res://.godot/imported/liu_general.png-69114b3dc89222f80bb11d7087c8dc77.s3tc.ctex"
+path.etc2="res://.godot/imported/liu_general.png-69114b3dc89222f80bb11d7087c8dc77.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/jiajiang_v3/liu_general.png"
-dest_files=["res://.godot/imported/liu_general.png-69114b3dc89222f80bb11d7087c8dc77.ctex"]
+dest_files=["res://.godot/imported/liu_general.png-69114b3dc89222f80bb11d7087c8dc77.s3tc.ctex", "res://.godot/imported/liu_general.png-69114b3dc89222f80bb11d7087c8dc77.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

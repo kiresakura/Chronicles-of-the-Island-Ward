@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d38ocbtmk04o2"
-path="res://.godot/imported/xie_general.png-ef6e011074a165c84baab88a6f5639d0.ctex"
+path.s3tc="res://.godot/imported/xie_general.png-ef6e011074a165c84baab88a6f5639d0.s3tc.ctex"
+path.etc2="res://.godot/imported/xie_general.png-ef6e011074a165c84baab88a6f5639d0.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/jiajiang_v3/xie_general.png"
-dest_files=["res://.godot/imported/xie_general.png-ef6e011074a165c84baab88a6f5639d0.ctex"]
+dest_files=["res://.godot/imported/xie_general.png-ef6e011074a165c84baab88a6f5639d0.s3tc.ctex", "res://.godot/imported/xie_general.png-ef6e011074a165c84baab88a6f5639d0.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

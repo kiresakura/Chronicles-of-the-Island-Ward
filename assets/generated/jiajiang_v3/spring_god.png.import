@@ -3,19 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bk8vh3bh5fyw1"
-path="res://.godot/imported/spring_god.png-7187a60425b4e9e3ca5e3b75b8323228.ctex"
+path.s3tc="res://.godot/imported/spring_god.png-7187a60425b4e9e3ca5e3b75b8323228.s3tc.ctex"
+path.etc2="res://.godot/imported/spring_god.png-7187a60425b4e9e3ca5e3b75b8323228.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/generated/jiajiang_v3/spring_god.png"
-dest_files=["res://.godot/imported/spring_god.png-7187a60425b4e9e3ca5e3b75b8323228.ctex"]
+dest_files=["res://.godot/imported/spring_god.png-7187a60425b4e9e3ca5e3b75b8323228.s3tc.ctex", "res://.godot/imported/spring_god.png-7187a60425b4e9e3ca5e3b75b8323228.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
