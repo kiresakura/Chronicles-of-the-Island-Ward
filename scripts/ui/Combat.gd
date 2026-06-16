@@ -16,6 +16,7 @@ const DEITY_CUTIN_FX := preload("res://scripts/ui/fx/DeityCutInFX.gd")
 # 鎮島錄 v0.3 換骨：五營戰鬥畫面（取代卡牌戰鬥；執行期 instance，不動巨型 Root.tscn）
 const FORMATION_VIEW_SCENE := preload("res://scenes/ui/FormationCombatView.tscn")
 const FORMATION_COMBAT := preload("res://scripts/systems/ritual/FormationCombat.gd")
+const FU_DRAFT_VIEW_SCENE := preload("res://scenes/ui/FuDraftView.tscn")
 
 @onready var money_label: Label = $%MoneyLabel
 @onready var health_label: Label = $%HealthLabel
@@ -52,8 +53,9 @@ var _invoke_fill: ColorRect = null	# Q1-E：請神槽充能條
 var _invoke_glow_tween: Tween = null	# Q1-E：滿槽金光脈動
 var end_turn_object: CombatEndTurn = null
 
-# 鎮島錄 v0.3 換骨：五營戰鬥畫面 + 每場戰鬥編號（擲筊 RNG 種子，可重現）
+# 鎮島錄 v0.3 換骨：五營戰鬥畫面 + 符令 draft 獎勵 + 每場戰鬥編號（擲筊/draft RNG 種子，可重現）
 var _formation_view: Control = null
+var _fu_draft_view: Control = null
 var _combat_index: int = 0
 
 # ── P0 戰鬥狀態提示 + 不可出牌 toast（additive；不改既有 signal flow） ──
@@ -338,6 +340,13 @@ func _build_formation_view() -> void:
 		_formation_view.formation_won.connect(_on_formation_won)
 	if not _formation_view.formation_lost.is_connected(_on_formation_lost):
 		_formation_view.formation_lost.connect(_on_formation_lost)
+	# 符令 draft 獎勵覆層（戰勝三選一）
+	_fu_draft_view = FU_DRAFT_VIEW_SCENE.instantiate()
+	_fu_draft_view.visible = false
+	add_child(_fu_draft_view)
+	_fu_draft_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if not _fu_draft_view.fu_picked.is_connected(_on_fu_picked):
+		_fu_draft_view.fu_picked.connect(_on_fu_picked)
 
 ## 敵人事件 → 五營戰煞波 specs：每個 weighted slot 取最高權重敵，解析其 HP。
 func _resolve_enemy_specs(event: EventData) -> Array:
@@ -381,10 +390,29 @@ func _raise_top_controls() -> void:
 		if n != null:
 			move_child(n, -1)
 
-## 五營戰勝：破盡諸煞 → 發 combat_ended（既有獎勵/地圖流程不動）。
+## 五營戰勝：破盡諸煞 → 三選一符令 draft（非 run 結束時）→ 選後發 combat_ended。
 func _on_formation_won() -> void:
 	if _formation_view != null:
 		_formation_view.visible = false
+	# run 結束（boss 終局）不發 draft，直接結算
+	if _fu_draft_view != null and not Global.is_end_of_run():
+		var rng := RandomNumberGenerator.new()
+		rng.seed = _combat_index
+		var fu_cfg: Dictionary = FORMATION_COMBAT.load_fu_config()
+		var choices: Array = FORMATION_COMBAT.draft_fu_choices(int(fu_cfg.get("draft_choices", 3)), rng)
+		if choices.is_empty():
+			Signals.combat_ended.emit()
+			return
+		_fu_draft_view.offer(choices, fu_cfg.get("fu", {}))
+		move_child(_fu_draft_view, -1)	# 置頂（模態）
+	else:
+		Signals.combat_ended.emit()
+
+## 領取 draft 符令 → 加進本局持久符令牌庫 → 續發 combat_ended 接既有獎勵流程。
+func _on_fu_picked(fu_id: String) -> void:
+	Global.run_fu_deck.append(fu_id)
+	if _fu_draft_view != null:
+		_fu_draft_view.visible = false
 	Signals.combat_ended.emit()
 
 ## 五營戰敗：母壇崩 → 結束 run（LOSS）。

@@ -113,6 +113,23 @@ static func build_fu_config(deck: Array) -> Dictionary:
 		fc["starter_deck"] = deck.duplicate()
 	return fc
 
+## 抽 count 個相異符令當 draft 候選（從 draft_pool；rng 可注入求可重現）。
+static func draft_fu_choices(count: int, rng: RandomNumberGenerator) -> Array:
+	var cfg: Dictionary = load_fu_config()
+	var pool: Array = (cfg.get("draft_pool", []) as Array).duplicate()
+	if pool.is_empty():
+		pool = (cfg.get("fu", {}) as Dictionary).keys()
+	# Fisher–Yates 取前 count（相異）
+	for i: int in range(pool.size() - 1, 0, -1):
+		var j: int = rng.randi_range(0, i)
+		var tmp: Variant = pool[i]
+		pool[i] = pool[j]
+		pool[j] = tmp
+	var out: Array = []
+	for k: int in range(mini(count, pool.size())):
+		out.append(str(pool[k]))
+	return out
+
 ## 建一場。
 ##  open_camp_ids：本局已揭露的營 id（FC-3 漸進揭露傳子集；空＝全部 FC-1 五營）。
 ##  deploy：unit_id→camp_id 指定佈陣；空＝依五行得位自動佈陣（複用「resolve 初值」概念）。
