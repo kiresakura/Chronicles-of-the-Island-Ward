@@ -1,0 +1,12 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "new_run_copy_budget",
+    "max_tagline": 18,
+    "max_description": 60,
+    "max_artifact_description": 64,
+    "max_tag_length": 6,
+    "max_tag_count": 3,
+    "max_build_hint": 44
+  }
+}
