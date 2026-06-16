@@ -112,7 +112,7 @@ func _build_once() -> void:
 	_stamp_label.name = "StampLabel"
 	_stamp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_stamp_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_stamp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_stamp_label.clip_text = true	# 單行不換行（避免擠到名牌）
 	_stamp_label.add_theme_font_size_override("font_size", 14)
 	_stamp_label.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.80, 0.42)))
 	_unlock_stamp.add_child(_stamp_label)
@@ -148,10 +148,12 @@ func _layout() -> void:
 	_nameplate_panel.size = Vector2(w, nameplate_h + 2)
 	_name_label.position = Vector2.ZERO
 	_name_label.size = _nameplate_panel.size
-	_unlock_stamp.position = Vector2(w * 0.12, portrait_h * 0.40)
-	_unlock_stamp.size = Vector2(w * 0.76, maxf(34.0, portrait_h * 0.26))
-	_stamp_label.position = Vector2(4, 2)
-	_stamp_label.size = Vector2(_unlock_stamp.size.x - 8, _unlock_stamp.size.y - 4)
+	# 鎖態進度章：垂直置中於立繪、單行（剪影上的金印）
+	var stamp_h: float = 36.0
+	_unlock_stamp.position = Vector2(w * 0.08, (portrait_h - stamp_h) * 0.5)
+	_unlock_stamp.size = Vector2(w * 0.84, stamp_h)
+	_stamp_label.position = Vector2(4, 0)
+	_stamp_label.size = Vector2(_unlock_stamp.size.x - 8, stamp_h)
 	_select_button.position = Vector2.ZERO
 	_select_button.size = Vector2(w, h)
 
@@ -200,6 +202,8 @@ func _refresh_visual_state() -> void:
 	_selection_ring.visible = _selected and not locked
 	_lock_veil.visible = locked
 	_unlock_stamp.visible = locked
+	# 鎖態藏名牌（剪影 = 神秘/期待；進度章獨佔，杜絕名稱與進度文字打架）
+	_nameplate_panel.visible = not locked
 	# 剪影：鎖定立繪壓暗去彩（剪影感），選中提亮，未選略暗
 	_portrait_rect.modulate = Color(0.26, 0.24, 0.28, 0.96) if locked else (Color(1.06, 1.02, 0.96, 1.0) if _selected else Color(0.92, 0.92, 0.92, 0.96))
 	_name_label.add_theme_color_override("font_color",
