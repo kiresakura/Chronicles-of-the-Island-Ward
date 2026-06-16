@@ -302,3 +302,37 @@ newrun.mode_custom,自訂,自订,Custom,カスタム
 newrun.difficulty_hint,難度只調整敵人強度，與模式各自獨立。,难度只调整敌人强度，与模式各自独立。,Difficulty scales enemy strength only — independent of mode.,難易度は敵の強さのみ。モードとは独立。
 newrun.advanced_open,進階 ▸,进阶 ▸,Advanced ▸,詳細 ▸
 newrun.advanced_close,進階 ▾,进阶 ▾,Advanced ▾,詳細 ▾
+combat.formation.title,鎮守五營,镇守五营,Ward the Five Camps,五營を鎮守せよ
+combat.formation.hint,點營選神將 再點他營移防；擲筊賭節奏 降乩掃煞 莫讓煞破營直擊母壇,点营选神将 再点他营移防；掷筊赌节奏 降乩扫煞 莫让煞破营直击母坛,Tap a camp to pick its general then tap another to redeploy. Roll jiao for tempo and invoke a deity to sweep sha,営をタップして神将を選び別の営へ再配置 擲筊で流れを賭け降乩で煞を掃き母壇を守れ
+combat.formation.altar,母壇,母坛,Altar,母壇
+combat.formation.altar_hp,母壇 %d/%d,母坛 %d/%d,Altar %d/%d,母壇 %d/%d
+combat.formation.turn,第 %d 回合,第 %d 回合,Turn %d,第 %d 回合
+combat.formation.actions,動作 %d,动作 %d,Actions %d,行動 %d
+combat.formation.jiao_ready,可擲筊,可掷筊,Jiao ready,擲筊可
+combat.formation.jiao_done,已擲筊,已掷筊,Jiao used,擲筊済
+combat.formation.jiao_btn,擲筊,掷筊,Cast Jiao,擲筊
+combat.formation.deity_btn,降乩,降乩,Invoke,降乩
+combat.formation.deity_charging,降乩 %d/%d,降乩 %d/%d,Invoke %d/%d,降乩 %d/%d
+combat.formation.end_turn,結束本回合,结束本回合,End Turn,ターン終了
+combat.formation.log_head,戰況,战况,Battle Log,戦況
+combat.formation.win,五營鎮成,五营镇成,Camps Hold,五營鎮成
+combat.formation.lose,母壇崩塌,母坛崩塌,Altar Falls,母壇崩壊
+combat.formation.reserve,調度,调度,Reserve,調度
+combat.formation.wei,得位,得位,In Place,得位
+combat.formation.sha_marker,煞 %d ▸%d,煞 %d ▸%d,Sha %d ▸%d,煞 %d ▸%d
+combat.formation.lane_clear,—,—,—,—
+element.wood,木,木,Wood,木
+element.fire,火,火,Fire,火
+element.earth,土,土,Earth,土
+element.metal,金,金,Metal,金
+element.water,水,水,Water,水
+combat.log.sha_spawn,%s 來煞 煞氣 %d,%s 来煞 煞气 %d,Sha rises at %s — power %d,%s に煞 威力 %d
+combat.log.intercept,%s 削煞 %d,%s 削煞 %d,%s cuts sha %d,%s が煞を %d 削る
+combat.log.sha_break,%s 煞氣破盡,%s 煞气破尽,Sha broken at %s,%s の煞を破る
+combat.log.empty_camp,%s 空營 煞氣長驅,%s 空营 煞气长驱,%s undefended — sha advances,%s 空営 煞が進む
+combat.log.altar_hit,煞擊母壇 -%d,煞击母坛 -%d,Altar struck -%d,母壇被弾 -%d
+combat.log.jiao_sheng,聖筊 加速 +%d,圣筊 加速 +%d,Sheng — bonus +%d,聖筊 加速 +%d
+combat.log.jiao_xiao,笑筊 無加成,笑筊 无加成,Xiao — no bonus,笑筊 加成なし
+combat.log.jiao_yin,陰筊 反噬,阴筊 反噬,Yin — backlash,陰筊 反噬
+combat.log.yin_surge,%s 煞暴衝 +%d,%s 煞暴冲 +%d,Sha surges at %s +%d,%s で煞暴走 +%d
+combat.log.deity,降乩 掃蕩 %d 方位,降乩 扫荡 %d 方位,Invoke sweeps %d lanes,降乩で %d 方位を掃討

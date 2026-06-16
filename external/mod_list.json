@@ -4,15 +4,10 @@
 	},
 	"properties": {
 		"mod_load_data": {
-			"external/": {
+			"external/data/": {
 				"enabled": true,
 				"load_priority": 0
-			},
-			"external/mods/example_mod/": {
-				"enabled": false,
-				"load_priority": 1
-			},
-			
+			}
 		},
 		"object_id": "mod_list"
 	}
