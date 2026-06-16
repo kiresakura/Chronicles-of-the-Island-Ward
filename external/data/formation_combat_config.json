@@ -1,0 +1,28 @@
+{
+  "_note": "v0.3 五營戰鬥調參（鐵律1：戰鬥數值全資料層，控制器零硬編）。FC-2a。數值為初版、待真機 playtest 後上報憲龍定案。",
+  "properties": {
+    "object_id": "formation_combat_config",
+    "altar_max_integrity": 30,
+    "default_open_camps": 3,
+    "base_actions_per_turn": 1,
+    "sheng_bonus_actions": 1,
+    "jiao_weights": { "sheng": 0.45, "xiao": 0.30, "yin": 0.25 },
+    "jiao_yin_surge": 4,
+    "lane_steps_to_altar": 3,
+    "enemy_hp_to_sha_divisor": 8,
+    "enemy_sha_min": 3,
+    "enemy_sha_max": 14,
+    "wave_stagger_turns": 1,
+    "max_turns": 30,
+    "deity_charge_max": 3,
+    "deity_invoke_power": 4,
+    "element_multipliers": {
+      "same": 1.5,
+      "generated_by": 1.3,
+      "overcomes": 1.2,
+      "generates": 0.9,
+      "overcome_by": 0.6,
+      "neutral": 1.0
+    }
+  }
+}
