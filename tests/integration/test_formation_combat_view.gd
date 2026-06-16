@@ -8,6 +8,17 @@ const FormationCombatCls := preload("res://scripts/systems/ritual/FormationComba
 const ViewCls := preload("res://scripts/ui/FormationCombatView.gd")
 const DESIGN := Vector2(1200, 700)
 
+# 確定性符令 config（牌庫 2 張、起手 2 → 不依賴洗牌）：一張無目標(敕符)、一張需目標(破煞符)。
+func _fu_cfg() -> Dictionary:
+	return {"fu_config": {
+		"hand_max": 5, "initial_hand": 2, "draw_per_turn": 1, "plays_per_turn": 1,
+		"starter_deck": ["fu_chi", "fu_po_sha"],
+		"fu": {
+			"fu_chi": {"name": "敕符", "effect": "action", "magnitude": 1, "needs_target": false, "desc": "+1動作"},
+			"fu_po_sha": {"name": "破煞符", "effect": "po_sha", "magnitude": 6, "needs_target": true, "desc": "削煞6"},
+		},
+	}}
+
 var _won: bool = false
 var _lost: bool = false
 
@@ -100,3 +111,41 @@ func test_stage_transform_fits_without_truncation() -> void:
 		assert_true(pos.y >= safe.position.y - eps, "上不溢出：%s" % str(safe))
 		assert_true(pos.x + DESIGN.x * s <= safe.position.x + safe.size.x + eps, "右不溢出：%s" % str(safe))
 		assert_true(pos.y + DESIGN.y * s <= safe.position.y + safe.size.y + eps, "下不溢出（橫幅不截斷）：%s" % str(safe))
+
+# 符令手牌：槽位反映手牌、無目標符令即點即打、需目標符令點方位營後生效。
+func test_fu_hand_renders_and_plays() -> void:
+	var view: Control = _add_view()
+	if view == null:
+		return
+	view.start([], {}, [{"id": "e_big", "hp": 80}], 1, _fu_cfg())
+	# 槽位顯示數 == 手牌數（2）
+	var visible_slots: int = 0
+	for b: Button in view._fu_slots:
+		if b.visible:
+			visible_slots += 1
+	assert_eq(visible_slots, 2, "底部符令槽顯示數 == 手牌數")
+	# 無目標符令（敕符 idx 視手牌順序）：找其槽即點即打 → 動作 +1
+	var chi_idx: int = view._core.fu_hand.find("fu_chi")
+	assert_true(chi_idx >= 0, "手牌應含敕符")
+	var actions_before: int = view._core.actions_remaining
+	view._on_fu_slot_pressed(chi_idx)
+	assert_eq(view._core.actions_remaining, actions_before + 1, "點敕符即打 → +1 動作")
+	assert_eq(view._pending_fu, "", "無目標符令打完不進選方位")
+
+func test_fu_target_play_via_lane_tap() -> void:
+	var view: Control = _add_view()
+	if view == null:
+		return
+	view.start([], {}, [{"id": "e_big", "hp": 80}], 1, _fu_cfg())
+	var lane: String = str(view._core.waves[0]["lane"])	# 80HP→煞10
+	var sha_camp: String = str(view._core.lanes[lane]["camp"])
+	var po_idx: int = view._core.fu_hand.find("fu_po_sha")
+	assert_true(po_idx >= 0, "手牌應含破煞符")
+	# 點破煞符 → 進選方位
+	view._on_fu_slot_pressed(po_idx)
+	assert_eq(view._pending_fu, "fu_po_sha", "需目標符令進選方位狀態")
+	# 點該 lane 的營 → 削煞 6（煞 10→4）
+	view._on_camp_pressed(sha_camp)
+	assert_eq(view._pending_fu, "", "放完清除選方位")
+	assert_eq(int(view._core.lanes[lane]["sha"]["strength"]), 4, "破煞符經畫面削煞 6 → 餘 4")
+	view.queue_free()
