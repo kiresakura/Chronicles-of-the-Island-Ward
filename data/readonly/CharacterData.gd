@@ -22,6 +22,8 @@ class_name CharacterData
 ## [color_white, character_color_id]
 @export var character_starting_artifact_pack_ids: Array[String] = []
 @export var character_starting_card_object_ids: Array[String] = [] # cards added to player on run start
+# v0.3 五營：本局起始符令牌庫（FC-2b.3-3）。預設空＝回退 formation_fu.json 通用起始（向後相容）。
+@export var character_starting_fu_ids: Array[String] = []
 @export var character_starting_money: int = 999	# money added to player on start
 @export var character_starting_health: int = 50
 @export var character_starting_card_draft_card_pack_ids: Array[String] = [] # the cards this character can draft. Usually the same as the character color.

@@ -410,9 +410,12 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 	for card_object_id in character_data.character_starting_card_object_ids:
 		player_data.player_deck.append(get_card_data_from_prototype(card_object_id))
 
-	# 鎮島錄 v0.3 — 初始化本局符令牌庫（FC-2b.3b；角色專屬牌庫＝後續，先用 formation_fu 預設起始）
+	# 鎮島錄 v0.3 — 初始化本局符令牌庫（FC-2b.3-3）：角色專屬起始牌庫；空則回退 formation_fu 通用預設。
 	run_fu_deck.clear()
-	for fu_id: Variant in (preload("res://scripts/systems/ritual/FormationCombat.gd").load_fu_config().get("starter_deck", []) as Array):
+	var fu_starter: Array = character_data.character_starting_fu_ids
+	if fu_starter.is_empty():
+		fu_starter = (preload("res://scripts/systems/ritual/FormationCombat.gd").load_fu_config().get("starter_deck", []) as Array)
+	for fu_id: Variant in fu_starter:
 		run_fu_deck.append(str(fu_id))
 
 	# 鎮島錄 — 套用本局班底（護壇支援卡 + 法器規則 + 出戰神明）
