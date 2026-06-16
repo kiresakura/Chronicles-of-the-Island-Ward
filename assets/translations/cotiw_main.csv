@@ -321,6 +321,8 @@ combat.formation.reserve,調度,调度,Reserve,調度
 combat.formation.wei,得位,得位,In Place,得位
 combat.formation.sha_marker,煞 %d ▸%d,煞 %d ▸%d,Sha %d ▸%d,煞 %d ▸%d
 combat.formation.lane_clear,—,—,—,—
+combat.formation.fu_pick_lane,選方位放「%s」,选方位放「%s」,Pick a lane for %s,方位を選んで %s
+combat.log.fu,敕令 %s,敕令 %s,Played %s,%s を行使
 element.wood,木,木,Wood,木
 element.fire,火,火,Fire,火
 element.earth,土,土,Earth,土

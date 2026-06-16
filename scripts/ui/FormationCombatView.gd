@@ -20,18 +20,23 @@ const ELEMENT_COLOR := {
 	"wood": Color(0.35, 0.66, 0.40), "fire": Color(0.86, 0.30, 0.20),
 	"earth": Color(0.80, 0.64, 0.28), "metal": Color(0.82, 0.80, 0.62), "water": Color(0.30, 0.55, 0.82),
 }
-# 營位/煞道座標（1200×700 基準，十字佈局）
-const CAMP_SIZE := Vector2(160, 104)
-const LANE_SIZE := Vector2(130, 60)
+# 營位/煞道座標（1200×700 基準，緊湊十字佈局；底部留符令手牌列）
+const CAMP_SIZE := Vector2(150, 96)
+const LANE_SIZE := Vector2(120, 50)
 const CAMP_POS := {
-	"north": Vector2(370, 180), "south": Vector2(370, 470),
-	"west": Vector2(150, 300), "east": Vector2(590, 300), "": Vector2(150, 470),
+	"north": Vector2(415, 150), "south": Vector2(415, 390),
+	"west": Vector2(215, 270), "east": Vector2(615, 270), "": Vector2(215, 390),
 }
 const LANE_POS := {
-	"north": Vector2(385, 82), "south": Vector2(385, 608),
-	"west": Vector2(12, 318), "east": Vector2(762, 318),
+	"north": Vector2(430, 92), "south": Vector2(430, 510),
+	"west": Vector2(70, 290), "east": Vector2(790, 290),
 }
-const PANEL_X := 910.0
+const ALTAR_POS := Vector2(415, 270)
+const ALTAR_SIZE := Vector2(150, 96)
+const PANEL_X := 920.0
+const FU_HAND_Y := 584.0			# 底部符令手牌列
+const FU_BTN_SIZE := Vector2(150, 96)
+const FU_SLOTS := 5					# 手牌顯示槽位數（= hand_max）
 const DESIGN_SIZE := Vector2(1200, 700)		# 設計畫布；依裝置安全區置中+fit縮放（避免截斷/偏移）
 
 var embedded: bool = false		# true＝由 Combat 接縫嵌入（_ready 不自動跑示範戰，等外部 start）
@@ -53,9 +58,14 @@ var _end_turn_button: Button
 var _log_label: Label
 var _banner: Label
 var _stage: Control				# 1200×700 設計畫布（內容掛此；依安全區置中+fit縮放）
+# 符令手牌（FP-2）
+var _fu_slots: Array = []		# 底部手牌槽（Button），idx 對 core.fu_hand[idx]
+var _fu_prompt: Label			# 提示/選方位
+var _pending_fu: String = ""	# needs_target 符令選取中，等點方位營
 # 顯示名快取（由核心資料建，避免散落字面值）
 var _lane_to_name: Dictionary = {}
 var _camp_to_name: Dictionary = {}
+var _camp_to_lane: Dictionary = {}		# camp_id → lane（符令選方位用）
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -89,12 +99,14 @@ static func compute_stage_transform(safe: Rect2, design: Vector2) -> Dictionary:
 	return {"scale": s, "position": safe.position + (safe.size - design * s) * 0.5}
 
 ## 外部入口（接縫用）：開一場。open_camp_ids 空＝全五營；deploy 空＝自動佈陣。
-func start(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, seed: int) -> void:
+## config 預設 {}（讀檔調參）；測試可注入（含 fu_config）求確定性。
+func start(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, seed: int, config: Dictionary = {}) -> void:
 	_core = FormationCombatCls.new()
-	_core.setup(open_camp_ids, deploy, enemy_specs, {}, seed)
+	_core.setup(open_camp_ids, deploy, enemy_specs, config, seed)
 	_started = true
 	_resolved = false
 	_selected_unit = ""
+	_pending_fu = ""
 	_build_name_caches()
 	if is_inside_tree():
 		_refresh()
@@ -105,9 +117,12 @@ func _demo_enemy_specs() -> Array:
 func _build_name_caches() -> void:
 	_lane_to_name.clear()
 	_camp_to_name.clear()
+	_camp_to_lane.clear()
 	for c: Dictionary in _core.camps:
-		_camp_to_name[str(c.get("id"))] = str(c.get("name"))
+		var cid: String = str(c.get("id"))
+		_camp_to_name[cid] = str(c.get("name"))
 		var lane: String = str(c.get("lane", ""))
+		_camp_to_lane[cid] = lane
 		if lane != "":
 			_lane_to_name[lane] = str(c.get("name"))
 
@@ -143,24 +158,27 @@ func _build_ui() -> void:
 	# lane 煞道標記（四方位）；營 tile 由核心提供的營在 _refresh 延遲建（依方位座標表定位）
 	for lane: String in LANE_POS:
 		_lane_markers[lane] = _make_lane_marker(LANE_POS[lane])
-	_make_altar(Vector2(350, 300))
+	_make_altar(ALTAR_POS)
+
+	# 底部符令手牌列（FP-2）+ 選方位提示
+	_build_fu_hand()
 
 	# 右側控制面板
 	_turn_label = _info_label(Vector2(PANEL_X, 86), 18, THEME.get_color("incense_gold", Color(0.96, 0.88, 0.62)))
-	_action_label = _info_label(Vector2(PANEL_X, 120), 16, Color(0.92, 0.86, 0.70))
+	_action_label = _info_label(Vector2(PANEL_X, 118), 16, Color(0.92, 0.86, 0.70))
 
-	_jiao_button = _make_action_button(Vector2(PANEL_X, 158), Color(0.36, 0.20, 0.46))
+	_jiao_button = _make_action_button(Vector2(PANEL_X, 155), Color(0.36, 0.20, 0.46))
 	_jiao_button.button_up.connect(_on_jiao)
-	_deity_button = _make_action_button(Vector2(PANEL_X, 254), Color(0.20, 0.34, 0.46))
+	_deity_button = _make_action_button(Vector2(PANEL_X, 255), Color(0.20, 0.34, 0.46))
 	_deity_button.button_up.connect(_on_deity)
-	_end_turn_button = _make_action_button(Vector2(PANEL_X, 350), Color(0.74, 0.34, 0.14))
+	_end_turn_button = _make_action_button(Vector2(PANEL_X, 355), Color(0.74, 0.34, 0.14))
 	_end_turn_button.button_up.connect(_on_end_turn)
 
-	var log_head := _info_label(Vector2(PANEL_X, 452), 14, Color(0.80, 0.74, 0.64))
+	var log_head := _info_label(Vector2(PANEL_X, 458), 14, Color(0.80, 0.74, 0.64))
 	log_head.text = tr("combat.formation.log_head")
 	_log_label = Label.new()
-	_log_label.position = Vector2(PANEL_X, 478)
-	_log_label.size = Vector2(280, 210)
+	_log_label.position = Vector2(PANEL_X, 480)
+	_log_label.size = Vector2(260, 200)
 	_log_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_log_label.add_theme_font_size_override("font_size", 13)
 	_log_label.add_theme_color_override("font_color", Color(0.86, 0.80, 0.70))
@@ -225,7 +243,7 @@ func _make_altar(pos: Vector2) -> void:
 	var panel := Panel.new()
 	panel.name = "Altar"
 	panel.position = pos
-	panel.size = Vector2(200, 96)
+	panel.size = ALTAR_SIZE
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.16, 0.08, 0.05, 0.95)
@@ -235,15 +253,15 @@ func _make_altar(pos: Vector2) -> void:
 	panel.add_theme_stylebox_override("panel", sb)
 	_stage.add_child(panel)
 	_altar_label = Label.new()
-	_altar_label.position = Vector2(0, 8)
-	_altar_label.size = Vector2(200, 24)
+	_altar_label.position = Vector2(0, 10)
+	_altar_label.size = Vector2(ALTAR_SIZE.x, 24)
 	_altar_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_altar_label.add_theme_font_size_override("font_size", 18)
+	_altar_label.add_theme_font_size_override("font_size", 16)
 	_altar_label.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
 	panel.add_child(_altar_label)
 	_altar_bar = ProgressBar.new()
-	_altar_bar.position = Vector2(14, 44)
-	_altar_bar.size = Vector2(172, 32)
+	_altar_bar.position = Vector2(12, 48)
+	_altar_bar.size = Vector2(ALTAR_SIZE.x - 24, 30)
 	_altar_bar.show_percentage = false
 	panel.add_child(_altar_bar)
 
@@ -273,9 +291,53 @@ func _make_action_button(pos: Vector2, col: Color) -> Button:
 	_stage.add_child(b)
 	return b
 
+## 底部符令手牌列（FU_SLOTS 個槽，_refresh 綁到 core.fu_hand[idx]）+ 選方位提示。
+func _build_fu_hand() -> void:
+	_fu_prompt = Label.new()
+	_fu_prompt.position = Vector2(40, FU_HAND_Y - 26)
+	_fu_prompt.size = Vector2(820, 22)
+	_fu_prompt.add_theme_font_size_override("font_size", 15)
+	_fu_prompt.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
+	_stage.add_child(_fu_prompt)
+	_fu_slots.clear()
+	for i: int in range(FU_SLOTS):
+		var b := Button.new()
+		b.position = Vector2(40 + i * (FU_BTN_SIZE.x + 12), FU_HAND_Y)
+		b.size = FU_BTN_SIZE
+		b.focus_mode = Control.FOCUS_NONE
+		b.add_theme_font_size_override("font_size", 15)
+		b.visible = false
+		b.button_up.connect(_on_fu_slot_pressed.bind(i))
+		_stage.add_child(b)
+		_fu_slots.append(b)
+
 # ---- 互動 ----
+## 符令槽點擊：無目標即打；需目標者進「選方位」狀態，等點方位營。
+func _on_fu_slot_pressed(idx: int) -> void:
+	if _core == null or _core.state != FormationCombatCls.STATE_PLAYING:
+		return
+	if idx >= _core.fu_hand.size() or _core.fu_plays_left <= 0:
+		return
+	var fu_id: String = str(_core.fu_hand[idx])
+	var def: Dictionary = _core.fu_defs.get(fu_id, {})
+	_selected_unit = ""	# 取消選將
+	if bool(def.get("needs_target", false)):
+		_pending_fu = fu_id	# 等點方位營指定 lane
+	else:
+		_core.play_fu(fu_id)
+		_pending_fu = ""
+	_refresh()
+
 func _on_camp_pressed(camp_id: String) -> void:
 	if _core == null or _core.state != FormationCombatCls.STATE_PLAYING:
+		return
+	# 符令選方位中：點營＝對該營的 lane 放符令（中營無 lane 則取消）
+	if _pending_fu != "":
+		var lane: String = str(_camp_to_lane.get(camp_id, ""))
+		if lane != "":
+			_core.play_fu(_pending_fu, lane)
+		_pending_fu = ""
+		_refresh()
 		return
 	if _selected_unit == "":
 		var uid: String = _core._unit_in_camp(camp_id)
@@ -302,6 +364,7 @@ func _on_end_turn() -> void:
 	if _core == null:
 		return
 	_selected_unit = ""
+	_pending_fu = ""
 	_core.end_turn()
 	_refresh()
 
@@ -335,10 +398,41 @@ func _refresh() -> void:
 	_deity_button.disabled = not deity_ready or _core.state != FormationCombatCls.STATE_PLAYING
 	_end_turn_button.text = tr("combat.formation.end_turn")
 	_end_turn_button.disabled = _core.state != FormationCombatCls.STATE_PLAYING
+	# 符令手牌
+	_refresh_fu_hand()
 	# 戰況
 	_log_label.text = _build_log_text()
 	# 勝負
 	_update_banner()
+
+func _refresh_fu_hand() -> void:
+	var playable: bool = _core.state == FormationCombatCls.STATE_PLAYING and _core.fu_plays_left > 0
+	for i: int in range(_fu_slots.size()):
+		var b: Button = _fu_slots[i]
+		if i >= _core.fu_hand.size():
+			b.visible = false
+			continue
+		var fu_id: String = str(_core.fu_hand[i])
+		var def: Dictionary = _core.fu_defs.get(fu_id, {})
+		b.visible = true
+		b.text = str(def.get("name", "")) + "\n" + str(def.get("desc", ""))
+		b.disabled = not playable
+		var sel: bool = fu_id == _pending_fu
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.18, 0.13, 0.10, 0.95)
+		sb.set_corner_radius_all(6)
+		sb.border_color = THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)) if sel else Color(0.5, 0.42, 0.3)
+		sb.set_border_width_all(4 if sel else 2)
+		b.add_theme_stylebox_override("normal", sb)
+		b.add_theme_stylebox_override("hover", sb)
+		b.add_theme_stylebox_override("pressed", sb)
+		b.add_theme_stylebox_override("disabled", sb)
+	# 選方位提示
+	if _pending_fu != "":
+		var d: Dictionary = _core.fu_defs.get(_pending_fu, {})
+		_fu_prompt.text = tr("combat.formation.fu_pick_lane") % str(d.get("name", ""))
+	else:
+		_fu_prompt.text = ""
 
 func _refresh_camp_tile(c: Dictionary) -> void:
 	var cid: String = str(c.get("id"))
@@ -428,6 +522,10 @@ func _render_log_event(ev: Dictionary) -> String:
 			return tr("combat.log.yin_surge") % [_lane_disp(str(ev.get("lane"))), int(ev.get("amount"))]
 		FormationCombatCls.EV_DEITY:
 			return tr("combat.log.deity") % int(ev.get("hit"))
+		FormationCombatCls.EV_FU:
+			var fu_id: String = str(ev.get("fu"))
+			var fu_name: String = str(_core.fu_defs.get(fu_id, {}).get("name", fu_id)) if _core != null else fu_id
+			return tr("combat.log.fu") % fu_name
 	return ""
 
 func _update_banner() -> void:
