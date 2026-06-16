@@ -156,3 +156,74 @@ func test_load_config_from_file() -> void:
 	assert_false(cfg.is_empty(), "戰鬥調參檔可載入")
 	assert_true(cfg.has("element_multipliers"), "config 含五行倍率表（鐵律1：數值在資料層）")
 	assert_true(int(cfg.get("altar_max_integrity", 0)) > 0, "config 母壇血為正")
+
+# ---- 符令手牌（FP-2，FC-2b.3）----
+
+# 測試用確定性符令 config（牌庫只 2 張、起手 2 → 不依賴洗牌）。
+func _fu_cfg() -> Dictionary:
+	return {
+		"hand_max": 5, "initial_hand": 2, "draw_per_turn": 1, "plays_per_turn": 1,
+		"starter_deck": ["fu_po_sha", "fu_chi"],
+		"fu": {
+			"fu_po_sha": {"name": "破煞符", "effect": "po_sha", "magnitude": 6, "needs_target": true, "desc": "x"},
+			"fu_chi": {"name": "敕符", "effect": "action", "magnitude": 1, "needs_target": false, "desc": "y"},
+		},
+	}
+
+func test_fu_initial_hand_drawn() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({"fu_config": _fu_cfg()}), 1)
+	assert_eq(cb.fu_hand.size(), 2, "起手抽 2 張符令")
+	assert_true(cb.fu_hand.has("fu_po_sha") and cb.fu_hand.has("fu_chi"), "起手含破煞符與敕符")
+	assert_eq(cb.fu_plays_left, 1, "回合 1 可打 1 張符令")
+
+func test_fu_po_sha_cuts_lane_sha() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e_big", "hp": 80}], _cfg({"fu_config": _fu_cfg()}), 1)
+	var lane: String = str(cb.waves[0]["lane"])	# 80HP→煞10 落此 lane
+	assert_eq(int(cb.lanes[lane]["sha"]["strength"]), 10, "前置：該 lane 煞 10")
+	var ok: bool = cb.play_fu("fu_po_sha", lane)
+	assert_true(ok, "破煞符可打（lane 有煞）")
+	assert_eq(int(cb.lanes[lane]["sha"]["strength"]), 4, "破煞符削煞 6 → 餘 4")
+
+func test_fu_chi_grants_action() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({"fu_config": _fu_cfg()}), 1)
+	var before: int = cb.actions_remaining
+	assert_true(cb.play_fu("fu_chi"), "敕符無需目標可打")
+	assert_eq(cb.actions_remaining, before + 1, "敕符 +1 動作")
+
+func test_fu_one_play_per_turn() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({"fu_config": _fu_cfg()}), 1)
+	assert_true(cb.play_fu("fu_chi"), "首張可打")
+	assert_eq(cb.fu_plays_left, 0, "本回合可打次數耗盡")
+	assert_false(cb.play_fu("fu_po_sha", str(cb.waves[0]["lane"])), "本回合第二張不可打")
+
+func test_fu_needs_target_rejects_clear_lane() -> void:
+	var cb := FormationCombatCls.new()
+	# 開全營但只 1 敵 → 多數 lane 無煞
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({"fu_config": _fu_cfg()}), 1)
+	var sha_lane: String = str(cb.waves[0]["lane"])
+	var clear_lane: String = ""
+	for l: String in cb.lanes:
+		if l != sha_lane:
+			clear_lane = l
+			break
+	assert_ne(clear_lane, "", "應有無煞的 lane")
+	assert_false(cb.play_fu("fu_po_sha", clear_lane), "破煞符不可空放（目標 lane 無煞）")
+
+func test_fu_draws_on_new_turn() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({"fu_config": _fu_cfg()}), 1)
+	cb.play_fu("fu_chi")	# 進棄牌堆
+	var hand_before: int = cb.fu_hand.size()
+	cb.end_turn()			# 進回合 2 → 抽 1（牌庫空則洗棄牌堆）
+	if cb.state == FormationCombatCls.STATE_PLAYING:
+		assert_true(cb.fu_hand.size() >= hand_before, "新回合抽符令（手牌不減）")
+		assert_eq(cb.fu_plays_left, 1, "新回合重置可打次數")
+
+func test_load_fu_config_from_file() -> void:
+	var cfg: Dictionary = FormationCombatCls.load_fu_config()
+	assert_false(cfg.is_empty(), "符令調參檔可載入")
+	assert_true(cfg.has("fu") and cfg.has("starter_deck"), "含符令定義與起手牌庫（鐵律1：資料層）")
