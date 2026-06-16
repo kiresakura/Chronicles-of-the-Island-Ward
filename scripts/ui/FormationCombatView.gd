@@ -33,6 +33,7 @@ const LANE_POS := {
 }
 const PANEL_X := 910.0
 
+var embedded: bool = false		# true＝由 Combat 接縫嵌入（_ready 不自動跑示範戰，等外部 start）
 var _core: FormationCombat
 var _selected_unit: String = ""
 var _started: bool = false
@@ -57,8 +58,8 @@ var _camp_to_name: Dictionary = {}
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build_ui()
-	if not _started:
-		# 獨立執行（場景直跑/模擬器）：開一場示範戰，方便驗手感
+	if not _started and not embedded:
+		# 獨立執行（場景直跑/模擬器）：開一場示範戰，方便驗手感。嵌入接縫時由 Combat 呼叫 start。
 		start([], {}, _demo_enemy_specs(), 20260616)
 
 ## 外部入口（接縫用）：開一場。open_camp_ids 空＝全五營；deploy 空＝自動佈陣。
