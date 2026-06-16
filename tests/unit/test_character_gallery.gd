@@ -117,10 +117,12 @@ func test_character_gallery_builds_slot_components_and_tracks_selection() -> voi
 	assert_eq(gallery.get_selected_character_id(), "character_luannu", "CharacterGallery 必須追蹤目前選中的角色")
 	gallery.free()
 
-func test_character_portrait_slot_selected_state_enables_beam_and_smoke() -> void:
+# 重排後：陣容磚選中態 = 霓虹選中環點亮（稀缺資源）；磚不再重複玩法 tag
+# （唯一真相在左側英雄面板）。
+func test_character_portrait_slot_selected_state_lights_neon_ring() -> void:
 	var slot := SLOT_SCENE.instantiate()
 	Engine.get_main_loop().root.add_child(slot)
-	slot.size = Vector2(160, 360)
+	slot.size = Vector2(120, 150)
 	slot.setup({
 		"character_id": "character_tongji",
 		"label": "乩童",
@@ -130,51 +132,57 @@ func test_character_portrait_slot_selected_state_enables_beam_and_smoke() -> voi
 		"description": "測試描述",
 	})
 	slot.set_selected(true)
-	var beam := slot.get_node_or_null("LightBeam") as ColorRect
-	var halo := slot.get_node_or_null("AltarHalo") as Panel
-	var smoke := slot.get_node_or_null("SmokeParticles") as CPUParticles2D
-	var tags := slot.get_node_or_null("TagFlow") as HFlowContainer
-	assert_not_null(beam, "slot 必須有選中燈光層")
-	assert_not_null(halo, "slot 必須有神壇頂部光暈")
-	assert_not_null(smoke, "slot 必須有香煙粒子")
-	assert_not_null(tags, "slot 必須有玩法 tag 容器")
-	if beam != null:
-		assert_true(beam.visible, "選中時燈光必須亮起")
-		assert_true(beam.color.a > 0.15, "選中燈光 alpha 不可太弱")
-	if halo != null:
-		assert_true(halo.visible, "選中時神壇頂部光暈必須亮起")
-	if smoke != null:
-		assert_true(smoke.emitting, "選中時香煙必須上升")
-	if tags != null:
-		assert_eq(tags.get_child_count(), 2, "slot 必須建立對應數量的玩法 tags")
+	var ring := slot.get_node_or_null("SelectionRing") as Panel
+	assert_not_null(ring, "陣容磚必須有霓虹選中環")
+	if ring != null:
+		assert_true(ring.visible, "選中時霓虹環必須亮起")
+	# 減法 + 單一真相：磚不得再有重複的玩法 tag 容器
+	assert_true(slot.get_node_or_null("TagFlow") == null, "陣容磚不應重複顯示 tag（真相在英雄面板）")
 	slot.queue_free()
 
-func test_character_portrait_slot_locked_state_uses_seal_instead_of_plain_gray() -> void:
+func test_character_portrait_slot_unselected_ring_is_dark() -> void:
+	# 霓虹稀缺：未選中磚的環必須暗（對比才出得來）
 	var slot := SLOT_SCENE.instantiate()
 	Engine.get_main_loop().root.add_child(slot)
-	slot.size = Vector2(160, 360)
+	slot.size = Vector2(120, 150)
+	slot.setup({
+		"character_id": "character_tongji", "label": "乩童",
+		"portrait_path": "res://assets/generated/portraits_v3/tongji.png", "locked": false,
+	})
+	slot.set_selected(false)
+	var ring := slot.get_node_or_null("SelectionRing") as Panel
+	if ring != null:
+		assert_false(ring.visible, "未選中磚的霓虹環必須暗（霓虹是稀缺資源）")
+	slot.queue_free()
+
+# 重排後：鎖態 = 剪影（暗化立繪）+ 解鎖進度章（再勝 N 場），勾引而非訓斥。
+# 移除原紅叉「封」印（紅線：禁止感 → 期待感）。
+func test_character_portrait_slot_locked_state_uses_silhouette_and_progress_stamp() -> void:
+	var slot := SLOT_SCENE.instantiate()
+	Engine.get_main_loop().root.add_child(slot)
+	slot.size = Vector2(120, 150)
 	slot.setup({
 		"character_id": "character_daoshi",
 		"label": "道士",
 		"portrait_path": "res://assets/generated/portraits_v3/daoshi.png",
 		"locked": true,
-		"unlock_hint": "1 / 3 勝場",
+		"unlock_hint": "再勝 3 場",
 		"tags": ["符陣操作"],
 		"description": "封印測試",
 	})
 	var veil := slot.get_node_or_null("LockVeil") as ColorRect
-	var seal := slot.get_node_or_null("SealPaper") as Panel
-	var thread_top := slot.get_node_or_null("RedThreadTop") as ColorRect
-	var hint := slot.get_node_or_null("HintLabel") as Label
-	assert_not_null(veil, "locked slot 必須有遮罩")
-	assert_not_null(seal, "locked slot 必須有符紙封印")
-	assert_not_null(thread_top, "locked slot 必須有紅線")
+	var stamp := slot.get_node_or_null("UnlockStamp") as Panel
+	var stamp_label := slot.get_node_or_null("UnlockStamp/StampLabel") as Label
+	assert_not_null(veil, "鎖態磚必須有剪影遮罩")
+	assert_not_null(stamp, "鎖態磚必須有解鎖進度章")
+	assert_not_null(stamp_label, "鎖態磚進度章必須有文字")
 	if veil != null:
-		assert_true(veil.visible, "locked slot 遮罩必須顯示")
-	if seal != null:
-		assert_true(seal.visible, "locked slot 符紙不可缺席")
-	if thread_top != null:
-		assert_true(thread_top.visible, "locked slot 紅線不可缺席")
-	if hint != null:
-		assert_true(hint.text.contains("1 / 3 勝場"), "locked slot 提示必須帶出期待感與解鎖進度")
+		assert_true(veil.visible, "鎖態剪影遮罩必須顯示")
+	if stamp != null:
+		assert_true(stamp.visible, "鎖態進度章必須顯示")
+	if stamp_label != null:
+		assert_true(stamp_label.text.contains("再勝 3 場"), "進度章必須帶出解鎖進度（勾引）")
+	# 移除紅叉：不得再有符紙封印與紅線
+	assert_true(slot.get_node_or_null("SealPaper") == null, "鎖態不應再有「封」印（禁止感）")
+	assert_true(slot.get_node_or_null("RedThreadTop") == null, "鎖態不應再有紅叉紅線")
 	slot.queue_free()
