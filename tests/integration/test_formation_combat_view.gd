@@ -5,6 +5,8 @@ extends "res://tests/test_case.gd"
 
 const VIEW_SCENE: String = "res://scenes/ui/FormationCombatView.tscn"
 const FormationCombatCls := preload("res://scripts/systems/ritual/FormationCombat.gd")
+const ViewCls := preload("res://scripts/ui/FormationCombatView.gd")
+const DESIGN := Vector2(1200, 700)
 
 var _won: bool = false
 var _lost: bool = false
@@ -78,3 +80,23 @@ func test_view_emits_lost_on_altar_collapse() -> void:
 	assert_true(_lost, "敗北時發 formation_lost 訊號（接縫用）")
 	assert_true(view._banner.visible, "敗北橫幅顯示")
 	view.queue_free()
+
+# 響應式：設計畫布依安全區置中+fit縮放，保證內容不溢出（不截斷）、不放大（保像素清晰）。
+func test_stage_transform_fits_without_truncation() -> void:
+	var cases: Array = [
+		Rect2(0, 0, 1522, 700),		# 寬手機（iPhone landscape ~2.17:1）
+		Rect2(0, 0, 1200, 900),		# 高平板（4:3）
+		Rect2(44, 8, 1478, 684),	# 瀏海/安全區內縮
+		Rect2(0, 0, 1100, 640),		# 安全區小於設計 → 須縮以塞入
+		Rect2(0, 0, 1200, 700),		# 剛好等於設計
+	]
+	var eps: float = 0.5
+	for safe: Rect2 in cases:
+		var t: Dictionary = ViewCls.compute_stage_transform(safe, DESIGN)
+		var s: float = float(t["scale"])
+		var pos: Vector2 = t["position"]
+		assert_true(s > 0.0 and s <= 1.0, "縮放須落在 (0,1]（不放大）：%s → %f" % [str(safe), s])
+		assert_true(pos.x >= safe.position.x - eps, "左不溢出：%s" % str(safe))
+		assert_true(pos.y >= safe.position.y - eps, "上不溢出：%s" % str(safe))
+		assert_true(pos.x + DESIGN.x * s <= safe.position.x + safe.size.x + eps, "右不溢出：%s" % str(safe))
+		assert_true(pos.y + DESIGN.y * s <= safe.position.y + safe.size.y + eps, "下不溢出（橫幅不截斷）：%s" % str(safe))
