@@ -32,6 +32,7 @@ const LANE_POS := {
 	"west": Vector2(12, 318), "east": Vector2(762, 318),
 }
 const PANEL_X := 910.0
+const DESIGN_SIZE := Vector2(1200, 700)		# 設計畫布；依裝置安全區置中+fit縮放（避免截斷/偏移）
 
 var embedded: bool = false		# true＝由 Combat 接縫嵌入（_ready 不自動跑示範戰，等外部 start）
 var _core: FormationCombat
@@ -51,6 +52,7 @@ var _deity_button: Button
 var _end_turn_button: Button
 var _log_label: Label
 var _banner: Label
+var _stage: Control				# 1200×700 設計畫布（內容掛此；依安全區置中+fit縮放）
 # 顯示名快取（由核心資料建，避免散落字面值）
 var _lane_to_name: Dictionary = {}
 var _camp_to_name: Dictionary = {}
@@ -58,9 +60,33 @@ var _camp_to_name: Dictionary = {}
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build_ui()
+	_fit_stage()
+	# 視窗/安全區變動時重新置中縮放（接 Responsive autoload；無則靠自身 resized）
+	var resp: Node = get_node_or_null("/root/Responsive")
+	if resp != null and resp.has_signal("changed") and not resp.changed.is_connected(_fit_stage):
+		resp.changed.connect(_fit_stage)
+	if not resized.is_connected(_fit_stage):
+		resized.connect(_fit_stage)
 	if not _started and not embedded:
 		# 獨立執行（場景直跑/模擬器）：開一場示範戰，方便驗手感。嵌入接縫時由 Combat 呼叫 start。
 		start([], {}, _demo_enemy_specs(), 20260616)
+
+## 把 1200×700 設計畫布依裝置安全區置中 + fit 縮放（寬螢幕不偏移、瀏海不截斷；不放大保像素清晰）。
+func _fit_stage() -> void:
+	if _stage == null:
+		return
+	var safe: Rect2 = THEME.get_safe_content_rect()
+	if safe.size.x <= 0.0 or safe.size.y <= 0.0:
+		return
+	var t: Dictionary = compute_stage_transform(safe, DESIGN_SIZE)
+	_stage.scale = Vector2(t["scale"], t["scale"])
+	_stage.position = t["position"]
+
+## 純函式（可測）：算設計畫布在安全區內的「置中 + fit 縮放（不放大）」變換。
+## 保證縮放後整塊落在安全區內（不溢出＝不截斷）。
+static func compute_stage_transform(safe: Rect2, design: Vector2) -> Dictionary:
+	var s: float = minf(minf(safe.size.x / design.x, safe.size.y / design.y), 1.0)
+	return {"scale": s, "position": safe.position + (safe.size - design * s) * 0.5}
 
 ## 外部入口（接縫用）：開一場。open_camp_ids 空＝全五營；deploy 空＝自動佈陣。
 func start(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, seed: int) -> void:
@@ -91,14 +117,20 @@ func _build_ui() -> void:
 	bg.color = THEME.get_color("combat_bg", Color(0.07, 0.04, 0.04))
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
+	add_child(bg)	# 背景填滿整個 viewport（letterbox 區也暗）
+
+	# 設計畫布：所有內容掛此，依安全區置中+fit縮放
+	_stage = Control.new()
+	_stage.size = DESIGN_SIZE
+	_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_stage)
 
 	var title := Label.new()
 	title.text = tr("combat.formation.title")
 	title.position = Vector2(40, 18)
 	title.add_theme_font_size_override("font_size", THEME.get_typography_size("title", 30))
 	title.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
-	add_child(title)
+	_stage.add_child(title)
 
 	var hint := Label.new()
 	hint.text = tr("combat.formation.hint")
@@ -106,7 +138,7 @@ func _build_ui() -> void:
 	hint.size = Vector2(820, 24)
 	hint.add_theme_font_size_override("font_size", 15)
 	hint.add_theme_color_override("font_color", Color(0.90, 0.82, 0.70))
-	add_child(hint)
+	_stage.add_child(hint)
 
 	# lane 煞道標記（四方位）；營 tile 由核心提供的營在 _refresh 延遲建（依方位座標表定位）
 	for lane: String in LANE_POS:
@@ -133,7 +165,7 @@ func _build_ui() -> void:
 	_log_label.add_theme_font_size_override("font_size", 13)
 	_log_label.add_theme_color_override("font_color", Color(0.86, 0.80, 0.70))
 	_log_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	add_child(_log_label)
+	_stage.add_child(_log_label)
 
 	_banner = Label.new()
 	_banner.position = Vector2(300, 296)
@@ -142,7 +174,7 @@ func _build_ui() -> void:
 	_banner.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_banner.add_theme_font_size_override("font_size", 52)
 	_banner.visible = false
-	add_child(_banner)
+	_stage.add_child(_banner)
 
 func _make_camp_tile(camp_id: String, pos: Vector2, is_reserve: bool) -> void:
 	var btn := Button.new()
@@ -151,7 +183,7 @@ func _make_camp_tile(camp_id: String, pos: Vector2, is_reserve: bool) -> void:
 	btn.size = CAMP_SIZE	# ≥88 觸控
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.button_up.connect(_on_camp_pressed.bind(camp_id))
-	add_child(btn)
+	_stage.add_child(btn)
 	var name_label := Label.new()
 	name_label.position = Vector2(0, 6)
 	name_label.size = Vector2(CAMP_SIZE.x, 22)
@@ -179,7 +211,7 @@ func _make_lane_marker(pos: Vector2) -> Panel:
 	p.position = pos
 	p.size = LANE_SIZE
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(p)
+	_stage.add_child(p)
 	var l := Label.new()
 	l.name = "Txt"
 	l.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -201,7 +233,7 @@ func _make_altar(pos: Vector2) -> void:
 	sb.set_border_width_all(3)
 	sb.set_corner_radius_all(6)
 	panel.add_theme_stylebox_override("panel", sb)
-	add_child(panel)
+	_stage.add_child(panel)
 	_altar_label = Label.new()
 	_altar_label.position = Vector2(0, 8)
 	_altar_label.size = Vector2(200, 24)
@@ -221,7 +253,7 @@ func _info_label(pos: Vector2, fsize: int, col: Color) -> Label:
 	l.size = Vector2(280, 28)
 	l.add_theme_font_size_override("font_size", fsize)
 	l.add_theme_color_override("font_color", col)
-	add_child(l)
+	_stage.add_child(l)
 	return l
 
 func _make_action_button(pos: Vector2, col: Color) -> Button:
@@ -238,7 +270,7 @@ func _make_action_button(pos: Vector2, col: Color) -> Button:
 	b.add_theme_stylebox_override("normal", sb)
 	b.add_theme_stylebox_override("hover", sb)
 	b.add_theme_stylebox_override("pressed", sb)
-	add_child(b)
+	_stage.add_child(b)
 	return b
 
 # ---- 互動 ----
