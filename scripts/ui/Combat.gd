@@ -13,6 +13,9 @@ const HUD_FOCUS := preload("res://scripts/ui/theme/HudFocus.gd")
 const WARD_BREAK_FX := preload("res://scripts/ui/fx/WardBreakFX.gd")
 const DEITY_CUTIN_FX := preload("res://scripts/ui/fx/DeityCutInFX.gd")
 
+# 鎮島錄 v0.3 換骨：五營戰鬥畫面（取代卡牌戰鬥；執行期 instance，不動巨型 Root.tscn）
+const FORMATION_VIEW_SCENE := preload("res://scenes/ui/FormationCombatView.tscn")
+
 @onready var money_label: Label = $%MoneyLabel
 @onready var health_label: Label = $%HealthLabel
 
@@ -47,6 +50,10 @@ var _invoke_button: Button = null
 var _invoke_fill: ColorRect = null	# Q1-E：請神槽充能條
 var _invoke_glow_tween: Tween = null	# Q1-E：滿槽金光脈動
 var end_turn_object: CombatEndTurn = null
+
+# 鎮島錄 v0.3 換骨：五營戰鬥畫面 + 每場戰鬥編號（擲筊 RNG 種子，可重現）
+var _formation_view: Control = null
+var _combat_index: int = 0
 
 # ── P0 戰鬥狀態提示 + 不可出牌 toast（additive；不改既有 signal flow） ──
 const COMBAT_STATUS_PLAYER: String = "combat.my_turn"	# i18n key（const 內不可 tr，顯示點翻）
@@ -143,6 +150,9 @@ func _ready():
 	if not Signals.enemy_broken.is_connected(_on_enemy_broken_fx):
 		Signals.enemy_broken.connect(_on_enemy_broken_fx)
 
+	# 鎮島錄 v0.3 換骨：建五營戰鬥畫面（隱藏待命，combat_started 時開戰）
+	_build_formation_view()
+
 
 ## 套用戰鬥上排 TextureButton 的 icon（取代 icon.svg placeholder）
 func _apply_top_button_icon(btn: TextureButton, icon_path: String) -> void:
@@ -161,9 +171,12 @@ func _on_map_location_selected(location_data: LocationData):
 	
 	chest.visible = false
 	shop.visible = false
-	
+
 	set_combat_display_visibility(false)
-	
+	# 換骨：離開戰鬥到寶箱/商店等節點時收起五營畫面（戰鬥節點會在 _on_combat_started 重開）
+	if _formation_view != null:
+		_formation_view.visible = false
+
 	match location_type:
 		LocationData.LOCATION_TYPES.COMBAT, LocationData.LOCATION_TYPES.MINIBOSS, LocationData.LOCATION_TYPES.BOSS:
 			ActionGenerator.generate_combat_start("") # emit empty event to get location's combat event
@@ -279,39 +292,104 @@ func _on_enemy_death_animation_finished(_enemy: Enemy):
 		Signals.combat_ended.emit()
 
 func _on_combat_started(event_id: String):
+	# 鎮島錄 v0.3 換骨（FC-2b.1b）：卡牌戰鬥 → 五營戰鬥。仍從 location/event 解析敵人，
+	# 翻成煞波餵進五營戰；勝→combat_ended（既有獎勵流程不動）、敗→end_run(LOSS)。
 	var current_event: EventData = null
 	if event_id == "":
 		# if no event is provided, it will be derived from the location
 		var current_location: LocationData = Global.get_player_location_data()
 		current_event = Global.get_player_event_data()
-		current_location.location_visited = true
+		if current_location != null:
+			current_location.location_visited = true
 	else:
 		current_event = Global.get_event_data(event_id)
-	
-	enemy_container.populate_enemies(current_event)
-	start_turn_animation()
-	
-	Global.player_data.player_energy = Global.player_data.player_energy_max
-	set_combat_display_visibility(true)
-	update_combat_display()
-	set_combat_status(COMBAT_STATUS_PROCESSING)	# P0：戰鬥開場，回合即將開始
-	# 第一章專屬戰鬥 BG：戰鬥時覆寫 background_button（不動共用的 act1_mountain_temple，
-	# 那張仍用於角色選擇背景）。離開戰鬥到寶箱/商店節點時 _update_background 會還原。
-	const COMBAT_BG_CH1 := "res://assets/generated/pixellab/combat_bg_ch1.png"
-	if is_instance_valid(background_button) and ResourceLoader.exists(COMBAT_BG_CH1):
-		background_button.texture_normal = load(COMBAT_BG_CH1)
 
-	# 鎮島錄 — 請神：每場戰鬥設定「本局班底解析出的出戰神明」（2B：由 loadout 決定，非固定虎爺）並重置請神槽
-	if _deity_controller != null:
-		_deity_controller.setup(DeityInvocationSystem.load_deity(Global.get_run_active_deity_id()))
-		# Q3-E 鐘鼓樓 Lv2：首戰預充（單次/趟；數值在 building_bell_tower.json）
-		var bell_charge: int = Global.consume_bell_first_charge()
-		if bell_charge > 0:
-			_deity_controller.grant_charge(bell_charge)
+	# 收起卡牌戰鬥 HUD（汰換中：卡牌死碼於 FC-2b.2 移除）
+	set_combat_display_visibility(false)
+	_hide_card_combat_nodes()
+	# 開五營戰：敵人事件→煞波（FC-2a 翻譯），全五營、自動佈陣
+	_combat_index += 1
+	if _formation_view != null:
+		_formation_view.visible = true
+		_formation_view.start([], {}, _resolve_enemy_specs(current_event), _combat_index)
+		_raise_top_controls()	# 保留暫停/回地圖鈕在五營畫面之上
 
 func _on_combat_ended():
 	set_combat_display_visibility(false)
-	
+	if _formation_view != null:
+		_formation_view.visible = false
+
+
+# ── 鎮島錄 v0.3 換骨接縫（FC-2b.1b） ──────────────────────────────────────────
+
+## 建五營戰鬥畫面（隱藏待命）：embedded＝不自動跑示範戰；勝/敗轉接 run 流程。
+func _build_formation_view() -> void:
+	if _formation_view != null:
+		return
+	_formation_view = FORMATION_VIEW_SCENE.instantiate()
+	_formation_view.embedded = true
+	_formation_view.visible = false
+	add_child(_formation_view)
+	_formation_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if not _formation_view.formation_won.is_connected(_on_formation_won):
+		_formation_view.formation_won.connect(_on_formation_won)
+	if not _formation_view.formation_lost.is_connected(_on_formation_lost):
+		_formation_view.formation_lost.connect(_on_formation_lost)
+
+## 敵人事件 → 五營戰煞波 specs：每個 weighted slot 取最高權重敵，解析其 HP。
+func _resolve_enemy_specs(event: EventData) -> Array:
+	var specs: Array = []
+	if event == null:
+		return specs
+	for slot: Dictionary in event.event_weighted_enemy_object_ids:
+		var best_id: String = ""
+		var best_w: float = -1.0
+		for eid: Variant in slot:
+			var w: float = float(slot[eid])
+			if w > best_w:
+				best_w = w
+				best_id = str(eid)
+		if best_id == "":
+			continue
+		var ed: EnemyData = Global.get_enemy_data_from_prototype(best_id)
+		if ed == null:
+			continue
+		specs.append({"id": best_id, "hp": int(ed.enemy_health)})
+	return specs
+
+## 收起卡牌戰鬥節點（汰換中：死碼於 FC-2b.2 移除；先隱藏避免擋五營畫面與輸入）。
+func _hide_card_combat_nodes() -> void:
+	var card_nodes: Array = [
+		hand, player, enemy_container, deck_button, draw_pile_button,
+		discard_pile_button, exhaust_pile_button, energy, get_node_or_null("Consumables"),
+	]
+	for n: Variant in card_nodes:
+		if n != null and is_instance_valid(n):
+			(n as CanvasItem).visible = false
+	if _invoke_button != null and is_instance_valid(_invoke_button):
+		_invoke_button.visible = false
+	if _combat_status_label != null and is_instance_valid(_combat_status_label):
+		_combat_status_label.visible = false
+
+## 把暫停/回地圖鈕移到五營畫面之上（仍可暫停與逃離）。
+func _raise_top_controls() -> void:
+	for path: String in ["PauseButton", "MapButton"]:
+		var n: Node = get_node_or_null(path)
+		if n != null:
+			move_child(n, -1)
+
+## 五營戰勝：破盡諸煞 → 發 combat_ended（既有獎勵/地圖流程不動）。
+func _on_formation_won() -> void:
+	if _formation_view != null:
+		_formation_view.visible = false
+	Signals.combat_ended.emit()
+
+## 五營戰敗：母壇崩 → 結束 run（LOSS）。
+func _on_formation_lost() -> void:
+	if _formation_view != null:
+		_formation_view.visible = false
+	Global.end_run(Global.RUN_ENDS.LOSS)
+
 
 func perform_enemy_turn():
 	# generates enemy actions and performs them in order
