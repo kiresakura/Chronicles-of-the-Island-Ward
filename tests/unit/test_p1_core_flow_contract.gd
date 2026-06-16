@@ -46,25 +46,27 @@ func test_p1_reward_overlay_builds_offering_table_language() -> void:
 	assert_true(table.has_theme_stylebox_override("panel"), "供桌 panel 必須走 theme stylebox")
 	table.queue_free()
 
-func test_p1_new_run_bottom_controls_do_not_overlap_guide_copy() -> void:
-	# UIQA P1-2 強化：對手機(1200x700)與平板(2772x1280)雙尺寸驗證
-	# 全部控件互不重疊、全部落在 safe 區內（返回鈕曾 y=698 出界 96%）
-	for safe_size: Vector2 in [Vector2(1200, 700), Vector2(2772, 1280)]:
+func test_new_run_three_zone_layout_does_not_overlap() -> void:
+	# 重排後三區動線：① hero+roster（左）② setup（右上）③ cta（右下）+ back（左上）
+	# 三解析度驗證：全區落 safe 內、互不重疊、CTA 巨大、返回觸控達標、動線方向正確。
+	for safe_size: Vector2 in [Vector2(1200, 700), Vector2(1515, 700), Vector2(1200, 900)]:
 		var safe := Rect2(Vector2.ZERO, safe_size)
-		var layout: Dictionary = NEW_RUN_MENU.calculate_p1_bottom_control_layout(safe)
-		for required_key in ["start", "seed", "hint", "guardian", "tool", "back"]:
-			assert_true(layout.has(required_key), "P1 NewRun layout 必須回傳 %s rect" % required_key)
-		var keys: Array = ["hint", "guardian", "tool", "seed", "start", "back"]
-		for i: int in keys.size():
-			var r_i: Rect2 = layout[keys[i]]
-			assert_true(safe.grow(0.5).encloses(r_i), "%s 必須完整落在 safe 區內（%s @%s）" % [keys[i], str(r_i), str(safe_size)])
-			for j: int in range(i + 1, keys.size()):
-				var r_j: Rect2 = layout[keys[j]]
-				assert_false(r_i.intersects(r_j), "%s 不可壓到 %s（@%s）" % [keys[i], keys[j], str(safe_size)])
+		var layout: Dictionary = NEW_RUN_MENU.calculate_layout(safe)
+		for required_key in ["back", "hero", "roster", "setup", "cta_zone", "start", "advanced"]:
+			assert_true(layout.has(required_key), "NewRun layout 必須回傳 %s rect" % required_key)
+		var zones: Array = ["back", "hero", "roster", "setup", "cta_zone"]
+		for i: int in zones.size():
+			var r_i: Rect2 = layout[zones[i]]
+			assert_true(safe.grow(0.5).encloses(r_i), "%s 必須完整落在 safe 內（%s @%s）" % [zones[i], str(r_i), str(safe_size)])
+			for j: int in range(i + 1, zones.size()):
+				assert_false(r_i.intersects(layout[zones[j]]), "%s 不可壓到 %s（@%s）" % [zones[i], zones[j], str(safe_size)])
 		var start_rect: Rect2 = layout["start"]
+		assert_true(start_rect.size.y >= 90.0, "開始開壇 CTA 必須巨大（高 ≥90，@%s 實得 %d）" % [str(safe_size), start_rect.size.y])
+		assert_true(start_rect.size.x >= 200.0, "開始開壇 CTA 必須夠寬獨佔（@%s）" % str(safe_size))
 		var back_rect: Rect2 = layout["back"]
-		assert_true(start_rect.size.y >= 54.0, "開始開壇 CTA 必須維持手機可點高度")
 		assert_true(minf(back_rect.size.x, back_rect.size.y) >= 64.0, "返回正殿 觸控短邊須 ≥64px")
+		assert_true(layout["hero"].position.x < layout["setup"].position.x, "① 選將須在 ② 設定左側")
+		assert_true(layout["cta_zone"].position.y > layout["setup"].position.y, "③ 開壇須在 ② 設定下方")
 
 func _load_json_array(path: String) -> Array:
 	assert_true(FileAccess.file_exists(path), "%s 必須存在" % path)
