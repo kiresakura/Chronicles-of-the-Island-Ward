@@ -5,12 +5,16 @@ extends ScrollContainer
 var _run_modifier_object_id_to_checkbox: Dictionary = {}
 var selected_custom_run_modififers: Array[String] = []
 
-func populate_custom_run_modifiers() -> void:
+func populate_custom_run_modifiers(exclude_ids: Array = []) -> void:
+	# exclude_ids（NR-3）：隱藏 STR 無實效佔位 + 已成獨立模式者（易/無盡），
+	# 自訂清單只留有實際效果且非模式的修正（如七彩）。
 	clear_custom_run_modifiers()
-	
+
 	var run_modifier_object_ids: Array = Global._id_to_run_modifier_data.keys()
-	
+
 	for run_modifier_object_id in run_modifier_object_ids:
+		if run_modifier_object_id in exclude_ids:
+			continue
 		var run_modifier_data: RunModifierData = Global.get_run_modifier_data(run_modifier_object_id)
 		if run_modifier_data.run_modifier_is_custom:
 			var custom_run_modifier_checkbox: CheckBox = Scenes.CUSTOM_RUN_MODIFIER_CHECKBOX.instantiate()

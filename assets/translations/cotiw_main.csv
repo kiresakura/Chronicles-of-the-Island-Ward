@@ -252,8 +252,8 @@ touch.detail,詳情,详情,Details,詳細
 hud.energy,神力,神力,Power,神力
 hud.block,護,护,Guard,護
 hud.omen,預兆,预兆,Omen,予兆
-gallery.title,請神入位,请神入位,Invite the Deity,神を迎える
-gallery.hint,神位會依序亮起；燈落在哪位，今晚就請哪位開壇。,神位会依序亮起；灯落在哪位，今晚就请哪位开坛。,Seats light up in turn; whoever the lantern rests on leads tonight's rite.,神位は順に灯る。灯が留まった者が今宵の儀を執り行う。
+gallery.title,選你的主祭,选你的主祭,Choose Your Lead,主祭を選ぶ
+gallery.hint,點下方頭像選將，左側英雄面板即更新。,点下方头像选将，左侧英雄面板即更新。,Tap a portrait below to pick your lead; the hero panel updates.,下の頭像をタップして主役を選ぶと、左の英雄パネルが更新される。
 mascot.tongji,乩童,乩童,Spirit Medium,タンキー
 mascot.luannu,鸞女,鸾女,Oracle Maiden,鸞女
 mascot.daoshi,道士,道士,Taoist Priest,道士
@@ -294,3 +294,11 @@ ui.level_tooltip,每累計 3 場勝利晉升 1 級,每累计 3 场胜利晋升 1
 menu.newrun_confirm_body,目前有進行中的遶境，開新局將覆蓋該進度。確定開新局？,目前有进行中的绕境，开新局将覆盖该进度。确定开新局？,"A pilgrimage is in progress. Starting anew will overwrite it. Continue?",進行中の遶境があります。新規開始で上書きされます。よろしいですか？
 menu.confirm_ok,確定,确定,Confirm,はい
 menu.confirm_cancel,取消,取消,Cancel,キャンセル
+newrun.mode,模式,模式,Mode,モード
+newrun.mode_standard,標準,标准,Standard,標準
+newrun.mode_easy,易,易,Easy,イージー
+newrun.mode_endless,無盡,无尽,Endless,無尽
+newrun.mode_custom,自訂,自订,Custom,カスタム
+newrun.difficulty_hint,難度只調整敵人強度，與模式各自獨立。,难度只调整敌人强度，与模式各自独立。,Difficulty scales enemy strength only — independent of mode.,難易度は敵の強さのみ。モードとは独立。
+newrun.advanced_open,進階 ▸,进阶 ▸,Advanced ▸,詳細 ▸
+newrun.advanced_close,進階 ▾,进阶 ▾,Advanced ▾,詳細 ▾

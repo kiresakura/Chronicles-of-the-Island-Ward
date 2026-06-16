@@ -15,6 +15,17 @@ var _slot_order: Array = []
 var _slot_by_character_id: Dictionary = {}
 var _built: bool = false
 var _intro_serial: int = 0
+## 重排後：本 gallery 作「陣容列」（橫向切換磚），compact = 隱藏標題、磚壓扁成一列。
+var compact: bool = false
+
+func set_compact(value: bool) -> void:
+	compact = value
+	if _built:
+		if _header_label != null:
+			_header_label.visible = not compact
+		if _subhead_label != null:
+			_subhead_label.visible = not compact
+		_layout()
 
 func _ready() -> void:
 	_build_once()
@@ -96,12 +107,19 @@ func _layout() -> void:
 		return
 	var w: float = size.x
 	var h: float = size.y
-	_header_label.position = Vector2(0, 0)
-	_header_label.size = Vector2(w, 30)
-	_subhead_label.position = Vector2(0, 28)
-	_subhead_label.size = Vector2(w, 22)
-	_slot_root.position = Vector2(0, 56)
-	_slot_root.size = Vector2(w, maxf(0.0, h - 56.0))
+	if compact:
+		# 陣容列：無標題，磚填滿整條
+		_header_label.visible = false
+		_subhead_label.visible = false
+		_slot_root.position = Vector2.ZERO
+		_slot_root.size = Vector2(w, h)
+	else:
+		_header_label.position = Vector2(0, 0)
+		_header_label.size = Vector2(w, 30)
+		_subhead_label.position = Vector2(0, 28)
+		_subhead_label.size = Vector2(w, 22)
+		_slot_root.position = Vector2(0, 56)
+		_slot_root.size = Vector2(w, maxf(0.0, h - 56.0))
 	_layout_slots()
 
 func _layout_slots() -> void:
@@ -110,9 +128,10 @@ func _layout_slots() -> void:
 		return
 	var area_w: float = _slot_root.size.x
 	var area_h: float = _slot_root.size.y
-	var gap: float = clampf(area_w * 0.022, 10.0, 22.0)
-	var slot_w: float = clampf((area_w - gap * float(count - 1)) / float(count), 110.0, 186.0)
-	var slot_h: float = clampf(area_h - 6.0, 280.0, 430.0)
+	var gap: float = clampf(area_w * 0.022, 10.0, 18.0)
+	# 陣容列磚：壓扁成一列（高度跟容器、寬度較窄）；非 compact 維持原大磚
+	var slot_w: float = clampf((area_w - gap * float(count - 1)) / float(count), 96.0, 132.0 if compact else 186.0)
+	var slot_h: float = clampf(area_h - 6.0, 110.0, 150.0) if compact else clampf(area_h - 6.0, 280.0, 430.0)
 	var total_w: float = slot_w * float(count) + gap * float(count - 1)
 	var start_x: float = maxf(0.0, (area_w - total_w) * 0.5)
 	var top_y: float = maxf(0.0, (area_h - slot_h) * 0.5)
