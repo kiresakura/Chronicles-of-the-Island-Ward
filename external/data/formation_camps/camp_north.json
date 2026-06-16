@@ -1,0 +1,14 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "camp_north",
+    "camp_name": "北營",
+    "camp_direction": "north",
+    "camp_element": "water",
+    "camp_color": "black",
+    "camp_general": "玄武",
+    "camp_unlock_feature": "formation_camp_north",
+    "camp_lane": "north",
+    "camp_description": "玄武鎮北，水氣綿密，鎮北來之煞。"
+  }
+}

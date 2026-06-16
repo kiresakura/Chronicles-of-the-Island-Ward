@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_chenghuang",
+    "unit_name": "城隍",
+    "unit_element": "earth",
+    "unit_kind": "deity",
+    "unit_power": 4,
+    "unit_source_id": "deity_chenghuang",
+    "unit_affinity_ids": [],
+    "unit_description": "陰陽司主，判煞鎮境，威儀之神。"
+  }
+}

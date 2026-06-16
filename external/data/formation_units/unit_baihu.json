@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_baihu",
+    "unit_name": "白虎",
+    "unit_element": "metal",
+    "unit_kind": "general",
+    "unit_power": 5,
+    "unit_source_id": "",
+    "unit_affinity_ids": [],
+    "unit_description": "西方金德星君，肅殺之將。"
+  }
+}

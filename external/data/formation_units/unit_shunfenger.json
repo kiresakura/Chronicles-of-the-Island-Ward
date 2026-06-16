@@ -1,0 +1,15 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_shunfenger",
+    "unit_name": "順風耳",
+    "unit_element": "metal",
+    "unit_kind": "vanguard",
+    "unit_power": 3,
+    "unit_source_id": "",
+    "unit_affinity_ids": [
+      "affinity_mazu_eyes_ears"
+    ],
+    "unit_description": "媽祖駕前部將，順風辨煞。"
+  }
+}

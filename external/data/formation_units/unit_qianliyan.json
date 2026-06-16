@@ -1,0 +1,15 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_qianliyan",
+    "unit_name": "千里眼",
+    "unit_element": "wood",
+    "unit_kind": "vanguard",
+    "unit_power": 3,
+    "unit_source_id": "",
+    "unit_affinity_ids": [
+      "affinity_mazu_eyes_ears"
+    ],
+    "unit_description": "媽祖駕前部將，遠望預警。"
+  }
+}

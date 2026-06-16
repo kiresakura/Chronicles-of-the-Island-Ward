@@ -1,0 +1,15 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_mazu",
+    "unit_name": "媽祖",
+    "unit_element": "water",
+    "unit_kind": "deity",
+    "unit_power": 4,
+    "unit_source_id": "deity_mazu",
+    "unit_affinity_ids": [
+      "affinity_mazu_eyes_ears"
+    ],
+    "unit_description": "天上聖母，海象護佑，慈護之神。"
+  }
+}
