@@ -208,11 +208,15 @@ func _on_reward_group_selected(reward_group: int):
 func add_location_rewards() -> void:
 	# adds rewards from the location to the end of combat rewards
 	var player: Player = Global.get_player()
+	# v0.3 換骨：戰鬥獎勵不再發卡牌 draft（卡牌戰鬥已退場）；符令改由 Combat 戰勝時三選一
+	# draft 直接加進 run_fu_deck。此處保留香火/法器（artifact）獎勵。
+	# 注意：card_drafts 須為型別化空陣列（Array[Array]），否則下游型別賦值報錯。
+	var no_card_drafts: Array[Array] = []
 	var action_data: Array[Dictionary] = [{
 	Scripts.ACTION_GRANT_REWARDS: {
 		"reward_group": 0,
 		"money_amount": Random.get_location_money_reward(),
-		"card_drafts": Random.get_location_card_rewards(),
+		"card_drafts": no_card_drafts,
 		"artifact_ids": Random.get_location_artifact_rewards(),
 		}
 	}]

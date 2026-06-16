@@ -65,7 +65,7 @@ func test_combat_started_launches_formation_not_cards() -> void:
 	_teardown(env)
 
 # 勝負轉接：五營戰勝（破盡諸煞）→ Combat._on_formation_won → 發 combat_ended（獎勵流程）。
-func test_formation_win_emits_combat_ended() -> void:
+func test_formation_win_offers_fu_draft_then_combat_ended() -> void:
 	var env: Dictionary = _build_env()
 	var combat: Node = env.get("combat")
 	if combat == null:
@@ -79,15 +79,25 @@ func test_formation_win_emits_combat_ended() -> void:
 		Signals.combat_ended.disconnect(_on_combat_ended_flag)
 		_teardown(env)
 		return
-	# 覆寫成單一弱敵以確定性取勝（驗接縫轉接，不依賴事件敵料強弱）
+	# 覆寫成單一弱敵以確定性取勝
 	view.start([], {}, [{"id": "weak", "hp": 16}], 1)
 	var safety: int = 0
 	while view._core.state == FormationCombatCls.STATE_PLAYING and safety < 15:
 		view._on_end_turn()
 		safety += 1
 	assert_eq(view._core.state, FormationCombatCls.STATE_WON, "守住單一弱煞 → 殲敵勝")
-	assert_true(_combat_ended_fired, "五營戰勝 → 發 combat_ended（接通既有獎勵流程）")
 	assert_false(view.visible, "勝後五營畫面收起")
+	# 戰勝（非 run 結束）→ 先跳符令 draft，combat_ended 尚未發
+	if combat._fu_draft_view.visible:
+		assert_false(_combat_ended_fired, "draft 未選前不發 combat_ended")
+		var deck_before: int = Global.run_fu_deck.size()
+		combat._fu_draft_view._on_pick("fu_chi")	# 模擬選一張
+		assert_true(_combat_ended_fired, "選符令後發 combat_ended（接通既有獎勵流程）")
+		assert_eq(Global.run_fu_deck.size(), deck_before + 1, "選的符令加進 run_fu_deck")
+		assert_false(combat._fu_draft_view.visible, "選後 draft 收起")
+	else:
+		# run 終局：不發 draft，直接結算
+		assert_true(_combat_ended_fired, "run 終局戰勝直接發 combat_ended")
 	if Signals.combat_ended.is_connected(_on_combat_ended_flag):
 		Signals.combat_ended.disconnect(_on_combat_ended_flag)
 	_teardown(env)

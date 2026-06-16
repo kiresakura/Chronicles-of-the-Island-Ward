@@ -7,6 +7,8 @@
     "draw_per_turn": 1,
     "plays_per_turn": 1,
     "starter_deck": ["fu_po_sha", "fu_po_sha", "fu_chi", "fu_kao_jun", "fu_zhen"],
+    "draft_pool": ["fu_po_sha", "fu_chi", "fu_kao_jun", "fu_zhen"],
+    "draft_choices": 3,
     "fu": {
       "fu_po_sha":  { "name": "破煞符", "effect": "po_sha",       "magnitude": 6, "needs_target": true,  "desc": "指定方位即時削煞 6" },
       "fu_chi":     { "name": "敕符",   "effect": "action",       "magnitude": 1, "needs_target": false, "desc": "本回合 +1 動作" },
