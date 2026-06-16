@@ -1,0 +1,17 @@
+{
+  "_note": "v0.3 符令（FP-2 精簡手牌；FC-2b.3）。每場戰鬥抽到的一次性敕符，每回合可打有限張，對五營戰局生效。名詞紅線：破煞/敕符/犒軍/降乩/調營。數值資料層、直接讀檔（不經 mod loader）。",
+  "properties": {
+    "object_id": "formation_fu",
+    "hand_max": 5,
+    "initial_hand": 3,
+    "draw_per_turn": 1,
+    "plays_per_turn": 1,
+    "starter_deck": ["fu_po_sha", "fu_po_sha", "fu_chi", "fu_kao_jun", "fu_zhen"],
+    "fu": {
+      "fu_po_sha":  { "name": "破煞符", "effect": "po_sha",       "magnitude": 6, "needs_target": true,  "desc": "指定方位即時削煞 6" },
+      "fu_chi":     { "name": "敕符",   "effect": "action",       "magnitude": 1, "needs_target": false, "desc": "本回合 +1 動作" },
+      "fu_kao_jun": { "name": "犒軍符", "effect": "deity_charge", "magnitude": 1, "needs_target": false, "desc": "降乩槽 +1" },
+      "fu_zhen":    { "name": "鎮符",   "effect": "stall",        "magnitude": 2, "needs_target": true,  "desc": "指定方位煞氣延緩 2 步" }
+    }
+  }
+}

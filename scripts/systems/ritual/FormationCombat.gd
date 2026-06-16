@@ -18,6 +18,7 @@ extends RefCounted
 
 const FiveElementsCls := preload("res://scripts/systems/ritual/FiveElements.gd")
 const CONFIG_PATH := "res://external/data/formation_combat_config.json"
+const FU_CONFIG_PATH := "res://external/data/formation_fu.json"
 
 const JIAO_SHENG := "sheng"	# 聖筊：加速（多一動作）
 const JIAO_XIAO := "xiao"	# 笑筊：卡住（無加成）
@@ -40,6 +41,7 @@ const EV_ALTAR_HIT := "altar_hit"
 const EV_WIN := "win"
 const EV_LOSE := "lose"
 const EV_RESOLVE := "resolve"
+const EV_FU := "fu"
 
 # ---- 由 setup 注入的局面 ----
 var camps: Array = []				# [{id,name,element,lane}]（含中營）
@@ -67,6 +69,16 @@ var deity_charge: int = 0
 var state: String = STATE_PLAYING
 var log_events: Array = []			# [{t:型別, ...數值}]；顯示由 UI 層渲染
 
+# ---- 符令手牌（FP-2 精簡手牌；FC-2b.3）----
+var fu_defs: Dictionary = {}		# fu_id → {name,effect,magnitude,needs_target,desc}
+var fu_deck: Array = []				# 抽牌堆（fu_id）
+var fu_hand: Array = []				# 手牌（fu_id）
+var fu_discard: Array = []			# 棄牌堆
+var fu_hand_max: int = 5
+var fu_draw_per_turn: int = 1
+var fu_plays_per_turn: int = 1
+var fu_plays_left: int = 0			# 本回合可打符令數（_begin_turn 重置）
+
 var _rng: RandomNumberGenerator
 var _waves_total: int = 0			# 翻譯出的總波數（判斷「出齊」用）
 
@@ -75,6 +87,18 @@ static func load_config() -> Dictionary:
 	if not FileAccess.file_exists(CONFIG_PATH):
 		return {}
 	var f := FileAccess.open(CONFIG_PATH, FileAccess.READ)
+	if f == null:
+		return {}
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	return parsed.get("properties", {})
+
+## 讀符令調參（res://；失敗回 {}）。鐵律 1：符令種類/數值/起手牌庫全資料層。
+static func load_fu_config() -> Dictionary:
+	if not FileAccess.file_exists(FU_CONFIG_PATH):
+		return {}
+	var f := FileAccess.open(FU_CONFIG_PATH, FileAccess.READ)
 	if f == null:
 		return {}
 	var parsed: Variant = JSON.parse_string(f.get_as_text())
@@ -115,11 +139,85 @@ func setup(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, config:
 			if units.has(uid) and _camp_exists(str(deploy[uid])):
 				unit_location[uid] = str(deploy[uid])
 
+	# 符令手牌（FP-2）：可由 config 注入 fu_config 覆寫（測試確定性），否則讀 formation_fu.json
+	var fu_cfg: Dictionary = cfg.get("fu_config", {})
+	if fu_cfg.is_empty():
+		fu_cfg = load_fu_config()
+	_init_fu(fu_cfg)
+
 	turn = 1
 	deity_charge = 0
 	state = STATE_PLAYING
 	log_events.clear()
 	_begin_turn()
+
+## 建符令牌庫：洗起手牌庫、抽起手。
+func _init_fu(fu_cfg: Dictionary) -> void:
+	fu_defs = fu_cfg.get("fu", {})
+	fu_hand_max = int(fu_cfg.get("hand_max", 5))
+	fu_draw_per_turn = int(fu_cfg.get("draw_per_turn", 1))
+	fu_plays_per_turn = int(fu_cfg.get("plays_per_turn", 1))
+	fu_deck = (fu_cfg.get("starter_deck", []) as Array).duplicate()
+	_shuffle_fu(fu_deck)
+	fu_hand = []
+	fu_discard = []
+	fu_plays_left = 0
+	_draw_fu(int(fu_cfg.get("initial_hand", 3)))
+
+func _shuffle_fu(arr: Array) -> void:
+	# Fisher–Yates（用注入種子的 _rng，可重現）
+	for i: int in range(arr.size() - 1, 0, -1):
+		var j: int = _rng.randi_range(0, i)
+		var tmp: Variant = arr[i]
+		arr[i] = arr[j]
+		arr[j] = tmp
+
+## 抽符令 n 張（手牌滿則止；抽牌堆空則洗棄牌堆回補）。
+func _draw_fu(n: int) -> void:
+	for _i: int in range(n):
+		if fu_hand.size() >= fu_hand_max:
+			return
+		if fu_deck.is_empty():
+			if fu_discard.is_empty():
+				return
+			fu_deck = fu_discard.duplicate()
+			fu_discard.clear()
+			_shuffle_fu(fu_deck)
+		fu_hand.append(fu_deck.pop_back())
+
+## 打符令：本回合限打 fu_plays_per_turn 張。needs_target 須指定有煞的 lane。回成功與否。
+func play_fu(fu_id: String, target_lane: String = "") -> bool:
+	if state != STATE_PLAYING or fu_plays_left <= 0:
+		return false
+	if not fu_hand.has(fu_id) or not fu_defs.has(fu_id):
+		return false
+	var def: Dictionary = fu_defs[fu_id]
+	var needs_target: bool = bool(def.get("needs_target", false))
+	var mag: int = int(def.get("magnitude", 0))
+	var effect: String = str(def.get("effect", ""))
+	if needs_target:
+		# 須指定「有煞」的 lane（避免空放浪費）
+		if not lanes.has(target_lane) or lanes[target_lane]["sha"] == null:
+			return false
+	match effect:
+		"po_sha":
+			var sha: Variant = lanes[target_lane]["sha"]
+			sha["strength"] -= mag
+			if sha["strength"] <= 0:
+				lanes[target_lane]["sha"] = null
+		"stall":
+			lanes[target_lane]["sha"]["steps"] += mag
+		"action":
+			actions_remaining += mag
+		"deity_charge":
+			deity_charge = mini(deity_charge_max, deity_charge + mag)
+		_:
+			return false
+	fu_hand.erase(fu_id)
+	fu_discard.append(fu_id)
+	fu_plays_left -= 1
+	_emit(EV_FU, {"fu": fu_id, "effect": effect, "lane": target_lane, "magnitude": mag})
+	return true
 
 ## 從 FC-1 lookup 載入營（含中營），可選只開子集。units 載全部可佈陣單位。
 func _load_camps(open_camp_ids: Array) -> void:
@@ -204,6 +302,9 @@ func _begin_turn() -> void:
 	actions_remaining = base_actions
 	jiao_rolled_this_turn = false
 	last_jiao = ""
+	# 符令：回合開始重置可打次數、抽牌
+	fu_plays_left = fu_plays_per_turn
+	_draw_fu(fu_draw_per_turn)
 	if turn > 1:
 		deity_charge = mini(deity_charge_max, deity_charge + 1)
 	# 生煞：本回合排程的波落到其 lane（steps＝lane 全長）
