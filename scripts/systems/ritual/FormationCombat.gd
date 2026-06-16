@@ -106,6 +106,13 @@ static func load_fu_config() -> Dictionary:
 		return {}
 	return parsed.get("properties", {})
 
+## 組符令 config：符令定義/參數讀檔，牌庫用傳入的 deck（持久 run 牌庫）覆寫（空則用檔內預設）。
+static func build_fu_config(deck: Array) -> Dictionary:
+	var fc: Dictionary = load_fu_config()
+	if not deck.is_empty():
+		fc["starter_deck"] = deck.duplicate()
+	return fc
+
 ## 建一場。
 ##  open_camp_ids：本局已揭露的營 id（FC-3 漸進揭露傳子集；空＝全部 FC-1 五營）。
 ##  deploy：unit_id→camp_id 指定佈陣；空＝依五行得位自動佈陣（複用「resolve 初值」概念）。

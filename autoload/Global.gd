@@ -281,6 +281,9 @@ var run_deity_queue: Array[String] = []
 # Q3-F 合符神力消耗實驗開關（合符經濟 — 文件「待經濟定案」）：
 # 預設 0 = 現狀免費；模擬管線以非 0 值跑對比數據，憲龍拍板後改預設。
 var run_merge_energy_cost: int = 0
+# v0.3 符令牌庫（FC-2b.3b）：本局持久符令牌庫（戰勝 1選3 draft 加入；戰鬥從此抽）。
+# start_run 初始化為起始牌庫（角色專屬牌庫＝FC-2b.3-3，目前用 formation_fu.json 預設）。
+var run_fu_deck: Array[String] = []
 
 func get_run_active_deity_id() -> String:
 	return run_active_deity_id if run_active_deity_id != "" else RitualLoadout.DEFAULT_DEITY_ID
@@ -406,6 +409,11 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 	# add starting cards to player
 	for card_object_id in character_data.character_starting_card_object_ids:
 		player_data.player_deck.append(get_card_data_from_prototype(card_object_id))
+
+	# 鎮島錄 v0.3 — 初始化本局符令牌庫（FC-2b.3b；角色專屬牌庫＝後續，先用 formation_fu 預設起始）
+	run_fu_deck.clear()
+	for fu_id: Variant in (preload("res://scripts/systems/ritual/FormationCombat.gd").load_fu_config().get("starter_deck", []) as Array):
+		run_fu_deck.append(str(fu_id))
 
 	# 鎮島錄 — 套用本局班底（護壇支援卡 + 法器規則 + 出戰神明）
 	_apply_run_loadout(character_data, guardian_id, ritual_tool_id)

@@ -15,6 +15,7 @@ const DEITY_CUTIN_FX := preload("res://scripts/ui/fx/DeityCutInFX.gd")
 
 # 鎮島錄 v0.3 換骨：五營戰鬥畫面（取代卡牌戰鬥；執行期 instance，不動巨型 Root.tscn）
 const FORMATION_VIEW_SCENE := preload("res://scenes/ui/FormationCombatView.tscn")
+const FORMATION_COMBAT := preload("res://scripts/systems/ritual/FormationCombat.gd")
 
 @onready var money_label: Label = $%MoneyLabel
 @onready var health_label: Label = $%HealthLabel
@@ -307,11 +308,13 @@ func _on_combat_started(event_id: String):
 	# 收起卡牌戰鬥 HUD（汰換中：卡牌死碼於 FC-2b.2 移除）
 	set_combat_display_visibility(false)
 	_hide_card_combat_nodes()
-	# 開五營戰：敵人事件→煞波（FC-2a 翻譯），全五營、自動佈陣
+	# 開五營戰：敵人事件→煞波（FC-2a 翻譯），全五營、自動佈陣；符令用本局持久牌庫
 	_combat_index += 1
 	if _formation_view != null:
 		_formation_view.visible = true
-		_formation_view.start([], {}, _resolve_enemy_specs(current_event), _combat_index)
+		var cfg: Dictionary = FORMATION_COMBAT.load_config()
+		cfg["fu_config"] = FORMATION_COMBAT.build_fu_config(Global.run_fu_deck)
+		_formation_view.start([], {}, _resolve_enemy_specs(current_event), _combat_index, cfg)
 		_raise_top_controls()	# 保留暫停/回地圖鈕在五營畫面之上
 
 func _on_combat_ended():
