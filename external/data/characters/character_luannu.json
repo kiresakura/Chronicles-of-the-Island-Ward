@@ -1,39 +1,46 @@
 {
-	"patch_data": {},
-	"properties": {
-		"object_id": "character_luannu",
-		"character_name": "鸞女",
-		"character_description": "鸞堂神明的代言人，以靈符與聖火驅邪護民。攻守兼備，擅長治癒與群攻。",
-		"character_color_id": "color_luannu",
-		"character_texture_path": "assets/generated/portraits_v3/luannu.png",
-		"character_icon_texture_path": "assets/generated/characters/luannu_portrait_v1.png",
-		"character_background_texture_path": "assets/generated/scenes_v3/act1_mountain_temple.png",
-		"character_player_id": "player_luannu",
-		"character_starting_artifact_ids": [
-			"artifact_luannu_jiaobei"
-		],
-		"character_starting_artifact_pack_ids": [
-			"artifact_pack_neutral",
-			"artifact_pack_luannu"
-		],
-		"character_starting_card_object_ids": [
-			"card_luannu_spirit_brush",
-			"card_luannu_spirit_brush",
-			"card_luannu_spirit_brush",
-			"card_luannu_spirit_brush",
-			"card_luannu_protection",
-			"card_luannu_protection",
-			"card_luannu_protection",
-			"card_luannu_talisman_strike",
-			"card_luannu_talisman_strike",
-			"card_luannu_prayer"
-		],
-		"character_starting_money": 99,
-		"character_starting_health": 70,
-		"character_starting_card_draft_card_pack_ids": [
-			"card_pack_luannu"
-		],
-		"character_default_guardian_id": "guardian_jiajiang_front",
-		"character_default_ritual_tool_id": "tool_incense_censer"
-	}
+  "patch_data": {},
+  "properties": {
+    "object_id": "character_luannu",
+    "character_name": "鸞女",
+    "character_description": "鸞堂神明的代言人，以靈符與聖火驅邪護民。攻守兼備，擅長治癒與群攻。",
+    "character_color_id": "color_luannu",
+    "character_texture_path": "assets/generated/portraits_v3/luannu.png",
+    "character_icon_texture_path": "assets/generated/characters/luannu_portrait_v1.png",
+    "character_background_texture_path": "assets/generated/scenes_v3/act1_mountain_temple.png",
+    "character_player_id": "player_luannu",
+    "character_starting_artifact_ids": [
+      "artifact_luannu_jiaobei"
+    ],
+    "character_starting_artifact_pack_ids": [
+      "artifact_pack_neutral",
+      "artifact_pack_luannu"
+    ],
+    "character_starting_card_object_ids": [
+      "card_luannu_spirit_brush",
+      "card_luannu_spirit_brush",
+      "card_luannu_spirit_brush",
+      "card_luannu_spirit_brush",
+      "card_luannu_protection",
+      "card_luannu_protection",
+      "card_luannu_protection",
+      "card_luannu_talisman_strike",
+      "card_luannu_talisman_strike",
+      "card_luannu_prayer"
+    ],
+    "character_starting_money": 99,
+    "character_starting_health": 70,
+    "character_starting_card_draft_card_pack_ids": [
+      "card_pack_luannu"
+    ],
+    "character_default_guardian_id": "guardian_jiajiang_front",
+    "character_default_ritual_tool_id": "tool_incense_censer",
+    "character_starting_fu_ids": [
+      "fu_chi",
+      "fu_chi",
+      "fu_po_sha",
+      "fu_kao_jun",
+      "fu_zhen"
+    ]
+  }
 }

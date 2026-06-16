@@ -120,3 +120,19 @@ func test_combat_draws_fu_from_run_deck() -> void:
 	for fid: Variant in view._core.fu_hand:
 		assert_eq(str(fid), "fu_chi", "符令手牌全來自本局 run_fu_deck（接線正確）")
 	_teardown(env)
+
+# 角色專屬起始符令牌庫：start_run 依角色 character_starting_fu_ids 初始化 run_fu_deck（FC-2b.3-3）。
+func test_run_fu_deck_from_character_starter() -> void:
+	var env: Dictionary = _build_env()	# 內含 start_run(SMOKE_CHARACTER_ID)
+	var expected: Array = Global.get_character_data(SMOKE_CHARACTER_ID).character_starting_fu_ids
+	assert_true(expected.size() > 0, "角色應有起始符令牌庫（character_starting_fu_ids）")
+	var got: Array = []
+	for fid: Variant in Global.run_fu_deck:
+		got.append(str(fid))
+	var want: Array = []
+	for fid2: Variant in expected:
+		want.append(str(fid2))
+	got.sort()
+	want.sort()
+	assert_eq(got, want, "run_fu_deck 內容＝角色起始符令牌庫")
+	_teardown(env)
