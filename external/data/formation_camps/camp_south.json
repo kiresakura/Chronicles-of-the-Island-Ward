@@ -1,0 +1,14 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "camp_south",
+    "camp_name": "南營",
+    "camp_direction": "south",
+    "camp_element": "fire",
+    "camp_color": "red",
+    "camp_general": "朱雀",
+    "camp_unlock_feature": "formation_camp_south",
+    "camp_lane": "south",
+    "camp_description": "朱雀鎮南，火氣熾盛，焚南來之煞。"
+  }
+}

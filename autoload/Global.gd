@@ -39,6 +39,9 @@ extends Node
 	["CardData", CardData, "_id_to_card_data", ["cards/"]],
 	["ArtifactData", ArtifactData, "_id_to_artifact_data", ["artifacts/"]],
 	["PlayerData", PlayerData, "_id_to_player_data", ["player/"]],
+	# v0.3 五營換骨（formation_progression_v0.3 §1.1 / FP-5）
+	["FormationCampData", FormationCampData, "_id_to_formation_camp_data", ["formation_camps/"]],
+	["FormationUnitData", FormationUnitData, "_id_to_formation_unit_data", ["formation_units/"]],
 ]
 
 ## These lookup tables allow for automating the process of loading, saving, and mapping data
@@ -78,6 +81,9 @@ var _id_to_enemy_data: Dictionary[String, EnemyData] = {}
 var _id_to_card_data: Dictionary[String, CardData] = {}
 var _id_to_artifact_data: Dictionary[String, ArtifactData] = {}
 var _id_to_player_data: Dictionary[String, PlayerData] = {}
+# v0.3 五營換骨：五營 + 可佈陣單位（SCHEMA 自動載入 external/data/formation_*）
+var _id_to_formation_camp_data: Dictionary[String, FormationCampData] = {}
+var _id_to_formation_unit_data: Dictionary[String, FormationUnitData] = {}
 
 # mutable data; These objects are modifiable
 var player_data: PlayerData = PlayerData.new() # the current run. prototype instance.

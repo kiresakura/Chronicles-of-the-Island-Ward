@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_zhuque",
+    "unit_name": "朱雀",
+    "unit_element": "fire",
+    "unit_kind": "general",
+    "unit_power": 5,
+    "unit_source_id": "",
+    "unit_affinity_ids": [],
+    "unit_description": "南方火德星君，熾烈之將。"
+  }
+}

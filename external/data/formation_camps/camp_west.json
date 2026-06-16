@@ -1,0 +1,14 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "camp_west",
+    "camp_name": "西營",
+    "camp_direction": "west",
+    "camp_element": "metal",
+    "camp_color": "white",
+    "camp_general": "白虎",
+    "camp_unlock_feature": "formation_camp_west",
+    "camp_lane": "west",
+    "camp_description": "白虎鎮西，金氣肅殺，斷西來之煞。"
+  }
+}

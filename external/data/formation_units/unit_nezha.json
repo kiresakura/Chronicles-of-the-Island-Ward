@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_nezha",
+    "unit_name": "哪吒",
+    "unit_element": "earth",
+    "unit_kind": "general",
+    "unit_power": 4,
+    "unit_source_id": "",
+    "unit_affinity_ids": [],
+    "unit_description": "中壇元帥，三太子，調度中樞。"
+  }
+}

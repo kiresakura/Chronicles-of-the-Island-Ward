@@ -1,0 +1,14 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "camp_east",
+    "camp_name": "東營",
+    "camp_direction": "east",
+    "camp_element": "wood",
+    "camp_color": "green",
+    "camp_general": "青龍",
+    "camp_unlock_feature": "formation_camp_east",
+    "camp_lane": "east",
+    "camp_description": "青龍鎮東，木氣生發，攔東來之煞。"
+  }
+}

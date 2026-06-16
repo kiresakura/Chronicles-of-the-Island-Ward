@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_tudigong",
+    "unit_name": "土地公",
+    "unit_element": "earth",
+    "unit_kind": "deity",
+    "unit_power": 3,
+    "unit_source_id": "deity_tudigong",
+    "unit_affinity_ids": [],
+    "unit_description": "福德正神，守境安土，綿長之佑。"
+  }
+}

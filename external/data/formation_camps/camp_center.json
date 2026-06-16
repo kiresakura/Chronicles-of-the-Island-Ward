@@ -1,0 +1,14 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "camp_center",
+    "camp_name": "中營",
+    "camp_direction": "center",
+    "camp_element": "earth",
+    "camp_color": "yellow",
+    "camp_general": "哪吒",
+    "camp_unlock_feature": "formation_camp_center",
+    "camp_lane": "",
+    "camp_description": "中壇元帥坐鎮，調度五營，犒軍救火。"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_xuanwu",
+    "unit_name": "玄武",
+    "unit_element": "water",
+    "unit_kind": "general",
+    "unit_power": 5,
+    "unit_source_id": "",
+    "unit_affinity_ids": [],
+    "unit_description": "北方水德星君，綿密之將。"
+  }
+}

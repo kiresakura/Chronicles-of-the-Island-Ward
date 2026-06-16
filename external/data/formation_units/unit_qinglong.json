@@ -1,0 +1,13 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "unit_qinglong",
+    "unit_name": "青龍",
+    "unit_element": "wood",
+    "unit_kind": "general",
+    "unit_power": 5,
+    "unit_source_id": "",
+    "unit_affinity_ids": [],
+    "unit_description": "東方木德星君，生發之將。"
+  }
+}
