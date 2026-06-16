@@ -91,3 +91,22 @@ func test_formation_win_emits_combat_ended() -> void:
 	if Signals.combat_ended.is_connected(_on_combat_ended_flag):
 		Signals.combat_ended.disconnect(_on_combat_ended_flag)
 	_teardown(env)
+
+# 持久符令牌庫：戰鬥從本局 run_fu_deck 抽符令（FC-2b.3b-1）。
+func test_combat_draws_fu_from_run_deck() -> void:
+	var env: Dictionary = _build_env()
+	var combat: Node = env.get("combat")
+	if combat == null:
+		_teardown(env)
+		return
+	# start_run 已初始化 run_fu_deck；覆寫為已知內容驗接線
+	Global.run_fu_deck = ["fu_chi", "fu_chi", "fu_chi", "fu_chi", "fu_chi"]
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var view: Control = combat._formation_view
+	if view == null or view._core == null:
+		_teardown(env)
+		return
+	assert_true(view._core.fu_hand.size() > 0, "戰鬥有抽到符令")
+	for fid: Variant in view._core.fu_hand:
+		assert_eq(str(fid), "fu_chi", "符令手牌全來自本局 run_fu_deck（接線正確）")
+	_teardown(env)
