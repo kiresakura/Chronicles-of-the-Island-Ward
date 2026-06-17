@@ -1,7 +1,9 @@
 ## Provides interceptable generation for rewards in a chest
 extends BaseAction
 
-func perform_action() -> void:	
+const FORMATION_COMBAT := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 寶箱符令
+
+func perform_action() -> void:
 	# generates all world locations from a seed and stores them in PlayerData
 	var action_interceptor_processors: Array[ActionInterceptorProcessor] = _intercept_action([])
 	for action_interceptor_processor in action_interceptor_processors:
@@ -78,12 +80,21 @@ func perform_action() -> void:
 				#var chest_consumable_ids: Array[String] = action_interceptor_processor.get_shadowed_action_values("consumable_ids", [])
 				#consumable_ids = chest_consumable_ids
 		
+		# FP-3 寶箱改發符令：卡牌已退戰，寶箱發 1 道符進持久 run 牌庫；不再發卡牌 draft。
+		card_drafts.clear()
+		var fu_rng: RandomNumberGenerator = Global.player_data.get_player_rng("rng_chest")
+		var chest_fu_ids: Array[String] = []
+		for fid_v: Variant in FORMATION_COMBAT.draft_fu_choices(1, fu_rng):
+			chest_fu_ids.append(str(fid_v))
+			Global.run_fu_deck.append(str(fid_v))
+
 		var chest_contents: Dictionary[String, Variant] = {
 			"reward_group": reward_group,
 			"money_amount": money_amount,
 			"card_drafts": card_drafts,
 			"artifact_ids": artifact_ids,
 			"consumable_ids": consumable_ids,
+			"fu_ids": chest_fu_ids,
 			"custom_action_data": custom_action_data
 		}
 		
