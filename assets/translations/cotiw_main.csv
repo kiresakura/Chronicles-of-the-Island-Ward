@@ -57,6 +57,7 @@ battle.victory,鎮煞成功,镇煞成功,Victory,勝利
 battle.defeat,鎮煞失敗,镇煞失败,Defeat,敗北
 reward.card,符令獎勵,符令奖励,Card Reward,カード報酬
 reward.money,銀兩 %s,银两 %s,Money %s,銀 %s
+reward.fu_gained,獲得符令 %s,获得符令 %s,Talisman gained: %s,符令を獲得 %s
 shop.artifact_placeholder,法器名稱,法器名称,Artifact Name,法器名
 shop.consumable_placeholder,消耗品名稱,消耗品名称,Consumable Name,消耗品名
 run.rest_action,入廟安神,入庙安神,Rest Action,休息

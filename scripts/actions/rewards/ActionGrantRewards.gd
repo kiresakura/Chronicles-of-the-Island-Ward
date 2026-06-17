@@ -30,8 +30,11 @@ func perform_action():
 		# Each element in first array layer is a unique 
 		var custom_action_data: Array[Array] = []
 		custom_action_data.assign(action_interceptor_processor.get_shadowed_action_values("custom_action_data", []))
-		
-		Signals.reward_grant_requested.emit(reward_group, money_amount, card_drafts, artifact_ids, custom_action_data)
+		# FP-3 寶箱符令：透傳 fu_ids（已於 ActionOpenChest 進牌庫，此處供 RewardOverlay 顯示「獲得符令」）
+		var fu_ids: Array[String] = []
+		fu_ids.assign(action_interceptor_processor.get_shadowed_action_values("fu_ids", []))
+
+		Signals.reward_grant_requested.emit(reward_group, money_amount, card_drafts, artifact_ids, custom_action_data, fu_ids)
 
 func _to_string():
 	return "Grant Reward Action"

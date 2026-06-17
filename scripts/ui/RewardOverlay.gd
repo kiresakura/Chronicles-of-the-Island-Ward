@@ -2,6 +2,7 @@
 extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 寶箱符令顯示
 
 @onready var reward_container: VBoxContainer = $RewardContainer
 @onready var continue_button: Button = $ContinueButton
@@ -188,10 +189,39 @@ func populate_reward_display() -> void:
 			reward_container.add_child(artifact_reward_button)
 			# make reward group mutually exclusive
 			artifact_reward_button.button_up.connect(_on_reward_group_selected.bind(reward_group))
-	
+
+		# fu rewards（FP-3 寶箱符令；已進牌庫，資訊磚顯示「獲得符令」，非互斥）
+		var reward_fu_ids: Array = []
+		reward_fu_ids.assign(reward_group_data.get("reward_fu_ids", []))
+		for fu_id_v in reward_fu_ids:
+			reward_container.add_child(_make_fu_reward_chip(str(fu_id_v)))
+
 	# clear reward data
 	clear_rewards()
 	
+## FP-3 寶箱符令資訊磚（已進牌庫，純顯示「獲得符令 X」+ 效果；不互斥、無領取動作）。
+func _make_fu_reward_chip(fu_id: String) -> Control:
+	var d: Dictionary = FC.fu_def(fu_id)
+	var root := PanelContainer.new()
+	root.custom_minimum_size = Vector2(300, 92)
+	root.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
+		Color(0.14, 0.09, 0.06, 0.96), COTIW_UI_THEME.get_color("incense_gold", Color(0.90, 0.74, 0.40)), 0, 3, 0.0))
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 4)
+	root.add_child(vbox)
+	var t := Label.new()
+	t.text = tr("reward.fu_gained") % str(d.get("name", fu_id))
+	t.add_theme_font_size_override("font_size", 20)
+	t.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.42)))
+	vbox.add_child(t)
+	var ds := Label.new()
+	ds.text = str(d.get("desc", ""))
+	ds.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	ds.add_theme_font_size_override("font_size", 14)
+	ds.add_theme_color_override("font_color", Color(0.90, 0.85, 0.74))
+	vbox.add_child(ds)
+	return root
+
 func clear_reward_display() -> void:
 	for child in reward_container.get_children():
 		child.queue_free()
@@ -223,9 +253,9 @@ func add_location_rewards() -> void:
 	var grant_reward_action: BaseAction = ActionGenerator.create_actions(player, null, [player], action_data, null)[0]
 	grant_reward_action.perform_action()
 
-func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array]):
+func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array], fu_ids: Array[String] = []):
 	# adds rewards which can be populated into the display
-	
+
 	# get existing reward data generate new reward data
 	var reward_group_data: Dictionary = {}
 	if reward_data.has(reward_group):
@@ -235,6 +265,7 @@ func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array]
 			"reward_money": 0,
 			"reward_card_drafts": [],
 			"reward_artifact_ids": [],
+			"reward_fu_ids": [],
 			"reward_custom_action_data": [],
 			}
 	
@@ -250,6 +281,11 @@ func add_rewards(reward_group: int, money_amount: int, card_drafts: Array[Array]
 	var reward_artifact_ids: Array = reward_group_data["reward_artifact_ids"]
 	reward_artifact_ids.assign(artifact_ids)
 	reward_group_data["reward_artifact_ids"] = reward_artifact_ids
+
+	# fu（FP-3 寶箱符令；已進牌庫，此處顯示「獲得符令」資訊磚）
+	var reward_fu_ids: Array = reward_group_data.get("reward_fu_ids", [])
+	reward_fu_ids.assign(fu_ids)
+	reward_group_data["reward_fu_ids"] = reward_fu_ids
 
 	# custom actions
 	var reward_custom_action_data: Array = reward_group_data["reward_custom_action_data"]
@@ -272,8 +308,8 @@ func clear_rewards(reward_group: int = -1) -> void:
 	else:
 		reward_data.erase(reward_group)	# clear a specific reward group
 
-func _on_reward_grant_requested(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array]):
-	add_rewards(reward_group, money_amount, card_drafts, artifact_ids, custom_action_data)
+func _on_reward_grant_requested(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array], fu_ids: Array[String] = []):
+	add_rewards(reward_group, money_amount, card_drafts, artifact_ids, custom_action_data, fu_ids)
 
 func _on_reward_clear_requested(reward_group: int):
 	clear_rewards(reward_group)

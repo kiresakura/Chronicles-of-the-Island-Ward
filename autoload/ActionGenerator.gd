@@ -96,12 +96,12 @@ func generate_chest_open() -> void:
 			"chest_has_money": true,
 			"chest_has_artifacts": true,
 			"chest_has_consumables": true,
-			"chest_has_cards": true,
-			
+			"chest_has_cards": false,	# FP-3：寶箱改發符令（卡牌已退戰），不再給卡牌 draft
+
 			"chest_generates_money": true,
 			"chest_generates_artifacts": true,
 			"chest_generates_consumables": true,
-			"chest_generates_cards": true,
+			"chest_generates_cards": false,
 
 			"chest_money_amount": 25,
 			"chest_artifact_count": 1,
