@@ -15,12 +15,19 @@ signal formation_lost
 const FormationCombatCls := preload("res://scripts/systems/ritual/FormationCombat.gd")
 const AffinityCls := preload("res://scripts/systems/ritual/AffinitySystem.gd")
 const THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const BackdropCls := preload("res://scripts/ui/FiveCampBackdrop.gd")
 
-# 五行色（UI 呈現層；與得位星標一起讓玩家秒讀營位屬性）
+# 五行色（UI 呈現層；只當「元素小章」一抹色，不再染整框 → 避免火營紅框被誤讀成敵方）
 const ELEMENT_COLOR := {
 	"wood": Color(0.35, 0.66, 0.40), "fire": Color(0.86, 0.30, 0.20),
 	"earth": Color(0.80, 0.64, 0.28), "metal": Color(0.82, 0.80, 0.62), "water": Color(0.30, 0.55, 0.82),
 }
+# 敵我語言（UIUX §C：一眼分敵我）。我營一律燙金/玉青，來煞一律硃砂。
+const FRIEND_GOLD := Color(0.93, 0.78, 0.42)		# 我營常態框（燙金）
+const FRIEND_JADE := Color(0.42, 0.80, 0.60)		# 得位加持（玉青）
+const FOE_RED := Color(0.90, 0.32, 0.24)			# 來煞/告急（硃砂）
+const CAMP_BG := Color(0.10, 0.06, 0.05, 0.96)		# 我營暗漆底（高對比墊燙金框）
+const ALTAR_BG := Color(0.17, 0.09, 0.05, 0.97)		# 母壇暖漆底（聖域）
 # 營位/煞道座標（1200×700 基準，緊湊十字佈局；底部留符令手牌列）
 const CAMP_SIZE := Vector2(150, 96)
 const LANE_SIZE := Vector2(120, 50)
@@ -51,6 +58,7 @@ var _camp_tiles: Dictionary = {}	# camp_id → {btn,name,occ,mark}
 var _lane_markers: Dictionary = {}	# lane → Panel(含 Txt 子)
 var _altar_bar: ProgressBar
 var _altar_label: Label
+var _altar_panel: Panel
 var _turn_label: Label
 var _action_label: Label
 var _jiao_button: Button
@@ -131,10 +139,18 @@ func _build_name_caches() -> void:
 # ---- 版面 ----
 func _build_ui() -> void:
 	var bg := ColorRect.new()
-	bg.color = THEME.get_color("combat_bg", Color(0.07, 0.04, 0.04))
+	bg.color = THEME.get_color("combat_bg", Color(0.06, 0.035, 0.035))
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)	# 背景填滿整個 viewport（letterbox 區也暗）
+
+	# 暗角 vignette（全視窗徑向漸層；把焦點壓回盤面中央，零素材）
+	var vig := TextureRect.new()
+	vig.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vig.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vig.texture = _make_vignette_texture()
+	vig.stretch_mode = TextureRect.STRETCH_SCALE
+	add_child(vig)
 
 	# 設計畫布：所有內容掛此，依安全區置中+fit縮放
 	_stage = Control.new()
@@ -142,20 +158,36 @@ func _build_ui() -> void:
 	_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_stage)
 
+	# 五營羅盤（程序化，墊 _stage 最底；母壇為心）
+	var backdrop: Control = BackdropCls.new()
+	backdrop.size = DESIGN_SIZE
+	backdrop.altar_center = ALTAR_POS + ALTAR_SIZE * 0.5
+	_stage.add_child(backdrop)
+
+	# 硃砂帶標題（廟會 chrome：硃砂底 + 燙金字 + 硬邊）
+	var title_band := Panel.new()
+	title_band.position = Vector2(28, 12)
+	title_band.size = Vector2(188, 44)
+	title_band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_band.add_theme_stylebox_override("panel", THEME.make_stylebox(
+		THEME.get_color("festival_red", Color(0.56, 0.16, 0.11)), FRIEND_GOLD, 0, 3, 0.0))
+	_stage.add_child(title_band)
 	var title := Label.new()
 	title.text = tr("combat.formation.title")
-	title.position = Vector2(40, 18)
+	title.position = Vector2(44, 16)
 	title.add_theme_font_size_override("font_size", THEME.get_typography_size("title", 30))
-	title.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
+	title.add_theme_color_override("font_color", FRIEND_GOLD)
 	_stage.add_child(title)
 
 	var hint := Label.new()
 	hint.text = tr("combat.formation.hint")
-	hint.position = Vector2(40, 56)
+	hint.position = Vector2(40, 60)
 	hint.size = Vector2(820, 24)
 	hint.add_theme_font_size_override("font_size", 15)
 	hint.add_theme_color_override("font_color", Color(0.90, 0.82, 0.70))
 	_stage.add_child(hint)
+
+	_build_legend()
 
 	# 緣分合祀提示帶（FC-6c）：頂部、標題與控制面板之間；啟用合祀時亮金
 	_affinity_strip = Label.new()
@@ -204,6 +236,52 @@ func _build_ui() -> void:
 	_banner.visible = false
 	_stage.add_child(_banner)
 
+## 常駐圖例（RichTextLabel，色塊配字；新手秒讀盤面語言）。文案全走 tr（i18n 清零）。
+func _build_legend() -> void:
+	var legend := RichTextLabel.new()
+	legend.name = "Legend"
+	legend.bbcode_enabled = true
+	legend.fit_content = true
+	legend.scroll_active = false
+	legend.position = Vector2(916, 16)
+	legend.size = Vector2(266, 56)
+	legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	legend.add_theme_font_size_override("normal_font_size", 14)
+	legend.text = "[color=#eec86a]◆[/color] %s   [color=#6ad29a]★[/color] %s\n[color=#e65240]▲[/color] %s   [color=#eec86a]▣[/color] %s" % [
+		tr("combat.legend.ours"), tr("combat.formation.wei"),
+		tr("combat.legend.sha"), tr("combat.legend.altar")]
+	_stage.add_child(legend)
+
+## 徑向漸層 vignette 紋理（中心透明 → 四角壓暗）。
+func _make_vignette_texture() -> Texture2D:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.6, 1.0])
+	g.colors = PackedColorArray([Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.10), Color(0, 0, 0, 0.62)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.5)
+	t.fill_to = Vector2(1.0, 0.5)
+	t.width = 256
+	t.height = 256
+	return t
+
+## 母壇聖光暈紋理（金光中心 → 透明邊；低 alpha）。
+func _make_altar_glow_texture() -> Texture2D:
+	var gold: Color = THEME.get_color("incense_gold", FRIEND_GOLD)
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	g.colors = PackedColorArray([
+		Color(gold.r, gold.g, gold.b, 0.22), Color(gold.r, gold.g, gold.b, 0.08), Color(gold.r, gold.g, gold.b, 0.0)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.5)
+	t.fill_to = Vector2(1.0, 0.5)
+	t.width = 128
+	t.height = 128
+	return t
+
 func _make_camp_tile(camp_id: String, pos: Vector2, is_reserve: bool) -> void:
 	var btn := Button.new()
 	btn.name = "Camp_" + camp_id
@@ -219,20 +297,27 @@ func _make_camp_tile(camp_id: String, pos: Vector2, is_reserve: bool) -> void:
 	name_label.add_theme_font_size_override("font_size", 16)
 	btn.add_child(name_label)
 	var occ_label := Label.new()
-	occ_label.position = Vector2(0, 40)
-	occ_label.size = Vector2(CAMP_SIZE.x, 40)
+	occ_label.position = Vector2(0, 38)
+	occ_label.size = Vector2(CAMP_SIZE.x, 32)
 	occ_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	occ_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	occ_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	occ_label.add_theme_font_size_override("font_size", 15)
 	btn.add_child(occ_label)
 	var mark_label := Label.new()
-	mark_label.position = Vector2(0, 82)
-	mark_label.size = Vector2(CAMP_SIZE.x, 20)
+	mark_label.position = Vector2(0, 73)
+	mark_label.size = Vector2(CAMP_SIZE.x, 21)
 	mark_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mark_label.add_theme_font_size_override("font_size", 13)
 	btn.add_child(mark_label)
-	_camp_tiles[camp_id] = {"btn": btn, "name": name_label, "occ": occ_label, "mark": mark_label, "reserve": is_reserve}
+	# 元素小章（左上一抹色；元素資訊不再染整框 → 敵我語言不被五行色干擾）
+	var chip := ColorRect.new()
+	chip.name = "ElemChip"
+	chip.position = Vector2(8, 8)
+	chip.size = Vector2(13, 13)
+	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(chip)
+	_camp_tiles[camp_id] = {"btn": btn, "name": name_label, "occ": occ_label, "mark": mark_label, "chip": chip, "reserve": is_reserve}
 
 func _make_lane_marker(pos: Vector2) -> Panel:
 	var p := Panel.new()
@@ -250,30 +335,47 @@ func _make_lane_marker(pos: Vector2) -> Panel:
 	return p
 
 func _make_altar(pos: Vector2) -> void:
-	var panel := Panel.new()
-	panel.name = "Altar"
-	panel.position = pos
-	panel.size = ALTAR_SIZE
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.16, 0.08, 0.05, 0.95)
-	sb.border_color = THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45))
-	sb.set_border_width_all(3)
-	sb.set_corner_radius_all(6)
-	panel.add_theme_stylebox_override("panel", sb)
-	_stage.add_child(panel)
+	# 母壇＝盤面焦點：放大（182×122 vs 營 150×96）、雙金框聖域、置中於原設計座標。
+	var center: Vector2 = pos + ALTAR_SIZE * 0.5
+	var asize := Vector2(182, 122)
+	# 母壇聖光暈（靜態一拍：母壇「在發光」的神聖能量；低 alpha 不洗白，墊於壇框之後）
+	var glow := TextureRect.new()
+	glow.texture = _make_altar_glow_texture()
+	glow.stretch_mode = TextureRect.STRETCH_SCALE
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var gsize := Vector2(304, 244)
+	glow.position = center - gsize * 0.5
+	glow.size = gsize
+	_stage.add_child(glow)
+	_altar_panel = Panel.new()
+	_altar_panel.name = "Altar"
+	_altar_panel.position = center - asize * 0.5
+	_altar_panel.size = asize
+	_altar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_altar_panel.add_theme_stylebox_override("panel", THEME.make_stylebox(ALTAR_BG, FRIEND_GOLD, 0, 4, 0.0))
+	_stage.add_child(_altar_panel)
+	# 內金線（雙框聖域感）
+	var inner := Panel.new()
+	inner.position = Vector2(6, 6)
+	inner.size = asize - Vector2(12, 12)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_theme_stylebox_override("panel", THEME.make_stylebox(
+		Color(0, 0, 0, 0), Color(FRIEND_GOLD.r, FRIEND_GOLD.g, FRIEND_GOLD.b, 0.5), 0, 1, 0.0))
+	_altar_panel.add_child(inner)
 	_altar_label = Label.new()
-	_altar_label.position = Vector2(0, 10)
-	_altar_label.size = Vector2(ALTAR_SIZE.x, 24)
+	_altar_label.position = Vector2(0, 16)
+	_altar_label.size = Vector2(asize.x, 28)
 	_altar_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_altar_label.add_theme_font_size_override("font_size", 16)
-	_altar_label.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
-	panel.add_child(_altar_label)
+	_altar_label.add_theme_font_size_override("font_size", 18)
+	_altar_label.add_theme_color_override("font_color", FRIEND_GOLD)
+	_altar_panel.add_child(_altar_label)
 	_altar_bar = ProgressBar.new()
-	_altar_bar.position = Vector2(12, 48)
-	_altar_bar.size = Vector2(ALTAR_SIZE.x - 24, 30)
+	_altar_bar.position = Vector2(16, 66)
+	_altar_bar.size = Vector2(asize.x - 32, 34)
 	_altar_bar.show_percentage = false
-	panel.add_child(_altar_bar)
+	_altar_bar.add_theme_stylebox_override("background", THEME.make_stylebox(Color(0.08, 0.05, 0.04, 1.0), Color(0.40, 0.30, 0.18), 0, 1, 0.0))
+	_altar_bar.add_theme_stylebox_override("fill", THEME.make_stylebox(THEME.get_color("incense_gold", FRIEND_GOLD), FRIEND_GOLD, 0, 0, 0.0))
+	_altar_panel.add_child(_altar_bar)
 
 func _info_label(pos: Vector2, fsize: int, col: Color) -> Label:
 	var l := Label.new()
@@ -290,14 +392,15 @@ func _make_action_button(pos: Vector2, col: Color) -> Button:
 	b.size = Vector2(270, 88)	# ≥88 觸控
 	b.focus_mode = Control.FOCUS_NONE
 	b.add_theme_font_size_override("font_size", 22)
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = col
-	sb.border_color = THEME.get_color("incense_gold", Color(0.95, 0.84, 0.50))
-	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(6)
-	b.add_theme_stylebox_override("normal", sb)
-	b.add_theme_stylebox_override("hover", sb)
-	b.add_theme_stylebox_override("pressed", sb)
+	b.add_theme_color_override("font_color", Color(0.98, 0.94, 0.84))
+	b.add_theme_color_override("font_hover_color", Color(1.0, 0.97, 0.88))
+	b.add_theme_color_override("font_pressed_color", Color(0.96, 0.90, 0.80))
+	b.add_theme_color_override("font_disabled_color", Color(0.58, 0.54, 0.48))
+	var gold: Color = THEME.get_color("incense_gold", FRIEND_GOLD)
+	b.add_theme_stylebox_override("normal", THEME.make_stylebox(col, gold, 0, 2, 0.0))
+	b.add_theme_stylebox_override("hover", THEME.make_stylebox(col.lightened(0.08), gold, 0, 2, 0.0))
+	b.add_theme_stylebox_override("pressed", THEME.make_stylebox(col.darkened(0.10), gold, 0, 2, 0.0))
+	b.add_theme_stylebox_override("disabled", THEME.make_stylebox(Color(0.16, 0.12, 0.10, 0.9), Color(0.40, 0.36, 0.30), 0, 2, 0.0))
 	_stage.add_child(b)
 	return b
 
@@ -397,6 +500,7 @@ func _refresh() -> void:
 	_altar_bar.max_value = _core.altar_max
 	_altar_bar.value = _core.altar_integrity
 	_altar_label.text = tr("combat.formation.altar_hp") % [_core.altar_integrity, _core.altar_max]
+	_update_altar_danger()
 	# 控制面板
 	_turn_label.text = tr("combat.formation.turn") % _core.turn
 	var jiao_state: String = tr("combat.formation.jiao_done") if _core.jiao_rolled_this_turn else tr("combat.formation.jiao_ready")
@@ -416,6 +520,18 @@ func _refresh() -> void:
 	_log_label.text = _build_log_text()
 	# 勝負
 	_update_banner()
+
+## 母壇告急：整備度 ≤34% → 框與血條轉硃砂、壇名轉紅（一眼看出快被破）。
+func _update_altar_danger() -> void:
+	if _altar_panel == null:
+		return
+	var ratio: float = float(_core.altar_integrity) / maxf(1.0, float(_core.altar_max))
+	var low: bool = ratio <= 0.34
+	var rim: Color = FOE_RED if low else FRIEND_GOLD
+	_altar_panel.add_theme_stylebox_override("panel", THEME.make_stylebox(ALTAR_BG, rim, 0, 4, 0.0))
+	var fill_col: Color = FOE_RED if low else THEME.get_color("incense_gold", FRIEND_GOLD)
+	_altar_bar.add_theme_stylebox_override("fill", THEME.make_stylebox(fill_col, fill_col, 0, 0, 0.0))
+	_altar_label.add_theme_color_override("font_color", rim)
 
 ## 緣分合祀提示帶：顯示目前佈陣啟用的合祀（名稱；效果在戰況+數值生效）。
 func _refresh_affinity_strip() -> void:
@@ -441,11 +557,13 @@ func _refresh_fu_hand() -> void:
 		b.text = str(def.get("name", "")) + "\n" + str(def.get("desc", ""))
 		b.disabled = not playable
 		var sel: bool = fu_id == _pending_fu
-		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.18, 0.13, 0.10, 0.95)
-		sb.set_corner_radius_all(6)
-		sb.border_color = THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)) if sel else Color(0.5, 0.42, 0.3)
-		sb.set_border_width_all(4 if sel else 2)
+		# 符令＝符紙暖底 + 燙金框（硬邊）；選取中加粗金框
+		var sb := THEME.make_stylebox(
+			Color(0.20, 0.14, 0.10, 0.96),
+			THEME.get_color("incense_gold", FRIEND_GOLD) if sel else Color(0.56, 0.46, 0.32),
+			0, 4 if sel else 2, 0.0)
+		b.add_theme_color_override("font_color", Color(0.97, 0.92, 0.80))
+		b.add_theme_color_override("font_disabled_color", Color(0.70, 0.64, 0.54))
 		b.add_theme_stylebox_override("normal", sb)
 		b.add_theme_stylebox_override("hover", sb)
 		b.add_theme_stylebox_override("pressed", sb)
@@ -462,32 +580,45 @@ func _refresh_camp_tile(c: Dictionary) -> void:
 	var t: Dictionary = _camp_tiles[cid]
 	var element: String = str(c.get("element"))
 	var el_col: Color = ELEMENT_COLOR.get(element, Color(0.6, 0.6, 0.6))
-	(t["name"] as Label).text = str(c.get("name"))
-	(t["name"] as Label).add_theme_color_override("font_color", el_col)
+	(t["chip"] as ColorRect).color = el_col		# 元素僅一抹小章，不染整框
+	var name_lbl := t["name"] as Label
+	name_lbl.text = str(c.get("name"))
+	name_lbl.add_theme_color_override("font_color", Color(0.96, 0.90, 0.78))
 	var occ_uid: String = _core._unit_in_camp(cid)
 	var occ_label := t["occ"] as Label
 	var mark_label := t["mark"] as Label
+	var wei: bool = false
 	if occ_uid != "":
 		var uname: String = str(_core.units[occ_uid].get("name"))
 		occ_label.text = uname
-		occ_label.add_theme_color_override("font_color", Color(0.96, 0.92, 0.82))
-		if _core.is_wei_position(occ_uid, cid):
+		occ_label.add_theme_color_override("font_color", Color(0.98, 0.94, 0.84))
+		wei = _core.is_wei_position(occ_uid, cid)
+		if wei:
 			mark_label.text = "★ " + tr("combat.formation.wei")
-			mark_label.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
+			mark_label.add_theme_color_override("font_color", FRIEND_JADE)
 		else:
 			mark_label.text = ""
 	else:
 		occ_label.text = tr("combat.formation.reserve") if bool(t.get("reserve")) else ""
 		occ_label.add_theme_color_override("font_color", Color(0.6, 0.56, 0.5))
 		mark_label.text = ""
-	# 邊框：選起該營占用者時高亮
+	# 統一敵我語言：我營一律暗漆底 + 燙金框；得位→玉青；選中→粗金；
+	# 空營且該方位來煞→硃砂告急框（新手一眼看出破口）。硬邊（像素鐵則）。
 	var btn := t["btn"] as Button
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.13, 0.10, 0.09, 0.92)
-	sb.set_corner_radius_all(8)
 	var selected: bool = occ_uid != "" and occ_uid == _selected_unit
-	sb.border_color = THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)) if selected else el_col
-	sb.set_border_width_all(4 if selected else 2)
+	var lane: String = str(_camp_to_lane.get(cid, ""))
+	var threatened: bool = occ_uid == "" and lane != "" and _core.lanes.has(lane) and _core.lanes[lane].get("sha") != null
+	var border: Color = FRIEND_GOLD
+	var width: int = 2
+	if selected:
+		width = 5
+	elif threatened:
+		border = FOE_RED
+		width = 4
+	elif wei:
+		border = FRIEND_JADE
+		width = 3
+	var sb := THEME.make_stylebox(CAMP_BG, border, 0, width, 0.0)
 	btn.add_theme_stylebox_override("normal", sb)
 	btn.add_theme_stylebox_override("hover", sb)
 	btn.add_theme_stylebox_override("pressed", sb)
@@ -496,20 +627,18 @@ func _refresh_lane_marker(lane: String) -> void:
 	var p: Panel = _lane_markers[lane]
 	var txt := p.get_node("Txt") as Label
 	var sha: Variant = _core.lanes[lane]["sha"] if _core.lanes.has(lane) else null
-	var sb := StyleBoxFlat.new()
-	sb.set_corner_radius_all(6)
 	if sha == null:
+		# 清：壓暗收斂，不搶焦點（取代裸「—」）
 		txt.text = tr("combat.formation.lane_clear")
-		txt.add_theme_color_override("font_color", Color(0.5, 0.48, 0.44))
-		sb.bg_color = Color(0.12, 0.12, 0.10, 0.6)
-		sb.border_color = Color(0.3, 0.3, 0.28)
+		txt.add_theme_color_override("font_color", Color(0.46, 0.50, 0.46))
+		p.add_theme_stylebox_override("panel", THEME.make_stylebox(
+			Color(0.10, 0.11, 0.10, 0.5), Color(0.26, 0.30, 0.26, 0.7), 0, 1, 0.0))
 	else:
-		txt.text = tr("combat.formation.sha_marker") % [int(sha["strength"]), int(sha["steps"])]
-		txt.add_theme_color_override("font_color", Color(0.98, 0.86, 0.7))
-		sb.bg_color = Color(0.42, 0.10, 0.10, 0.85)
-		sb.border_color = Color(0.9, 0.4, 0.3)
-	sb.set_border_width_all(2)
-	p.add_theme_stylebox_override("panel", sb)
+		# 來煞：硃砂 + ▲ 警示符（敵我語言一致）
+		txt.text = "▲ " + (tr("combat.formation.sha_marker") % [int(sha["strength"]), int(sha["steps"])])
+		txt.add_theme_color_override("font_color", Color(1.0, 0.90, 0.78))
+		p.add_theme_stylebox_override("panel", THEME.make_stylebox(
+			Color(0.50, 0.10, 0.08, 0.92), FOE_RED, 0, 3, 0.0))
 
 func _build_log_text() -> String:
 	var lines: Array[String] = []

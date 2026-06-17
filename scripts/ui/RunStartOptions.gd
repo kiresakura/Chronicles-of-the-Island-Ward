@@ -286,6 +286,10 @@ func _apply_offering_chrome() -> void:
 		var bg := TextureRect.new()
 		bg.name = "RSOOfferingBg"
 		bg.texture = load(bg_path)
+		# 換掉洗白底圖（§B）：v2 供桌偏亮、洗白。沒有 v3 時直接壓暗成夜廟（modulate 乘法），
+		# 與新一局/五營同一深底語言，金籤卡才跳得出來。有 v3（已是夜廟）就不壓。
+		if bg_path == OFFERING_BG_PATH:
+			bg.modulate = Color(0.42, 0.36, 0.36)
 		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		# UIQA P1-1：供桌圖兼任 modal 視覺+輸入遮罩 — 全出血（COVERED 自行裁切）+ STOP
@@ -308,10 +312,13 @@ func _apply_offering_chrome() -> void:
 				add_child(lyr)
 				move_child(lyr, layer_z)
 				layer_z += 1
-	# 暗角加深一點，確保金字在亮供桌上仍可讀
+	# 換掉洗白底圖（§B）：把淺色供桌底壓成夜廟深舞台，與新一局/五營同一深底語言，
+	# 金籤卡才跳得出來。滿版自適應（原固定尺寸寬螢幕不滿版）。
 	var vignette: Node = get_node_or_null("RSOVignette")
 	if vignette is ColorRect:
-		(vignette as ColorRect).color = Color(0.08, 0.04, 0.04, 0.40)
+		var vc := vignette as ColorRect
+		vc.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		vc.color = Color(0.05, 0.03, 0.035, 0.60)
 	if starting_option_container is Control:
 		(starting_option_container as Control).add_theme_constant_override("separation", 14)
 	# P1：神示 presenter — 乩童立繪站在右側（「這是你的起手命格」敘事）

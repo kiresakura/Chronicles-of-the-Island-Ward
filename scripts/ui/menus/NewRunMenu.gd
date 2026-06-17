@@ -66,6 +66,7 @@ var _character_gallery
 var _hero_panel: Panel
 var _setup_card: Panel
 var _hero_portrait: TextureRect
+var _hero_portrait_frame: Panel
 var _tagline_label: Label
 var _character_tags_flow: HFlowContainer
 var _info_heading_label: Label
@@ -133,6 +134,7 @@ func _ready() -> void:
 	var newrun_layer := PixelSkinCls.apply_background(self, "newrun_bg_v5.png")
 	if newrun_layer:
 		PixelFXCls.apply(newrun_layer, PixelFXCls.Preset.SMOKE)
+	_restyle_scene_backdrops()
 
 	_hide_legacy_static_labels()
 	_style_static_controls()
@@ -144,9 +146,33 @@ func _ready() -> void:
 	await get_tree().process_frame
 	_relayout_runtime_chrome()
 
-## 隱藏 STR/舊版殘留靜態標籤（「種子」「自訂修正」「新一局」副標）— 重排後由卡頭/進階列接手
+## 打掉暗紅疊暗紅 + 修死板尺寸：場景三層底（DimBackground/NewRunBackdrop/NewRunVignette）
+## 原為 1200×700 固定的「暗紅疊暗紅」死色塊（NewRunBackdrop=不透明硃砂），蓋住 PixelSkin
+## 質感底圖且寬螢幕不滿版。改：沉成半透深舞台（露底圖質感、殺純紅）、滿版自適應、壓到面板(z-1)之下。
+func _restyle_scene_backdrops() -> void:
+	var dim := get_node_or_null("DimBackground") as ColorRect
+	if dim != null:
+		dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		dim.color = Color(0.04, 0.025, 0.03, 0.74)
+		dim.z_index = -2
+		dim.mouse_filter = Control.MOUSE_FILTER_STOP	# 仍當 modal 攔截，防穿透
+	var backdrop := get_node_or_null("NewRunBackdrop") as ColorRect
+	if backdrop != null:
+		backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		backdrop.color = Color(0, 0, 0, 0)		# 移除主硃砂塊（暗紅元兇）
+		backdrop.z_index = -2
+		backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var vig := get_node_or_null("NewRunVignette") as ColorRect
+	if vig != null:
+		vig.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		vig.color = Color(0, 0, 0, 0)			# 移除中央紅罩
+		vig.z_index = -2
+		vig.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+## 隱藏 STR/舊版殘留靜態標籤（「新一局」大標題鬼影 + 「種子」「自訂修正」副標）—
+## 重排後由「返回正殿」+ 區段卡頭接手；舊大標未進 calculate_layout，留著會漂到畫面中央透出。
 func _hide_legacy_static_labels() -> void:
-	for legacy_name: String in ["Label3", "Label4"]:
+	for legacy_name: String in ["Label", "Label2", "Label3", "Label4"]:
 		var node: Node = get_node_or_null(legacy_name)
 		if node is CanvasItem:
 			(node as CanvasItem).visible = false
@@ -184,8 +210,9 @@ func _build_runtime_chrome() -> void:
 		_hero_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_hero_panel.z_index = -1
 		add_child(_hero_panel)
+		# 打掉暗紅疊暗紅：面板改近不透明深漆底 + 飽和燙金 3px 硬框，從紅底圖跳出來。
 		_hero_panel.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
-			Color(0.08, 0.03, 0.03, 0.92), Color(0.74, 0.54, 0.20, 0.66), 0, 2, 0.0))
+			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold", Color(0.92, 0.76, 0.40)), 0, 3, 0.0))
 	if _setup_card == null:
 		_setup_card = Panel.new()
 		_setup_card.name = "SetupCard"
@@ -193,7 +220,7 @@ func _build_runtime_chrome() -> void:
 		_setup_card.z_index = -1
 		add_child(_setup_card)
 		_setup_card.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
-			Color(0.10, 0.04, 0.03, 0.94), Color(0.80, 0.58, 0.22, 0.74), 0, 2, 0.0))
+			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold", Color(0.92, 0.76, 0.40)), 0, 3, 0.0))
 	if _hero_portrait == null:
 		_hero_portrait = TextureRect.new()
 		_hero_portrait.name = "HeroPortrait"
@@ -203,6 +230,14 @@ func _build_runtime_chrome() -> void:
 		_hero_portrait.clip_contents = true
 		_hero_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(_hero_portrait)
+	if _hero_portrait_frame == null:
+		# 英雄立繪燙金描邊（§A：立繪作英雄焦點）。透明底 + 飽和金硬框，疊在立繪邊緣。
+		_hero_portrait_frame = Panel.new()
+		_hero_portrait_frame.name = "HeroPortraitFrame"
+		_hero_portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_hero_portrait_frame.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
+			Color(0, 0, 0, 0), COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.80, 0.42)), 0, 3, 0.0))
+		add_child(_hero_portrait_frame)
 	if _tagline_label == null:
 		_tagline_label = Label.new()
 		_tagline_label.name = "TaglineLabel"
@@ -317,6 +352,9 @@ func _relayout_runtime_chrome() -> void:
 	if _hero_portrait != null:
 		_hero_portrait.position = hero.position + Vector2(hp_pad, hp_pad)
 		_hero_portrait.size = Vector2(portrait_w, hero.size.y - hp_pad * 2.0 - 96.0)	# 底部留平安符列
+	if _hero_portrait_frame != null and _hero_portrait != null:
+		_hero_portrait_frame.position = _hero_portrait.position
+		_hero_portrait_frame.size = _hero_portrait.size
 	var info_x: float = hero.position.x + portrait_w + hp_pad * 2.0
 	var info_w: float = hero.size.x - portrait_w - hp_pad * 3.0
 	var info_y: float = hero.position.y + hp_pad
