@@ -143,6 +143,39 @@ static func draft_fu_choices(count: int, rng: RandomNumberGenerator) -> Array:
 		out.append(str(pool[k]))
 	return out
 
+# ── FP-3 符令經濟查詢（商店/圖鑑/合符共用單一真相；皆讀 formation_fu.json）──
+
+## 全符令定義 dict（fu_id → {name,desc,effect,magnitude,needs_target,rarity,merge_*}）。
+static func fu_library() -> Dictionary:
+	return load_fu_config().get("fu", {})
+
+## 單一符令定義（找不到回 {}）。
+static func fu_def(fu_id: String) -> Dictionary:
+	return (fu_library() as Dictionary).get(fu_id, {})
+
+## 符令稀有度（common/uncommon/rare；缺資料回 common）。
+static func fu_rarity(fu_id: String) -> String:
+	return str(fu_def(fu_id).get("rarity", "common"))
+
+## 依稀有度的銀兩定價（讀 rarity_price；缺則 common 價）。
+static func fu_price(fu_id: String) -> int:
+	var prices: Dictionary = load_fu_config().get("rarity_price", {})
+	return int(prices.get(fu_rarity(fu_id), prices.get("common", 50)))
+
+## 商店進貨池（缺則回 draft_pool）。
+static func fu_shop_pool() -> Array:
+	var cfg: Dictionary = load_fu_config()
+	var pool: Array = cfg.get("shop_pool", [])
+	return pool.duplicate() if not pool.is_empty() else (cfg.get("draft_pool", []) as Array).duplicate()
+
+## 合符成品 id（兩張同符可合成此上位符；"" = 已頂級不可再合）。
+static func fu_merge_result(fu_id: String) -> String:
+	return str(fu_def(fu_id).get("merge_result", ""))
+
+## 此符是否可合（有合符成品）。
+static func fu_can_merge(fu_id: String) -> bool:
+	return fu_merge_result(fu_id) != ""
+
 ## 建一場。
 ##  open_camp_ids：本局已揭露的營 id（FC-3 漸進揭露傳子集；空＝全部 FC-1 五營）。
 ##  deploy：unit_id→camp_id 指定佈陣；空＝依五行得位自動佈陣（複用「resolve 初值」概念）。
