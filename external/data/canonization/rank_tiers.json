@@ -1,0 +1,12 @@
+{
+  "_note": "v0.3 敕封位階（FC-5）。將→帥→神→帝；只花香火、元寶紅線。每階 grants 解鎖選項（非堆數值，防 grind-wall）。成本遞增＝廣度vs深度抉擇（與修廟共用香火池）。grants 鍵戰鬥/緣分整合為後續。",
+  "properties": {
+    "object_id": "rank_tiers",
+    "rank_names": ["將", "帥", "神", "帝"],
+    "tiers": [
+      { "rank": 1, "cost_incense": 50,  "grants": ["camp_slot_eligibility"] },
+      { "rank": 2, "cost_incense": 120, "grants": ["fu_draft_plus_one"] },
+      { "rank": 3, "cost_incense": 250, "grants": ["affinity_unlock"] }
+    ]
+  }
+}
