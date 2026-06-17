@@ -11,8 +11,16 @@ const COMPLETE_OPTION_COUNT: int = 1	# number of unique options to populate
 @onready var starting_option_container = $StartingOptionContainer
 @onready var map = $%Map
 
-## P0-1 神示供桌：供桌背景素材（取代 debug 紅黑底，建立「擲筊問神」舞台）
+## P0-1 神示供桌：供桌背景素材（取代 debug 紅黑底，建立「擲筊問神」舞台）。
+## Phase 3：優先 v3，無則回退 v2（§0.4 美術非阻塞；素材落地即自動升級）。
+const OFFERING_BG_V3 := "res://assets/generated/scenes_v2/run_start_offering_bg_v3.png"
 const OFFERING_BG_PATH := "res://assets/generated/scenes_v2/run_start_offering_bg_v2.png"	# Q2-E：v2 供桌（中央淨空給籤詩列）
+## 疊層素材（籤筒/香煙/燭火）：存在才疊，無則略過（程序化舞台已足）。
+const OFFERING_LAYERS: Array[String] = [
+	"res://assets/generated/ui_v2/qian_tube.png",
+	"res://assets/generated/fx/incense_smoke.png",
+	"res://assets/generated/fx/candle_flame.png",
+]
 
 ## v0.3 籤運統一階梯（唯一一套，best→worst）：資料層 external/data/qian_grades.json
 ## （鐵律1：階梯不寫死於腳本；亦避免民俗籤運被 i18n 當程式中文）。
@@ -213,14 +221,17 @@ func _on_dialogue_option_clicked(dialogue_option: DialogueOption):
 	clear_run_start_options()
 	visible = false
 	_resolving = false
+	_set_combat_hud_visible(true)	# 求籤結束 → 還原戰鬥 HUD
 	map.can_travel = true
 	map.show_map()
 	
 func _on_run_started():
 	visible = false
-	
+	_set_combat_hud_visible(true)	# 離開求籤 → 還原戰鬥 HUD
+
 func _on_run_ended():
 	visible = false
+	_set_combat_hud_visible(true)
 
 func _on_map_location_selected(location_data: LocationData):
 	# determine what to do when the player visits a new location
@@ -231,7 +242,23 @@ func _on_map_location_selected(location_data: LocationData):
 		LocationData.LOCATION_TYPES.STARTING:
 			populate_run_start_options()
 			visible = true
+			_set_combat_hud_visible(false)	# §2：求籤畫面隱藏戰鬥 HUD（護/神力/預兆）與空貨幣
 			_play_offering_omen()	# P1：神示金光提示（擲筊問神得示）
+		_:
+			_set_combat_hud_visible(true)	# 其他節點 → 還原
+
+## 求籤時隱藏戰鬥 HUD overlay（CombatHudOverlay CanvasLayer 在 RunScreen Control 樹之上，
+## 會穿透供桌底圖；§2 決策只留與決策相關者）。RSO 收起時還原。
+func _set_combat_hud_visible(vis: bool) -> void:
+	var parent: Node = get_parent()
+	if parent == null:
+		return
+	var combat: Node = parent.get_node_or_null("Combat")
+	if combat == null:
+		return
+	var hud: Node = combat.get_node_or_null("CombatHudOverlay")
+	if hud is CanvasLayer:
+		(hud as CanvasLayer).visible = vis
 
 
 # ───────────────── P0-1 神示供桌 chrome（additive；保留節點與流程） ─────────────────
@@ -241,14 +268,16 @@ func _apply_offering_chrome() -> void:
 	var backdrop: Node = get_node_or_null("RSOBackdrop")
 	if backdrop is CanvasItem:
 		(backdrop as CanvasItem).visible = false	# 隱藏 debug 紅黑底（保留節點，不刪）
-	if not ResourceLoader.exists(OFFERING_BG_PATH):
+	# Phase 3：v3 優先、v2 回退（§0.4 非阻塞）
+	var bg_path: String = OFFERING_BG_V3 if ResourceLoader.exists(OFFERING_BG_V3) else OFFERING_BG_PATH
+	if not ResourceLoader.exists(bg_path):
 		if backdrop is CanvasItem:
 			(backdrop as CanvasItem).visible = true	# 找不到素材就回退原底
 		return
 	if get_node_or_null("RSOOfferingBg") == null:
 		var bg := TextureRect.new()
 		bg.name = "RSOOfferingBg"
-		bg.texture = load(OFFERING_BG_PATH)
+		bg.texture = load(bg_path)
 		bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		# UIQA P1-1：供桌圖兼任 modal 視覺+輸入遮罩 — 全出血（COVERED 自行裁切）+ STOP
@@ -257,6 +286,20 @@ func _apply_offering_chrome() -> void:
 		bg.add_to_group("fullbleed_mask")
 		add_child(bg)
 		move_child(bg, 0)	# 置於最底，標題/副標/籤詩卡在其上
+		# Phase 3：疊籤筒/香煙/燭火氛圍層（存在才疊；無則程序化舞台已足，§0.4 非阻塞）
+		var layer_z: int = 1
+		for lp: String in OFFERING_LAYERS:
+			if ResourceLoader.exists(lp):
+				var lyr := TextureRect.new()
+				lyr.name = "OfferingLayer_" + lp.get_file().get_basename()
+				lyr.texture = load(lp)
+				lyr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+				lyr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+				lyr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				lyr.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+				add_child(lyr)
+				move_child(lyr, layer_z)
+				layer_z += 1
 	# 暗角加深一點，確保金字在亮供桌上仍可讀
 	var vignette: Node = get_node_or_null("RSOVignette")
 	if vignette is ColorRect:
@@ -303,9 +346,10 @@ func _update_fortune_banner() -> void:
 		add_child(banner)
 	banner.text = tr("rso.fortune_prefix") + FortuneSticks.stick_summary(FortuneSticks.load_stick(Global.run_fortune_stick_id))
 	banner.visible = true
-	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
-	banner.size = Vector2.ZERO
-	banner.position = Vector2(safe.position.x + safe.size.x * 0.5 - 280.0, safe.position.y + 152.0)
+	# 修鬼影：橫幅原本 safe-relative（y+152）會漂到 .tscn 固定座標的標題（y110-175）後方。
+	# 改用與標題同座標系：置於標題「上方」(y76)、同 x 跨度置中，永不與標題重疊。
+	banner.size = Vector2(700, 28)
+	banner.position = Vector2(250.0, 76.0)
 
 ## Q2-B 容器重排：VBox 轉橫排（BoxContainer.vertical=false）+ 依視口安全區置中。
 ## 四支籤詩並立 — 1200×700 與 4:3 皆以 stage 寬重算（地圖同款 runtime 置中思路）。
@@ -464,6 +508,9 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		r.add_theme_color_override("default_color", COTIW_UI_THEME.get_color("lacquer_black", Color(0.16, 0.09, 0.08, 1.0)))
 		r.add_theme_font_size_override("normal_font_size", 17)
 		r.add_theme_font_size_override("bold_font_size", 17)
+		# 修截斷：自動換行 + 隨內容撐高（窄籤條內利忌不被切）
+		r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		r.fit_content = true
 		r.parse_bbcode("[center]" + option_bbcode + "[/center]")
 
 	# 按壓回饋（三態：常態/按下/鎖定由 modulate 表達）
@@ -479,16 +526,18 @@ func _on_strip_gui_input(event: InputEvent, option: Control) -> void:
 			option.modulate = Color(0.88, 0.88, 0.88) if mb.pressed else Color.WHITE
 
 ## P1：神示金光提示 — 供桌出現時，供桌中央一道金光脈動（擲筊問神得示）。一次性、自我清理。
+const OMEN_GLOW_V2 := "res://assets/generated/fx/offering_omen_glow_v2.png"
 const OMEN_GLOW := "res://assets/generated/fx/offering_omen_glow_v1.png"
 
 func _play_offering_omen() -> void:
-	if not ResourceLoader.exists(OMEN_GLOW):
+	var glow_path: String = OMEN_GLOW_V2 if ResourceLoader.exists(OMEN_GLOW_V2) else OMEN_GLOW
+	if not ResourceLoader.exists(glow_path):
 		return
 	if get_node_or_null("OfferingOmenGlow") != null:
 		return
 	var glow := TextureRect.new()
 	glow.name = "OfferingOmenGlow"
-	glow.texture = load(OMEN_GLOW)
+	glow.texture = load(glow_path)
 	glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	glow.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
