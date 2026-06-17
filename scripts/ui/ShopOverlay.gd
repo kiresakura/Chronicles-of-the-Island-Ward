@@ -30,6 +30,7 @@ func _ready():
 	Signals.shop_opened.connect(_on_shop_opened)
 
 	Signals.card_purchased.connect(_on_card_purchased)
+	Signals.fu_purchased.connect(_on_fu_purchased)
 	Signals.artifact_purchased.connect(_on_artifact_purchased)
 	Signals.consumable_purchased.connect(_on_consumable_purchased)
 
@@ -51,29 +52,9 @@ func populate_shop() -> void:
 	if shop_data != null:
 		shop_data.visit_shop()	# ensure the shop is populated
 		
-		### populate shop cards
-		var shop_cards: Array[CardData] = shop_data.shop_cards
-		for card_data in shop_cards:
-			# create card button asset
-			var card_shop_button: BaseShopButton = Scenes.CARD_SHOP_BUTTON.instantiate()
-			card_container.add_child(card_shop_button)
-			
-			# generate action payload
-			var card_price: int = shop_data.get_shop_card_price(card_data)
-			
-			var purchase_card_action_data: Array[Dictionary] = [
-				{
-				Scripts.ACTION_SHOP_PURCHASE_ITEMS: {
-					"card_data": card_data,
-					"money_amount": card_price,
-					}
-				}
-			]
-			
-			var purchase_card_action: BaseAction = ActionGenerator.create_actions(null, null, [], purchase_card_action_data, null)[0]
-			
-			# initialize button with payload
-			card_shop_button.init(purchase_card_action)
+		### populate shop fu（FP-3 符令版商店：戰鬥已用符令，商店改賣符；卡牌只留 meta 圖鑑）
+		for fu_id_v in shop_data.shop_fu:
+			card_container.add_child(_make_fu_shop_button(shop_data, str(fu_id_v)))
 		
 		### populate shop artifacts
 		var shop_artifacts: Array[ArtifactData] = shop_data.get_shop_artifact_options()
@@ -144,6 +125,59 @@ func _on_shop_opened():
 
 func _on_card_purchased(_card_data: CardData):
 	_repopulate_shop_after_actions_ended()
+
+func _on_fu_purchased(_fu_id: String):
+	_repopulate_shop_after_actions_ended()
+
+## FP-3 符令商店磚（程序化；Button 根 + 全幅內容 vbox；名/稀有星/述/價；點擊走購買 action）。
+func _make_fu_shop_button(shop_data: ShopData, fu_id: String) -> Control:
+	var fc := preload("res://scripts/systems/ritual/FormationCombat.gd")
+	var d: Dictionary = fc.fu_def(fu_id)
+	var price: int = shop_data.get_shop_fu_price(fu_id)
+	var affordable: bool = Global.player_data.player_money >= price
+	var rarity: String = str(d.get("rarity", "common"))
+	var col: Color = COTIW_UI_THEME.get_color("incense_gold", Color(0.85, 0.72, 0.42))
+	if rarity == "rare":
+		col = COTIW_UI_THEME.get_color("festival_red", Color(0.90, 0.40, 0.28))
+	elif rarity == "uncommon":
+		col = COTIW_UI_THEME.get_color("spirit_jade", Color(0.42, 0.80, 0.60))
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(176, 232)
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.disabled = not affordable
+	btn.clip_text = true
+	var rim: Color = col if affordable else Color(0.40, 0.36, 0.30)
+	var sb := COTIW_UI_THEME.make_stylebox(Color(0.13, 0.08, 0.06, 0.96), rim, 0, 3, 0.0)
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", COTIW_UI_THEME.make_stylebox(Color(0.17, 0.10, 0.07, 0.98), rim, 0, 3, 0.0))
+	btn.add_theme_stylebox_override("pressed", sb)
+	btn.add_theme_stylebox_override("disabled", COTIW_UI_THEME.make_stylebox(Color(0.10, 0.07, 0.06, 0.92), Color(0.40, 0.36, 0.30), 0, 2, 0.0))
+	var vbox := VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vbox.add_theme_constant_override("separation", 6)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(vbox)
+	vbox.add_child(_fu_shop_label(str(d.get("name", fu_id)), 19, col if affordable else Color(0.62, 0.58, 0.52)))
+	vbox.add_child(_fu_shop_label("★".repeat(3 if rarity == "rare" else (2 if rarity == "uncommon" else 1)), 13, col))
+	var desc := _fu_shop_label(str(d.get("desc", "")), 13, Color(0.90, 0.85, 0.74))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.custom_minimum_size = Vector2(150, 78)
+	vbox.add_child(desc)
+	var price_col: Color = COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.80, 0.42)) if affordable else COTIW_UI_THEME.get_color("warning_orange", Color(0.92, 0.52, 0.20))
+	vbox.add_child(_fu_shop_label("%d %s" % [price, tr("currency.silver")], 16, price_col))
+	btn.button_up.connect(func() -> void:
+		var pd: Array[Dictionary] = [{Scripts.ACTION_SHOP_PURCHASE_ITEMS: {"fu_id": fu_id, "money_amount": price}}]
+		ActionHandler.add_action(ActionGenerator.create_actions(null, null, [], pd, null)[0]))
+	return btn
+
+func _fu_shop_label(text_value: String, fsize: int, col: Color) -> Label:
+	var l := Label.new()
+	l.text = text_value
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.add_theme_font_size_override("font_size", fsize)
+	l.add_theme_color_override("font_color", col)
+	return l
 
 func _on_artifact_purchased(_artifact_data: ArtifactData):
 	_repopulate_shop_after_actions_ended()

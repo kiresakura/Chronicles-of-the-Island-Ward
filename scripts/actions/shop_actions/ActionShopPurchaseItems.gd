@@ -10,6 +10,7 @@ func perform_action():
 		var consumable_object_id: String = action_interceptor_processor.get_shadowed_action_values("consumable_object_id", "")
 		var consumable_slot_index: int = action_interceptor_processor.get_shadowed_action_values("consumable_slot_index", 0)
 		var artifact_id: String = action_interceptor_processor.get_shadowed_action_values("artifact_id", "")
+		var fu_id: String = action_interceptor_processor.get_shadowed_action_values("fu_id", "")	# FP-3 符令
 		
 		# check if shop at player location
 		var shop_data: ShopData = Global.get_shop_at_player_location()
@@ -31,7 +32,19 @@ func perform_action():
 					shop_data.remove_shop_card(card_data)
 					Signals.card_purchased.emit(card_data)
 				return
-			
+
+			# purchasing fu (FP-3 符令版商店：符令進持久 run 牌庫)
+			if fu_id != "":
+				var fu_price: int = shop_data.get_shop_fu_price(fu_id)
+				if player_money >= fu_price:
+					action_data.append({Scripts.ACTION_ADD_MONEY: {"money_amount": -fu_price}})
+					var generated_actions: Array[BaseAction] = ActionGenerator.create_actions(player, null, [], action_data, null)
+					ActionHandler.add_actions(generated_actions)
+					Global.run_fu_deck.append(fu_id)
+					shop_data.remove_shop_fu(fu_id)
+					Signals.fu_purchased.emit(fu_id)
+				return
+
 			# purchasing artifacts
 			if artifact_id != "":
 				var artifact_price: int = shop_data.get_shop_artifact_price(artifact_id)

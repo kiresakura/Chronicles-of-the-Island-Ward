@@ -45,6 +45,17 @@ func test_merge_rejects_single_or_max_tier() -> void:
 	assert_false(bool(FuMerge.merge(["fu_po_sha"], "fu_po_sha").get("ok")), "只有 1 張不可合")
 	assert_false(bool(FuMerge.merge(["fu_po_sha_2", "fu_po_sha_2"], "fu_po_sha_2").get("ok")), "頂級符不可合")
 
+func test_shop_data_fu_accessors() -> void:
+	var sd := ShopData.new()
+	sd.shop_fu = ["fu_po_sha", "fu_zhen_2"]
+	sd.shop_fu_prices = [45, 80]
+	assert_eq(sd.get_shop_fu_price("fu_po_sha"), 45, "庫存符令照表價")
+	assert_eq(sd.get_shop_fu_price("fu_zhen_2"), 80, "庫存稀有符照表價")
+	assert_true(sd.get_shop_fu_price("fu_unknown") > 0, "非庫存符回退基礎定價（>0）")
+	sd.remove_shop_fu("fu_po_sha")
+	assert_false(sd.shop_fu.has("fu_po_sha"), "售出符移出庫存")
+	assert_eq(sd.shop_fu_prices.size(), 1, "價格陣列同步移除")
+
 func test_no_forbidden_nouns_in_fu_copy() -> void:
 	var bad: Array = ["韌性", "弱點擊破", "升階", "終結"]
 	for fu_id: String in FC.fu_library():
