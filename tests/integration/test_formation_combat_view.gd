@@ -165,3 +165,21 @@ func test_affinity_strip_shows_active_union() -> void:
 	view._refresh()
 	assert_eq(view._affinity_strip.text, "", "拆散合祀 → 提示帶清空")
 	view.queue_free()
+
+# FC-3 漸進揭露：早場 config 旗標控制 符令/降乩 是否現身。
+func test_fc3_progressive_disclosure_gates_fu_and_deity() -> void:
+	var view: Control = _add_view()
+	if view == null:
+		return
+	# 第 1 場語意：未揭露符令 + 降乩
+	view.start([], {}, [{"id": "e", "hp": 24}], 7, {"reveal_fu": false, "reveal_deity": false})
+	assert_false(view._deity_button.visible, "未揭露時降乩鈕隱藏")
+	var any_fu_visible: bool = false
+	for slot: Button in view._fu_slots:
+		if slot.visible:
+			any_fu_visible = true
+	assert_false(any_fu_visible, "未揭露時符令手牌全隱藏")
+	# 全揭露（第 3 場起）：降乩鈕現身
+	view.start([], {}, [{"id": "e", "hp": 24}], 7, {"reveal_fu": true, "reveal_deity": true})
+	assert_true(view._deity_button.visible, "全揭露時降乩鈕顯示")
+	view.queue_free()

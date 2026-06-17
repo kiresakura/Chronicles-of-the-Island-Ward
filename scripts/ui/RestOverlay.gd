@@ -2,10 +2,14 @@
 extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const FU_MERGE := preload("res://scripts/systems/ritual/FuMergeSystem.gd")	# FP-3 合符
+const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")
 
 @onready var rest_action_container: GridContainer = $ScrollContainer/MarginContainer/RestActionContainer
 @onready var continue_button: Button = $ContinueButton
 @onready var backdrop: ColorRect = $Background
+
+var _fu_merge_result: Label	# 合符結果提示（持久於 self，不隨 container 清空）
 
 @onready var map = $%Map
 
@@ -40,6 +44,47 @@ func populate_rest_actions() -> void:
 			rest_action_button.init(rest_action_object_id)
 			rest_action_button.rest_action_button_up.connect(_on_rest_action_button_up)
 			rest_action_button.disabled = not rest_action_button.validate_rest_button()
+	_add_fu_merge_button()	# FP-3 合符（兩張同符 → 上位符）
+
+## 合符鈕（procedural；每次 populate 重建。可合時亮、合一次後重評）。
+func _add_fu_merge_button() -> void:
+	var can: bool = FU_MERGE.has_any_merge(Global.run_fu_deck)
+	var btn := Button.new()
+	btn.name = "FuMergeButton"
+	btn.custom_minimum_size = Vector2(260, 96)
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.text = tr("rest.fu_merge") + "\n" + tr("rest.fu_merge_hint")
+	COTIW_UI_THEME.apply_secondary_button_style(btn)
+	btn.disabled = not can
+	btn.button_up.connect(_on_fu_merge_pressed)
+	rest_action_container.add_child(btn)
+	_ensure_fu_merge_result()
+	if not can and _fu_merge_result.text == "":
+		_fu_merge_result.text = tr("rest.fu_merge_empty")
+
+func _ensure_fu_merge_result() -> void:
+	if _fu_merge_result != null and is_instance_valid(_fu_merge_result):
+		return
+	_fu_merge_result = Label.new()
+	_fu_merge_result.name = "FuMergeResult"
+	_fu_merge_result.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_fu_merge_result.position = Vector2(300.0, 560.0)
+	_fu_merge_result.size = Vector2(600.0, 28.0)
+	_fu_merge_result.add_theme_font_size_override("font_size", 17)
+	_fu_merge_result.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("spirit_jade", Color(0.42, 0.80, 0.60)))
+	add_child(_fu_merge_result)
+
+func _on_fu_merge_pressed() -> void:
+	var fid: String = FU_MERGE.first_mergeable(Global.run_fu_deck)
+	if fid == "":
+		return
+	var r: Dictionary = FU_MERGE.merge(Global.run_fu_deck, fid)
+	_ensure_fu_merge_result()
+	if bool(r.get("ok")):
+		_fu_merge_result.text = tr("rest.fu_merge_result") % [
+			str(FC.fu_def(str(r["from"])).get("name", r["from"])),
+			str(FC.fu_def(str(r["to"])).get("name", r["to"]))]
+	populate_rest_actions()
 
 func _on_rest_action_button_up(rest_action_button: RestActionButton):
 	# perform actions

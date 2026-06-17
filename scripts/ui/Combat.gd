@@ -322,6 +322,9 @@ func _on_combat_started(event_id: String):
 		var deity: DeityData = DeityInvocationSystem.load_deity(deity_id)
 		cfg["efficacy_points"] = int(Global.run_deity_efficacy.get(deity_id, 0))
 		cfg["efficacy_feats"] = deity.deity_efficacy_feats if deity != null else []
+		# FC-3 漸進揭露：第 1 場只學營位+擲筊；第 2 場開符令；第 3 場起開降乩（避免新手一次吃滿）。
+		cfg["reveal_fu"] = _combat_index >= 2
+		cfg["reveal_deity"] = _combat_index >= 3
 		_formation_view.start([], {}, _resolve_enemy_specs(current_event), _combat_index, cfg)
 		_raise_top_controls()	# 保留暫停/回地圖鈕在五營畫面之上
 
