@@ -324,6 +324,18 @@ combat.formation.lane_clear,—,—,—,—
 combat.formation.fu_pick_lane,選方位放「%s」,选方位放「%s」,Pick a lane for %s,方位を選んで %s
 combat.log.fu,敕令 %s,敕令 %s,Played %s,%s を行使
 combat.fu_draft.title,領一道符令,领一道符令,Claim a Talisman,符令を授かる
+canon.title,封神榜,封神榜,Canonization Roll,封神榜
+canon.subtitle,以香火敕封神將位階 將→帥→神→帝；解鎖選項而非堆數值,以香火敕封神将位阶 将→帅→神→帝；解锁选项而非堆数值,Canonize with incense: General → Marshal → God → Emperor; unlocks options not raw stats,香火で神将を敕封 将→帥→神→帝 数値でなく選択肢を解放
+canon.open,封神榜,封神榜,Canonization,封神榜
+canon.rank,位階 %s,位阶 %s,Rank %s,位階 %s
+canon.cost,敕封 · %d 香火,敕封 · %d 香火,Canonize · %d incense,敕封 · 香火 %d
+canon.canonize,敕封,敕封,Canonize,敕封
+canon.maxed_cost,已達頂階,已达顶阶,Top rank,頂階
+canon.maxed_btn,帝,帝,Emperor,帝
+canon.next,升 %s,升 %s,To %s,%s へ
+canon.grant.camp_slot_eligibility,解鎖：可佈陣營位資格,解锁：可布阵营位资格,Unlock: camp slot eligibility,解放：布陣営位資格
+canon.grant.fu_draft_plus_one,解鎖：戰勝符令多一選,战胜符令多一选,Unlock: +1 talisman draft choice,解放：符令ドラフト+1
+canon.grant.affinity_unlock,解鎖：開一條緣分,解锁：开一条缘分,Unlock: an affinity,解放：縁を一つ
 element.wood,木,木,Wood,木
 element.fire,火,火,Fire,火
 element.earth,土,土,Earth,土
