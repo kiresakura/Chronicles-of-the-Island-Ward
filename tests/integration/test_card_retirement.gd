@@ -30,6 +30,12 @@ func test_all_base_fu_are_mergeable() -> void:
 	for fid: Variant in FC.load_fu_config().get("draft_pool", []):
 		assert_true(FC.fu_can_merge(str(fid)), "基礎符 %s 應可合符（有上位成品）" % str(fid))
 
+func test_rest_card_actions_retired() -> void:
+	# 休息站升級/移除卡牌動作已退役（卡牌退戰 → 改合符）
+	var rest_cls := preload("res://scripts/ui/RestOverlay.gd")
+	assert_true("rest_action_upgrade_card" in rest_cls.RETIRED_CARD_REST_ACTIONS, "升級卡牌休息動作已退役")
+	assert_true("rest_action_remove_cards" in rest_cls.RETIRED_CARD_REST_ACTIONS, "移除卡牌休息動作已退役")
+
 func test_shop_data_carries_fu_inventory() -> void:
 	# ShopData 結構已帶符令庫存欄位（商店結構性遷移）
 	var sd := ShopData.new()

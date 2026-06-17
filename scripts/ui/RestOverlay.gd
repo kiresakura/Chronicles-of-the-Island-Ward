@@ -4,6 +4,8 @@ extends Control
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const FU_MERGE := preload("res://scripts/systems/ritual/FuMergeSystem.gd")	# FP-3 合符
 const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")
+# FP-3：卡牌已退戰，升級/移除卡牌休息動作退役（由合符接手）。UI 層過濾，不動存檔/資料。
+const RETIRED_CARD_REST_ACTIONS: Array[String] = ["rest_action_upgrade_card", "rest_action_remove_cards"]
 
 @onready var rest_action_container: GridContainer = $ScrollContainer/MarginContainer/RestActionContainer
 @onready var continue_button: Button = $ContinueButton
@@ -37,6 +39,8 @@ func populate_rest_actions() -> void:
 	# get the rest actions the player can perform
 	var player_rest_action_object_ids: Array[String] = Global.player_data.player_available_rest_action_object_ids
 	for rest_action_object_id in player_rest_action_object_ids:
+		if rest_action_object_id in RETIRED_CARD_REST_ACTIONS:
+			continue	# 退役卡牌休息動作（升級/移除卡牌）→ 改用合符
 		var rest_action_data: RestActionData = Global.get_rest_action_data(rest_action_object_id)
 		if rest_action_data != null:
 			var rest_action_button: RestActionButton = Scenes.REST_ACTION_BUTTON.instantiate()
