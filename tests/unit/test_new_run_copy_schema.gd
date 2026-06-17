@@ -89,6 +89,28 @@ func test_run_start_option_qian_within_budget() -> void:
 		assert_true(d.option_qian_verse.length() <= MAX_QIAN_VERSE,
 			"%s 四字籤詩 %d 字超上限 %d" % [oid, d.option_qian_verse.length(), MAX_QIAN_VERSE])
 
+# §2/§5：別讓英文「Boss」外洩到畫面（artifact_boss_* 測試遺物用「大醮遺物」呈現）。
+func test_no_boss_leak_in_run_start_option_bbcode() -> void:
+	for oid: String in Global._id_to_run_start_option_data:
+		var bb: String = Global._id_to_run_start_option_data[oid].run_start_option_bb_code
+		assert_false(bb.containsn("boss"), "%s bb_code 外洩英文 Boss：%s" % [oid, bb])
+
+func test_artifact_boss_excluded_from_draft_packs() -> void:
+	# 測試用 artifact_boss_* 不得進正式抽池（否則「Boss」遺物會出現在玩家選擇）
+	var dir := DirAccess.open("res://external/data/artifact_packs/")
+	if dir == null:
+		return
+	dir.list_dir_begin()
+	var entry: String = dir.get_next()
+	while entry != "":
+		if entry.ends_with(".json"):
+			var f := FileAccess.open("res://external/data/artifact_packs/" + entry, FileAccess.READ)
+			if f != null:
+				assert_false(f.get_as_text().contains("artifact_boss"),
+					"artifact_pack %s 含 artifact_boss（測試遺物外洩抽池）" % entry)
+		entry = dir.get_next()
+	dir.list_dir_end()
+
 func test_budget_loads_from_data() -> void:
 	var budget: NewRunCopyBudgetData = RitualCopyBudget.get_budget()
 	assert_eq(budget.object_id, "new_run_copy_budget", "預算應由 JSON 載入（object_id 對得上）")
