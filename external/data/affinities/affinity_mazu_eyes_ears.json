@@ -1,0 +1,11 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "affinity_mazu_eyes_ears",
+    "affinity_name": "媽祖·千里眼順風耳",
+    "affinity_member_ids": ["unit_mazu", "unit_qianliyan", "unit_shunfenger"],
+    "affinity_adjacency_required": true,
+    "affinity_combo_effect": "combo_sea_watch",
+    "affinity_combo_description": "相鄰合祀：每回合預警一道煞 lane 並先制削煞"
+  }
+}

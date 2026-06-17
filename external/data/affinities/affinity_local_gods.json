@@ -1,0 +1,11 @@
+{
+  "patch_data": {},
+  "properties": {
+    "object_id": "affinity_local_gods",
+    "affinity_name": "城隍·土地公",
+    "affinity_member_ids": ["unit_chenghuang", "unit_tudigong"],
+    "affinity_adjacency_required": true,
+    "affinity_combo_effect": "combo_earth_ward",
+    "affinity_combo_description": "相鄰合祀：母壇每回合自癒 1 點"
+  }
+}
