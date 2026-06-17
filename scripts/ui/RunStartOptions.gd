@@ -438,10 +438,10 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 	sb.content_margin_right = 10
 	sb.content_margin_top = 0	# 籤首帶頂部貼框
 	sb.content_margin_bottom = 10
-	# 上上：金光暈（gold halo shadow）；其餘黑投影；下下：暗淡無暈
+	# 上上：燙金綻放（加重 halo，一眼慶祝稀有）；其餘黑投影；下下：暗淡無暈
 	if tier == 5:
-		sb.shadow_color = Color(1.0, 0.85, 0.40, 0.55)
-		sb.shadow_size = 13
+		sb.shadow_color = Color(1.0, 0.86, 0.42, 0.66)
+		sb.shadow_size = 20
 		sb.shadow_offset = Vector2(0, 2)
 	else:
 		sb.shadow_color = Color(0.0, 0.0, 0.0, 0.30 if tier >= 2 else 0.18)

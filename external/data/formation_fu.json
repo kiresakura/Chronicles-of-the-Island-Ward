@@ -1,5 +1,5 @@
 {
-  "_note": "v0.3 符令（FP-2 精簡手牌；FC-2b.3）。每場戰鬥抽到的一次性敕符，每回合可打有限張，對五營戰局生效。名詞紅線：破煞/敕符/犒軍/降乩/調營。數值資料層、直接讀檔（不經 mod loader）。",
+  "_note": "v0.3 符令（FP-2 精簡手牌；FC-2b.3）。每場戰鬥抽到的一次性敕符，每回合可打有限張，對五營戰局生效。FP-3 符令經濟：rarity 供商店定價/圖鑑稀有色；merge_group/merge_tier/merge_result 供合符（兩同符→上位符）。tier2 為合符成品+商店稀有貨，draft_pool 只出 tier1。名詞紅線：破煞/敕符/犒軍/鎮/降乩/調營。數值資料層、直接讀檔（不經 mod loader）。",
   "properties": {
     "object_id": "formation_fu",
     "hand_max": 5,
@@ -9,11 +9,17 @@
     "starter_deck": ["fu_po_sha", "fu_po_sha", "fu_chi", "fu_kao_jun", "fu_zhen"],
     "draft_pool": ["fu_po_sha", "fu_chi", "fu_kao_jun", "fu_zhen"],
     "draft_choices": 3,
+    "shop_pool": ["fu_po_sha", "fu_chi", "fu_kao_jun", "fu_zhen", "fu_po_sha_2", "fu_zhen_2", "fu_chi_2", "fu_kao_jun_2"],
+    "rarity_price": { "common": 45, "uncommon": 80, "rare": 130 },
     "fu": {
-      "fu_po_sha":  { "name": "破煞符", "effect": "po_sha",       "magnitude": 6, "needs_target": true,  "desc": "指定方位即時削煞 6" },
-      "fu_chi":     { "name": "敕符",   "effect": "action",       "magnitude": 1, "needs_target": false, "desc": "本回合 +1 動作" },
-      "fu_kao_jun": { "name": "犒軍符", "effect": "deity_charge", "magnitude": 1, "needs_target": false, "desc": "降乩槽 +1" },
-      "fu_zhen":    { "name": "鎮符",   "effect": "stall",        "magnitude": 2, "needs_target": true,  "desc": "指定方位煞氣延緩 2 步" }
+      "fu_po_sha":    { "name": "破煞符",   "effect": "po_sha",       "magnitude": 6,  "needs_target": true,  "desc": "指定方位即時削煞 6",   "rarity": "common",   "merge_group": "po_sha",  "merge_tier": 1, "merge_result": "fu_po_sha_2" },
+      "fu_chi":       { "name": "敕符",     "effect": "action",       "magnitude": 1,  "needs_target": false, "desc": "本回合 +1 動作",      "rarity": "common",   "merge_group": "chi",     "merge_tier": 1, "merge_result": "fu_chi_2" },
+      "fu_kao_jun":   { "name": "犒軍符",   "effect": "deity_charge", "magnitude": 1,  "needs_target": false, "desc": "降乩槽 +1",          "rarity": "uncommon", "merge_group": "kao_jun", "merge_tier": 1, "merge_result": "fu_kao_jun_2" },
+      "fu_zhen":      { "name": "鎮符",     "effect": "stall",        "magnitude": 2,  "needs_target": true,  "desc": "指定方位煞氣延緩 2 步", "rarity": "common",   "merge_group": "zhen",    "merge_tier": 1, "merge_result": "fu_zhen_2" },
+      "fu_po_sha_2":  { "name": "大破煞符", "effect": "po_sha",       "magnitude": 11, "needs_target": true,  "desc": "指定方位即時削煞 11",  "rarity": "rare",     "merge_group": "po_sha",  "merge_tier": 2, "merge_result": "" },
+      "fu_chi_2":     { "name": "重敕符",   "effect": "action",       "magnitude": 2,  "needs_target": false, "desc": "本回合 +2 動作",      "rarity": "uncommon", "merge_group": "chi",     "merge_tier": 2, "merge_result": "" },
+      "fu_kao_jun_2": { "name": "大犒軍符", "effect": "deity_charge", "magnitude": 2,  "needs_target": false, "desc": "降乩槽 +2",          "rarity": "rare",     "merge_group": "kao_jun", "merge_tier": 2, "merge_result": "" },
+      "fu_zhen_2":    { "name": "大鎮符",   "effect": "stall",        "magnitude": 4,  "needs_target": true,  "desc": "指定方位煞氣延緩 4 步", "rarity": "uncommon", "merge_group": "zhen",    "merge_tier": 2, "merge_result": "" }
     }
   }
 }
