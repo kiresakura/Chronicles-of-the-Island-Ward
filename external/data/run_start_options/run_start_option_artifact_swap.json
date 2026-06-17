@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_artifact_swap",
-		"run_start_option_bb_code": "[color=#f1c40f]替換起手遺物為大醮遺物[/color]"
+		"run_start_option_bb_code": "[color=#f1c40f]替換起手遺物為大醮遺物[/color]",
+		"option_qian_name": "大醮顯赫",
+		"option_qian_verse": "神光普照",
+		"option_qian_grade": "上上"
 	}
 }

@@ -14,12 +14,34 @@ const COMPLETE_OPTION_COUNT: int = 1	# number of unique options to populate
 ## P0-1 神示供桌：供桌背景素材（取代 debug 紅黑底，建立「擲筊問神」舞台）
 const OFFERING_BG_PATH := "res://assets/generated/scenes_v2/run_start_offering_bg_v2.png"	# Q2-E：v2 供桌（中央淨空給籤詩列）
 
-## Q2-B 籤詩四選一：籤首（干支 + 籤等）。混合選項=中平（有得有失）、完整選項=上上。
-const OMEN_HEADS: Array[String] = ["omen.head1", "omen.head2", "omen.head3", "omen.head4"]	# i18n key（const 內不可 tr，顯示點翻）
+## v0.3 籤運統一階梯（唯一一套，best→worst）：資料層 external/data/qian_grades.json
+## （鐵律1：階梯不寫死於腳本；亦避免民俗籤運被 i18n 當程式中文）。
+const QIAN_GRADES_PATH := "res://external/data/qian_grades.json"
 const STRIP_SEPARATION: float = 16.0
+var _qian_ladder: Array = []	# 籤運由好到壞；index 越小越吉
+
+## 讀籤運階梯（best→worst）。RSO 視覺階梯 + validator 共用。
+static func load_qian_ladder() -> Array:
+	if not FileAccess.file_exists(QIAN_GRADES_PATH):
+		return []
+	var f := FileAccess.open(QIAN_GRADES_PATH, FileAccess.READ)
+	if f == null:
+		return []
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return []
+	return (parsed as Dictionary).get("properties", {}).get("ladder", [])
+
+## 籤運 → tier（上上=ladder長度…下下=1；不在階梯回 0）。
+func _grade_tier(grade: String) -> int:
+	var idx: int = _qian_ladder.find(grade)
+	if idx < 0:
+		return 0
+	return _qian_ladder.size() - idx
 var _resolving: bool = false	# 擲筊演出中鎖重入
 
 func _ready():
+	_qian_ladder = load_qian_ladder()
 	_aggregate_run_start_options()
 	Signals.run_started.connect(_on_run_started)
 	Signals.run_ended.connect(_on_run_ended)
@@ -79,7 +101,11 @@ func populate_run_start_options() -> void:
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
 		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
-		_apply_offering_strip_style(run_start_option_button, i, option_bbcode)	# Q2-B：直立籤詩
+		# 混合卡：顯示 upside（boon）的籤；利忌走 bbcode
+		_apply_offering_strip_style(run_start_option_button, i, option_bbcode,
+			upside_run_start_option_data.option_qian_name,
+			upside_run_start_option_data.option_qian_verse,
+			upside_run_start_option_data.option_qian_grade)
 
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
 
@@ -98,7 +124,11 @@ func populate_run_start_options() -> void:
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
 		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
-		_apply_offering_strip_style(run_start_option_button, MIXED_OPTION_COUNT + i, option_bbcode)	# Q2-B：上上籤
+		# 完整卡：顯示自身的籤（通常上上）
+		_apply_offering_strip_style(run_start_option_button, MIXED_OPTION_COUNT + i, option_bbcode,
+			complete_run_start_option_data.option_qian_name,
+			complete_run_start_option_data.option_qian_verse,
+			complete_run_start_option_data.option_qian_grade)
 
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
 
@@ -276,9 +306,11 @@ func _relayout_offering_strips() -> void:
 
 ## Q2-B 直立籤詩：硃砂籤首帶（干支+籤等）+ 紙底金框直條 + 內文置中。
 ## PanelContainer 內重組為 VBox（DialogueOption 的 rich_text_label 引用是 cached var，reparent 安全）。
-func _apply_offering_strip_style(option: Control, index: int, option_bbcode: String) -> void:
+func _apply_offering_strip_style(option: Control, index: int, option_bbcode: String,
+		qian_name: String = "", qian_verse: String = "", qian_grade: String = "") -> void:
 	if option == null:
 		return
+	option.set_meta("qian_grade", qian_grade)	# Phase 2 視覺階梯依此分支
 	var box: Control = starting_option_container as Control
 	var strip_h: float = maxf(320.0, box.size.y if box != null else 380.0)
 	option.custom_minimum_size = Vector2(196, strip_h)	# 寬 ≥80 舒適觸控、整支可點
@@ -307,9 +339,10 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		stack.add_theme_constant_override("separation", 8)
 		option.add_child(stack)
 
+		# 籤首帶：籤名（真籤詩靈魂回 C 位，取代干支 omen.head）
 		var head := Label.new()
 		head.name = "OmenHead"
-		head.text = tr(OMEN_HEADS[clampi(index, 0, OMEN_HEADS.size() - 1)])
+		head.text = qian_name if qian_name != "" else option_bbcode
 		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		head.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		head.custom_minimum_size = Vector2(0, 52)
@@ -324,6 +357,26 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		head_sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 1.0))
 		head.add_theme_stylebox_override("normal", head_sb)
 		stack.add_child(head)
+
+		# 四字籤詩（民俗詩句語氣）
+		var verse := Label.new()
+		verse.name = "OmenVerse"
+		verse.text = qian_verse
+		verse.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		verse.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		verse.add_theme_font_size_override("font_size", 22)
+		verse.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("lacquer_black", Color(0.16, 0.09, 0.08, 1.0)))
+		stack.add_child(verse)
+
+		# 籤運（Phase 2 依 tier 上色/印章）
+		var grade := Label.new()
+		grade.name = "OmenGrade"
+		grade.text = qian_grade
+		grade.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		grade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		grade.add_theme_font_size_override("font_size", 15)
+		grade.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.72, 0.52, 0.22, 1.0)))
+		stack.add_child(grade)
 
 		# 內文垂直置中：上下彈簧 Control 夾住 fit_content 的 RTL
 		var spring_top := Control.new()

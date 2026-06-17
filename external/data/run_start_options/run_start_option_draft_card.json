@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_draft_card",
-		"run_start_option_bb_code": "[color=#27ae60]選一張牌加入牌組[/color]"
+		"run_start_option_bb_code": "[color=#27ae60]選一張牌加入牌組[/color]",
+		"option_qian_name": "得法",
+		"option_qian_verse": "如獲至寶",
+		"option_qian_grade": "中平"
 	}
 }

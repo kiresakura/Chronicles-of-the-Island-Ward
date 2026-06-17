@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_gain_max_hp",
-		"run_start_option_bb_code": "[color=#27ae60]元神上限 +10[/color]"
+		"run_start_option_bb_code": "[color=#27ae60]元神上限 +10[/color]",
+		"option_qian_name": "固元",
+		"option_qian_verse": "元神永固",
+		"option_qian_grade": "上吉"
 	}
 }

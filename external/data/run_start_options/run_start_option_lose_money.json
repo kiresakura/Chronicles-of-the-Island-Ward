@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_lose_money",
-		"run_start_option_bb_code": "[color=#e74c3c]損失所有銀兩[/color]"
+		"run_start_option_bb_code": "[color=#e74c3c]損失所有銀兩[/color]",
+		"option_qian_name": "破財",
+		"option_qian_verse": "散盡家財",
+		"option_qian_grade": "下下"
 	}
 }
