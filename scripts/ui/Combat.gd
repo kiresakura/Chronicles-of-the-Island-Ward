@@ -376,14 +376,21 @@ func _resolve_enemy_specs(event: EventData) -> Array:
 	return specs
 
 ## 收起卡牌戰鬥節點（汰換中：死碼於 FC-2b.2 移除；先隱藏避免擋五營畫面與輸入）。
+## 含洗白廟埕背景圖（BackgroundButton / VectorCombatBackdrop）與遺物列（ArtifactContainer）：
+## 五營畫面自帶暗底+羅盤，這些卡牌時代的圖層若留著會「浮在洗白山景」且與五營節點幾何重疊
+## （uiux audit OVERLAP FAIL 的單一元兇＝全幅 BackgroundButton）。
 func _hide_card_combat_nodes() -> void:
 	var card_nodes: Array = [
 		hand, player, enemy_container, deck_button, draw_pile_button,
 		discard_pile_button, exhaust_pile_button, energy, get_node_or_null("Consumables"),
+		background_button, get_node_or_null("VectorCombatBackdrop"), get_node_or_null("ArtifactContainer"),
 	]
 	for n: Variant in card_nodes:
 		if n != null and is_instance_valid(n):
 			(n as CanvasItem).visible = false
+	# 全幅 BackgroundButton 即使隱藏仍可能被當互動節點計入重疊 → 同時關閉輸入命中。
+	if is_instance_valid(background_button):
+		background_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if _invoke_button != null and is_instance_valid(_invoke_button):
 		_invoke_button.visible = false
 	if _combat_status_label != null and is_instance_valid(_combat_status_label):

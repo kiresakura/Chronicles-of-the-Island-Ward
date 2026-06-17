@@ -91,8 +91,10 @@ func show_main_menu():
 
 
 func show_new_run_menu():
+	# modal 全遮（UIUX §A）：開壇設定為整屏步驟，正殿大廳（貨幣 HUD／標題／成就信件設定／
+	# 招募倒數）一律收起，杜絕背景透出與右緣鬼影。返回正殿時 show_main_menu 再顯示。
 	hide_menus()
-	main_menu.visible = true
+	main_menu.visible = false
 	new_run_menu.visible = true
 	new_run_menu.populate_new_run_menu()
 

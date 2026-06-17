@@ -735,3 +735,15 @@ external/data/qian_grades.json（亦避免民俗籤運被 i18n 當程式中文�
 - **兩段擲筊**：點籤→選中態→「求此籤?」確認→ JiaoBeiFX 聖筊才算。屬互動流程改動（中等），需重驗點擊/重入鎖；現為單段（點即擲筊即定）。
 - **籤譜收藏 X/60**：持久存 ProfileData + 收藏畫面。屬新持久系統+UI（量大）。
 **建議**：兩段擲筊可作下一個小增量；籤譜併入「圖鑑/收藏」系統一起做。res_* 利忌圖示待美術。
+
+### WO-7（三畫面視覺饗宴化 UIUX_POLISH）: 自主決策與延後項
+**情境（2026-06-17）**：UIUX_POLISH_WORK_ORDER 自主執行，分支 feature/v0.3-formation。把新一局/神示供桌/五營戰推到商業二次元門檻。
+**自主決策（皆可逆）**：
+- **素材全程序化、零生成**：五營羅盤/暗角/母壇聖光/籤框深底全用 `_draw`/GradientTexture2D/modulate 做（FiveCampBackdrop.gd + 各 view），不阻塞於 Recraft 生成。§5 允許回退程序化；art 到位可日後升級（路徑已留）。**未生成** ORACLE_ASSET_PROMPTS/五營素材（v3 bg、qian_frame、jiaobei、羅盤底盤、營徽…）。
+- **敵我語言**：我營一律燙金框、得位玉青、來煞硃砂、母壇放大金框+聖光。元素五行色降為「左上小章」，不再染整框（原本火營紅框被誤讀成敵方）。
+- **新一局 modal 全遮**：`show_new_run_menu` 改 `main_menu.visible=false`（原 true → 大廳貨幣 HUD/標題/成就信件/右緣橘塊全透出）。殺「新一局」鬼影＝場景靜態 Label 加入 `_hide_legacy_static_labels`。暗紅疊暗紅元兇＝場景 `NewRunBackdrop` 不透明硃砂 ColorRect → runtime 沉成半透深舞台 + 滿版自適應。
+- **神示供桌洗白底**：無 v3 素材，直接 `bg.modulate` 壓暗 v2 成夜廟（與 A/C 同深底語言）。
+**延後 / 硬停（§0 條件 2）**：
+- **鎖角色剪影 + 選中金光環**（§3A）：在獨立元件 CharacterGallery 的 slot 子場景，未動（風險/時間）。現況：選中有金框、鎖卡顯暗圖+勝場進度（可讀但非真剪影/光環）。→ 下一增量。
+- **一拍爽（ruler 8）≈3.5**：擲筊 JiaoBeiFX / 降乩 DeityCutInFX 在「整合戰鬥」由 Combat 的 deity_controller 觸發，**獨立探針靜態圖拍不到**；已補母壇靜態聖光暈墊高。動態演出的「市面感」最終需真機互動 + 玩家測（§7 誠實邊界）。
+- **15_reward MODAL FAIL（既有、非本令三畫面）**：根因 RunScreen 固定畫布 + UiMaskFitter 以 Responsive.screen_rect 鋪滿，寬螢幕下 screen_rect 未達 viewport 95%。屬 RunScreen 響應式深層問題，非 A/B/C 範疇；本令未改（嘗試過 additive 遮罩無效已還原）。建議獨立票處理 screen_rect↔viewport 對齊。

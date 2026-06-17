@@ -320,9 +320,12 @@ combat.formation.lose,母壇崩塌,母坛崩塌,Altar Falls,母壇崩壊
 combat.formation.reserve,調度,调度,Reserve,調度
 combat.formation.wei,得位,得位,In Place,得位
 combat.formation.sha_marker,煞 %d ▸%d,煞 %d ▸%d,Sha %d ▸%d,煞 %d ▸%d
-combat.formation.lane_clear,—,—,—,—
+combat.formation.lane_clear,清,清,Clear,清
 combat.formation.fu_pick_lane,選方位放「%s」,选方位放「%s」,Pick a lane for %s,方位を選んで %s
 combat.formation.affinity_active,合祀 %s,合祀 %s,United %s,合祀 %s
+combat.legend.ours,我營,我营,Ours,我営
+combat.legend.sha,來煞,来煞,Incoming,襲来
+combat.legend.altar,母壇,母坛,Altar,母壇
 combat.log.fu,敕令 %s,敕令 %s,Played %s,%s を行使
 combat.fu_draft.title,領一道符令,领一道符令,Claim a Talisman,符令を授かる
 canon.title,封神榜,封神榜,Canonization Roll,封神榜
