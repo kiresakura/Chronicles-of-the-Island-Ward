@@ -20,6 +20,19 @@ const QIAN_GRADES_PATH := "res://external/data/qian_grades.json"
 const STRIP_SEPARATION: float = 16.0
 var _qian_ladder: Array = []	# 籤運由好到壞；index 越小越吉
 
+# Phase 2 籤運視覺階梯（tier 5=上上…1=下下；非籤運→預設中平 tier3）。色非中文，i18n 安全。
+const TIER_BORDER: Dictionary = {
+	5: Color(1.00, 0.86, 0.42), 4: Color(0.91, 0.77, 0.42), 3: Color(0.74, 0.64, 0.42),
+	2: Color(0.58, 0.52, 0.46), 1: Color(0.46, 0.44, 0.44),
+}
+const TIER_HEAD_BG: Dictionary = {
+	5: Color(0.66, 0.16, 0.10, 1.0), 4: Color(0.56, 0.14, 0.10, 1.0), 3: Color(0.46, 0.16, 0.12, 1.0),
+	2: Color(0.38, 0.18, 0.16, 1.0), 1: Color(0.30, 0.28, 0.27, 1.0),	# 下下：灰燼
+}
+const TIER_PAPER: Dictionary = {	# 紙底：上上偏亮、下下偏灰，其餘 paper_warm
+	5: Color(0.98, 0.94, 0.82, 0.97), 1: Color(0.74, 0.72, 0.70, 0.96),
+}
+
 ## 讀籤運階梯（best→worst）。RSO 視覺階梯 + validator 共用。
 static func load_qian_ladder() -> Array:
 	if not FileAccess.file_exists(QIAN_GRADES_PATH):
@@ -38,6 +51,31 @@ func _grade_tier(grade: String) -> int:
 	if idx < 0:
 		return 0
 	return _qian_ladder.size() - idx
+
+## 籤運貼圖裝飾（素材存在才套；無則靠程序化階梯撐，§0.4 美術非阻塞）。
+func _apply_tier_decals(option: Control, tier: int) -> void:
+	var frame_path: String = "res://assets/generated/ui_v2/qian_frame_%d.png" % tier
+	if ResourceLoader.exists(frame_path) and option.get_node_or_null("QianFrame") == null:
+		var frame := TextureRect.new()
+		frame.name = "QianFrame"
+		frame.texture = load(frame_path)
+		frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		option.add_child(frame)
+	var seal_path: String = "res://assets/generated/ui_v2/qian_seal_%d.png" % tier
+	if ResourceLoader.exists(seal_path) and option.get_node_or_null("QianSeal") == null:
+		var seal := TextureRect.new()
+		seal.name = "QianSeal"
+		seal.texture = load(seal_path)
+		seal.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		seal.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		seal.custom_minimum_size = Vector2(44, 44)
+		seal.size = Vector2(44, 44)
+		seal.position = Vector2(8, 8)	# 籤首左上角印章
+		option.add_child(seal)
 var _resolving: bool = false	# 擲筊演出中鎖重入
 
 func _ready():
@@ -311,25 +349,38 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 	if option == null:
 		return
 	option.set_meta("qian_grade", qian_grade)	# Phase 2 視覺階梯依此分支
+	var tier: int = _grade_tier(qian_grade)
+	if tier == 0:
+		tier = 3	# 無籤運 → 預設中平視覺
 	var box: Control = starting_option_container as Control
 	var strip_h: float = maxf(320.0, box.size.y if box != null else 380.0)
-	option.custom_minimum_size = Vector2(196, strip_h)	# 寬 ≥80 舒適觸控、整支可點
+	# 上上額外加寬，一眼跳出（慶祝稀有）
+	option.custom_minimum_size = Vector2(212 if tier == 5 else 196, strip_h)	# 寬 ≥80 舒適觸控、整支可點
 	option.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = COTIW_UI_THEME.get_color("paper_warm", Color(0.96, 0.91, 0.81, 1.0))
-	sb.bg_color.a = 0.96
+	sb.bg_color = TIER_PAPER.get(tier, COTIW_UI_THEME.get_color("paper_warm", Color(0.96, 0.91, 0.81, 0.96)))
 	sb.set_corner_radius_all(10)
-	sb.set_border_width_all(3)
-	sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 1.0))
+	sb.set_border_width_all(4 if tier == 5 else (3 if tier >= 3 else 2))
+	sb.border_color = TIER_BORDER.get(tier, Color(0.91, 0.77, 0.42))
 	sb.content_margin_left = 10
 	sb.content_margin_right = 10
 	sb.content_margin_top = 0	# 籤首帶頂部貼框
 	sb.content_margin_bottom = 10
-	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
-	sb.shadow_size = 6
-	sb.shadow_offset = Vector2(0, 4)
+	# 上上：金光暈（gold halo shadow）；其餘黑投影；下下：暗淡無暈
+	if tier == 5:
+		sb.shadow_color = Color(1.0, 0.85, 0.40, 0.55)
+		sb.shadow_size = 13
+		sb.shadow_offset = Vector2(0, 2)
+	else:
+		sb.shadow_color = Color(0.0, 0.0, 0.0, 0.30 if tier >= 2 else 0.18)
+		sb.shadow_size = 6 if tier >= 2 else 3
+		sb.shadow_offset = Vector2(0, 4)
 	option.add_theme_stylebox_override("panel", sb)
+	# 下下：整支灰化（灰燼感），其餘正常
+	option.modulate = Color(0.82, 0.80, 0.78) if tier == 1 else Color.WHITE
+	# 籤運貼圖框/印章（素材若存在；無則靠上方程序化階梯，§0.4 非阻塞）
+	_apply_tier_decals(option, tier)
 
 	# 內部重組：籤首帶 + 內文（一次性，冪等）
 	if option.get_node_or_null("OmenStack") == null:
@@ -350,7 +401,7 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		head.add_theme_font_size_override("font_size", 19)
 		head.add_theme_color_override("font_color", Color(1.0, 0.92, 0.72))
 		var head_sb := StyleBoxFlat.new()
-		head_sb.bg_color = Color(0.56, 0.14, 0.10, 1.0)	# 硃砂帶
+		head_sb.bg_color = TIER_HEAD_BG.get(tier, Color(0.56, 0.14, 0.10, 1.0))	# 硃砂帶（依籤運深淺）
 		head_sb.corner_radius_top_left = 8
 		head_sb.corner_radius_top_right = 8
 		head_sb.border_width_bottom = 2
@@ -374,8 +425,8 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		grade.text = qian_grade
 		grade.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		grade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		grade.add_theme_font_size_override("font_size", 15)
-		grade.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.72, 0.52, 0.22, 1.0)))
+		grade.add_theme_font_size_override("font_size", 17 if tier == 5 else 15)
+		grade.add_theme_color_override("font_color", TIER_BORDER.get(tier, Color(0.72, 0.52, 0.22, 1.0)))
 		stack.add_child(grade)
 
 		# 內文垂直置中：上下彈簧 Control 夾住 fit_content 的 RTL
