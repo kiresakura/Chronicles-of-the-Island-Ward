@@ -53,6 +53,11 @@ static func load_qian_ladder() -> Array:
 		return []
 	return (parsed as Dictionary).get("properties", {}).get("ladder", [])
 
+## 去除 bbcode 標籤（純 Label 防呆：絕不顯示生 [color] 標籤）。
+func _strip_bbcode(s: String) -> String:
+	var re := RegEx.create_from_string("\\[[^\\]]*\\]")
+	return re.sub(s, "", true).strip_edges()
+
 ## 籤運 → tier（上上=ladder長度…下下=1；不在階梯回 0）。
 func _grade_tier(grade: String) -> int:
 	var idx: int = _qian_ladder.find(grade)
@@ -349,10 +354,11 @@ func _update_fortune_banner() -> void:
 		add_child(banner)
 	banner.text = tr("rso.fortune_prefix") + FortuneSticks.stick_summary(FortuneSticks.load_stick(Global.run_fortune_stick_id))
 	banner.visible = true
-	# 修鬼影：橫幅原本 safe-relative（y+152）會漂到 .tscn 固定座標的標題（y110-175）後方。
-	# 改用與標題同座標系：置於標題「上方」(y76)、同 x 跨度置中，永不與標題重疊。
-	banner.size = Vector2(700, 28)
-	banner.position = Vector2(250.0, 76.0)
+	# 自適應 + 修鬼影：隨安全區置中，置於標題上方（標題已 safe.y+40），任何螢幕寬都不偏移/不壓標題。
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	var bw: float = minf(560.0, safe.size.x - 40.0)
+	banner.size = Vector2(bw, 26)
+	banner.position = Vector2(safe.position.x + (safe.size.x - bw) * 0.5, safe.position.y + 8.0)
 
 ## Q2-B 容器重排：VBox 轉橫排（BoxContainer.vertical=false）+ 依視口安全區置中。
 ## 四支籤詩並立 — 1200×700 與 4:3 皆以 stage 寬重算（地圖同款 runtime 置中思路）。
@@ -379,6 +385,16 @@ func _relayout_offering_strips() -> void:
 	var height: float = minf(404.0, safe.position.y + safe.size.y - top - 64.0)
 	box.position = Vector2(safe.position.x + (safe.size.x - width) * 0.5, top)
 	box.size = Vector2(width, height)
+	# 自適應：標題/副標原為 .tscn 固定座標(x250-950)，寬螢幕會偏離置中的籤詩列 →
+	# 改隨安全區整寬置中（橫向 alignment=CENTER），縱向亦 safe-relative（高螢幕不落瀏海）。
+	var title: Control = get_node_or_null("RSOTitle") as Control
+	if title != null:
+		title.position = Vector2(safe.position.x, safe.position.y + 40.0)
+		title.size = Vector2(safe.size.x, 56.0)
+	var subtitle: Control = get_node_or_null("RSOSubtitle") as Control
+	if subtitle != null:
+		subtitle.position = Vector2(safe.position.x, safe.position.y + 102.0)
+		subtitle.size = Vector2(safe.size.x, 30.0)
 	# 乩童立繪：移到籤詩「後方」（tree 序在容器前 = 先繪）+ 貼安全區右緣 —
 	# 1244 窄幅下不再壓到第四籤的可讀面
 	var presenter: Control = get_node_or_null("RSOPresenter") as Control
@@ -441,7 +457,8 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		# 籤首帶：籤名（真籤詩靈魂回 C 位，取代干支 omen.head）
 		var head := Label.new()
 		head.name = "OmenHead"
-		head.text = qian_name if qian_name != "" else option_bbcode
+		# 籤名（真籤詩）；缺資料時退回「去 bbcode 標籤」的純文字（絕不在純 Label 顯示生 [color] 標籤）
+		head.text = qian_name if qian_name != "" else _strip_bbcode(option_bbcode)
 		head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		head.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		head.custom_minimum_size = Vector2(0, 52)
