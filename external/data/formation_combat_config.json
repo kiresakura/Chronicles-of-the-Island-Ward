@@ -23,6 +23,11 @@
       "generates": 0.9,
       "overcome_by": 0.6,
       "neutral": 1.0
+    },
+    "_combo_note": "FC-6b 緣分合擊效果（暫定值，待憲龍微調）。每回合開盤套用。",
+    "combo_effects": {
+      "combo_earth_ward": { "altar_heal_per_turn": 1 },
+      "combo_sea_watch": { "presha_cut_per_turn": 2 }
     }
   }
 }

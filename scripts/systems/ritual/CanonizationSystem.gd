@@ -77,6 +77,15 @@ static func canonize(profile: ProfileData, deity_id: String) -> Dictionary:
 	grants.assign(tier.get("grants", []))
 	return {"success": true, "new_rank": target, "grants": grants}
 
+## 本檔玩家是否（任一已敕封神明）解鎖了某 grant 選項（FC-5b 戰鬥/run 整合用）。
+static func profile_has_grant(profile: ProfileData, grant_key: String) -> bool:
+	if profile == null:
+		return false
+	for deity_id: Variant in profile.profile_deity_rank:
+		if grants_for(profile, str(deity_id)).has(grant_key):
+			return true
+	return false
+
 ## 已解鎖的全部 grants（累計到目前位階）。
 static func grants_for(profile: ProfileData, deity_id: String) -> Array:
 	var out: Array = []

@@ -75,6 +75,15 @@ func test_yuanbao_cannot_substitute_incense() -> void:
 	assert_false(CanonCls.can_canonize(p, "d"), "元寶再多也不能拿來敕封（只認香火）")
 	assert_false(CanonCls.canonize(p, "d")["success"], "元寶不可代香火")
 
+func test_profile_has_grant() -> void:
+	var p := _profile(1000)
+	assert_false(CanonCls.profile_has_grant(p, "fu_draft_plus_one"), "未敕封無 grant")
+	CanonCls.canonize(p, "deity_x")	# 帥（camp_slot_eligibility）
+	CanonCls.canonize(p, "deity_x")	# 神（fu_draft_plus_one）
+	assert_true(CanonCls.profile_has_grant(p, "fu_draft_plus_one"), "敕封到神 → 解鎖 +1符令draft")
+	assert_true(CanonCls.profile_has_grant(p, "camp_slot_eligibility"), "亦累計帥階 grant")
+	assert_false(CanonCls.profile_has_grant(p, "nonexistent"), "無此 grant")
+
 func test_load_tiers_from_file() -> void:
 	var t: Dictionary = CanonCls.load_tiers()
 	assert_false(t.is_empty(), "rank_tiers 可載入")
