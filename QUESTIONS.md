@@ -728,3 +728,10 @@ FC-2b.2 卡牌汰換 → 移至經濟遷移末段。
 **決定**：續用 feature/v0.3-formation（本 session 線，PR #1 已開）。RSO 重設計屬 v0.3 遊戲體驗打磨，
 commit 可日後 cherry-pick。Phase 1 餵真籤詩：option_qian_name/verse/grade（資料層）+ 籤運統一階梯
 external/data/qian_grades.json（亦避免民俗籤運被 i18n 當程式中文）。廢 omen.head 靜態干支籤名。
+
+### WO-6（神示供桌 Phase 4 stretch 延後）: 兩段擲筊 + 籤譜收藏
+**情境（2026-06-17）**：ORACLE_REDESIGN Phase 4（stretch）。已做 **利忌分層**（↑利綠/↓忌紅兩列，icons 暫用箭頭 glyph，res_* 圖示為後續）。
+**延後（§4 允許，stretch 不阻塞交付）**：
+- **兩段擲筊**：點籤→選中態→「求此籤?」確認→ JiaoBeiFX 聖筊才算。屬互動流程改動（中等），需重驗點擊/重入鎖；現為單段（點即擲筊即定）。
+- **籤譜收藏 X/60**：持久存 ProfileData + 收藏畫面。屬新持久系統+UI（量大）。
+**建議**：兩段擲筊可作下一個小增量；籤譜併入「圖鑑/收藏」系統一起做。res_* 利忌圖示待美術。
