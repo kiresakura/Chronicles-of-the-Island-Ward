@@ -12,6 +12,7 @@ const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 �
 @onready var map = $%Map
 
 var _offering_table_panel: Panel
+var _input_mask: ColorRect	# 全幅 STOP 遮罩（取代固定 1200 Background；隨 viewport 鋪滿、寬螢幕不露邊/不穿透）
 
 # reward values; These are sorted into mutually exclusive groups
 # they can be added to via ActionGrantRewards to allow things to affect them
@@ -40,7 +41,38 @@ func _ready():
 	continue_button.button_up.connect(_on_continue_button_up)
 	COTIW_UI_THEME.apply_primary_button_style(continue_button)
 	COTIW_UI_THEME.style_overlay_backdrop(backdrop, panel_fill)
+	# 固定 1200×700 Background 在寬螢幕(expand)露邊 + 不全幅擋輸入 → 疊一層全幅 STOP 遮罩。
+	# 依 viewport.get_visible_rect()（真實邏輯 viewport，含側帶）鋪滿；顯示/改尺寸時重套。
+	# 保留原 Background（不隱藏）作後備 dim，避免任何情境下完全無遮罩（無回歸）。
+	_ensure_input_mask()
+	var vp := get_viewport()
+	if vp != null and not vp.size_changed.is_connected(_fit_input_mask):
+		vp.size_changed.connect(_fit_input_mask)
+	if not visibility_changed.is_connected(_fit_input_mask):
+		visibility_changed.connect(_fit_input_mask)	# 不論誰把它設 visible 都重鋪滿
 	_build_offering_table_chrome()
+
+## 全幅深色 STOP 遮罩（dim + 擋輸入），最底繪。
+func _ensure_input_mask() -> void:
+	if _input_mask != null and is_instance_valid(_input_mask):
+		return
+	_input_mask = ColorRect.new()
+	_input_mask.name = "FullInputMask"
+	_input_mask.color = Color(0.06, 0.035, 0.04, 0.82)
+	_input_mask.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_input_mask)
+	move_child(_input_mask, 0)
+	_fit_input_mask()
+
+func _fit_input_mask() -> void:
+	if _input_mask == null or not is_instance_valid(_input_mask):
+		return
+	var vp := get_viewport()
+	if vp == null:
+		return
+	var r: Rect2 = vp.get_visible_rect()
+	_input_mask.global_position = r.position
+	_input_mask.size = r.size
 
 static func make_offering_table_panel(panel_size: Vector2 = Vector2(640, 360)) -> Panel:
 	var table := Panel.new()
