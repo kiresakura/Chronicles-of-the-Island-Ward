@@ -19,6 +19,8 @@ class_name ProfileData
 ## 鎮島錄 2D — 修廟 meta：香火餘額 + 各建築等級（永久進度，隨 profile 序列化存檔）
 @export var profile_incense_balance: int = 0
 @export var profile_building_id_to_level: Dictionary[String, int] = {}
+# v0.3 敕封（FC-5）：神明/家將跨局位階 deity_id → 0..3（將/帥/神/帝）。預設空＝皆為「將」（向後相容）。
+@export var profile_deity_rank: Dictionary[String, int] = {}
 
 ## Q4-D 雲端存檔：最後寫入時戳（unix 秒）— 開機對帳 last-writer-wins 依據。
 ## FileLoader.save_profile() 落地時蓋章。

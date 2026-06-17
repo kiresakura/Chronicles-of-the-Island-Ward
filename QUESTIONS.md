@@ -704,3 +704,21 @@ Android 雲存（Play Games Saved Games）Q5 前補
 （法器多半改卡牌戰數值，在五營戰可能失效）。單獨改寶箱會與法器汰換糾纏。
 **決定**：寶箱符令 + 法器在五營的處置，併入 FC-2b.2「卡牌 meta 全面汰換」一起做
 （該步含刪既有測試＝工作令 §0.1 硬停，屆時提報憲龍）。現階段戰鬥符令 draft 已是主要 符令 來源。
+
+### WO-3（卡牌汰換真相）: 卡牌是 meta 經濟承重結構，非孤立死碼 — 不能盲刪
+**情境（2026-06-17，憲龍「放行刪除」後勘查）**：FC-2b.2 刪卡牌死碼前依賴分析發現卡牌深織全遊戲：
+- `Hand.gd` 被 12 檔引用：ActionCardPlay/ActionBasePickCards/InterceptorDuplicate{Attacks,CardPlays}/
+  ActionGenerator/Global/Signals/Consumables/**TalismanMergeSystem(合符)**/CombatHudOverlay/Card。
+- `CardData/Card` = 獎勵/商店/圖鑑/抽牌 UI 全骨幹：RewardOverlay/ShopOverlay/CardDraftSelectionOverlay/
+  CardSelectionOverlay/CardRewardButton/CardShopButton/KeywordContainer/CardArtRegistry。
+- 寶箱/商店/圖鑑/合符**現仍用卡牌**（僅戰鬥改五營）。
+**結論**：現在刪卡牌 = 砸穿商店/圖鑑/寶箱/獎勵/合符 → 遊戲半殘，直到符令版經濟 + 合符遷移 + FC-5/6
+就位才補回。屬多階段經濟重寫，非「刪死碼」。違反「不留半殘」+ §0.3 硬停。
+**安全可刪（孤立、低值）**：戰鬥專用 FX（WardBreakFX/DeityCutInFX，僅 Combat 引用、其事件五營不再發）
++ 不再套用 CombatHud/FxOverlay；其餘卡牌系統須隨經濟遷移分階段退役。
+**待憲龍定**：遷移策略（見報告三選項）。在你定案前不大規模刪卡牌。
+
+### WO-4（遷移策略拍板）: 走 A — 分階段經濟遷移，卡牌最後拆
+**決定（憲龍）**：不現在刪卡牌。先建符令版替代經濟（商店/圖鑑/合符遷符令）+ FC-5 敕封 / FC-6 緣分，
+全部就位、遊戲每階段保持可玩+綠後，才退役卡牌管線。卡牌暫留作 meta 骨幹（戰鬥已不用）。
+FC-2b.2 卡牌汰換 → 移至經濟遷移末段。
