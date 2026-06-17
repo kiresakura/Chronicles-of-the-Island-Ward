@@ -9,6 +9,7 @@ extends Control
 class_name TempleScreen
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const CANON_SCREEN := preload("res://scripts/ui/menus/CanonizationScreen.gd")	# 封神榜（FC-5c）；修廟與敕封共用香火池
 
 ## 建築 glyph 徽章 + 內容型標注（系統存在性以 Q2 現況誠實對映）
 const BUILDING_GLYPH: Dictionary = {
@@ -31,6 +32,8 @@ var PANEL_BG: Color = Color(0.14, 0.05, 0.04, 0.93)
 var _incense_lbl: Label
 var _grid: GridContainer
 var _back_btn: Button
+var _canon_btn: Button			# 封神榜入口（FC-5c）
+var _canon_screen: Control = null
 var _cards: Dictionary = {}	# building_id -> {panel, lv, cost, btn, note}
 
 func _ready() -> void:
@@ -51,6 +54,16 @@ func open() -> void:
 
 func close() -> void:
 	visible = false
+
+## 開封神榜（lazy；敕封成功 → 香火變動 → 刷新本畫面成本列）
+func _open_canonization() -> void:
+	if _canon_screen == null or not is_instance_valid(_canon_screen):
+		_canon_screen = CANON_SCREEN.new()
+		_canon_screen.name = "CanonizationScreen"
+		add_child(_canon_screen)
+		_canon_screen.canon_changed.connect(refresh)
+		_canon_screen.canon_changed.connect(func() -> void: temple_changed.emit())
+	_canon_screen.open()
 
 func _build() -> void:
 	# 全幅暗底（modal 遮罩 + 氛圍）
@@ -100,6 +113,16 @@ func _build() -> void:
 	COTIW_UI_THEME.apply_primary_button_style(_back_btn)
 	_back_btn.button_up.connect(close)
 	add_child(_back_btn)
+
+	# 封神榜入口（敕封與修廟共用香火池 → 同畫面進出）
+	_canon_btn = Button.new()
+	_canon_btn.name = "CanonEntryButton"
+	_canon_btn.text = tr("canon.open")
+	_canon_btn.custom_minimum_size = Vector2(200, 80)
+	_canon_btn.focus_mode = Control.FOCUS_NONE
+	COTIW_UI_THEME.apply_secondary_button_style(_canon_btn)
+	_canon_btn.button_up.connect(_open_canonization)
+	add_child(_canon_btn)
 
 	_grid = GridContainer.new()
 	_grid.name = "BuildingGrid"
@@ -278,6 +301,8 @@ func _relayout() -> void:
 	if _incense_lbl != null:
 		_incense_lbl.size = Vector2.ZERO
 		_incense_lbl.position = Vector2(safe.position.x + safe.size.x - 190.0, safe.position.y + 14.0)
+	if _canon_btn != null:
+		_canon_btn.position = safe.position + Vector2(safe.size.x - 406.0, 10.0)
 	if _grid != null:
 		var grid_w: float = 296.0 * 3.0 + 16.0 * 2.0
 		var grid_h: float = 218.0 * 2.0 + 16.0
