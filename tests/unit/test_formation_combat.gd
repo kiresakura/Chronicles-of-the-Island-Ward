@@ -265,3 +265,43 @@ func test_combo_sea_watch_precuts_frontmost_sha() -> void:
 	var sha: Variant = cb.lanes[lane]["sha"]
 	if sha != null:
 		assert_true(int(sha["strength"]) <= 8, "combo_sea_watch 先制削煞 2（煞 10→8）")
+
+# ---- 神格/神蹟（§2.1）----
+
+func _feats() -> Array:
+	return [
+		{"threshold": 2, "effect": "invoke_power_add", "value": 2, "desc": "x"},
+		{"threshold": 4, "effect": "charge_max_reduce", "value": 1, "desc": "y"},
+	]
+
+func test_efficacy_applies_threshold_2_only() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({
+		"efficacy_feats": _feats(), "efficacy_points": 3, "deity_invoke_power": 4, "deity_charge_max": 3}), 1)
+	assert_eq(cb.deity_invoke_power, 6, "神格達門檻2 → 降乩削煞 4+2=6")
+	assert_eq(cb.deity_charge_max, 3, "未達門檻4 → 槽滿值不變")
+	assert_eq(cb.active_feats.size(), 1, "僅 1 神蹟生效")
+
+func test_efficacy_higher_points_unlocks_both() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({
+		"efficacy_feats": _feats(), "efficacy_points": 5, "deity_invoke_power": 4, "deity_charge_max": 3}), 1)
+	assert_eq(cb.deity_invoke_power, 6, "門檻2 生效")
+	assert_eq(cb.deity_charge_max, 2, "門檻4 生效：槽滿值 3-1=2")
+	assert_eq(cb.active_feats.size(), 2, "2 神蹟全生效")
+
+func test_efficacy_none_when_below_first_threshold() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({
+		"efficacy_feats": _feats(), "efficacy_points": 1, "deity_invoke_power": 4, "deity_charge_max": 3}), 1)
+	assert_eq(cb.active_feats.size(), 0, "神格未達門檻 → 無神蹟")
+	assert_eq(cb.deity_invoke_power, 4, "降乩參數不變")
+
+func test_efficacy_gained_on_invoke() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {}, [{"id": "e", "hp": 24}], _cfg({
+		"deity_charge_max": 2, "altar_max_integrity": 99, "efficacy_charge_per_invoke": 1}), 1)
+	cb.deity_charge = cb.deity_charge_max	# 手動充滿
+	var before: int = cb.efficacy_gained
+	assert_true(cb.invoke_deity(), "槽滿可降乩")
+	assert_eq(cb.efficacy_gained, before + 1, "降乩＝餵神，累積神格 +1")

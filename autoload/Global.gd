@@ -284,6 +284,8 @@ var run_merge_energy_cost: int = 0
 # v0.3 符令牌庫（FC-2b.3b）：本局持久符令牌庫（戰勝 1選3 draft 加入；戰鬥從此抽）。
 # start_run 初始化為起始牌庫（角色專屬牌庫＝FC-2b.3-3，目前用 formation_fu.json 預設）。
 var run_fu_deck: Array[String] = []
+# v0.3 神格（§2.1）：本局神格點數 deity_id→points（餵神累積→逐階解鎖神蹟，當局有效）。start_run 歸零。
+var run_deity_efficacy: Dictionary[String, int] = {}
 
 func get_run_active_deity_id() -> String:
 	return run_active_deity_id if run_active_deity_id != "" else RitualLoadout.DEFAULT_DEITY_ID
@@ -417,6 +419,7 @@ func start_run(character_object_id: String, run_seed: int, difficulty_level: int
 		fu_starter = (preload("res://scripts/systems/ritual/FormationCombat.gd").load_fu_config().get("starter_deck", []) as Array)
 	for fu_id: Variant in fu_starter:
 		run_fu_deck.append(str(fu_id))
+	run_deity_efficacy.clear()	# 神格本局歸零（§2.1，當局有效不持久）
 
 	# 鎮島錄 — 套用本局班底（護壇支援卡 + 法器規則 + 出戰神明）
 	_apply_run_loadout(character_data, guardian_id, ritual_tool_id)

@@ -27,3 +27,7 @@ class_name DeityData
 
 ## 自損換請神（乩童專屬節奏）：每失去 1 點元神累積的請神值
 @export var deity_charge_per_self_loss: int = 0
+
+# v0.3 神格/神蹟（§2.1）：局內神格門檻 → 神蹟效果（當局有效、不持久）。
+# [{threshold, effect, value, desc}]；預設空＝無神蹟（向後相容）。每局餵神累積→逐階解鎖。
+@export var deity_efficacy_feats: Array[Dictionary] = []
