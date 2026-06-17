@@ -17,6 +17,7 @@ class_name FormationCombat
 extends RefCounted
 
 const FiveElementsCls := preload("res://scripts/systems/ritual/FiveElements.gd")
+const AffinitySystemCls := preload("res://scripts/systems/ritual/AffinitySystem.gd")
 const CONFIG_PATH := "res://external/data/formation_combat_config.json"
 const FU_CONFIG_PATH := "res://external/data/formation_fu.json"
 
@@ -42,6 +43,7 @@ const EV_WIN := "win"
 const EV_LOSE := "lose"
 const EV_RESOLVE := "resolve"
 const EV_FU := "fu"
+const EV_COMBO := "combo"		# 緣分合擊每回合生效
 
 # ---- 由 setup 注入的局面 ----
 var camps: Array = []				# [{id,name,element,lane}]（含中營）
@@ -78,6 +80,10 @@ var fu_hand_max: int = 5
 var fu_draw_per_turn: int = 1
 var fu_plays_per_turn: int = 1
 var fu_plays_left: int = 0			# 本回合可打符令數（_begin_turn 重置）
+
+# ---- 緣分合擊（FC-6b）----
+var combo_effects_cfg: Dictionary = {}	# combo_effect 鍵 → 效果參數（資料層）
+var active_combos: Array = []			# 目前佈陣啟用的合擊效果鍵（AffinitySystem 偵測）
 
 var _rng: RandomNumberGenerator
 var _waves_total: int = 0			# 翻譯出的總波數（判斷「出齊」用）
@@ -150,6 +156,7 @@ func setup(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, config:
 	max_turns = int(cfg.get("max_turns", 30))
 	deity_charge_max = int(cfg.get("deity_charge_max", 3))
 	deity_invoke_power = int(cfg.get("deity_invoke_power", 4))
+	combo_effects_cfg = cfg.get("combo_effects", {})
 
 	_load_camps(open_camp_ids)
 	_build_lanes(int(cfg.get("lane_steps_to_altar", 3)))
@@ -162,6 +169,7 @@ func setup(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, config:
 		for uid: String in deploy:
 			if units.has(uid) and _camp_exists(str(deploy[uid])):
 				unit_location[uid] = str(deploy[uid])
+	_recompute_combos()	# 緣分合擊隨佈陣偵測
 
 	# 符令手牌（FP-2）：可由 config 注入 fu_config 覆寫（測試確定性），否則讀 formation_fu.json
 	var fu_cfg: Dictionary = cfg.get("fu_config", {})
@@ -342,6 +350,8 @@ func _begin_turn() -> void:
 					"element": str(w.get("element", "")),
 				}
 				_emit(EV_SHA_SPAWN, {"turn": turn, "lane": lane, "strength": int(w.get("strength")), "steps": int(lanes[lane]["steps_to_altar"])})
+	# 緣分合擊：每回合開盤生效（資料層數值）
+	_apply_combo_start_effects()
 
 ## 調營：把單位移到某營（佈陣/移防），花一個動作。回成功與否。
 func move_unit(unit_id: String, camp_id: String) -> bool:
@@ -353,6 +363,7 @@ func move_unit(unit_id: String, camp_id: String) -> bool:
 		return false
 	unit_location[unit_id] = camp_id
 	actions_remaining -= 1
+	_recompute_combos()	# 調營改變鄰接 → 重算緣分合擊
 	_emit(EV_MOVE, {"unit": unit_id, "camp": camp_id, "actions_left": actions_remaining})
 	return true
 
@@ -413,6 +424,42 @@ func invoke_deity() -> bool:
 			broke.append(lane)
 	_emit(EV_DEITY, {"hit": hit, "power": deity_invoke_power, "broke": broke})
 	return true
+
+## 緣分合擊偵測（佈陣/調營後重算）：把啟用的合擊效果鍵存進 active_combos。
+func _recompute_combos() -> void:
+	active_combos = AffinitySystemCls.active_combo_effects(unit_location, camps)
+
+## 每回合開盤套用緣分合擊（效果語意在碼、數值在 combo_effects_cfg＝鐵律1）。
+func _apply_combo_start_effects() -> void:
+	for combo: String in active_combos:
+		var params: Dictionary = combo_effects_cfg.get(combo, {})
+		match combo:
+			"combo_earth_ward":	# 城隍土地：母壇每回合自癒
+				var heal: int = int(params.get("altar_heal_per_turn", 0))
+				if heal > 0 and altar_integrity < altar_max:
+					altar_integrity = mini(altar_max, altar_integrity + heal)
+					_emit(EV_COMBO, {"combo": combo, "altar_heal": heal, "altar": altar_integrity})
+			"combo_sea_watch":	# 媽祖三聖：預警 + 先制削最逼近母壇的煞
+				var cut: int = int(params.get("presha_cut_per_turn", 0))
+				if cut > 0:
+					var lane: String = _frontmost_sha_lane()
+					if lane != "":
+						var sha: Variant = lanes[lane]["sha"]
+						sha["strength"] -= cut
+						if sha["strength"] <= 0:
+							lanes[lane]["sha"] = null
+						_emit(EV_COMBO, {"combo": combo, "lane": lane, "cut": cut})
+
+## 最逼近母壇（剩餘步數最少）的有煞 lane（無則回空）。
+func _frontmost_sha_lane() -> String:
+	var best: String = ""
+	var best_steps: int = 1 << 30
+	for lane: String in lanes:
+		var sha: Variant = lanes[lane]["sha"]
+		if sha != null and int(sha["steps"]) < best_steps:
+			best_steps = int(sha["steps"])
+			best = lane
+	return best
 
 ## 結算本回合：各 lane 該營攔煞（五行得位加成）→ 殘煞推進 → 抵母壇/營空則扣母壇 → 判勝負。
 func end_turn() -> void:

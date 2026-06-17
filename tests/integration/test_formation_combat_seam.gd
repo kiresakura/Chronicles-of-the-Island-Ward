@@ -102,6 +102,30 @@ func test_formation_win_offers_fu_draft_then_combat_ended() -> void:
 		Signals.combat_ended.disconnect(_on_combat_ended_flag)
 	_teardown(env)
 
+# FC-5b：敕封 fu_draft_plus_one grant（神階）→ 戰勝符令 draft 三選一變四選一。
+func test_canonization_grant_expands_fu_draft() -> void:
+	var env: Dictionary = _build_env()
+	var combat: Node = env.get("combat")
+	if combat == null:
+		_teardown(env)
+		return
+	# 敕封任一神到神階（rank 2）→ 解鎖 fu_draft_plus_one
+	Global.profile_data.profile_deity_rank["deity_tiger_god"] = 2
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var view: Control = combat._formation_view
+	if view == null:
+		_teardown(env)
+		return
+	view.start([], {}, [{"id": "weak", "hp": 16}], 1)
+	var safety: int = 0
+	while view._core.state == FormationCombatCls.STATE_PLAYING and safety < 15:
+		view._on_end_turn()
+		safety += 1
+	if combat._fu_draft_view.visible:
+		assert_eq(combat._fu_draft_view._buttons.size(), 4, "敕封神階 → 符令 draft 四選一（3+1）")
+	Global.profile_data.profile_deity_rank.erase("deity_tiger_god")	# 還原
+	_teardown(env)
+
 # 持久符令牌庫：戰鬥從本局 run_fu_deck 抽符令（FC-2b.3b-1）。
 func test_combat_draws_fu_from_run_deck() -> void:
 	var env: Dictionary = _build_env()

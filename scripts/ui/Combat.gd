@@ -17,6 +17,7 @@ const DEITY_CUTIN_FX := preload("res://scripts/ui/fx/DeityCutInFX.gd")
 const FORMATION_VIEW_SCENE := preload("res://scenes/ui/FormationCombatView.tscn")
 const FORMATION_COMBAT := preload("res://scripts/systems/ritual/FormationCombat.gd")
 const FU_DRAFT_VIEW_SCENE := preload("res://scenes/ui/FuDraftView.tscn")
+const CANONIZATION := preload("res://scripts/systems/ritual/CanonizationSystem.gd")
 
 @onready var money_label: Label = $%MoneyLabel
 @onready var health_label: Label = $%HealthLabel
@@ -399,7 +400,11 @@ func _on_formation_won() -> void:
 		var rng := RandomNumberGenerator.new()
 		rng.seed = _combat_index
 		var fu_cfg: Dictionary = FORMATION_COMBAT.load_fu_config()
-		var choices: Array = FORMATION_COMBAT.draft_fu_choices(int(fu_cfg.get("draft_choices", 3)), rng)
+		# FC-5b：敕封 grant「fu_draft_plus_one」（神階解鎖）→ 三選一變四選一
+		var draft_n: int = int(fu_cfg.get("draft_choices", 3))
+		if CANONIZATION.profile_has_grant(Global.profile_data, "fu_draft_plus_one"):
+			draft_n += 1
+		var choices: Array = FORMATION_COMBAT.draft_fu_choices(draft_n, rng)
 		if choices.is_empty():
 			Signals.combat_ended.emit()
 			return

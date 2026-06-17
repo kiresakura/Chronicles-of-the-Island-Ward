@@ -28,6 +28,13 @@ func _cfg(overrides: Dictionary = {}) -> Dictionary:
 		base[k] = overrides[k]
 	return base
 
+# 合擊效果暫定值（只給 combo 測試 opt-in；base _cfg 不含 → 其他測試合擊偵測仍在但 inert，不干擾煞值斷言）
+func _combo_cfg() -> Dictionary:
+	return {"combo_effects": {
+		"combo_earth_ward": {"altar_heal_per_turn": 1},
+		"combo_sea_watch": {"presha_cut_per_turn": 2},
+	}}
+
 # ---- 載入 / 翻譯 ----
 
 func test_setup_loads_five_camps_and_directional_lanes() -> void:
@@ -227,3 +234,34 @@ func test_load_fu_config_from_file() -> void:
 	var cfg: Dictionary = FormationCombatCls.load_fu_config()
 	assert_false(cfg.is_empty(), "符令調參檔可載入")
 	assert_true(cfg.has("fu") and cfg.has("starter_deck"), "含符令定義與起手牌庫（鐵律1：資料層）")
+
+# ---- 緣分合擊戰鬥整合（FC-6b）----
+
+func test_combo_earth_ward_active_and_heals() -> void:
+	var cb := FormationCombatCls.new()
+	# 城隍+土地 佈相鄰營（北-東環相鄰）→ 合擊啟用
+	cb.setup([], {"unit_chenghuang": "camp_north", "unit_tudigong": "camp_east"}, [{"id": "e", "hp": 24}], _cfg(_combo_cfg()), 1)
+	assert_true(cb.active_combos.has("combo_earth_ward"), "城隍土地相鄰合祀 → 合擊啟用")
+	cb.altar_integrity = cb.altar_max - 5
+	cb._apply_combo_start_effects()
+	assert_eq(cb.altar_integrity, cb.altar_max - 4, "combo_earth_ward：母壇每回合自癒 1")
+
+func test_combo_recompute_on_move_breaks_affinity() -> void:
+	var cb := FormationCombatCls.new()
+	cb.setup([], {"unit_chenghuang": "camp_north", "unit_tudigong": "camp_east"}, [{"id": "e", "hp": 24}], _cfg(), 1)
+	assert_true(cb.active_combos.has("combo_earth_ward"), "前置：合擊啟用")
+	cb.actions_remaining = 2
+	cb.move_unit("unit_tudigong", "camp_south")	# 北-南不鄰 → 失連通
+	assert_false(cb.active_combos.has("combo_earth_ward"), "調離鄰接 → 合擊失效（隨佈陣重算）")
+
+func test_combo_sea_watch_precuts_frontmost_sha() -> void:
+	var cb := FormationCombatCls.new()
+	# 媽祖三聖佈相鄰（中+北+東，經中營連通）→ combo_sea_watch
+	var deploy: Dictionary = {"unit_mazu": "camp_center", "unit_qianliyan": "camp_north", "unit_shunfenger": "camp_east"}
+	cb.setup([], deploy, [{"id": "e_big", "hp": 80}], _cfg(_combo_cfg()), 1)
+	assert_true(cb.active_combos.has("combo_sea_watch"), "媽祖三聖相鄰 → 預警合擊啟用")
+	# 首回合開盤已套用先制削煞 2：80HP→煞10，先制後應 ≤ 8
+	var lane: String = str(cb.waves[0]["lane"])
+	var sha: Variant = cb.lanes[lane]["sha"]
+	if sha != null:
+		assert_true(int(sha["strength"]) <= 8, "combo_sea_watch 先制削煞 2（煞 10→8）")
