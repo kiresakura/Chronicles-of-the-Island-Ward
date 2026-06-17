@@ -11,6 +11,8 @@ extends Control
 const JIAJIANG_DIR := "res://assets/generated/jiajiang_v3/"
 const DEITY_DIR := "res://assets/generated/deities_v3/"
 const CARD_ART_REGISTRY := preload("res://scripts/ui/theme/CardArtRegistry.gd")
+const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
+const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 符令圖鑑來源
 
 # (sid, 中文標題, 副標)
 const JIAJIANG_LIST: Array = [
@@ -40,18 +42,31 @@ const DEITY_LIST: Array = [
 @onready var tab_jiajiang: Button = %TabJiajiang
 @onready var tab_deities: Button = %TabDeities
 
-enum TAB { CARDS, JIAJIANG, DEITIES }
+enum TAB { CARDS, JIAJIANG, DEITIES, FU }
 var _current_tab: int = TAB.CARDS
+var _tab_fu: Button		# FP-3 符令分頁（runtime 建，沿用卡牌分頁樣式）
 
 
 func _ready() -> void:
 	back_button.button_up.connect(_on_back_button_up)
 	if is_instance_valid(tab_cards):
 		tab_cards.button_up.connect(_on_tab_cards)
+		_build_fu_tab_button()	# 在「卡圖收藏」之後插入「符令」分頁
 	if is_instance_valid(tab_jiajiang):
 		tab_jiajiang.button_up.connect(_on_tab_jiajiang)
 	if is_instance_valid(tab_deities):
 		tab_deities.button_up.connect(_on_tab_deities)
+
+## 符令分頁鈕：複製卡牌分頁鈕（沿用主題樣式）、改文案、插在其後、接 _on_tab_fu。
+func _build_fu_tab_button() -> void:
+	if _tab_fu != null:
+		return
+	_tab_fu = tab_cards.duplicate()
+	_tab_fu.name = "TabFu"
+	_tab_fu.text = tr("codex.tab_fu")
+	tab_cards.get_parent().add_child(_tab_fu)
+	tab_cards.get_parent().move_child(_tab_fu, tab_cards.get_index() + 1)
+	_tab_fu.button_up.connect(_on_tab_fu)
 
 
 func populate_codex_menu() -> void:
@@ -61,10 +76,12 @@ func populate_codex_menu() -> void:
 func _show_tab(tab: int) -> void:
 	_current_tab = tab
 	_clear_container()
-	codex_card_container.columns = 6 if tab == TAB.CARDS else (4 if tab == TAB.JIAJIANG else 3)
+	codex_card_container.columns = 6 if tab == TAB.CARDS else (4 if (tab == TAB.JIAJIANG or tab == TAB.FU) else 3)
 	match tab:
 		TAB.CARDS:
 			_populate_cards()
+		TAB.FU:
+			_populate_fu()
 		TAB.JIAJIANG:
 			_populate_portraits(JIAJIANG_LIST, JIAJIANG_DIR)
 		TAB.DEITIES:
@@ -95,6 +112,71 @@ func _populate_cards() -> void:
 		codex_card_container.add_child(card)
 		card.init(card_data, 0, false, false)
 		shown += 1
+
+
+## FP-3 符令圖鑑：列出 formation_fu.json 全符（名/稀有星/述/可合提示），稀有度配色。
+func _populate_fu() -> void:
+	var ids: Array = FC.fu_library().keys()
+	ids.sort()
+	for fu_id: String in ids:
+		codex_card_container.add_child(_make_fu_card(str(fu_id)))
+
+func _make_fu_card(fu_id: String) -> Control:
+	var d: Dictionary = FC.fu_def(fu_id)
+	var rarity: String = str(d.get("rarity", "common"))
+	var col: Color = _fu_rarity_color(rarity)
+	var root := PanelContainer.new()
+	root.custom_minimum_size = Vector2(184, 210)
+	root.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(Color(0.12, 0.08, 0.06, 0.96), col, 0, 3, 0.0))
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	root.add_child(vbox)
+	var name_label := Label.new()
+	name_label.text = str(d.get("name", fu_id))
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.add_theme_font_size_override("font_size", 20)
+	name_label.add_theme_color_override("font_color", col)
+	vbox.add_child(name_label)
+	var stars := Label.new()
+	stars.text = "★".repeat(_rarity_stars(rarity))
+	stars.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stars.add_theme_font_size_override("font_size", 14)
+	stars.add_theme_color_override("font_color", col)
+	vbox.add_child(stars)
+	var desc := Label.new()
+	desc.text = str(d.get("desc", ""))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc.custom_minimum_size = Vector2(160, 64)
+	desc.add_theme_font_size_override("font_size", 14)
+	desc.add_theme_color_override("font_color", Color(0.92, 0.86, 0.74))
+	vbox.add_child(desc)
+	if FC.fu_can_merge(fu_id):
+		var mh := Label.new()
+		mh.text = tr("codex.fu_mergeable")
+		mh.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		mh.add_theme_font_size_override("font_size", 12)
+		mh.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("spirit_jade", Color(0.42, 0.80, 0.60)))
+		vbox.add_child(mh)
+	return root
+
+func _fu_rarity_color(rarity: String) -> Color:
+	match rarity:
+		"rare":
+			return COTIW_UI_THEME.get_color("festival_red", Color(0.90, 0.40, 0.28))
+		"uncommon":
+			return COTIW_UI_THEME.get_color("spirit_jade", Color(0.42, 0.80, 0.60))
+		_:
+			return COTIW_UI_THEME.get_color("incense_gold", Color(0.85, 0.72, 0.42))
+
+func _rarity_stars(rarity: String) -> int:
+	match rarity:
+		"rare":
+			return 3
+		"uncommon":
+			return 2
+		_:
+			return 1
 
 
 func _populate_portraits(spec_list: Array, base_dir: String) -> void:
@@ -182,6 +264,10 @@ func clear_codex_card_container() -> void:
 
 func _on_tab_cards() -> void:
 	_show_tab(TAB.CARDS)
+
+
+func _on_tab_fu() -> void:
+	_show_tab(TAB.FU)
 
 
 func _on_tab_jiajiang() -> void:

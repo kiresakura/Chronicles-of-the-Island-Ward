@@ -130,6 +130,8 @@ newrun.guardian,護壇,护坛,Guardian,護壇
 newrun.tool,法器,法器,Ritual Tool,法器
 newrun.default_pick,%s：（角色預設）,%s：（角色预设）,%s: (character default),%s：（キャラ既定）
 menu.wins,%d / %d 勝場,%d / %d 胜场,%d / %d wins,%d / %d 勝利
+codex.tab_fu,符令,符令,Talismans,符令
+codex.fu_mergeable,可合符,可合符,Mergeable,合符可
 codex.gan_general.name,甘將軍,甘将军,General Gan,甘将軍
 codex.gan_general.title,紅黑面,红黑面,Red-Black Face,紅黒の面
 codex.liu_general.name,柳將軍,柳将军,General Liu,柳将軍
