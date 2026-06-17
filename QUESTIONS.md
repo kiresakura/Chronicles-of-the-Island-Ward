@@ -722,3 +722,9 @@ Android 雲存（Play Games Saved Games）Q5 前補
 **決定（憲龍）**：不現在刪卡牌。先建符令版替代經濟（商店/圖鑑/合符遷符令）+ FC-5 敕封 / FC-6 緣分，
 全部就位、遊戲每階段保持可玩+綠後，才退役卡牌管線。卡牌暫留作 meta 骨幹（戰鬥已不用）。
 FC-2b.2 卡牌汰換 → 移至經濟遷移末段。
+
+### WO-5（神示供桌工作令 + 分支）: RSO 重設計在 feature/v0.3-formation 線上續做
+**情境（2026-06-17）**：ORACLE_REDESIGN_WORK_ORDER（當前、可執行）自主執行。工作令未指定分支。
+**決定**：續用 feature/v0.3-formation（本 session 線，PR #1 已開）。RSO 重設計屬 v0.3 遊戲體驗打磨，
+commit 可日後 cherry-pick。Phase 1 餵真籤詩：option_qian_name/verse/grade（資料層）+ 籤運統一階梯
+external/data/qian_grades.json（亦避免民俗籤運被 i18n 當程式中文）。廢 omen.head 靜態干支籤名。

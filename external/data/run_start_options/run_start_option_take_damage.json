@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_take_damage",
-		"run_start_option_bb_code": "[color=#e74c3c]扣 5 點元神[/color]"
+		"run_start_option_bb_code": "[color=#e74c3c]扣 5 點元神[/color]",
+		"option_qian_name": "血光",
+		"option_qian_verse": "血光之災",
+		"option_qian_grade": "中下"
 	}
 }

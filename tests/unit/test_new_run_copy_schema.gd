@@ -7,6 +7,9 @@ extends "res://tests/test_case.gd"
 
 const SHELF_PATH: String = "res://external/data/ui/new_run_character_shelf.json"
 const FORBIDDEN_NOUN_SUBSTR: Array[String] = ["韌性", "弱點擊破", "升階", "終結"]	# 名詞紅線
+const RSO_SCRIPT := preload("res://scripts/ui/RunStartOptions.gd")	# 籤運階梯來源
+const MAX_QIAN_NAME: int = 8		# 籤名上限（避免供桌籤首截斷）
+const MAX_QIAN_VERSE: int = 8		# 四字籤詩上限
 
 func _load_shelf() -> Array:
 	if not FileAccess.file_exists(SHELF_PATH):
@@ -55,6 +58,36 @@ func test_shelf_copy_obeys_noun_redline() -> void:
 		for bad: String in FORBIDDEN_NOUN_SUBSTR:
 			assert_false(blob.contains(bad),
 				"%s 文案含名詞紅線「%s」：%s" % [str(entry.get("character_id", "?")), bad, blob])
+
+# ---- 神示供桌籤詩（RSO 重設計 Phase 1）----
+
+func test_qian_ladder_is_five_tier() -> void:
+	var ladder: Array = RSO_SCRIPT.load_qian_ladder()
+	assert_eq(ladder.size(), 5, "籤運統一階梯恰 5 階（上上/上吉/中平/中下/下下）")
+
+func test_run_start_option_qian_data_loaded() -> void:
+	# 確認 JSON 籤詩資料確實合進選項物件（非僅程式預設空）
+	var d: RunStartOptionData = Global.get_run_start_option_data("run_start_option_artifact_swap")
+	assert_not_null(d, "artifact_swap 選項存在")
+	if d == null:
+		return
+	assert_eq(d.option_qian_grade, "上上", "完整選項籤運=上上（確認籤詩資料已載入）")
+	assert_ne(d.option_qian_verse, "", "四字籤詩已載入")
+
+func test_run_start_option_qian_grade_in_ladder() -> void:
+	var ladder: Array = RSO_SCRIPT.load_qian_ladder()
+	for oid: String in Global._id_to_run_start_option_data:
+		var d: RunStartOptionData = Global._id_to_run_start_option_data[oid]
+		if d.option_qian_grade != "":
+			assert_true(ladder.has(d.option_qian_grade), "%s 籤運非法：%s" % [oid, d.option_qian_grade])
+
+func test_run_start_option_qian_within_budget() -> void:
+	for oid: String in Global._id_to_run_start_option_data:
+		var d: RunStartOptionData = Global._id_to_run_start_option_data[oid]
+		assert_true(d.option_qian_name.length() <= MAX_QIAN_NAME,
+			"%s 籤名 %d 字超上限 %d" % [oid, d.option_qian_name.length(), MAX_QIAN_NAME])
+		assert_true(d.option_qian_verse.length() <= MAX_QIAN_VERSE,
+			"%s 四字籤詩 %d 字超上限 %d" % [oid, d.option_qian_verse.length(), MAX_QIAN_VERSE])
 
 func test_budget_loads_from_data() -> void:
 	var budget: NewRunCopyBudgetData = RitualCopyBudget.get_budget()

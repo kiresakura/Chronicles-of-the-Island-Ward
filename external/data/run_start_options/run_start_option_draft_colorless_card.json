@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_draft_colorless_card",
-		"run_start_option_bb_code": "[color=#27ae60]選一張進階符令加入牌組[/color]"
+		"run_start_option_bb_code": "[color=#27ae60]選一張進階符令加入牌組[/color]",
+		"option_qian_name": "敕符",
+		"option_qian_verse": "敕令通玄",
+		"option_qian_grade": "上吉"
 	}
 }

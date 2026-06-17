@@ -13,3 +13,9 @@ enum RUN_START_OPTION_TYPES {
 @export var run_start_option_type: int = RUN_START_OPTION_TYPES.COMPLETE
 
 @export var run_start_option_actions: Array[Dictionary] = []	# the action data to use when selecting this option
+
+# v0.3 神示供桌（RSO 重設計）：本選項的籤詩呈現（資料驅動，鐵律 1；預設空＝向後相容）。
+# 籤運統一階梯：上上 / 上吉 / 中平 / 中下 / 下下。混合卡顯示 upside 的籤、完整卡顯示自身。
+@export var option_qian_name: String = ""	# 籤名（短，如 招財 / 大醮顯赫）
+@export var option_qian_verse: String = ""	# 四字籤詩（如 招財進寶）
+@export var option_qian_grade: String = ""	# 籤運（上上/上吉/中平/中下/下下）

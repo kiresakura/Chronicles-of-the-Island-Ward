@@ -1,0 +1,7 @@
+{
+  "_note": "籤運統一階梯（best→worst）。RSO 神示供桌視覺階梯 + validator 共用。鐵律1：階梯在資料層、不寫死於腳本（亦避免 i18n 把民俗籤運當程式中文）。",
+  "properties": {
+    "object_id": "qian_grades",
+    "ladder": ["上上", "上吉", "中平", "中下", "下下"]
+  }
+}

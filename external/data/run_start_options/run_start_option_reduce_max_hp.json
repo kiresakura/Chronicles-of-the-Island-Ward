@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_reduce_max_hp",
-		"run_start_option_bb_code": "[color=#e74c3c]元神上限 -10[/color]"
+		"run_start_option_bb_code": "[color=#e74c3c]元神上限 -10[/color]",
+		"option_qian_name": "損元",
+		"option_qian_verse": "元氣大傷",
+		"option_qian_grade": "下下"
 	}
 }

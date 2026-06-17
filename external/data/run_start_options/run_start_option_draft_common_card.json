@@ -2,6 +2,9 @@
 	"patch_data": {},
 	"properties": {
 		"object_id": "run_start_option_draft_common_card",
-		"run_start_option_bb_code": "[color=#27ae60]選一張普通卡加入牌組[/color]"
+		"run_start_option_bb_code": "[color=#27ae60]選一張普通卡加入牌組[/color]",
+		"option_qian_name": "尋常",
+		"option_qian_verse": "平淡是福",
+		"option_qian_grade": "中下"
 	}
 }
