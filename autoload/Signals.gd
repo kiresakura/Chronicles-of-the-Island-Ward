@@ -71,6 +71,7 @@ signal card_removed_from_deck(card_data: CardData) # card was removed from playe
 signal card_transformed_in_deck(card_data: CardData) # card was transformed player's permanent deck (card_data will be in updated state)
 signal card_draft_skipped(card_pick_action)
 signal card_purchased(card_data: CardData)
+signal fu_purchased(fu_id: String)	# FP-3 符令版商店：購得符令後刷新
 #endregion
 
 signal game_paused

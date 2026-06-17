@@ -3,6 +3,9 @@
 extends SerializableData
 class_name ShopData
 
+const FORMATION_COMBAT := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 符令定價/進貨
+const FU_STOCK_COUNT: int = 3	# 每間商店進貨符令數
+
 @export var shop_is_visited: bool = false	# determines whether to perform actions for the first time
 
 ## The location this shop belongs to. Used to validate if the shop actually belongs to the player's
@@ -18,6 +21,10 @@ class_name ShopData
 @export var shop_card_prices: Array[int] = []
 @export var shop_artifact_prices: Array[int] = []
 @export var shop_consumable_slot_to_consumable_price: Dictionary = {}
+
+# FP-3 符令版商店：戰鬥已用符令，商店改賣符令（卡牌僅 meta 圖鑑）。fu 為字串，免動卡牌 action pipeline。
+@export var shop_fu: Array[String] = []
+@export var shop_fu_prices: Array[int] = []
 
 const GENERATED_CARD_COUNT: int = 6
 const GENERATED_ARTIFACT_COUNT: int = 2
@@ -87,6 +94,23 @@ func visit_shop() -> void:
 			for i: int in consumable_prices.size():
 				consumable_prices[i] = maxi(1, roundi(consumable_prices[i] * Global.run_fortune_shop_price_mult))
 		
+		### FP-3 符令進貨（直接生成；fu 為字串、免走卡牌 action pipeline）。同 rng_shop 求可重現。
+		shop_fu.clear()
+		shop_fu_prices.clear()
+		var fu_pool: Array = FORMATION_COMBAT.fu_shop_pool()
+		for i in range(fu_pool.size() - 1, 0, -1):
+			var j: int = rng_shop.randi_range(0, i)
+			var tmp: Variant = fu_pool[i]
+			fu_pool[i] = fu_pool[j]
+			fu_pool[j] = tmp
+		for k in range(mini(FU_STOCK_COUNT, fu_pool.size())):
+			var fid: String = str(fu_pool[k])
+			var fp: int = FORMATION_COMBAT.fu_price(fid)
+			if Global.run_fortune_shop_price_mult != 1.0:
+				fp = maxi(1, roundi(fp * Global.run_fortune_shop_price_mult))
+			shop_fu.append(fid)
+			shop_fu_prices.append(fp)
+
 		### Generate Population Action
 		ActionGenerator.generate_populate_shop_items(generated_cards, card_prices, artifact_ids, artifact_prices, consumable_ids, consumable_prices)
 		
@@ -128,6 +152,18 @@ func get_shop_card_price(card_data: CardData) -> int:
 	if shop_cards.has(card_data):
 		return shop_card_prices[shop_cards.find(card_data)]
 	return 0
+
+### Shop Fu（FP-3 符令）###
+
+func get_shop_fu_price(fu_id: String) -> int:
+	var idx: int = shop_fu.find(fu_id)
+	return shop_fu_prices[idx] if idx >= 0 else FORMATION_COMBAT.fu_price(fu_id)
+
+func remove_shop_fu(fu_id: String) -> void:
+	var idx: int = shop_fu.find(fu_id)
+	if idx >= 0:
+		shop_fu.remove_at(idx)
+		shop_fu_prices.remove_at(idx)
 
 ### Shop Artifacts ###
 
