@@ -147,11 +147,13 @@ func populate_run_start_options() -> void:
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
 		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
-		# 混合卡：顯示 upside（boon）的籤；利忌走 bbcode
+		# 混合卡：顯示 upside（boon）的籤；利忌分層（↑利 upside / ↓忌 downside）
 		_apply_offering_strip_style(run_start_option_button, i, option_bbcode,
 			upside_run_start_option_data.option_qian_name,
 			upside_run_start_option_data.option_qian_verse,
-			upside_run_start_option_data.option_qian_grade)
+			upside_run_start_option_data.option_qian_grade,
+			upside_run_start_option_data.run_start_option_bb_code,
+			downside_run_start_option_data.run_start_option_bb_code)
 
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
 
@@ -170,11 +172,12 @@ func populate_run_start_options() -> void:
 		starting_option_container.add_child(run_start_option_button)
 		run_start_option_button.init("", option_bbcode, option_bbcode, option_actions, [])
 		COTIW_UI_THEME.apply_panel_style(run_start_option_button)
-		# 完整卡：顯示自身的籤（通常上上）
+		# 完整卡：顯示自身的籤（通常上上）；純利、無忌
 		_apply_offering_strip_style(run_start_option_button, MIXED_OPTION_COUNT + i, option_bbcode,
 			complete_run_start_option_data.option_qian_name,
 			complete_run_start_option_data.option_qian_verse,
-			complete_run_start_option_data.option_qian_grade)
+			complete_run_start_option_data.option_qian_grade,
+			option_bbcode, "")
 
 		run_start_option_button.dialogue_option_clicked.connect(_on_dialogue_option_clicked)
 
@@ -389,7 +392,8 @@ func _relayout_offering_strips() -> void:
 ## Q2-B 直立籤詩：硃砂籤首帶（干支+籤等）+ 紙底金框直條 + 內文置中。
 ## PanelContainer 內重組為 VBox（DialogueOption 的 rich_text_label 引用是 cached var，reparent 安全）。
 func _apply_offering_strip_style(option: Control, index: int, option_bbcode: String,
-		qian_name: String = "", qian_verse: String = "", qian_grade: String = "") -> void:
+		qian_name: String = "", qian_verse: String = "", qian_grade: String = "",
+		li_bb: String = "", ji_bb: String = "") -> void:
 	if option == null:
 		return
 	option.set_meta("qian_grade", qian_grade)	# Phase 2 視覺階梯依此分支
@@ -511,7 +515,13 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		# 修截斷：自動換行 + 隨內容撐高（窄籤條內利忌不被切）
 		r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		r.fit_content = true
-		r.parse_bbcode("[center]" + option_bbcode + "[/center]")
+		# Phase 4 利忌分層：↑利（綠箭）/ ↓忌（紅箭）兩列；無分層資料則回退原 bbcode
+		var body_bb: String = option_bbcode
+		if li_bb != "":
+			body_bb = "[color=#27ae60]↑[/color] " + li_bb
+			if ji_bb != "":
+				body_bb += "\n[color=#e74c3c]↓[/color] " + ji_bb
+		r.parse_bbcode("[center]" + body_bb + "[/center]")
 
 	# 按壓回饋（三態：常態/按下/鎖定由 modulate 表達）
 	if not option.gui_input.is_connected(_on_strip_gui_input):
