@@ -142,7 +142,9 @@ func _make_fu_shop_button(shop_data: ShopData, fu_id: String) -> Control:
 	elif rarity == "uncommon":
 		col = COTIW_UI_THEME.get_color("spirit_jade", Color(0.42, 0.80, 0.60))
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(176, 232)
+	btn.custom_minimum_size = Vector2(176, 168)
+	btn.size_flags_vertical = Control.SIZE_SHRINK_BEGIN	# 不被 HBox 撐高、頂部對齊（否則溢入消耗品列 → audit OVERLAP）
+	btn.clip_contents = true		# 內容超出也不撐高按鈕，硬性不溢入下排
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.disabled = not affordable
 	btn.clip_text = true
@@ -159,9 +161,9 @@ func _make_fu_shop_button(shop_data: ShopData, fu_id: String) -> Control:
 	btn.add_child(vbox)
 	vbox.add_child(_fu_shop_label(str(d.get("name", fu_id)), 19, col if affordable else Color(0.62, 0.58, 0.52)))
 	vbox.add_child(_fu_shop_label("★".repeat(3 if rarity == "rare" else (2 if rarity == "uncommon" else 1)), 13, col))
-	var desc := _fu_shop_label(str(d.get("desc", "")), 13, Color(0.90, 0.85, 0.74))
+	var desc := _fu_shop_label(str(d.get("desc", "")), 12, Color(0.90, 0.85, 0.74))
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.custom_minimum_size = Vector2(150, 78)
+	desc.custom_minimum_size = Vector2(150, 48)
 	vbox.add_child(desc)
 	var price_col: Color = COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.80, 0.42)) if affordable else COTIW_UI_THEME.get_color("warning_orange", Color(0.92, 0.52, 0.20))
 	vbox.add_child(_fu_shop_label("%d %s" % [price, tr("currency.silver")], 16, price_col))
