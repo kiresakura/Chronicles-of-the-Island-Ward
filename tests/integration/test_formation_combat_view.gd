@@ -149,3 +149,19 @@ func test_fu_target_play_via_lane_tap() -> void:
 	assert_eq(view._pending_fu, "", "放完清除選方位")
 	assert_eq(int(view._core.lanes[lane]["sha"]["strength"]), 4, "破煞符經畫面削煞 6 → 餘 4")
 	view.queue_free()
+
+# FC-6c：緣分合祀啟用時，提示帶顯示合祀名。
+func test_affinity_strip_shows_active_union() -> void:
+	var view: Control = _add_view()
+	if view == null:
+		return
+	# 城隍+土地佈相鄰營（北-東環）→ 合祀啟用
+	view.start([], {"unit_chenghuang": "camp_north", "unit_tudigong": "camp_east"}, [{"id": "e", "hp": 24}], 1)
+	assert_ne(view._affinity_strip.text, "", "合祀啟用 → 緣分提示帶非空")
+	assert_true(view._affinity_strip.text.contains("城隍"), "提示帶含合祀名（城隍·土地公）")
+	# 拆散（土地調到南，北-南不鄰）→ 提示帶清空
+	view._core.actions_remaining = 2
+	view._core.move_unit("unit_tudigong", "camp_south")
+	view._refresh()
+	assert_eq(view._affinity_strip.text, "", "拆散合祀 → 提示帶清空")
+	view.queue_free()

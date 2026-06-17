@@ -13,6 +13,7 @@ signal formation_won
 signal formation_lost
 
 const FormationCombatCls := preload("res://scripts/systems/ritual/FormationCombat.gd")
+const AffinityCls := preload("res://scripts/systems/ritual/AffinitySystem.gd")
 const THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 
 # 五行色（UI 呈現層；與得位星標一起讓玩家秒讀營位屬性）
@@ -57,6 +58,7 @@ var _deity_button: Button
 var _end_turn_button: Button
 var _log_label: Label
 var _banner: Label
+var _affinity_strip: Label		# 緣分合祀提示帶（FC-6c）
 var _stage: Control				# 1200×700 設計畫布（內容掛此；依安全區置中+fit縮放）
 # 符令手牌（FP-2）
 var _fu_slots: Array = []		# 底部手牌槽（Button），idx 對 core.fu_hand[idx]
@@ -154,6 +156,14 @@ func _build_ui() -> void:
 	hint.add_theme_font_size_override("font_size", 15)
 	hint.add_theme_color_override("font_color", Color(0.90, 0.82, 0.70))
 	_stage.add_child(hint)
+
+	# 緣分合祀提示帶（FC-6c）：頂部、標題與控制面板之間；啟用合祀時亮金
+	_affinity_strip = Label.new()
+	_affinity_strip.position = Vector2(330, 22)
+	_affinity_strip.size = Vector2(560, 28)
+	_affinity_strip.add_theme_font_size_override("font_size", 17)
+	_affinity_strip.add_theme_color_override("font_color", THEME.get_color("incense_gold", Color(0.96, 0.84, 0.45)))
+	_stage.add_child(_affinity_strip)
 
 	# lane 煞道標記（四方位）；營 tile 由核心提供的營在 _refresh 延遲建（依方位座標表定位）
 	for lane: String in LANE_POS:
@@ -400,10 +410,23 @@ func _refresh() -> void:
 	_end_turn_button.disabled = _core.state != FormationCombatCls.STATE_PLAYING
 	# 符令手牌
 	_refresh_fu_hand()
+	# 緣分合祀提示
+	_refresh_affinity_strip()
 	# 戰況
 	_log_label.text = _build_log_text()
 	# 勝負
 	_update_banner()
+
+## 緣分合祀提示帶：顯示目前佈陣啟用的合祀（名稱；效果在戰況+數值生效）。
+func _refresh_affinity_strip() -> void:
+	var active: Array = AffinityCls.active_affinities(_core.unit_location, _core.camps)
+	if active.is_empty():
+		_affinity_strip.text = ""
+		return
+	var names: Array[String] = []
+	for a: Dictionary in active:
+		names.append(str(a.get("affinity_name", "")))
+	_affinity_strip.text = tr("combat.formation.affinity_active") % " · ".join(names)
 
 func _refresh_fu_hand() -> void:
 	var playable: bool = _core.state == FormationCombatCls.STATE_PLAYING and _core.fu_plays_left > 0

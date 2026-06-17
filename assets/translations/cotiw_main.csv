@@ -322,6 +322,7 @@ combat.formation.wei,得位,得位,In Place,得位
 combat.formation.sha_marker,煞 %d ▸%d,煞 %d ▸%d,Sha %d ▸%d,煞 %d ▸%d
 combat.formation.lane_clear,—,—,—,—
 combat.formation.fu_pick_lane,選方位放「%s」,选方位放「%s」,Pick a lane for %s,方位を選んで %s
+combat.formation.affinity_active,合祀 %s,合祀 %s,United %s,合祀 %s
 combat.log.fu,敕令 %s,敕令 %s,Played %s,%s を行使
 combat.fu_draft.title,領一道符令,领一道符令,Claim a Talisman,符令を授かる
 canon.title,封神榜,封神榜,Canonization Roll,封神榜
