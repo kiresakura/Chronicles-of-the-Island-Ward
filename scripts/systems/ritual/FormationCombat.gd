@@ -62,6 +62,13 @@ var max_turns: int = 30
 var deity_charge_max: int = 0
 var deity_invoke_power: int = 0
 
+# ---- 神格/神蹟（§2.1，當局有效）----
+var efficacy_feats: Array = []				# [{threshold,effect,value,desc}]（本局神 DeityData）
+var efficacy_points: int = 0				# 本局累積神格（seam 由 Global.run_deity_efficacy 注入）
+var efficacy_charge_per_invoke: int = 1		# 每次降乩累積的神格
+var efficacy_gained: int = 0				# 本場戰鬥累積的神格（seam 戰後回寫 run）
+var active_feats: Array = []				# 本場已達門檻、生效中的神蹟
+
 # ---- 回合狀態 ----
 var turn: int = 1
 var actions_remaining: int = 0
@@ -157,6 +164,12 @@ func setup(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, config:
 	deity_charge_max = int(cfg.get("deity_charge_max", 3))
 	deity_invoke_power = int(cfg.get("deity_invoke_power", 4))
 	combo_effects_cfg = cfg.get("combo_effects", {})
+	# 神格/神蹟（§2.1）：本局神格 + 本局神 feats → 套用已達門檻的神蹟（改降乩參數）
+	efficacy_feats = cfg.get("efficacy_feats", [])
+	efficacy_points = int(cfg.get("efficacy_points", 0))
+	efficacy_charge_per_invoke = int(cfg.get("efficacy_charge_per_invoke", 1))
+	efficacy_gained = 0
+	_apply_efficacy()
 
 	_load_camps(open_camp_ids)
 	_build_lanes(int(cfg.get("lane_steps_to_altar", 3)))
@@ -411,6 +424,7 @@ func invoke_deity() -> bool:
 	if state != STATE_PLAYING or deity_charge < deity_charge_max:
 		return false
 	deity_charge = 0
+	efficacy_gained += efficacy_charge_per_invoke	# 降乩＝餵神，累積神格（§2.1）
 	var hit: int = 0
 	var broke: Array = []
 	for lane: String in lanes:
@@ -424,6 +438,20 @@ func invoke_deity() -> bool:
 			broke.append(lane)
 	_emit(EV_DEITY, {"hit": hit, "power": deity_invoke_power, "broke": broke})
 	return true
+
+## 神格/神蹟（§2.1）：把本局累積神格 ≥ 門檻的神蹟套到降乩參數（當局有效；效果語意在碼、值在資料）。
+func _apply_efficacy() -> void:
+	active_feats = []
+	for f: Dictionary in efficacy_feats:
+		if efficacy_points >= int(f.get("threshold", 1 << 30)):
+			active_feats.append(f)
+	for f: Dictionary in active_feats:
+		var value: int = int(f.get("value", 0))
+		match str(f.get("effect", "")):
+			"invoke_power_add":
+				deity_invoke_power += value
+			"charge_max_reduce":
+				deity_charge_max = maxi(1, deity_charge_max - value)
 
 ## 緣分合擊偵測（佈陣/調營後重算）：把啟用的合擊效果鍵存進 active_combos。
 func _recompute_combos() -> void:

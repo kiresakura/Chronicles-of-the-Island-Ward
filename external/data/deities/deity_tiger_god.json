@@ -1,21 +1,35 @@
 {
-  "patch_data": {},
-  "properties": {
-    "object_id": "deity_tiger_god",
-    "deity_name": "虎爺",
-    "deity_description": "鎮守廟埕、專破邪煞的猛將型守護神。破煞與爆發的節奏核心。",
-    "deity_texture_path": "assets/generated/deities_v3/huye.png",
-    "deity_charge_tags": [
-      "fist"
-    ],
-    "deity_max_charge": 100,
-    "deity_starting_charge": 0,
-    "deity_trigger_condition": "on_enemy_broken",
-    "deity_auto_release": false,
-    "deity_invocation_effect": "tiger_roar",
-    "deity_invocation_description": "虎爺咬煞：對所有敵人造成大量傷害，並延長其破煞爆發窗口 1 回合。",
-    "deity_passive_effect": "bonus_damage_on_break",
-    "deity_passive_description": "敵人處於破煞窗口時，你對其造成的傷害再 +25%。",
-    "deity_charge_per_self_loss": 0
-  }
+	"patch_data": {},
+	"properties": {
+		"object_id": "deity_tiger_god",
+		"deity_name": "虎爺",
+		"deity_description": "鎮守廟埕、專破邪煞的猛將型守護神。破煞與爆發的節奏核心。",
+		"deity_texture_path": "assets/generated/deities_v3/huye.png",
+		"deity_charge_tags": [
+			"fist"
+		],
+		"deity_max_charge": 100,
+		"deity_starting_charge": 0,
+		"deity_trigger_condition": "on_enemy_broken",
+		"deity_auto_release": false,
+		"deity_invocation_effect": "tiger_roar",
+		"deity_invocation_description": "虎爺咬煞：對所有敵人造成大量傷害，並延長其破煞爆發窗口 1 回合。",
+		"deity_passive_effect": "bonus_damage_on_break",
+		"deity_passive_description": "敵人處於破煞窗口時，你對其造成的傷害再 +25%。",
+		"deity_charge_per_self_loss": 0,
+		"deity_efficacy_feats": [
+			{
+				"threshold": 2,
+				"effect": "invoke_power_add",
+				"value": 2,
+				"desc": "虎爺靈驗：降乩削煞 +2"
+			},
+			{
+				"threshold": 4,
+				"effect": "charge_max_reduce",
+				"value": 1,
+				"desc": "虎爺顯赫：請神槽滿值 -1（降乩更頻）"
+			}
+		]
+	}
 }

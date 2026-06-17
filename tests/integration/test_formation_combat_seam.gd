@@ -145,6 +145,26 @@ func test_combat_draws_fu_from_run_deck() -> void:
 		assert_eq(str(fid), "fu_chi", "符令手牌全來自本局 run_fu_deck（接線正確）")
 	_teardown(env)
 
+# 神格（§2.1）：本場降乩累積的神格戰後回寫本局 run_deity_efficacy。
+func test_efficacy_banks_to_run_after_combat() -> void:
+	var env: Dictionary = _build_env()
+	var combat: Node = env.get("combat")
+	if combat == null:
+		_teardown(env)
+		return
+	var deity_id: String = Global.get_run_active_deity_id()
+	Global.run_deity_efficacy.clear()
+	Signals.combat_started.emit(SMOKE_EVENT_ID)
+	var view: Control = combat._formation_view
+	if view == null or view._core == null:
+		_teardown(env)
+		return
+	view._core.efficacy_gained = 2	# 模擬本場降乩 2 次
+	combat._bank_efficacy()
+	assert_eq(int(Global.run_deity_efficacy.get(deity_id, 0)), 2, "戰後神格回寫本局 run")
+	Global.run_deity_efficacy.clear()	# 還原全域
+	_teardown(env)
+
 # 角色專屬起始符令牌庫：start_run 依角色 character_starting_fu_ids 初始化 run_fu_deck（FC-2b.3-3）。
 func test_run_fu_deck_from_character_starter() -> void:
 	var env: Dictionary = _build_env()	# 內含 start_run(SMOKE_CHARACTER_ID)

@@ -317,6 +317,11 @@ func _on_combat_started(event_id: String):
 		_formation_view.visible = true
 		var cfg: Dictionary = FORMATION_COMBAT.load_config()
 		cfg["fu_config"] = FORMATION_COMBAT.build_fu_config(Global.run_fu_deck)
+		# 神格/神蹟（§2.1）：注入本局神格 + 本局神的神蹟階梯
+		var deity_id: String = Global.get_run_active_deity_id()
+		var deity: DeityData = DeityInvocationSystem.load_deity(deity_id)
+		cfg["efficacy_points"] = int(Global.run_deity_efficacy.get(deity_id, 0))
+		cfg["efficacy_feats"] = deity.deity_efficacy_feats if deity != null else []
 		_formation_view.start([], {}, _resolve_enemy_specs(current_event), _combat_index, cfg)
 		_raise_top_controls()	# 保留暫停/回地圖鈕在五營畫面之上
 
@@ -391,8 +396,19 @@ func _raise_top_controls() -> void:
 		if n != null:
 			move_child(n, -1)
 
+## 把本場累積的神格回寫本局 run（§2.1，當局有效跨戰累積）。
+func _bank_efficacy() -> void:
+	if _formation_view == null or _formation_view._core == null:
+		return
+	var gained: int = int(_formation_view._core.efficacy_gained)
+	if gained <= 0:
+		return
+	var deity_id: String = Global.get_run_active_deity_id()
+	Global.run_deity_efficacy[deity_id] = int(Global.run_deity_efficacy.get(deity_id, 0)) + gained
+
 ## 五營戰勝：破盡諸煞 → 三選一符令 draft（非 run 結束時）→ 選後發 combat_ended。
 func _on_formation_won() -> void:
+	_bank_efficacy()
 	if _formation_view != null:
 		_formation_view.visible = false
 	# run 結束（boss 終局）不發 draft，直接結算
@@ -422,6 +438,7 @@ func _on_fu_picked(fu_id: String) -> void:
 
 ## 五營戰敗：母壇崩 → 結束 run（LOSS）。
 func _on_formation_lost() -> void:
+	_bank_efficacy()
 	if _formation_view != null:
 		_formation_view.visible = false
 	Global.end_run(Global.RUN_ENDS.LOSS)
