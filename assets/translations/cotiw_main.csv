@@ -61,6 +61,10 @@ reward.fu_gained,獲得符令 %s,获得符令 %s,Talisman gained: %s,符令を�
 shop.artifact_placeholder,法器名稱,法器名称,Artifact Name,法器名
 shop.consumable_placeholder,消耗品名稱,消耗品名称,Consumable Name,消耗品名
 run.rest_action,入廟安神,入庙安神,Rest Action,休息
+rest.fu_merge,合符,合符,Merge Talisman,合符
+rest.fu_merge_hint,兩張同符 → 上位符,两张同符 → 上位符,Two alike → upgraded,同符二枚→上位符
+rest.fu_merge_result,%s → %s,%s → %s,%s → %s,%s → %s
+rest.fu_merge_empty,無可合的符令,无可合的符令,No talismans to merge,合符可能な符なし
 run.modifier_name,自訂修正,自定义修正,Run Modifier,ラン修正
 keyword.boss,章節王,章节王,Boss,ボス
 keyword.hp_short,元神,元神,HP,HP

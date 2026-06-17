@@ -52,6 +52,8 @@ var _core: FormationCombat
 var _selected_unit: String = ""
 var _started: bool = false
 var _resolved: bool = false		# 勝負訊號只發一次
+var _reveal_deity: bool = true	# FC-3 漸進揭露：早場戰鬥逐步開放 降乩/符令（由 config 注入）
+var _reveal_fu: bool = true
 
 # UI 參照
 var _camp_tiles: Dictionary = {}	# camp_id → {btn,name,occ,mark}
@@ -117,6 +119,8 @@ func start(open_camp_ids: Array, deploy: Dictionary, enemy_specs: Array, seed: i
 	_resolved = false
 	_selected_unit = ""
 	_pending_fu = ""
+	_reveal_deity = bool(config.get("reveal_deity", true))	# FC-3 漸進揭露
+	_reveal_fu = bool(config.get("reveal_fu", true))
 	_build_name_caches()
 	if is_inside_tree():
 		_refresh()
@@ -510,6 +514,7 @@ func _refresh() -> void:
 	var deity_ready: bool = _core.deity_charge >= _core.deity_charge_max
 	_deity_button.text = tr("combat.formation.deity_btn") if deity_ready else (tr("combat.formation.deity_charging") % [_core.deity_charge, _core.deity_charge_max])
 	_deity_button.disabled = not deity_ready or _core.state != FormationCombatCls.STATE_PLAYING
+	_deity_button.visible = _reveal_deity	# FC-3：早場未揭露時隱藏降乩
 	_end_turn_button.text = tr("combat.formation.end_turn")
 	_end_turn_button.disabled = _core.state != FormationCombatCls.STATE_PLAYING
 	# 符令手牌
@@ -545,6 +550,11 @@ func _refresh_affinity_strip() -> void:
 	_affinity_strip.text = tr("combat.formation.affinity_active") % " · ".join(names)
 
 func _refresh_fu_hand() -> void:
+	if not _reveal_fu:	# FC-3：早場未揭露時整列符令手牌隱藏
+		for slot: Button in _fu_slots:
+			slot.visible = false
+		_fu_prompt.text = ""
+		return
 	var playable: bool = _core.state == FormationCombatCls.STATE_PLAYING and _core.fu_plays_left > 0
 	for i: int in range(_fu_slots.size()):
 		var b: Button = _fu_slots[i]
