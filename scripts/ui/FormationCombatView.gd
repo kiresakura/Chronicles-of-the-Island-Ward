@@ -17,10 +17,11 @@ const AffinityCls := preload("res://scripts/systems/ritual/AffinitySystem.gd")
 const THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const BackdropCls := preload("res://scripts/ui/FiveCampBackdrop.gd")
 
-# 五行色（UI 呈現層；只當「元素小章」一抹色，不再染整框 → 避免火營紅框被誤讀成敵方）
+# 五行色（UI 呈現層；只當「元素小章」一抹色，不再染整框 → 避免火營紅框被誤讀成敵方）。
+# 對齊《設計稿 螢幕全套》精確 el-* token：木#4FA56D 火#D94A2B 土#C99A3A 金#E8C56A 水#3E6FA8。
 const ELEMENT_COLOR := {
-	"wood": Color(0.35, 0.66, 0.40), "fire": Color(0.86, 0.30, 0.20),
-	"earth": Color(0.80, 0.64, 0.28), "metal": Color(0.82, 0.80, 0.62), "water": Color(0.30, 0.55, 0.82),
+	"wood": Color(0.310, 0.647, 0.427), "fire": Color(0.851, 0.290, 0.169),
+	"earth": Color(0.788, 0.604, 0.227), "metal": Color(0.910, 0.773, 0.416), "water": Color(0.243, 0.435, 0.659),
 }
 # 敵我語言（UIUX §C：一眼分敵我）。我營一律燙金/玉青，來煞一律硃砂。
 const FRIEND_GOLD := Color(0.93, 0.78, 0.42)		# 我營常態框（燙金）
@@ -607,7 +608,9 @@ func _refresh_camp_tile(c: Dictionary) -> void:
 			mark_label.text = "★ " + tr("combat.formation.wei")
 			mark_label.add_theme_color_override("font_color", FRIEND_JADE)
 		else:
-			mark_label.text = ""
+			# 失位：神將進駐但非本命方位（設計稿得位/失位雙態，旺/衰一眼分）
+			mark_label.text = tr("combat.formation.shi")
+			mark_label.add_theme_color_override("font_color", THEME.get_color("warning_orange", Color(1.0, 0.62, 0.26)))
 	else:
 		occ_label.text = tr("combat.formation.reserve") if bool(t.get("reserve")) else ""
 		occ_label.add_theme_color_override("font_color", Color(0.6, 0.56, 0.5))

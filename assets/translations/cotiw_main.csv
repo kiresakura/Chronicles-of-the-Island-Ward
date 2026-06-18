@@ -326,6 +326,7 @@ combat.formation.win,五營鎮成,五营镇成,Camps Hold,五營鎮成
 combat.formation.lose,母壇崩塌,母坛崩塌,Altar Falls,母壇崩壊
 combat.formation.reserve,調度,调度,Reserve,調度
 combat.formation.wei,得位,得位,In Place,得位
+combat.formation.shi,失位,失位,Out of Place,失位
 combat.formation.sha_marker,煞 %d ▸%d,煞 %d ▸%d,Sha %d ▸%d,煞 %d ▸%d
 combat.formation.lane_clear,清,清,Clear,清
 combat.formation.fu_pick_lane,選方位放「%s」,选方位放「%s」,Pick a lane for %s,方位を選んで %s
