@@ -242,7 +242,12 @@ omen.head1,甲子籤【中平】,甲子签【中平】,Stick I [Even],甲子籤�
 omen.head2,乙丑籤【中平】,乙丑签【中平】,Stick II [Even],乙丑籤【中平】
 omen.head3,丙寅籤【中平】,丙寅签【中平】,Stick III [Even],丙寅籤【中平】
 omen.head4,丁卯籤【上上】,丁卯签【上上】,Stick IV [Great Fortune],丁卯籤【上上】
-rso.fortune_prefix,籤詩亭 ┃ ,签诗亭 ┃ ,Fortune Pavilion ┃ ,籤詩亭 ┃ 
+rso.fortune_prefix,籤詩亭 ┃ ,签诗亭 ┃ ,Fortune Pavilion ┃ ,籤詩亭 ┃
+rso.jiao_cta,擲筊問神 · 求此籤,掷筊问神 · 求此签,Cast Jiao · Ask,擲筊問神・求籤
+rso.jiao_prompt,選定此籤，擲筊得聖筊則神允,选定此签，掷筊得圣筊则神允,Cast jiao — a Sheng means the deity grants it,籤を選び擲筊・聖筊で神允
+rso.jiao_sheng,聖筊 · 神允此籤,圣筊 · 神允此签,Sheng — granted,聖筊・神允
+rso.jiao_xiao,笑筊 · 神明笑而不答，再擲,笑筊 · 神明笑而不答，再掷,Xiao — ask again,笑筊・再擲
+rso.jiao_yin,陰筊 · 神意未允，再擲,阴筊 · 神意未允，再掷,Yin — ask again,陰筊・再擲 
 combat.my_turn,我方回合,我方回合,Your Turn,自分のターン
 combat.pick_target,選擇目標,选择目标,Choose a Target,対象を選択
 combat.processing,行動處理中,行动处理中,Resolving...,処理中…
