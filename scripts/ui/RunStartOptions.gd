@@ -90,6 +90,10 @@ func _apply_tier_decals(option: Control, tier: int) -> void:
 		seal.position = Vector2(8, 8)	# 籤首左上角印章
 		option.add_child(seal)
 var _resolving: bool = false	# 擲筊演出中鎖重入
+var _pending_option: DialogueOption = null	# §2 兩段擲筊：已選待擲筊的籤（null＝未選）
+var _jiao_cta: Button						# 「擲筊問神」CTA（選籤後現身）
+var _jiao_msg: Label						# 擲筊結果提示（笑/陰再擲、聖允）
+const JIAO_WEIGHTS := {"sheng": 0.55, "xiao": 0.25, "yin": 0.20}	# 求籤擲筊機率（聖較寬，免每局卡關）
 
 func _ready():
 	_qian_ladder = load_qian_ladder()
@@ -109,6 +113,11 @@ func _aggregate_run_start_options() -> void:
 func populate_run_start_options() -> void:
 	# Presents a list of options to the player
 	_resolving = false
+	_pending_option = null	# §2：重置兩段擲筊待選態
+	if _jiao_cta != null and is_instance_valid(_jiao_cta):
+		_jiao_cta.visible = false
+	if _jiao_msg != null and is_instance_valid(_jiao_msg):
+		_jiao_msg.visible = false
 	_relayout_offering_strips()	# Q2-B：容器轉橫排 + 依視口置中（四支籤詩並立）
 
 	_update_fortune_banner()	# Q3-E：籤詩亭開局籤顯示（無籤自動隱藏）
@@ -190,48 +199,118 @@ func clear_run_start_options() -> void:
 	for child in starting_option_container.get_children():
 		child.queue_free()
 	
+## §2 兩段擲筊 — 第一段：點籤＝選取（升起鍍金、其餘暗但仍可改選），不立即定案，現「擲筊問神」CTA。
+## 設計稿《螢幕全套》：擲筊是節奏閘（期待編排），聖筊才得神允 → 揭示的爽在揭示之前。
 func _on_dialogue_option_clicked(dialogue_option: DialogueOption):
-	# Q2-B 擲筊問神：效果即刻生效（演出鐵律 — 結算不等演出）；
-	# 筊杯演出為 overlay 節拍（1.15s ≤ 1.5s），其間鎖選項防重入。
 	if _resolving:
 		return
-	_resolving = true
-	var player: Player = Global.get_player()
-	var generated_actions: Array[BaseAction] = ActionGenerator.create_actions(player, null, [player], dialogue_option.action_data, null)
-	ActionHandler.add_actions(generated_actions)
+	_pending_option = dialogue_option
+	for child in starting_option_container.get_children():
+		if child is DialogueOption:
+			var sel: bool = child == dialogue_option
+			(child as Control).modulate = Color(1.16, 1.08, 0.84) if sel else Color(0.6, 0.6, 0.6, 0.9)
+	_ensure_jiao_cta()
+	_jiao_cta.visible = true
+	_jiao_cta.disabled = false
+	_jiao_msg.text = tr("rso.jiao_prompt")
+	_jiao_msg.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.42)))
+	_jiao_msg.visible = true
+	_layout_jiao_cta()
 
-	# 選中演出：本籤升起鍍金、其餘籤退場
+## §2 第二段：對選定籤擲筊 — 聖筊→神允定案；笑/陰→再擲（輕提示，不懲罰開局）。
+func _on_jiao_cta_pressed() -> void:
+	if _resolving or _pending_option == null:
+		return
+	_jiao_cta.disabled = true
+	var rng: RandomNumberGenerator = Global.player_data.get_player_rng("rng_run_start_options")
+	var roll: float = rng.randf()
+	var sheng_p: float = float(JIAO_WEIGHTS["sheng"])
+	var xiao_p: float = float(JIAO_WEIGHTS["xiao"])
+	var result: String = "sheng" if roll < sheng_p else ("xiao" if roll < sheng_p + xiao_p else "yin")
+	var stage: Rect2 = Rect2(Vector2.ZERO, COTIW_UI_THEME.get_stage_size())
+	var resp: Node = get_node_or_null("/root/Responsive")
+	if resp != null:
+		stage = resp.screen_rect
+	if result == "sheng":
+		JIAOBEI_FX.play(self, stage.position + stage.size * Vector2(0.5, 0.58))	# 聖筊慶祝（哇 #2）
+		get_tree().create_timer(0.55).timeout.connect(func() -> void: AudioManager.play_sfx("turn_end"))
+		_jiao_msg.text = tr("rso.jiao_sheng")
+		_jiao_msg.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(1.0, 0.86, 0.42)))
+		_commit_pending_option()
+	else:
+		AudioManager.play_sfx("turn_end")
+		_jiao_msg.text = tr("rso.jiao_xiao") if result == "xiao" else tr("rso.jiao_yin")
+		_jiao_msg.add_theme_color_override("font_color",
+			COTIW_UI_THEME.get_color("smoke_gray", Color(0.72, 0.66, 0.58)) if result == "xiao" else COTIW_UI_THEME.get_color("festival_red", Color(0.9, 0.42, 0.30)))
+		await get_tree().create_timer(0.45).timeout
+		if not _resolving and _pending_option != null:	# 期間未定案/未取消才重啟
+			_jiao_cta.disabled = false
+
+## 定案：套用選定籤效果 + 其餘退場 + 進地圖（原單段 commit body）。
+func _commit_pending_option() -> void:
+	if _resolving or _pending_option == null:
+		return
+	_resolving = true
+	var chosen: DialogueOption = _pending_option
+	var player: Player = Global.get_player()
+	var generated_actions: Array[BaseAction] = ActionGenerator.create_actions(player, null, [player], chosen.action_data, null)
+	ActionHandler.add_actions(generated_actions)
+	if _jiao_cta != null:
+		_jiao_cta.visible = false
 	for child in starting_option_container.get_children():
 		if child is DialogueOption:
 			(child as DialogueOption).option_enabled = false
 			var tw := (child as Control).create_tween()
-			if child == dialogue_option:
+			if child == chosen:
 				tw.set_parallel(true)
 				tw.tween_property(child, "modulate", Color(1.18, 1.10, 0.86), 0.18)
 				tw.tween_property(child, "position:y", (child as Control).position.y - 14.0, 0.22) \
 					.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 			else:
-				tw.tween_property(child, "modulate:a", 0.22, 0.20)
-
-	# 擲筊（供桌中央偏下）+ 落地木響
-	var stage: Rect2 = Rect2(Vector2.ZERO, COTIW_UI_THEME.get_stage_size())
-	var resp: Node = get_node_or_null("/root/Responsive")
-	if resp != null:
-		stage = resp.screen_rect
-	JIAOBEI_FX.play(self, stage.position + stage.size * Vector2(0.5, 0.58))
-	get_tree().create_timer(0.55).timeout.connect(func() -> void: AudioManager.play_sfx("turn_end"))
-
-	# 演出節拍 + actions 收尾後進地圖
+				tw.tween_property(child, "modulate:a", 0.18, 0.20)
 	await get_tree().create_timer(1.15).timeout
 	if ActionHandler.actions_being_performed:
 		await ActionHandler.actions_ended
-
 	clear_run_start_options()
 	visible = false
 	_resolving = false
+	_pending_option = null
 	_set_combat_hud_visible(true)	# 求籤結束 → 還原戰鬥 HUD
 	map.can_travel = true
 	map.show_map()
+
+## 建「擲筊問神」CTA + 結果提示（一次性；置籤列下方置中）。
+func _ensure_jiao_cta() -> void:
+	if _jiao_cta != null and is_instance_valid(_jiao_cta):
+		return
+	_jiao_msg = Label.new()
+	_jiao_msg.name = "JiaoMsg"
+	_jiao_msg.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_jiao_msg.add_theme_font_size_override("font_size", 18)
+	_jiao_msg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_jiao_msg.visible = false
+	add_child(_jiao_msg)
+	_jiao_cta = Button.new()
+	_jiao_cta.name = "JiaoCta"
+	_jiao_cta.focus_mode = Control.FOCUS_NONE
+	_jiao_cta.text = tr("rso.jiao_cta")
+	_jiao_cta.add_theme_font_size_override("font_size", 21)
+	COTIW_UI_THEME.apply_primary_button_style(_jiao_cta)
+	_jiao_cta.visible = false
+	_jiao_cta.button_up.connect(_on_jiao_cta_pressed)
+	add_child(_jiao_cta)
+	_layout_jiao_cta()
+
+## CTA／提示置於安全區底部置中（自適應）。
+func _layout_jiao_cta() -> void:
+	if _jiao_cta == null or not is_instance_valid(_jiao_cta):
+		return
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	var cw: float = 300.0
+	_jiao_cta.size = Vector2(cw, 56.0)
+	_jiao_cta.position = Vector2(safe.position.x + (safe.size.x - cw) * 0.5, safe.position.y + safe.size.y - 72.0)
+	_jiao_msg.size = Vector2(safe.size.x, 26.0)
+	_jiao_msg.position = Vector2(safe.position.x, safe.position.y + safe.size.y - 102.0)
 	
 func _on_run_started():
 	visible = false
@@ -411,6 +490,7 @@ func _relayout_offering_strips() -> void:
 			move_child(presenter, box_index)
 		presenter.position = Vector2(safe.position.x + safe.size.x - presenter.size.x + 26.0,
 			safe.position.y + safe.size.y - presenter.size.y - 8.0)
+	_layout_jiao_cta()	# §2 兩段擲筊 CTA 隨安全區置中（存在才動）
 
 ## Q2-B 直立籤詩：硃砂籤首帶（干支+籤等）+ 紙底金框直條 + 內文置中。
 ## PanelContainer 內重組為 VBox（DialogueOption 的 rich_text_label 引用是 cached var，reparent 安全）。
