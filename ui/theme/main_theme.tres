@@ -3,31 +3,31 @@
 [ext_resource type="FontFile" path="res://assets/fonts/cubic11/Cubic_11.ttf" id="1_cubic"]
 
 [sub_resource type="StyleBoxFlat" id="btn_normal"]
-bg_color = Color(0.2000, 0.0706, 0.0627, 0.5333)
+bg_color = Color(0.2941, 0.1765, 0.1333, 1.0000)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
-border_color = Color(0.9098, 0.7725, 0.4157, 1.0000)
+border_color = Color(0.9098, 0.7686, 0.4157, 1.0000)
 content_margin_left = 10.0
 content_margin_top = 6.0
 content_margin_right = 10.0
 content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="btn_hover"]
-bg_color = Color(0.3412, 0.1098, 0.0902, 0.9608)
+bg_color = Color(0.3804, 0.2314, 0.1725, 1.0000)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
-border_color = Color(0.9098, 0.7725, 0.4157, 1.0000)
+border_color = Color(0.9098, 0.7686, 0.4157, 1.0000)
 content_margin_left = 10.0
 content_margin_top = 6.0
 content_margin_right = 10.0
 content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="btn_pressed"]
-bg_color = Color(0.6510, 0.1843, 0.1216, 1.0000)
+bg_color = Color(0.5569, 0.1647, 0.1098, 1.0000)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -51,12 +51,12 @@ content_margin_right = 10.0
 content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="panel_default"]
-bg_color = Color(0.2000, 0.0706, 0.0627, 0.5333)
+bg_color = Color(0.1020, 0.0588, 0.0510, 0.9600)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.9098, 0.7725, 0.4157, 1.0000)
+border_color = Color(0.9098, 0.7686, 0.4157, 1.0000)
 content_margin_left = 10.0
 content_margin_top = 6.0
 content_margin_right = 10.0
@@ -66,9 +66,9 @@ content_margin_bottom = 6.0
 
 [resource]
 default_font = ExtResource("1_cubic")
-Button/colors/font_color = Color(0.9608, 0.9059, 0.8118, 1.0000)
-Button/colors/font_hover_color = Color(0.9098, 0.7725, 0.4157, 1.0000)
-Button/colors/font_pressed_color = Color(0.9608, 0.9059, 0.8118, 1.0000)
+Button/colors/font_color = Color(0.9412, 0.8941, 0.7843, 1.0000)
+Button/colors/font_hover_color = Color(0.9098, 0.7686, 0.4157, 1.0000)
+Button/colors/font_pressed_color = Color(0.9412, 0.8941, 0.7843, 1.0000)
 Button/colors/font_disabled_color = Color(0.8431, 0.7686, 0.6471, 1.0000)
 Button/styles/normal = SubResource("btn_normal")
 Button/styles/hover = SubResource("btn_hover")
