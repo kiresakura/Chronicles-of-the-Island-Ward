@@ -13,6 +13,7 @@ const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 �
 
 var _offering_table_panel: Panel
 var _input_mask: ColorRect	# 全幅 STOP 遮罩（取代固定 1200 Background；隨 viewport 鋪滿、寬螢幕不露邊/不穿透）
+var _victory_fx: Control	# 凱旋 juice（金光芒輪+凱旋大字+金箔雨）；戰勝現、寶箱不現
 
 # reward values; These are sorted into mutually exclusive groups
 # they can be added to via ActionGrantRewards to allow things to affect them
@@ -51,6 +52,7 @@ func _ready():
 	if not visibility_changed.is_connected(_fit_input_mask):
 		visibility_changed.connect(_fit_input_mask)	# 不論誰把它設 visible 都重鋪滿
 	_build_offering_table_chrome()
+	_build_victory_fx()	# 凱旋 juice（最後建＝最上層繪於遮罩/供桌之上）
 
 ## 全幅深色 STOP 遮罩（dim + 擋輸入），最底繪。
 func _ensure_input_mask() -> void:
@@ -73,6 +75,98 @@ func _fit_input_mask() -> void:
 	var r: Rect2 = vp.get_visible_rect()
 	_input_mask.global_position = r.position
 	_input_mask.size = r.size
+
+# ── 凱旋 juice（設計稿 §陸：延遲→揭示→爆發；金光芒輪 + 凱旋大字 + 金箔雨）──
+func _build_victory_fx() -> void:
+	if _victory_fx != null and is_instance_valid(_victory_fx):
+		return
+	_victory_fx = Control.new()
+	_victory_fx.name = "VictoryFX"
+	_victory_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE	# 不擋領賞點擊
+	_victory_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_victory_fx.visible = false
+	add_child(_victory_fx)
+	var rays := TextureRect.new()
+	rays.name = "Rays"
+	rays.texture = _make_gold_burst_texture()
+	rays.stretch_mode = TextureRect.STRETCH_SCALE
+	rays.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rays.size = Vector2(560, 300)
+	_victory_fx.add_child(rays)
+	var banner := Label.new()
+	banner.name = "TriumphLabel"
+	banner.text = tr("reward.triumph")
+	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	banner.add_theme_font_size_override("font_size", 68)
+	banner.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.42)))
+	banner.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	banner.add_theme_constant_override("shadow_offset_y", 3)
+	_victory_fx.add_child(banner)
+	var sub := Label.new()
+	sub.name = "TriumphSub"
+	sub.text = tr("reward.triumph_sub")
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_font_size_override("font_size", 18)
+	sub.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("ash_beige", Color(0.84, 0.77, 0.65)))
+	_victory_fx.add_child(sub)
+	_layout_victory_fx()
+
+func _layout_victory_fx() -> void:
+	if _victory_fx == null or not is_instance_valid(_victory_fx):
+		return
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var rays := _victory_fx.get_node_or_null("Rays") as TextureRect
+	var banner := _victory_fx.get_node_or_null("TriumphLabel") as Label
+	var sub := _victory_fx.get_node_or_null("TriumphSub") as Label
+	if rays != null:
+		rays.position = Vector2(vp.x * 0.5 - 280.0, 2.0)
+	if banner != null:
+		banner.position = Vector2(0, 40.0)
+		banner.size = Vector2(vp.x, 84.0)
+	if sub != null:
+		sub.position = Vector2(0, 122.0)
+		sub.size = Vector2(vp.x, 26.0)
+
+## 戰勝放演出：顯示芒輪+凱旋字 + 灑金箔雨（程序化落片，自我清理）。
+func _play_victory_juice() -> void:
+	_build_victory_fx()
+	_layout_victory_fx()
+	_victory_fx.visible = true
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var cols: Array = [
+		COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42)),
+		COTIW_UI_THEME.get_color("festival_red", Color(0.85, 0.29, 0.17)),
+		COTIW_UI_THEME.get_color("neon_cyan", Color(0.34, 0.78, 0.83)),
+	]
+	for i: int in range(18):
+		var flake := ColorRect.new()
+		flake.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		flake.size = Vector2(8.0, 12.0)
+		flake.color = cols[i % cols.size()]
+		flake.position = Vector2(vp.x * (float(i) + 0.5) / 18.0, -20.0)
+		flake.pivot_offset = flake.size * 0.5
+		_victory_fx.add_child(flake)
+		var dur: float = 4.4 + float(i % 5) * 0.5
+		var tw := flake.create_tween()
+		tw.tween_property(flake, "position:y", vp.y + 30.0, dur)
+		tw.parallel().tween_property(flake, "rotation", TAU * (1.0 if i % 2 == 0 else -1.0), dur)
+		tw.tween_callback(flake.queue_free)
+
+## 金光芒輪紋理（徑向金光，墊凱旋字後）。
+func _make_gold_burst_texture() -> Texture2D:
+	var gold: Color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42))
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	g.colors = PackedColorArray([
+		Color(gold.r, gold.g, gold.b, 0.34), Color(gold.r, gold.g, gold.b, 0.12), Color(gold.r, gold.g, gold.b, 0.0)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.5)
+	t.fill_to = Vector2(1.0, 0.5)
+	t.width = 128
+	t.height = 128
+	return t
 
 static func make_offering_table_panel(panel_size: Vector2 = Vector2(640, 360)) -> Panel:
 	var table := Panel.new()
@@ -356,9 +450,12 @@ func _on_combat_ended():
 	if not Global.is_end_of_run():
 		visible = true
 		populate_reward_display()
+		_play_victory_juice()	# 設計稿§陸 凱旋一拍爽（戰勝才放）
 
 func _on_chest_opened():
 	visible = true
+	if _victory_fx != null and is_instance_valid(_victory_fx):
+		_victory_fx.visible = false	# 寶箱非凱旋，不放戰勝演出
 	# rewards will have been populated elsewhere, display them
 	populate_reward_display()
 
