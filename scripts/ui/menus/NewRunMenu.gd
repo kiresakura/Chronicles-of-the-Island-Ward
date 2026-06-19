@@ -67,6 +67,7 @@ var _hero_panel: Panel
 var _setup_card: Panel
 var _hero_portrait: TextureRect
 var _hero_portrait_frame: Panel
+var _hero_spot: TextureRect	# §A 聚光燈：立繪後暖金徑向光（設計稿「聚光燈打亮立繪」）
 var _tagline_label: Label
 var _character_tags_flow: HFlowContainer
 var _info_heading_label: Label
@@ -169,6 +170,20 @@ func _restyle_scene_backdrops() -> void:
 		vig.z_index = -2
 		vig.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+## 立繪聚光燈紋理（暖金徑向光，中心亮 → 透明邊）。
+func _make_spot_texture() -> Texture2D:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
+	g.colors = PackedColorArray([Color(1.0, 0.86, 0.55, 0.26), Color(1.0, 0.82, 0.50, 0.08), Color(1.0, 0.80, 0.50, 0.0)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.45)
+	t.fill_to = Vector2(1.0, 0.45)
+	t.width = 128
+	t.height = 128
+	return t
+
 ## 隱藏 STR/舊版殘留靜態標籤（「新一局」大標題鬼影 + 「種子」「自訂修正」副標）—
 ## 重排後由「返回正殿」+ 區段卡頭接手；舊大標未進 calculate_layout，留著會漂到畫面中央透出。
 func _hide_legacy_static_labels() -> void:
@@ -221,6 +236,15 @@ func _build_runtime_chrome() -> void:
 		add_child(_setup_card)
 		_setup_card.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
 			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold", Color(0.92, 0.76, 0.40)), 0, 3, 0.0))
+	if _hero_spot == null:
+		# 聚光燈墊於立繪後（z-1：在面板之上、立繪之下）
+		_hero_spot = TextureRect.new()
+		_hero_spot.name = "HeroSpot"
+		_hero_spot.texture = _make_spot_texture()
+		_hero_spot.stretch_mode = TextureRect.STRETCH_SCALE
+		_hero_spot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_hero_spot.z_index = -1
+		add_child(_hero_spot)
 	if _hero_portrait == null:
 		_hero_portrait = TextureRect.new()
 		_hero_portrait.name = "HeroPortrait"
@@ -355,6 +379,10 @@ func _relayout_runtime_chrome() -> void:
 	if _hero_portrait_frame != null and _hero_portrait != null:
 		_hero_portrait_frame.position = _hero_portrait.position
 		_hero_portrait_frame.size = _hero_portrait.size
+	if _hero_spot != null and _hero_portrait != null:
+		var spot_grow := Vector2(72.0, 72.0)
+		_hero_spot.position = _hero_portrait.position - spot_grow * 0.5
+		_hero_spot.size = _hero_portrait.size + spot_grow
 	var info_x: float = hero.position.x + portrait_w + hp_pad * 2.0
 	var info_w: float = hero.size.x - portrait_w - hp_pad * 3.0
 	var info_y: float = hero.position.y + hp_pad
