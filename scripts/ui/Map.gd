@@ -505,7 +505,34 @@ func _rebuild_map_story_layers(locations: Array[LocationData], location_by_id: D
 			if route_state == ROUTE_STATE_REACHABLE and current_map_location != null:
 				_spawn_reachable_route_marker(from_map_location.position, to_map_location.position)
 
+	_spawn_palanquin_marker(current_map_location)	# 設計稿：神轎「我在此」marker（青光浮於當前節點上方）
 	_build_boss_omen(boss_map_location)
+
+## 神轎「我在此」標記：青光 ▼ 浮於當前節點上方，強化「神轎當前位置」敘事（設計稿 §伍）。
+func _spawn_palanquin_marker(current_map_location: MapLocation) -> void:
+	if current_map_location == null:
+		return
+	var anchor: Vector2 = _map_anchor_from_position(current_map_location.position)
+	var cyan: Color = COTIW_UI_THEME.get_color("neon_cyan", Color(0.34, 0.78, 0.83))
+	var glow := ColorRect.new()
+	glow.name = "PalanquinGlow"
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	glow.size = Vector2(20, 20)
+	glow.position = anchor - Vector2(10, 44)
+	glow.color = Color(cyan.r, cyan.g, cyan.b, 0.28)
+	_route_marker_layer.add_child(glow)
+	var mk := Label.new()
+	mk.name = "PalanquinMarker"
+	mk.text = "▼"
+	mk.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mk.add_theme_font_size_override("font_size", 26)
+	mk.add_theme_color_override("font_color", cyan)
+	mk.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.75))
+	mk.add_theme_constant_override("shadow_offset_y", 1)
+	mk.size = Vector2(40, 32)
+	mk.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mk.position = anchor - Vector2(20, 58)
+	_route_marker_layer.add_child(mk)
 
 func _classify_route_state(from_location: LocationData, to_location: LocationData, reachable_ids: Dictionary) -> String:
 	if bool(reachable_ids.get(to_location.location_id, false)):
