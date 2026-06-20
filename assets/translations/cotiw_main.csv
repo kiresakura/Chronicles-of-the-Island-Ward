@@ -390,3 +390,11 @@ cosmetic.equip,裝備,装备,Equip,装備する
 cosmetic.buy,購買 %d,购买 %d,Buy %d,%d で購入
 cosmetic.insufficient,元寶不足,元宝不足,Not enough,元宝不足
 cosmetic.balance,元寶 %d,元宝 %d,Yuanbao: %d,元宝 %d
+ftue.next,知道了,知道了,Got it,わかった
+ftue.skip,略過導引,略过引导,Skip,スキップ
+ftue.oracle_title,開壇問神,开坛问神,Consult the Gods,神に伺う
+ftue.oracle_body,點一支籤　再擲筊問神。擲出聖筊　神明應允賜你開壇加持。,点一支签　再掷筊问神。掷出圣筊　神明应允赐你开坛加持。,Pick a fortune then cast the jiao blocks. A sacred cast wins the gods blessing to begin.,おみくじを選び神筊を投げよう。聖杯が出れば神の加護を得て開壇できる。
+ftue.combat_title,五營鎮守,五营镇守,Defend the Five Camps,五営の守り
+ftue.combat_body,煞沿煞道逼近母壇。點營位佈神將　攔截破煞——別讓煞破營直擊母壇壇體。,煞沿煞道逼近母坛。点营位布神将　拦截破煞——别让煞破营直击母坛坛体。,Evil marches on your altar. Place deities in the camps to intercept and break them. Don't let them reach the mother altar.,煞が母壇に迫る。営に神将を配して迎え撃ち破煞せよ。母壇を直撃させるな。
+ftue.reward_title,旗開得勝,旗开得胜,Victory,勝利
+ftue.reward_body,鎮下此煞！領取戰利　繼續遶境鎮島　香火日盛。,镇下此煞！领取战利　继续遶境镇岛　香火日盛。,Evil repelled! Claim your spoils and continue the island procession.,煞を鎮めた！戦利を受け取り遶境を続けよ。
