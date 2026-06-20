@@ -31,8 +31,10 @@ var PANEL_BG_LOCK: Color = Color(0.13, 0.09, 0.09, 0.80)
 
 const MascotPanelScript := preload("res://scripts/ui/MascotPanel.gd")
 const MascotSelectorScript := preload("res://scripts/ui/menus/MascotSelector.gd")
+const DailyIncenseOverlayScript := preload("res://scripts/ui/menus/DailyIncenseOverlay.gd")	# c-1 每日上香
 var _mascot_panel: MascotPanel = null
 var _mascot_selector: MascotSelector = null
+var _daily_overlay: Control = null
 
 # 自適應重排用的節點參照
 var _backdrop: Control
@@ -65,6 +67,7 @@ func _ready() -> void:
 	_build_primary()
 
 	Signals.run_ended.connect(_on_run_ended)
+	Signals.daily_incense_claimed.connect(func(_s: int, _r: Dictionary) -> void: _refresh_resources())	# c-1：上香後刷新香火/元寶條
 	Responsive.changed.connect(_relayout)
 	update_continue_button_visibility()
 	_refresh_resources()
@@ -209,9 +212,9 @@ var _hotspot_censer: Button = null
 var _hotspot_lantern: Button = null
 
 func _build_foreground_hotspots() -> void:
-	# 香爐 hot zone（右下，廟宇前空地）
+	# 香爐 hot zone（右下，廟宇前空地）→ c-1：點香爐 = 每日上香
 	_hotspot_censer = _make_invisible_hotspot("CenserHot")
-	_hotspot_censer.button_up.connect(func(): _show_coming_soon(tr("menu.hotspot_censer")))
+	_hotspot_censer.button_up.connect(_on_censer_pressed)
 	add_child(_hotspot_censer)
 
 	# 燈籠 hot zone（右上方紅燈籠群）
@@ -227,6 +230,19 @@ func _make_invisible_hotspot(node_name: String) -> Button:
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	b.self_modulate = Color(1, 1, 1, 0)   # 透明 hit area
 	return b
+
+## c-1：點香爐 → 開每日上香 overlay（lazy 建層）。
+func _on_censer_pressed() -> void:
+	_ensure_daily_overlay()
+	if _daily_overlay != null and _daily_overlay.has_method("open"):
+		_daily_overlay.call("open")
+
+func _ensure_daily_overlay() -> void:
+	if _daily_overlay != null and is_instance_valid(_daily_overlay):
+		return
+	_daily_overlay = DailyIncenseOverlayScript.new()
+	_daily_overlay.name = "DailyIncenseOverlay"
+	add_child(_daily_overlay)	# 最後加＝最上層；open() 時全幅 modal 蓋住正殿
 
 # ────────────────────────────────────────────────
 # 活動 banner（UI 重修 P0-3：可點 Button 根 + 倒數 + 獎勵預覽，包覆內容）
