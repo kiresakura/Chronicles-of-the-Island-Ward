@@ -73,6 +73,17 @@ docs/design/mockups/
 # 美術重生 staging（AI 生成的中間產物、bakeoff、未 promote 的素材）
 qa/art_regen/
 
+# qa/ 工具：只追蹤 driver/scene/docs 原始碼；產出物（截圖/匯入/log/影片）不進 git
+qa/**/*.png
+qa/**/*.import
+qa/**/*.webp
+qa/**/*.jpg
+qa/**/*.gif
+qa/**/*.log
+qa/**/*.txt
+qa/**/*.apk
+qa/**/*.idsig
+
 # headless 測試/QA 產生的 log（非原始碼）
 qa_*.log
 assets/generated/recraft/anime_cohort_preview_v1/cohort_variantB.webp*

@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcodexfuprobe1"]
+[ext_resource type="Script" path="res://qa/uiux/codex_fu_probe.gd" id="1"]
+[node name="CodexFuProbe" type="Node"]
+script = ExtResource("1")

@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3 uid="uid://brestcheck01"]
+[ext_resource type="Script" path="res://qa/uiux/rest_check.gd" id="1"]
+[node name="RestCheck" type="Node"]
+script = ExtResource("1")
