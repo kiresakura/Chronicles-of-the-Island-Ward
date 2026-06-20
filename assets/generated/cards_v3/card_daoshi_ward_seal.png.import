@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://djd2olrvvkqms"
-path="res://.godot/imported/card_daoshi_ward_seal.png-34f0d34ad2507a7383b0d49038e82af2.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_daoshi_ward_seal.png"
-dest_files=["res://.godot/imported/card_daoshi_ward_seal.png-34f0d34ad2507a7383b0d49038e82af2.ctex"]
 
 [params]
 

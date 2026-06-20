@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3umpxm7te301"
-path="res://.godot/imported/card_daoshi_talisman_bolt.png-c556e8f5162fdb894288913a72fb383c.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_daoshi_talisman_bolt.png"
-dest_files=["res://.godot/imported/card_daoshi_talisman_bolt.png-c556e8f5162fdb894288913a72fb383c.ctex"]
 
 [params]
 

@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c2365g1w03rr1"
-path="res://.godot/imported/card_daoshi_summon_seal.png-60220fe13aaae6d9528360f272de3c1c.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_daoshi_summon_seal.png"
-dest_files=["res://.godot/imported/card_daoshi_summon_seal.png-60220fe13aaae6d9528360f272de3c1c.ctex"]
 
 [params]
 
