@@ -45,6 +45,9 @@ class_name ProfileData
 @export var profile_owned_cosmetics: Array[String] = []
 @export var profile_equipped_frame: String = ""	# ""＝素（預設）；其餘為外觀 id
 
+## c-3 FTUE：首局 90 秒導引是否已完成（完成或略過後置 true，不再觸發）。
+@export var profile_ftue_done: bool = false
+
 ## 香火加成（戰後結算 / 土地公被動等）。
 func add_incense(amount: int) -> void:
 	profile_incense_balance = maxi(0, profile_incense_balance + amount)

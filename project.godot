@@ -48,6 +48,7 @@ UIDGenerator="*res://autoload/UIDGenerator.gd"
 Responsive="*res://autoload/Responsive.gd"
 AudioManager="*res://autoload/AudioManager.gd"
 BadgeManager="*res://autoload/BadgeManager.gd"
+FtueCoach="*res://scripts/systems/ftue/FtueCoach.gd"
 
 [debug]
 
