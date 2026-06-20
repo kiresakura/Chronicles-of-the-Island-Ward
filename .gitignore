@@ -67,6 +67,12 @@ qa_root.log
 # Temporary generated backups
 assets/generated/_backup_before_character_replace/
 
+# 大型設計 mockup HTML（保留在磁碟當參考，不進 git 避免肥大）
+docs/design/mockups/
+
+# 美術重生 staging（AI 生成的中間產物、bakeoff、未 promote 的素材）
+qa/art_regen/
+
 # headless 測試/QA 產生的 log（非原始碼）
 qa_*.log
 assets/generated/recraft/anime_cohort_preview_v1/cohort_variantB.webp*

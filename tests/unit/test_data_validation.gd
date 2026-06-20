@@ -2,7 +2,7 @@
 #
 # 對應 CLAUDE.md §7「資料載入：每個 JSON schema 要有 validator」。
 # 同時作為 P1（角色）/ P2（run_modifier i18n）修復的回歸測試，
-# 以及 docs/AUDIT_2026-05-17.md B3 類（敵人 status 引用錯誤）的防線。
+# 以及 docs/archive/AUDIT_2026-05-17.md B3 類（敵人 status 引用錯誤）的防線。
 extends "res://tests/test_case.gd"
 
 const DATA_ROOT: String = "res://external/data/"
