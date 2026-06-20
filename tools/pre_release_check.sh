@@ -57,6 +57,19 @@ for RES in 1244x700 1515x700 1200x900; do
   check_log_clean "$OUT/audit_$RES.log" "audit_$RES"
 done
 
+note "[2b] Safe-area 回歸（強制模擬瀏海 → 任何互動元件出安全區即紅）"
+# COTIW_SAFE_INSET 讓 Responsive 在桌機也套安全區內縮，且 driver 把 SAFE 升級為 FAIL。
+UIUX_RES=1515x700 COTIW_SAFE_INSET=64,20,64,44 timeout 420 "$GODOT" --path "$PROJ" \
+  res://qa/uiux/uiux_audit_driver.tscn > "$OUT/audit_safeinset.log" 2>&1 || true
+SAFE_FAIL=$(grep -acE '\[UIUX\]\[FAIL\]\[[^]]+\]\[SAFE\]' "$OUT/audit_safeinset.log")
+if [ "$SAFE_FAIL" -gt 0 ]; then
+  echo "✗ safe-area 回歸：$SAFE_FAIL 個互動元件落在安全區外（瀏海/手勢區會切）"
+  grep -aE '\[UIUX\]\[FAIL\]\[[^]]+\]\[SAFE\]' "$OUT/audit_safeinset.log" | head -6
+  FAILED=1
+else
+  echo "✓ safe-area：強制瀏海下無互動元件出安全區"
+fi
+
 note "[3/4] E2E 全流程"
 if timeout 420 "$GODOT" --path "$PROJ" res://qa/uiux/e2e_driver.tscn > "$OUT/e2e.log" 2>&1; then
   grep -a "=====" "$OUT/e2e.log" | tail -1

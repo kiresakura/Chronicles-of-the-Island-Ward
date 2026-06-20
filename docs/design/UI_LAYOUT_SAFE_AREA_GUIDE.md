@@ -69,3 +69,26 @@ CotiwUiTheme.LAYER_TOUCH_DETAIL = 90
 ## 8. 多比例 contract 測試
 
 `tests/unit/test_ui_layout_safe_area.gd` 驗證 16:9 / 19.5:9 / 20:9 / 4:3 下 `clamp_rect_to_safe_area` 皆把元素夾進 safe-rect；`tests/integration/test_combat_flow_smoke.gd::test_uiqa_toast_cancel_merge_affordance` 驗證 toast / cancel 鈕 / 合符提示的真實節點行為。
+
+## 9. 新畫面鐵律（2026-06-20 起，防裁切回歸）
+
+> 教訓：`RunStartOptions` 立繪曾硬寫 `+ 26.0` 推出安全區右緣 → iPhone 圓角/瀏海切掉半個立繪；
+> `MascotPanel` 曾夾到 `screen_rect`（實體底）而非 `safe_rect` → 點擊區落到 home indicator 下。
+
+**做法選一（不可硬寫絕對座標、不可故意溢出 safe）：**
+- **固定 1200×700 設計的畫面**（戰鬥/地圖/商店/多數選單/overlay）：`SafeFit.bind(self)` 一次搞定——整體等比置中進安全區。
+- **需逐元素響應的畫面**（HUD、籤詩列）：一律相對 `get_safe_content_rect()` 定位，浮動元素最後 `clamp_rect_to_safe_area()`。
+- **Modal overlay**：暗底（dim）**全出血**（`PRESET_FULL_RECT`，本就該蓋瀏海）；但**主面板置中於 safe-rect 且寬 ≤ safe 寬**。
+- **絕不**用 `screen_rect`／視口尺寸去夾互動元件——一律用 `safe_rect`。
+
+## 10. Safe-area 回歸守門（強制模擬瀏海）
+
+桌機無瀏海,平時 `safe_rect = 全畫布`,SAFE 違規測不出。用環境變數強制注入內縮:
+
+```bash
+# Responsive 套上 L,T,R,B 邏輯px 內縮；driver 把 SAFE 違規升級為 FAIL（嚴格）
+UIUX_RES=1515x700 COTIW_SAFE_INSET=64,20,64,44 godot --path . res://qa/uiux/uiux_audit_driver.tscn
+```
+
+已併入 `tools/pre_release_check.sh` 第 [2b] 關：任何互動元件落在安全區外 → CI 紅。
+（機制:`autoload/Responsive.gd` 讀 `COTIW_SAFE_INSET`;`qa/uiux/uiux_audit_driver.gd` 的 SAFE 檢查在此模式 FAIL。）
