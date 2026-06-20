@@ -226,7 +226,7 @@ func _ready():
 	add_test_keywords()
 	# COTIW: 停用 STR 測試角色 / 玩家原型生成器。
 	# 原因：STR 測試角色（Red/Blue/Green/Orange Guy）會先寫入 _id_to_character_data，
-	# 導致角色選單預設選到 character_red 而非乩童（見 docs/AUDIT_2026-05-17.md P1）。
+	# 導致角色選單預設選到 character_red 而非乩童（見 docs/archive/AUDIT_2026-05-17.md P1）。
 	# 鎮島錄全部角色改走 external/data/characters/*.json + external/data/player/*.json
 	# （SCHEMA 已含 characters/ 與 player/ 路徑）。函式本體保留不動以維持 STR upstream 追更能力。
 	# add_test_characters()

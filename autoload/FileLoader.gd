@@ -120,7 +120,7 @@ func get_files_in_directory(partial_dir_path: String):
 # （例："tongji/card_tongji_punch.json"）。
 # 原因：STR get_files_in_directory() 不遞迴，但鎮島錄依 PRD 7.3 把內容分在
 # cards/tongji、artifacts/tongji、enemies/act1_mountain 等子資料夾，原版會整批漏載
-# （見 docs/AUDIT_2026-05-18.md）。只回傳 .json，順便濾掉 .gitkeep/.import 雜訊。
+# （見 docs/archive/AUDIT_2026-05-18.md）。只回傳 .json，順便濾掉 .gitkeep/.import 雜訊。
 func get_json_files_in_directory_recursive(partial_dir_path: String) -> PackedStringArray:
 	var results: PackedStringArray = PackedStringArray()
 	var full_path: String = _get_modified_filepath(partial_dir_path)
