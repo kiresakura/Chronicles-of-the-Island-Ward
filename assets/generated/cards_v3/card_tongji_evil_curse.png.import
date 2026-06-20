@@ -3,17 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://kogqx5eh7egx"
-path.s3tc="res://.godot/imported/card_tongji_evil_curse.png-0061d2ef48478948152c4e23538ff093.s3tc.ctex"
-path.etc2="res://.godot/imported/card_tongji_evil_curse.png-0061d2ef48478948152c4e23538ff093.etc2.ctex"
-metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
-"vram_texture": true
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_evil_curse.png"
-dest_files=["res://.godot/imported/card_tongji_evil_curse.png-0061d2ef48478948152c4e23538ff093.s3tc.ctex", "res://.godot/imported/card_tongji_evil_curse.png-0061d2ef48478948152c4e23538ff093.etc2.ctex"]
 
 [params]
 

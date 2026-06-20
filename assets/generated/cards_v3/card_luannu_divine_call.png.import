@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://didtknbm7u0tv"
-path="res://.godot/imported/card_luannu_divine_call.png-4b56d08e5584c52f2e64544975c43473.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_divine_call.png"
-dest_files=["res://.godot/imported/card_luannu_divine_call.png-4b56d08e5584c52f2e64544975c43473.ctex"]
 
 [params]
 

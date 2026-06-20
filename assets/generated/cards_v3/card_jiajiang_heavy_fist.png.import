@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8fojbs0isugq"
-path="res://.godot/imported/card_jiajiang_heavy_fist.png-c09a405ebb136c438aef02c65a30323a.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_jiajiang_heavy_fist.png"
-dest_files=["res://.godot/imported/card_jiajiang_heavy_fist.png-c09a405ebb136c438aef02c65a30323a.ctex"]
 
 [params]
 

@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pa17ue1jqcty"
-path="res://.godot/imported/card_luannu_spirit_brush.png-39d8d9857eead56bcf30cbe0eb855bd0.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_spirit_brush.png"
-dest_files=["res://.godot/imported/card_luannu_spirit_brush.png-39d8d9857eead56bcf30cbe0eb855bd0.ctex"]
 
 [params]
 

@@ -3,17 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jp4akon1a8vu"
-path.s3tc="res://.godot/imported/card_tongji_draw_charm.png-c5200049934e68b98d745a918a22216e.s3tc.ctex"
-path.etc2="res://.godot/imported/card_tongji_draw_charm.png-c5200049934e68b98d745a918a22216e.etc2.ctex"
-metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
-"vram_texture": true
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_draw_charm.png"
-dest_files=["res://.godot/imported/card_tongji_draw_charm.png-c5200049934e68b98d745a918a22216e.s3tc.ctex", "res://.godot/imported/card_tongji_draw_charm.png-c5200049934e68b98d745a918a22216e.etc2.ctex"]
 
 [params]
 
