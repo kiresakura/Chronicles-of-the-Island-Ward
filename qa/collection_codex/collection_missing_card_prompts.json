@@ -1,0 +1,546 @@
+[
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_curse_seal",
+    "name": "咒封",
+    "desc": "施加 3 層邪氣於目標。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_curse_seal.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 咒封 (card_daoshi_curse_seal), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 施加 3 層邪氣於目標。. Visual motifs: 黑紫咒氣、陰影符文、邪氣纏繞. Card type skill, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_fire_talisman",
+    "name": "火符",
+    "desc": "造成 4 點傷害兩次。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_fire_talisman.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 火符 (card_daoshi_fire_talisman), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 造成 4 點傷害兩次。. Visual motifs: 神火、赤橙火舌、香灰火星. Card type attack, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_heavy_seal",
+    "name": "重符",
+    "desc": "造成 12 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_heavy_seal.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 重符 (card_daoshi_heavy_seal), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 造成 12 點傷害。. Visual motifs: 符紙飛散、硃砂符線、黃符靈光. Card type attack, rarity basic, energy cost 2. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_open_altar",
+    "name": "開壇",
+    "desc": "獲得 2 點神威。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_open_altar.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 開壇 (card_daoshi_open_altar), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 獲得 2 點神威。. Visual motifs: 符紙飛散、硃砂符線、黃符靈光. Card type power, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_summon_seal",
+    "name": "引符",
+    "desc": "抽 2 張牌。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_summon_seal.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 引符 (card_daoshi_summon_seal), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 抽 2 張牌。. Visual motifs: 符紙飛散、硃砂符線、黃符靈光. Card type skill, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_talisman_bolt",
+    "name": "符箭",
+    "desc": "造成 6 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_talisman_bolt.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 符箭 (card_daoshi_talisman_bolt), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 造成 6 點傷害。. Visual motifs: 符紙飛散、硃砂符線、黃符靈光. Card type attack, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_thunder_talisman",
+    "name": "雷符",
+    "desc": "造成 14 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_thunder_talisman.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 雷符 (card_daoshi_thunder_talisman), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 造成 14 點傷害。. Visual motifs: 神火、赤橙火舌、香灰火星. Card type attack, rarity basic, energy cost 2. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "daoshi",
+    "id": "card_daoshi_ward_seal",
+    "name": "鎮符",
+    "desc": "獲得 6 點護身符。",
+    "output": "res://assets/generated/cards_v3/card_daoshi_ward_seal.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 鎮符 (card_daoshi_ward_seal), 道士, blue-white robe, Taoist hat, talismans, ritual authority, thunder and seals. Gameplay mood: 獲得 6 點護身符。. Visual motifs: 符紙飛散、硃砂符線、黃符靈光. Card type skill, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_array_slam",
+    "name": "陣裂",
+    "desc": "造成 5 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_array_slam.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 陣裂 (card_jiajiang_array_slam), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 造成 5 點傷害。. Visual motifs: 陣法地紋、八卦線、隊列壓迫. Card type attack, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_bell_purify",
+    "name": "淨鈴",
+    "desc": "造成 5 點傷害，給予目標 1 層驚嚇。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_bell_purify.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 淨鈴 (card_jiajiang_bell_purify), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 造成 5 點傷害，給予目標 1 層驚嚇。. Visual motifs: 法鈴音波、金色震紋、淨化鈴光. Card type attack, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_bell_ward",
+    "name": "鈴護",
+    "desc": "獲得 7 點護身符。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_bell_ward.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 鈴護 (card_jiajiang_bell_ward), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 獲得 7 點護身符。. Visual motifs: 法鈴音波、金色震紋、淨化鈴光. Card type skill, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_deploy",
+    "name": "列陣",
+    "desc": "獲得 2 點神威。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_deploy.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 列陣 (card_jiajiang_deploy), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 獲得 2 點神威。. Visual motifs: 陣法地紋、八卦線、隊列壓迫. Card type power, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_grand_formation",
+    "name": "大陣",
+    "desc": "造成 10 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_grand_formation.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 大陣 (card_jiajiang_grand_formation), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 造成 10 點傷害。. Visual motifs: 陣法地紋、八卦線、隊列壓迫. Card type attack, rarity basic, energy cost 2. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_heavy_fist",
+    "name": "重拳",
+    "desc": "造成 13 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_heavy_fist.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 重拳 (card_jiajiang_heavy_fist), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 造成 13 點傷害。. Visual motifs: 拳法衝擊、肉身破煞、金紅拳風. Card type attack, rarity basic, energy cost 2. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_vanguard_strike",
+    "name": "前鋒擊",
+    "desc": "造成 7 點傷害。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_vanguard_strike.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 前鋒擊 (card_jiajiang_vanguard_strike), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 造成 7 點傷害。. Visual motifs: 拳法衝擊、肉身破煞、金紅拳風. Card type attack, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "jiajiang",
+    "id": "card_jiajiang_war_drum",
+    "name": "戰鼓",
+    "desc": "抽 2 張牌。",
+    "output": "res://assets/generated/cards_v3/card_jiajiang_war_drum.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 戰鼓 (card_jiajiang_war_drum), 家將 martial temple guardian, opera face paint, red-gold armor, spear/flag/bell/formation power. Gameplay mood: 抽 2 張牌。. Visual motifs: 法鈴音波、金色震紋、淨化鈴光. Card type skill, rarity basic, energy cost 1. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "add_health_card",
+    "name": "加元神",
+    "desc": "+元神",
+    "output": "res://assets/generated/cards_v3/add_health_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 加元神 (add_health_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: +元神. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "add_to_draw_from_discard_card",
+    "name": "添抽牌",
+    "desc": "從棄牌堆加一張到抽牌堆",
+    "output": "res://assets/generated/cards_v3/add_to_draw_from_discard_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 添抽牌 (add_to_draw_from_discard_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 從棄牌堆加一張到抽牌堆. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "attack_increase_cost_on_damage_taken_card",
+    "name": "受傷攻擊",
+    "desc": "受傷後神力消耗 +1",
+    "output": "res://assets/generated/cards_v3/attack_increase_cost_on_damage_taken_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 受傷攻擊 (attack_increase_cost_on_damage_taken_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 受傷後神力消耗 +1. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "attack_lower_cost_on_discard_card",
+    "name": "降費攻擊",
+    "desc": "棄牌後神力消耗 -1",
+    "output": "res://assets/generated/cards_v3/attack_lower_cost_on_discard_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 降費攻擊 (attack_lower_cost_on_discard_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 棄牌後神力消耗 -1. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "attack_with_conditional_block_card",
+    "name": "護擊",
+    "desc": "造成傷害並獲得護身符",
+    "output": "res://assets/generated/cards_v3/attack_with_conditional_block_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 護擊 (attack_with_conditional_block_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 造成傷害並獲得護身符. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "attack_with_conditional_draw_card",
+    "name": "抽牌攻擊",
+    "desc": "造成傷害並抽牌",
+    "output": "res://assets/generated/cards_v3/attack_with_conditional_draw_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 抽牌攻擊 (attack_with_conditional_draw_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 造成傷害並抽牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "block_if_exhaust_card",
+    "name": "消除護身符",
+    "desc": "消除時獲得護身符",
+    "output": "res://assets/generated/cards_v3/block_if_exhaust_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 消除護身符 (block_if_exhaust_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 消除時獲得護身符. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_attack_basic",
+    "name": "基礎攻擊",
+    "desc": "造成 [damage] 點傷害 [number_of_attacks] 次",
+    "output": "res://assets/generated/cards_v3/card_attack_basic.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 基礎攻擊 (card_attack_basic), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 造成 [damage] 點傷害 [number_of_attacks] 次. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_attack_big",
+    "name": "重攻擊",
+    "desc": "造成大量傷害",
+    "output": "res://assets/generated/cards_v3/card_attack_big.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 重攻擊 (card_attack_big), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 造成大量傷害. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_attack_heal_unblocked_damage",
+    "name": "癒擊",
+    "desc": "造成傷害並回復未阻擋的傷害",
+    "output": "res://assets/generated/cards_v3/card_attack_heal_unblocked_damage.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 癒擊 (card_attack_heal_unblocked_damage), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 造成傷害並回復未阻擋的傷害. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_attack_in_center",
+    "name": "陣前擊",
+    "desc": "中央敵人多 +傷害",
+    "output": "res://assets/generated/cards_v3/card_attack_in_center.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 陣前擊 (card_attack_in_center), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 中央敵人多 +傷害. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_attack_rng",
+    "name": "隨機攻擊",
+    "desc": "隨機造成 [damage] - [damage_random] 點傷害",
+    "output": "res://assets/generated/cards_v3/card_attack_rng.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 隨機攻擊 (card_attack_rng), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 隨機造成 [damage] - [damage_random] 點傷害. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_banish_attack",
+    "name": "驅逐攻擊",
+    "desc": "造成傷害並驅逐",
+    "output": "res://assets/generated/cards_v3/card_banish_attack.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 驅逐攻擊 (card_banish_attack), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 造成傷害並驅逐. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_block_big",
+    "name": "重護身符",
+    "desc": "獲得大量護身符，消除",
+    "output": "res://assets/generated/cards_v3/card_block_big.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 重護身符 (card_block_big), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 獲得大量護身符，消除. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_block_initial",
+    "name": "護身符卡",
+    "desc": "獲得 [block] 點護身符",
+    "output": "res://assets/generated/cards_v3/card_block_initial.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 護身符卡 (card_block_initial), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 獲得 [block] 點護身符. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_block_without_attacks",
+    "name": "守心",
+    "desc": "不攻擊則獲得護身符",
+    "output": "res://assets/generated/cards_v3/card_block_without_attacks.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 守心 (card_block_without_attacks), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 不攻擊則獲得護身符. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_cycle_enemy_intent",
+    "name": "驅意",
+    "desc": "改變敵人意圖",
+    "output": "res://assets/generated/cards_v3/card_cycle_enemy_intent.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 驅意 (card_cycle_enemy_intent), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 改變敵人意圖. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_debug_log",
+    "name": "除錯印",
+    "desc": "輸出 console 訊息",
+    "output": "res://assets/generated/cards_v3/card_debug_log.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 除錯印 (card_debug_log), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 輸出 console 訊息. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_discard_attacks_from_draw",
+    "name": "棄抽攻擊",
+    "desc": "從抽牌堆棄所有攻擊",
+    "output": "res://assets/generated/cards_v3/card_discard_attacks_from_draw.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 棄抽攻擊 (card_discard_attacks_from_draw), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 從抽牌堆棄所有攻擊. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_discard_block",
+    "name": "棄牌護身符",
+    "desc": "棄牌獲得護身符",
+    "output": "res://assets/generated/cards_v3/card_discard_block.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 棄牌護身符 (card_discard_block), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 棄牌獲得護身符. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_discard_hand",
+    "name": "棄全手",
+    "desc": "棄掉所有手牌",
+    "output": "res://assets/generated/cards_v3/card_discard_hand.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 棄全手 (card_discard_hand), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 棄掉所有手牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_draft_random_attack",
+    "name": "選張攻擊",
+    "desc": "選一張攻擊加入牌組",
+    "output": "res://assets/generated/cards_v3/card_draft_random_attack.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 選張攻擊 (card_draft_random_attack), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 選一張攻擊加入牌組. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_draft_random_player_pool",
+    "name": "亂抽",
+    "desc": "從牌池隨機選一張",
+    "output": "res://assets/generated/cards_v3/card_draft_random_player_pool.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 亂抽 (card_draft_random_player_pool), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 從牌池隨機選一張. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_draft_red_card",
+    "name": "選張紅卡",
+    "desc": "選一張紅色卡加入牌組",
+    "output": "res://assets/generated/cards_v3/card_draft_red_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 選張紅卡 (card_draft_red_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 選一張紅色卡加入牌組. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_energy_on_discard",
+    "name": "棄牌生力",
+    "desc": "棄牌時 +神力",
+    "output": "res://assets/generated/cards_v3/card_energy_on_discard.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 棄牌生力 (card_energy_on_discard), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 棄牌時 +神力. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_energy_on_draw",
+    "name": "抽中力",
+    "desc": "抽到時 +神力",
+    "output": "res://assets/generated/cards_v3/card_energy_on_draw.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 抽中力 (card_energy_on_draw), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 抽到時 +神力. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_generate_shoves",
+    "name": "震天舞",
+    "desc": "產生震開卡",
+    "output": "res://assets/generated/cards_v3/card_generate_shoves.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 震天舞 (card_generate_shoves), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 產生震開卡. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_grant_energy",
+    "name": "予力",
+    "desc": "獲得 1 點神力",
+    "output": "res://assets/generated/cards_v3/card_grant_energy.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 予力 (card_grant_energy), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 獲得 1 點神力. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_improving_attack",
+    "name": "進攻",
+    "desc": "每次使用後傷害提升",
+    "output": "res://assets/generated/cards_v3/card_improving_attack.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 進攻 (card_improving_attack), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 每次使用後傷害提升. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_improving_block",
+    "name": "強化護身符",
+    "desc": "每次使用後護身符量提升",
+    "output": "res://assets/generated/cards_v3/card_improving_block.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 強化護身符 (card_improving_block), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 每次使用後護身符量提升. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_law",
+    "name": "律令",
+    "desc": "施加狀態效果",
+    "output": "res://assets/generated/cards_v3/card_law.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 律令 (card_law), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 施加狀態效果. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_pick_from_discard",
+    "name": "拾棄牌",
+    "desc": "從棄牌堆選一張回手",
+    "output": "res://assets/generated/cards_v3/card_pick_from_discard.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 拾棄牌 (card_pick_from_discard), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 從棄牌堆選一張回手. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_play_from_discard",
+    "name": "棄堆出牌",
+    "desc": "從棄牌堆使用一張牌",
+    "output": "res://assets/generated/cards_v3/card_play_from_discard.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 棄堆出牌 (card_play_from_discard), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 從棄牌堆使用一張牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_play_random_from_hand",
+    "name": "亂出",
+    "desc": "隨機出一張手牌",
+    "output": "res://assets/generated/cards_v3/card_play_random_from_hand.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 亂出 (card_play_random_from_hand), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 隨機出一張手牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_requires_adjacency",
+    "name": "鄰擊",
+    "desc": "敵人有鄰居才能出",
+    "output": "res://assets/generated/cards_v3/card_requires_adjacency.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 鄰擊 (card_requires_adjacency), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 敵人有鄰居才能出. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_restart_combat",
+    "name": "重戰",
+    "desc": "重置戰鬥",
+    "output": "res://assets/generated/cards_v3/card_restart_combat.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 重戰 (card_restart_combat), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 重置戰鬥. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_right_click_transform_mode_a",
+    "name": "模式 A",
+    "desc": "可右鍵變換",
+    "output": "res://assets/generated/cards_v3/card_right_click_transform_mode_a.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 模式 A (card_right_click_transform_mode_a), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 可右鍵變換. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_right_click_transform_mode_b",
+    "name": "模式 B",
+    "desc": "可右鍵變換",
+    "output": "res://assets/generated/cards_v3/card_right_click_transform_mode_b.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 模式 B (card_right_click_transform_mode_b), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 可右鍵變換. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_shove",
+    "name": "震開",
+    "desc": "震退敵人",
+    "output": "res://assets/generated/cards_v3/card_shove.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 震開 (card_shove), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 震退敵人. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_special_discard",
+    "name": "特別棄牌",
+    "desc": "棄一張牌並獲得效果",
+    "output": "res://assets/generated/cards_v3/card_special_discard.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 特別棄牌 (card_special_discard), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 棄一張牌並獲得效果. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "card_upgrade_card",
+    "name": "升級卡",
+    "desc": "升級一張手牌",
+    "output": "res://assets/generated/cards_v3/card_upgrade_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 升級卡 (card_upgrade_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 升級一張手牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "cards_played_attack_card",
+    "name": "牌效攻擊",
+    "desc": "傷害取決於本回合出牌數",
+    "output": "res://assets/generated/cards_v3/cards_played_attack_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 牌效攻擊 (cards_played_attack_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 傷害取決於本回合出牌數. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "custom_block_card",
+    "name": "自訂護身符",
+    "desc": "獲得護身符",
+    "output": "res://assets/generated/cards_v3/custom_block_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 自訂護身符 (custom_block_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 獲得護身符. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "end_turn_card",
+    "name": "結束回合",
+    "desc": "立刻結束回合",
+    "output": "res://assets/generated/cards_v3/end_turn_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 結束回合 (end_turn_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 立刻結束回合. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "improving_retain_block_card",
+    "name": "持續護身符",
+    "desc": "護身符不結算消失",
+    "output": "res://assets/generated/cards_v3/improving_retain_block_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 持續護身符 (improving_retain_block_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 護身符不結算消失. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "randomize_hand_card",
+    "name": "亂費",
+    "desc": "隨機重設手牌神力",
+    "output": "res://assets/generated/cards_v3/randomize_hand_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 亂費 (randomize_hand_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 隨機重設手牌神力. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "retain_hand_card",
+    "name": "持手",
+    "desc": "本回合保留手牌",
+    "output": "res://assets/generated/cards_v3/retain_hand_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 持手 (retain_hand_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 本回合保留手牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "self_attaching_attack_card",
+    "name": "纏身攻擊",
+    "desc": "黏附於敵人造成持續傷害",
+    "output": "res://assets/generated/cards_v3/self_attaching_attack_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 纏身攻擊 (self_attaching_attack_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 黏附於敵人造成持續傷害. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "set_hand_energy_card",
+    "name": "歸零神力",
+    "desc": "本回合所有手牌神力 0",
+    "output": "res://assets/generated/cards_v3/set_hand_energy_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 歸零神力 (set_hand_energy_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 本回合所有手牌神力 0. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "transform_hand_card",
+    "name": "變換手牌",
+    "desc": "變換所有手牌",
+    "output": "res://assets/generated/cards_v3/transform_hand_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 變換手牌 (transform_hand_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 變換所有手牌. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "upgrade_entire_deck_card",
+    "name": "升級全戰場",
+    "desc": "升級戰鬥所有卡",
+    "output": "res://assets/generated/cards_v3/upgrade_entire_deck_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 升級全戰場 (upgrade_entire_deck_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 升級戰鬥所有卡. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  },
+  {
+    "char": "str",
+    "id": "variable_cost_attack_card",
+    "name": "變費攻擊",
+    "desc": "消耗所有神力造成等量傷害",
+    "output": "res://assets/generated/cards_v3/variable_cost_attack_card.png",
+    "prompt": "pixel art anime game card illustration, 16-bit chunky shading, crisp silhouette, Taiwanese temple supernatural roguelike, dark night-market shrine atmosphere, red gold teal palette, no text, no logo, no UI frame, centered composition, high readability at small mobile card size, 2:3 vertical card art. Subject: 變費攻擊 (variable_cost_attack_card), 鎮島錄 converted legacy card, Taiwanese temple ritual object replacing generic robot prototype. Gameplay mood: 消耗所有神力造成等量傷害. Visual motifs: ritual energy and temple incense. Card type unknown, rarity unknown, energy cost None. Dynamic action pose, strong foreground object, readable value fantasy. NO text, NO English words, NO card border, NO watermark, NO blurry painterly poster, NO photorealism, NO generic sci-fi robot, NO extra fingers"
+  }
+]
