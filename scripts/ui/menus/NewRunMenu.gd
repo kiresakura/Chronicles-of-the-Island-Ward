@@ -9,6 +9,7 @@ extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const CHARACTER_GALLERY_SCENE := preload("res://scenes/ui/menus/CharacterGallery.tscn")
+const GILDED_DEPTH := preload("res://scripts/ui/fx/GildedDepthLayer.gd")	# 設計忠實「貴層」
 
 const CHARACTER_SHELF_PATH := "res://external/data/ui/new_run_character_shelf.json"
 const PORTRAIT_DIR := "res://assets/generated/portraits_v3/"
@@ -136,6 +137,7 @@ func _ready() -> void:
 	if newrun_layer:
 		PixelFXCls.apply(newrun_layer, PixelFXCls.Preset.SMOKE)
 	_restyle_scene_backdrops()
+	_build_gilded_atmosphere()	# 設計忠實「貴層」：深舞台神光+香火餘燼（墊於三層深底之上、面板/立繪之下）
 
 	_hide_legacy_static_labels()
 	_style_static_controls()
@@ -169,6 +171,15 @@ func _restyle_scene_backdrops() -> void:
 		vig.color = Color(0, 0, 0, 0)			# 移除中央紅罩
 		vig.z_index = -2
 		vig.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+## 設計忠實「貴層」：鎏金氛圍層墊於深舞台之上、面板/立繪之下（z=-2）—
+## 神光自上灑下 + 香火餘燼飄升，與供桌/結算同一套縱深語言（加性光，不蓋立繪）。
+func _build_gilded_atmosphere() -> void:
+	if get_node_or_null("GildedDepthLayer") != null:
+		return
+	var layer: Control = GILDED_DEPTH.attach(self, GILDED_DEPTH.ACCENT_GOLD, 0.9, 10)
+	if layer != null:
+		layer.z_index = -2
 
 ## 立繪聚光燈紋理（暖金徑向光，中心亮 → 透明邊）。
 func _make_spot_texture() -> Texture2D:

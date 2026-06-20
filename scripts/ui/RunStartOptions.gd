@@ -3,6 +3,7 @@ extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const JIAOBEI_FX := preload("res://scripts/ui/fx/JiaoBeiFX.gd")
+const GILDED_DEPTH := preload("res://scripts/ui/fx/GildedDepthLayer.gd")	# 設計忠實「貴層」
 
 var _option_type_to_option_ids: Dictionary = {}
 const MIXED_OPTION_COUNT: int = 3	# number of options to populate that have both an upside and downside
@@ -412,6 +413,19 @@ func _apply_offering_chrome() -> void:
 		presenter.position = Vector2(936, 246)
 		presenter.size = Vector2(252, 432)
 		add_child(presenter)	# 置頂層：站在供桌前（右側，不擋中央籤詩卡）
+	_build_gilded_atmosphere()	# 設計忠實「貴層」：神光+香火餘燼（墊暗角之上、籤詩卡之下）
+
+## 設計忠實「貴層」：鎏金氛圍層插在暗角之上、籤詩卡/標題之下 —
+## 神光自上灑下 + 香火餘燼飄升，與新一局/結算同一套縱深語言（加性光，不蓋籤詩）。
+func _build_gilded_atmosphere() -> void:
+	if get_node_or_null("GildedDepthLayer") != null:
+		return
+	var layer: Control = GILDED_DEPTH.attach(self, GILDED_DEPTH.ACCENT_GOLD, 0.85, 9)
+	if layer == null:
+		return
+	var vig: Node = get_node_or_null("RSOVignette")
+	var insert_at: int = (vig.get_index() + 1) if vig != null and vig.get_parent() == self else 1
+	move_child(layer, insert_at)
 
 ## Q3-E 籤詩帶：籤詩亭解鎖後，開局籤（一利一弊）顯示在副標下方。冪等；無籤隱藏。
 func _update_fortune_banner() -> void:
