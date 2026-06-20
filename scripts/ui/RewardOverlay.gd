@@ -3,6 +3,7 @@ extends Control
 
 const COTIW_UI_THEME := preload("res://scripts/ui/theme/CotiwUiTheme.gd")
 const FC := preload("res://scripts/systems/ritual/FormationCombat.gd")	# FP-3 寶箱符令顯示
+const GILDED_DEPTH := preload("res://scripts/ui/fx/GildedDepthLayer.gd")	# 設計忠實「貴層」
 
 @onready var reward_container: VBoxContainer = $RewardContainer
 @onready var continue_button: Button = $ContinueButton
@@ -52,7 +53,19 @@ func _ready():
 	if not visibility_changed.is_connected(_fit_input_mask):
 		visibility_changed.connect(_fit_input_mask)	# 不論誰把它設 visible 都重鋪滿
 	_build_offering_table_chrome()
+	_build_gilded_atmosphere()	# 設計忠實「貴層」：神光+香火餘燼（墊遮罩之上、供桌/獎勵之下）
 	_build_victory_fx()	# 凱旋 juice（最後建＝最上層繪於遮罩/供桌之上）
+
+## 設計忠實「貴層」：鎏金氛圍層墊於全幅遮罩之上、供桌/獎勵磚之下 —
+## 神光自上灑下 + 香火餘燼飄升，深化結算的儀式縱深（加性光，不蓋獎勵可讀性）。
+func _build_gilded_atmosphere() -> void:
+	if get_node_or_null("GildedDepthLayer") != null:
+		return
+	var layer: Control = GILDED_DEPTH.attach(self, GILDED_DEPTH.ACCENT_GOLD, 1.0, 12)
+	if layer == null:
+		return
+	var mask_idx: int = _input_mask.get_index() if _input_mask != null and is_instance_valid(_input_mask) else 0
+	move_child(layer, mask_idx + 1)
 
 ## 全幅深色 STOP 遮罩（dim + 擋輸入），最底繪。
 func _ensure_input_mask() -> void:
