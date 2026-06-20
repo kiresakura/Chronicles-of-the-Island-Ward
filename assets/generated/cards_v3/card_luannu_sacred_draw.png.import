@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dauqdaru7wrkl"
-valid=false
+uid="uid://fnrglmv2rckx"
+path="res://.godot/imported/card_luannu_sacred_draw.png-40d50d0a00062985e38a69d3d95476b1.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_sacred_draw.png"
+dest_files=["res://.godot/imported/card_luannu_sacred_draw.png-40d50d0a00062985e38a69d3d95476b1.ctex"]
 
 [params]
 

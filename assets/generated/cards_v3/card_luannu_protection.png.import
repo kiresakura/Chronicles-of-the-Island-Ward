@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://djy3d2ne3xr1q"
-valid=false
+uid="uid://b75vlw00bi"
+path="res://.godot/imported/card_luannu_protection.png-f142ce16cae287da69444cec8e2da4e4.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_protection.png"
+dest_files=["res://.godot/imported/card_luannu_protection.png-f142ce16cae287da69444cec8e2da4e4.ctex"]
 
 [params]
 

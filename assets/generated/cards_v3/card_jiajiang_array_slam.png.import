@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqm6hel330i6e"
-valid=false
+uid="uid://cqwhfeqce71hs"
+path="res://.godot/imported/card_jiajiang_array_slam.png-ba6483b2e4b40d3d8aa21594397c1d9e.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_jiajiang_array_slam.png"
+dest_files=["res://.godot/imported/card_jiajiang_array_slam.png-ba6483b2e4b40d3d8aa21594397c1d9e.ctex"]
 
 [params]
 

@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwnstq885gaqe"
-valid=false
+uid="uid://ihufq3m75va8"
+path="res://.godot/imported/card_jiajiang_bell_ward.png-d696c7f79641b8e69e3f77eb4e96e474.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_jiajiang_bell_ward.png"
+dest_files=["res://.godot/imported/card_jiajiang_bell_ward.png-d696c7f79641b8e69e3f77eb4e96e474.ctex"]
 
 [params]
 

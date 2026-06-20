@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da0gkn4503h3r"
-valid=false
+uid="uid://djodcvwapewnk"
+path="res://.godot/imported/card_luannu_prayer.png-f83704fb353bdb51fa56d7adf6b44229.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_prayer.png"
+dest_files=["res://.godot/imported/card_luannu_prayer.png-f83704fb353bdb51fa56d7adf6b44229.ctex"]
 
 [params]
 
