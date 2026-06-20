@@ -380,3 +380,13 @@ daily.day,第%d日,第%d日,Day %d,%d日目
 daily.milestone,里程碑,里程碑,Bonus,特典
 daily.incense_unit,香火,香火,Incense,香火
 daily.yuanbao_unit,元寶,元宝,Yuanbao,元宝
+cosmetic.store_title,外觀商店,外观商店,Wardrobe,外装ショップ
+cosmetic.su,素框,素框,Plain,素
+cosmetic.gold,燙金框,烫金框,Gilded,金装
+cosmetic.jade,玉青框,玉青框,Jade,翡翠
+cosmetic.myth,神話框,神话框,Mythic,神話
+cosmetic.equipped,已裝備,已装备,Equipped,装備中
+cosmetic.equip,裝備,装备,Equip,装備する
+cosmetic.buy,購買 %d,购买 %d,Buy %d,%d で購入
+cosmetic.insufficient,元寶不足,元宝不足,Not enough,元宝不足
+cosmetic.balance,元寶 %d,元宝 %d,Yuanbao: %d,元宝 %d

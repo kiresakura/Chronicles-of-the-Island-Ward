@@ -87,6 +87,8 @@ signal player_death_animation_finished(player: Player)
 
 # c-1 每日上香（留存）：玩家完成今日上香時發出（streak＝連簽天數，reward＝{incense, yuanbao}）
 signal daily_incense_claimed(streak: int, reward: Dictionary)
+# c-2 外觀變現：玩家裝備/購買外觀後發出（frame_id＝當前裝備的外觀；空義同 frame_su 素）
+signal cosmetic_equipped(frame_id: String)
 
 # rewards
 signal reward_grant_requested(reward_group: int, money_amount: int, card_drafts: Array[Array], artifact_ids: Array[String], custom_action_data: Array[Array], fu_ids: Array[String])
