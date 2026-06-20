@@ -136,6 +136,13 @@ static func get_typography_size(token_name: String, fallback: int) -> int:
 	var token: Dictionary = typography.get(token_name, {})
 	return int(token.get("size", fallback))
 
+## 公開 spacing/radii getter（token SSOT 對外；給 kit 元件用，取代散落數字）
+static func get_spacing(spacing_name: String, fallback: int = 16) -> int:
+	return _get_spacing_value(spacing_name, fallback)
+
+static func get_radius(radius_name: String, fallback: int = 0) -> int:
+	return _get_radius_value(radius_name, fallback)
+
 ## 鎮島錄 UIQA — 安全內容區（委派 Responsive autoload 單一真相來源；
 ## 無 Responsive 時回退 viewport / 設計畫布）。UI 定位請以此為基準，勿散落 magic Vector2。
 static func get_safe_content_rect(viewport: Viewport = null) -> Rect2:

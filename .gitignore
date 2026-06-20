@@ -87,3 +87,6 @@ qa/**/*.idsig
 # headless 測試/QA 產生的 log（非原始碼）
 qa_*.log
 assets/generated/recraft/anime_cohort_preview_v1/cohort_variantB.webp*
+
+# prototype 截圖產出物
+prototypes/**/shots/
