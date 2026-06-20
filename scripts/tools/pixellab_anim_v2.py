@@ -25,6 +25,10 @@ API = "https://api.pixellab.ai/v1/animate-with-text"
 STAGING = ROOT / "qa" / "art_regen" / "enemy_anim"
 FRAME, NF, UP = 64, 4, 4
 
+# 主角立繪細節多、易跳姿；用更強 image_guidance + 反飄移 negative 鎖住造型
+HERO_NEG = ("grass, ground, floor, shadow, scenery, text, watermark, border, motion lines, "
+            "speed lines, streaks, swoosh, crouching, hunching, lying down, different poses, multiple characters")
+
 # 每個 actor：來源、是否去綠草、角色描述、各 state 動作
 ENEMIES = {
   "enemy_mountain_boar": dict(src="assets/generated/enemies_v3/enemy_mountain_boar.png", green=True,
@@ -59,6 +63,31 @@ ENEMIES = {
                  attack="pounce forward swiping with a clawed paw",
                  hit="snarl and recoil from a blow",
                  death="fall to the ground and fade")),
+  # ── 主角立繪（戰鬥用像素，選單仍用 portraits_v3 當 key-art）──
+  "character_tongji": dict(src="assets/generated/portraits_v3/tongji.png", green=False, igs=2.8, tgs=6.5, neg=HERO_NEG,
+    desc="a young Taiwanese male spirit-medium hero, red headband with tassel, bare muscular torso with open red-gold ritual vest, red pants, standing upright facing right",
+    actions=dict(idle="stand almost perfectly still upright, only the faintest breathing, feet firmly planted, holding the same pose",
+                 attack="throw one powerful straight punch forward",
+                 hit="recoil and flinch backward from a blow",
+                 death="collapse to the ground")),
+  "character_daoshi": dict(src="assets/generated/portraits_v3/daoshi.png", green=False, igs=2.8, tgs=6.5, neg=HERO_NEG,
+    desc="a young Taiwanese male Taoist priest hero, dark-blue and white Taoist robe, gold priest crown, holding a peachwood ritual sword, standing upright facing right",
+    actions=dict(idle="stand almost perfectly still upright, only the faintest breathing, feet firmly planted, holding the same pose",
+                 attack="thrust the peachwood ritual sword forward",
+                 hit="stagger backward from a blow",
+                 death="collapse to the ground")),
+  "character_luannu": dict(src="assets/generated/portraits_v3/luannu.png", green=False, igs=2.8, tgs=6.5, neg=HERO_NEG,
+    desc="a young Taiwanese phoenix-maiden hero, gold phoenix crown with red gem, red-gold embroidered robe with jade-green sash, holding a spirit brush, standing upright facing right",
+    actions=dict(idle="stand almost perfectly still upright, only the faintest breathing, feet firmly planted, holding the same pose",
+                 attack="sweep the spirit brush forward trailing sacred fire",
+                 hit="flinch backward from a blow",
+                 death="sink down to the ground")),
+  "character_jiajiang": dict(src="assets/generated/portraits_v3/jiajiang.png", green=False, igs=2.8, tgs=6.5, neg=HERO_NEG,
+    desc="a Taiwanese temple guardian general hero, horned war helmet, painted opera guardian face, red-gold lamellar plate armor, holding a ritual weapon, standing upright facing right",
+    actions=dict(idle="stand almost perfectly still upright in armor, only the faintest breathing, feet firmly planted, holding the same pose",
+                 attack="swing the armored ritual weapon forward",
+                 hit="recoil in armor from a blow",
+                 death="fall heavily to the ground")),
 }
 
 
@@ -103,7 +132,7 @@ def animate(actor: str, state: str, key: str) -> bool:
         "action": cfg["actions"][state],
         "image_size": {"width": FRAME, "height": FRAME},
         "n_frames": NF, "start_frame_index": 0, "view": "side", "direction": "east",
-        "text_guidance_scale": 7.5, "image_guidance_scale": 2.2,
+        "text_guidance_scale": cfg.get("tgs", 7.5), "image_guidance_scale": cfg.get("igs", 2.2),
         "reference_image": {"type": "base64", "base64": prep_ref(cfg)},
     }
     req = urllib.request.Request(API, data=json.dumps(payload).encode(),
