@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byky1xmam4aep"
-valid=false
+uid="uid://cj3txnu1fueew"
+path="res://.godot/imported/card_luannu_holy_fire.png-a114f112a0580a395e8df530d5634fa5.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_holy_fire.png"
+dest_files=["res://.godot/imported/card_luannu_holy_fire.png-a114f112a0580a395e8df530d5634fa5.ctex"]
 
 [params]
 

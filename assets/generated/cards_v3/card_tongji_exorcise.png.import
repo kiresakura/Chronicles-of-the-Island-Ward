@@ -2,16 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bu37ylwbovev4"
-valid=false
+uid="uid://c0ropwhahavun"
+path="res://.godot/imported/card_tongji_exorcise.png-65ac0a87c2df0b497c3b526682f5165f.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_exorcise.png"
+dest_files=["res://.godot/imported/card_tongji_exorcise.png-65ac0a87c2df0b497c3b526682f5165f.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

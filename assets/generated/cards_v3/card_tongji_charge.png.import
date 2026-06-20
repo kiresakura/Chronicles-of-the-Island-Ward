@@ -2,16 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j7wmpuec4b8j"
-valid=false
+uid="uid://dbnapse00pavw"
+path="res://.godot/imported/card_tongji_charge.png-0e52b86082e776bf086bc477e08d16da.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_charge.png"
+dest_files=["res://.godot/imported/card_tongji_charge.png-0e52b86082e776bf086bc477e08d16da.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

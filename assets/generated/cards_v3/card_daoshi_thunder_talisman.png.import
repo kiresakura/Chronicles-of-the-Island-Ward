@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bph3joda6fp20"
-valid=false
+uid="uid://dy8regcbn004c"
+path="res://.godot/imported/card_daoshi_thunder_talisman.png-96485145d8ce7d2b422325b0f4e17eb2.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_daoshi_thunder_talisman.png"
+dest_files=["res://.godot/imported/card_daoshi_thunder_talisman.png-96485145d8ce7d2b422325b0f4e17eb2.ctex"]
 
 [params]
 

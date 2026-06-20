@@ -2,16 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpf1nfrs6db2r"
-valid=false
+uid="uid://cf61uk6ldkyc4"
+path="res://.godot/imported/card_tongji_heavy_strike.png-4aab2536e9f472a012041d0b70d06c42.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_heavy_strike.png"
+dest_files=["res://.godot/imported/card_tongji_heavy_strike.png-4aab2536e9f472a012041d0b70d06c42.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

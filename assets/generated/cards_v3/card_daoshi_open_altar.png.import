@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6my6smgw5vpk"
-valid=false
+uid="uid://bgnekl7ji6rko"
+path="res://.godot/imported/card_daoshi_open_altar.png-7e35e5e629d241a9c95946ebc3876972.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_daoshi_open_altar.png"
+dest_files=["res://.godot/imported/card_daoshi_open_altar.png-7e35e5e629d241a9c95946ebc3876972.ctex"]
 
 [params]
 

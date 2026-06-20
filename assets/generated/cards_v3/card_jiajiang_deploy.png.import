@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwthnurx3uu6r"
-valid=false
+uid="uid://chgg7davex886"
+path="res://.godot/imported/card_jiajiang_deploy.png-839568074bd342ede64eaa8195649a20.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_jiajiang_deploy.png"
+dest_files=["res://.godot/imported/card_jiajiang_deploy.png-839568074bd342ede64eaa8195649a20.ctex"]
 
 [params]
 

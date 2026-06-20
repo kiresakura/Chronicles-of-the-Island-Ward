@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4m8skf6pvnsr"
-valid=false
+uid="uid://c80pu2t4o0dvt"
+path="res://.godot/imported/card_luannu_blessing.png-79275e885c5047b24f79b89efc352433.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_blessing.png"
+dest_files=["res://.godot/imported/card_luannu_blessing.png-79275e885c5047b24f79b89efc352433.ctex"]
 
 [params]
 

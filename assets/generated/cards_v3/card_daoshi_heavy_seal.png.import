@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bsgeh61guae3r"
-valid=false
+uid="uid://ko0tv6f43anp"
+path="res://.godot/imported/card_daoshi_heavy_seal.png-7b5967d37a4da37ea5ba3e79f23777d2.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_daoshi_heavy_seal.png"
+dest_files=["res://.godot/imported/card_daoshi_heavy_seal.png-7b5967d37a4da37ea5ba3e79f23777d2.ctex"]
 
 [params]
 

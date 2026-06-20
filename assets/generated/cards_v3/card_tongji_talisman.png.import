@@ -2,16 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7p6p77yrq5a2"
-valid=false
+uid="uid://dpwrs0up5mpqp"
+path="res://.godot/imported/card_tongji_talisman.png-d7cf19b66ac634c838ee3c6b4efcecd6.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_talisman.png"
+dest_files=["res://.godot/imported/card_tongji_talisman.png-d7cf19b66ac634c838ee3c6b4efcecd6.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

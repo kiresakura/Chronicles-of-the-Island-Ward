@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhp2e7x3y81ew"
-valid=false
+uid="uid://cvu2g6ctnskhj"
+path="res://.godot/imported/card_jiajiang_war_drum.png-0fdcf5fe656863fd8efcb3f710b744aa.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_jiajiang_war_drum.png"
+dest_files=["res://.godot/imported/card_jiajiang_war_drum.png-0fdcf5fe656863fd8efcb3f710b744aa.ctex"]
 
 [params]
 

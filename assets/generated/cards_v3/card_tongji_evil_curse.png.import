@@ -2,16 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kogqx5eh7egx"
-valid=false
+uid="uid://ceq5gu0c35i8d"
+path="res://.godot/imported/card_tongji_evil_curse.png-0061d2ef48478948152c4e23538ff093.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_evil_curse.png"
+dest_files=["res://.godot/imported/card_tongji_evil_curse.png-0061d2ef48478948152c4e23538ff093.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

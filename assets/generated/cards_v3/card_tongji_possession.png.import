@@ -2,16 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drcgvt251arrk"
-valid=false
+uid="uid://dypp2vr8uir3h"
+path="res://.godot/imported/card_tongji_possession.png-03c7e357929db159c9ee15eacdf0c0a4.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_possession.png"
+dest_files=["res://.godot/imported/card_tongji_possession.png-03c7e357929db159c9ee15eacdf0c0a4.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

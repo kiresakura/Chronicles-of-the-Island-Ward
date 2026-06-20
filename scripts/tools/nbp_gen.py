@@ -75,7 +75,15 @@ def generate(prompt: str, out_path: Path, aspect: str = "1:1") -> None:
         sys.exit(f"ERR: no image returned. raw: {json.dumps(data)[:400]}")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_bytes(base64.b64decode(img_b64))
+    raw = base64.b64decode(img_b64)
+    # NBP 回傳的是 JPEG bytes；若輸出副檔名是 .png，必須真正重編碼成 PNG，
+    # 否則「JPEG 假裝成 .png」會讓 Godot importer 報 Error loading image。
+    if out_path.suffix.lower() == ".png":
+        from io import BytesIO
+        from PIL import Image
+        Image.open(BytesIO(raw)).convert("RGB").save(out_path, "PNG")
+    else:
+        out_path.write_bytes(raw)
     print(f"OK: {out_path}  ({out_path.stat().st_size:,} bytes)")
 
 
