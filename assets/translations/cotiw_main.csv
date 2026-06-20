@@ -370,3 +370,13 @@ combat.log.jiao_xiao,笑筊 無加成,笑筊 无加成,Xiao — no bonus,笑筊 
 combat.log.jiao_yin,陰筊 反噬,阴筊 反噬,Yin — backlash,陰筊 反噬
 combat.log.yin_surge,%s 煞暴衝 +%d,%s 煞暴冲 +%d,Sha surges at %s +%d,%s で煞暴走 +%d
 combat.log.deity,降乩 掃蕩 %d 方位,降乩 扫荡 %d 方位,Invoke sweeps %d lanes,降乩で %d 方位を掃討
+daily.title,每日上香,每日上香,Daily Offering,毎日のお参り
+daily.streak,連簽 %d 天,连签 %d 天,%d-Day Streak,%d日連続
+daily.offer,上香,上香,Offer Incense,お参りする
+daily.claimed,今日已上香,今日已上香,Offered Today,本日参拝済み
+daily.prompt,誠心上香　神明庇佑,诚心上香　神明庇佑,Offer incense for a blessing,お参りしてご加護を
+daily.come_back,明日再來添香,明日再来添香,Come back tomorrow,明日また参りましょう
+daily.day,第%d日,第%d日,Day %d,%d日目
+daily.milestone,里程碑,里程碑,Bonus,特典
+daily.incense_unit,香火,香火,Incense,香火
+daily.yuanbao_unit,元寶,元宝,Yuanbao,元宝
