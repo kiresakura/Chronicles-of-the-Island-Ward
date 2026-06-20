@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8x2ralf6tc24"
-path="res://.godot/imported/card_luannu_talisman_strike.png-4a166008032c05f7e35c6ff088d711a5.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_luannu_talisman_strike.png"
-dest_files=["res://.godot/imported/card_luannu_talisman_strike.png-4a166008032c05f7e35c6ff088d711a5.ctex"]
 
 [params]
 

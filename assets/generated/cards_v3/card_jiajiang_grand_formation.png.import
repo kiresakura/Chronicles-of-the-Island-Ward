@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3cshq0dfo2dx"
-path="res://.godot/imported/card_jiajiang_grand_formation.png-d4f7d5511624cdeb4b4cc979ffdfe4aa.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_jiajiang_grand_formation.png"
-dest_files=["res://.godot/imported/card_jiajiang_grand_formation.png-d4f7d5511624cdeb4b4cc979ffdfe4aa.ctex"]
 
 [params]
 

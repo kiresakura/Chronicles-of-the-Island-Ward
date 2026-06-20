@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpc6le8fgxkwq"
-path="res://.godot/imported/card_tongji_firecracker_volley.png-e8c9854f8d1ca948acea16c9ee86c1b3.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_firecracker_volley.png"
-dest_files=["res://.godot/imported/card_tongji_firecracker_volley.png-e8c9854f8d1ca948acea16c9ee86c1b3.ctex"]
 
 [params]
 

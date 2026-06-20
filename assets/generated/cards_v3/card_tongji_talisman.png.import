@@ -3,17 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c7p6p77yrq5a2"
-path.s3tc="res://.godot/imported/card_tongji_talisman.png-d7cf19b66ac634c838ee3c6b4efcecd6.s3tc.ctex"
-path.etc2="res://.godot/imported/card_tongji_talisman.png-d7cf19b66ac634c838ee3c6b4efcecd6.etc2.ctex"
-metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
-"vram_texture": true
-}
+valid=false
 
 [deps]
 
 source_file="res://assets/generated/cards_v3/card_tongji_talisman.png"
-dest_files=["res://.godot/imported/card_tongji_talisman.png-d7cf19b66ac634c838ee3c6b4efcecd6.s3tc.ctex", "res://.godot/imported/card_tongji_talisman.png-d7cf19b66ac634c838ee3c6b4efcecd6.etc2.ctex"]
 
 [params]
 
