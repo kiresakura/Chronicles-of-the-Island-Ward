@@ -32,9 +32,11 @@ var PANEL_BG_LOCK: Color = Color(0.13, 0.09, 0.09, 0.80)
 const MascotPanelScript := preload("res://scripts/ui/MascotPanel.gd")
 const MascotSelectorScript := preload("res://scripts/ui/menus/MascotSelector.gd")
 const DailyIncenseOverlayScript := preload("res://scripts/ui/menus/DailyIncenseOverlay.gd")	# c-1 每日上香
+const CosmeticStoreOverlayScript := preload("res://scripts/ui/menus/CosmeticStoreOverlay.gd")	# c-2 外觀商店
 var _mascot_panel: MascotPanel = null
 var _mascot_selector: MascotSelector = null
 var _daily_overlay: Control = null
+var _cosmetic_store: Control = null
 
 # 自適應重排用的節點參照
 var _backdrop: Control
@@ -243,6 +245,19 @@ func _ensure_daily_overlay() -> void:
 	_daily_overlay = DailyIncenseOverlayScript.new()
 	_daily_overlay.name = "DailyIncenseOverlay"
 	add_child(_daily_overlay)	# 最後加＝最上層；open() 時全幅 modal 蓋住正殿
+
+## c-2：元寶「+」→ 開外觀商店（lazy 建層）。
+func _open_cosmetic_store() -> void:
+	_ensure_cosmetic_store()
+	if _cosmetic_store != null and _cosmetic_store.has_method("open"):
+		_cosmetic_store.call("open")
+
+func _ensure_cosmetic_store() -> void:
+	if _cosmetic_store != null and is_instance_valid(_cosmetic_store):
+		return
+	_cosmetic_store = CosmeticStoreOverlayScript.new()
+	_cosmetic_store.name = "CosmeticStoreOverlay"
+	add_child(_cosmetic_store)
 
 # ────────────────────────────────────────────────
 # 活動 banner（UI 重修 P0-3：可點 Button 根 + 倒數 + 獎勵預覽，包覆內容）
@@ -597,7 +612,10 @@ func _on_resource_plus(row_idx: int) -> void:
 	if row_idx == 0:
 		_open_temple_screen()
 		return
-	# 元寶：商店 slot 定義（資料層 unlock_hint）決定提示
+	if row_idx == 2:	# 元寶「+」→ c-2 外觀商店（取代 coming_soon）
+		_open_cosmetic_store()
+		return
+	# 其餘列：商店 slot 定義（資料層 unlock_hint）決定提示
 	for d: Variant in _slot_definitions:
 		if str(d.get("node", "")) == "BtnShop":
 			if bool(d.get("ready", false)):

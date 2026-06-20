@@ -1,0 +1,9 @@
+{
+  "_note": "外觀變現四階（設計稿 捌）：角色立繪外框 4 階。紅線：只賣視覺、零戰力；以元寶購買。素為免費預設。tier 0..3＝素/燙金/玉青/神話。",
+  "frames": [
+    {"id": "frame_su",   "tier": 0, "name_key": "cosmetic.su",   "price_yuanbao": 0,   "border_token": "smoke_gray",    "glow": 0.0,  "border_width": 3},
+    {"id": "frame_gold", "tier": 1, "name_key": "cosmetic.gold", "price_yuanbao": 30,  "border_token": "incense_gold",  "glow": 0.30, "border_width": 4},
+    {"id": "frame_jade", "tier": 2, "name_key": "cosmetic.jade", "price_yuanbao": 60,  "border_token": "spirit_jade",   "glow": 0.45, "border_width": 4},
+    {"id": "frame_myth", "tier": 3, "name_key": "cosmetic.myth", "price_yuanbao": 120, "border_token": "mystic_purple", "glow": 0.70, "border_width": 5, "animated": true}
+  ]
+}

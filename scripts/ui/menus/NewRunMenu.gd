@@ -123,6 +123,7 @@ func _ready() -> void:
 	seed_input.text_changed.connect(_on_seed_input_text_changed)
 	Signals.character_selected.connect(_on_character_selected)
 	Signals.run_ended.connect(_on_run_ended)
+	Signals.cosmetic_equipped.connect(func(_fid: String) -> void: _apply_equipped_frame())	# c-2：換外觀即時生效
 	if not resized.is_connected(_relayout_runtime_chrome):
 		resized.connect(_relayout_runtime_chrome)
 	var viewport := get_viewport()
@@ -270,9 +271,8 @@ func _build_runtime_chrome() -> void:
 		_hero_portrait_frame = Panel.new()
 		_hero_portrait_frame.name = "HeroPortraitFrame"
 		_hero_portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_hero_portrait_frame.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
-			Color(0, 0, 0, 0), COTIW_UI_THEME.get_color("incense_gold"), 0, 3, 0.0))
 		add_child(_hero_portrait_frame)
+		_apply_equipped_frame()	# c-2：依玩家裝備的外觀套外框（預設素＝灰細框；其餘玩家自選）
 	if _tagline_label == null:
 		_tagline_label = Label.new()
 		_tagline_label.name = "TaglineLabel"
@@ -293,6 +293,12 @@ func _build_runtime_chrome() -> void:
 		_character_tags_flow.add_theme_constant_override("v_separation", 6)
 		_character_tags_flow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(_character_tags_flow)
+
+## c-2：依玩家當前裝備的外觀套立繪外框（CosmeticFrame 統一樣式；換外觀即時重套）。
+func _apply_equipped_frame() -> void:
+	if _hero_portrait_frame == null:
+		return
+	CosmeticFrame.apply(_hero_portrait_frame, CosmeticCatalog.equipped_id(Global.profile_data))
 
 func _make_heading(text_value: String) -> Label:
 	var lbl := Label.new()
