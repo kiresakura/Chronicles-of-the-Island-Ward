@@ -213,7 +213,7 @@ func _on_dialogue_option_clicked(dialogue_option: DialogueOption):
 	_jiao_cta.visible = true
 	_jiao_cta.disabled = false
 	_jiao_msg.text = tr("rso.jiao_prompt")
-	_jiao_msg.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.42)))
+	_jiao_msg.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold"))
 	_jiao_msg.visible = true
 	_layout_jiao_cta()
 
@@ -429,7 +429,7 @@ func _update_fortune_banner() -> void:
 		banner.add_theme_color_override("font_color", Color(1.0, 0.9, 0.62))
 		var sb := StyleBoxFlat.new()
 		sb.bg_color = Color(0.38, 0.09, 0.07, 0.92)
-		sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42))
+		sb.border_color = COTIW_UI_THEME.get_color("incense_gold")
 		sb.set_border_width_all(2)
 		sb.set_corner_radius_all(9)
 		sb.content_margin_left = 16
@@ -557,7 +557,7 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		head_sb.corner_radius_top_left = 8
 		head_sb.corner_radius_top_right = 8
 		head_sb.border_width_bottom = 2
-		head_sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 1.0))
+		head_sb.border_color = COTIW_UI_THEME.get_color("incense_gold")
 		head.add_theme_stylebox_override("normal", head_sb)
 		stack.add_child(head)
 
@@ -604,7 +604,7 @@ func _apply_offering_strip_style(option: Control, index: int, option_bbcode: Str
 		foot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var foot_sb := StyleBoxFlat.new()
 		foot_sb.bg_color = Color.TRANSPARENT
-		foot_sb.border_color = COTIW_UI_THEME.get_color("incense_gold", Color(0.91, 0.77, 0.42, 0.8))
+		foot_sb.border_color = Color(COTIW_UI_THEME.get_color("incense_gold"), 0.8)
 		foot_sb.border_width_top = 2
 		foot_sb.border_width_bottom = 2
 		foot.add_theme_stylebox_override("panel", foot_sb)

@@ -227,7 +227,7 @@ func _build_runtime_chrome() -> void:
 		add_child(_hero_panel)
 		# 打掉暗紅疊暗紅：面板改近不透明深漆底 + 飽和燙金 3px 硬框，從紅底圖跳出來。
 		_hero_panel.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
-			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold", Color(0.92, 0.76, 0.40)), 0, 3, 0.0))
+			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold"), 0, 3, 0.0))
 	if _setup_card == null:
 		_setup_card = Panel.new()
 		_setup_card.name = "SetupCard"
@@ -235,7 +235,7 @@ func _build_runtime_chrome() -> void:
 		_setup_card.z_index = -1
 		add_child(_setup_card)
 		_setup_card.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
-			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold", Color(0.92, 0.76, 0.40)), 0, 3, 0.0))
+			Color(0.12, 0.075, 0.055, 1.0), COTIW_UI_THEME.get_color("incense_gold"), 0, 3, 0.0))
 	if _hero_spot == null:
 		# 聚光燈墊於立繪後（z-1：在面板之上、立繪之下）
 		_hero_spot = TextureRect.new()
@@ -260,7 +260,7 @@ func _build_runtime_chrome() -> void:
 		_hero_portrait_frame.name = "HeroPortraitFrame"
 		_hero_portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_hero_portrait_frame.add_theme_stylebox_override("panel", COTIW_UI_THEME.make_stylebox(
-			Color(0, 0, 0, 0), COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.80, 0.42)), 0, 3, 0.0))
+			Color(0, 0, 0, 0), COTIW_UI_THEME.get_color("incense_gold"), 0, 3, 0.0))
 		add_child(_hero_portrait_frame)
 	if _tagline_label == null:
 		_tagline_label = Label.new()
@@ -287,7 +287,7 @@ func _make_heading(text_value: String) -> Label:
 	var lbl := Label.new()
 	lbl.text = text_value
 	lbl.add_theme_font_size_override("font_size", 16)
-	lbl.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold", Color(0.95, 0.82, 0.45)))
+	lbl.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("incense_gold"))
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(lbl)
 	return lbl
