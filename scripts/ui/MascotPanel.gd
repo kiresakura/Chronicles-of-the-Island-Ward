@@ -135,7 +135,8 @@ func _process(delta: float) -> void:
 		var hit_size: Vector2 = _bust_rect.size
 		var resp: Node = get_node_or_null("/root/Responsive")
 		if resp != null:
-			var over: float = (_bust_rect.global_position.y + hit_size.y) - resp.screen_rect.end.y
+			# 夾回『安全區』底緣（非實體螢幕底）→ 點擊區不落到 home indicator 手勢區下
+			var over: float = (_bust_rect.global_position.y + hit_size.y) - resp.safe_rect.end.y
 			if over > 0.0:
 				hit_size.y = maxf(64.0, hit_size.y - over)
 		_button.size = hit_size

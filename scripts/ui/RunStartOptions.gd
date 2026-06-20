@@ -502,7 +502,8 @@ func _relayout_offering_strips() -> void:
 		var box_index: int = (box as Node).get_index()
 		if presenter.get_index() > box_index:
 			move_child(presenter, box_index)
-		presenter.position = Vector2(safe.position.x + safe.size.x - presenter.size.x + 26.0,
+		# 立繪靠安全區右緣『內側』8px（不再 +26 溢出 → 瀏海/圓角不切）。
+		presenter.position = Vector2(safe.position.x + safe.size.x - presenter.size.x - 8.0,
 			safe.position.y + safe.size.y - presenter.size.y - 8.0)
 	_layout_jiao_cta()	# §2 兩段擲筊 CTA 隨安全區置中（存在才動）
 

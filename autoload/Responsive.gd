@@ -60,6 +60,19 @@ func _recompute() -> void:
 			if new_safe.size.x < 1.0 or new_safe.size.y < 1.0:
 				new_safe = screen_rect
 
+	# Debug：強制模擬安全區內縮（桌機 audit 重現瀏海/手勢區，找出沒接 safe 的畫面）。
+	# COTIW_SAFE_INSET="left,top,right,bottom"（邏輯px）→ 直接套成最終 safe_rect。
+	var _dbg_inset: String = OS.get_environment("COTIW_SAFE_INSET")
+	if _dbg_inset != "":
+		var _pi: PackedStringArray = _dbg_inset.split(",")
+		if _pi.size() == 4:
+			new_safe = Rect2(
+				screen_rect.position.x + _pi[0].to_float(),
+				screen_rect.position.y + _pi[1].to_float(),
+				screen_rect.size.x - _pi[0].to_float() - _pi[2].to_float(),
+				screen_rect.size.y - _pi[1].to_float() - _pi[3].to_float()
+			).intersection(screen_rect)
+
 	safe_rect = new_safe
 
 	# 機型分類：橫向長寬比 < 1.6 視為平板（iPad 4:3≈1.33），其餘為手機
