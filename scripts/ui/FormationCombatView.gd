@@ -24,11 +24,12 @@ const ELEMENT_COLOR := {
 	"earth": Color(0.788, 0.604, 0.227), "metal": Color(0.910, 0.773, 0.416), "water": Color(0.243, 0.435, 0.659),
 }
 # 敵我語言（UIUX §C：一眼分敵我）。我營一律燙金/玉青，來煞一律硃砂。
-const FRIEND_GOLD := Color(0.93, 0.78, 0.42)		# 我營常態框（燙金）
-const FRIEND_JADE := Color(0.42, 0.80, 0.60)		# 得位加持（玉青）
-const FOE_RED := Color(0.90, 0.32, 0.24)			# 來煞/告急（硃砂）
-const CAMP_BG := Color(0.10, 0.06, 0.05, 0.96)		# 我營暗漆底（高對比墊燙金框）
-const ALTAR_BG := Color(0.17, 0.09, 0.05, 0.97)		# 母壇暖漆底（聖域）
+# 設計忠實 P1 收編：身分色直讀 design_tokens.json SSOT（fallback 保原值＝零視覺風險），不再硬寫。
+var FRIEND_GOLD := THEME.get_color("incense_gold", Color(0.93, 0.78, 0.42))	# 我營常態框（燙金）
+var FRIEND_JADE := THEME.get_color("spirit_jade", Color(0.42, 0.80, 0.60))	# 得位加持（玉青）
+var FOE_RED := THEME.get_color("festival_red", Color(0.90, 0.32, 0.24))		# 來煞/告急（硃砂）
+var CAMP_BG := Color(THEME.get_color("lacquer_black", Color(0.10, 0.06, 0.05)), 0.96)	# 我營暗漆底（漆黑 token+α）
+const ALTAR_BG := Color(0.17, 0.09, 0.05, 0.97)		# 母壇暖漆底（聖域；暖調無對應 token，保 bespoke）
 # 營位/煞道座標（1200×700 基準，緊湊十字佈局；底部留符令手牌列）
 const CAMP_SIZE := Vector2(150, 96)
 const LANE_SIZE := Vector2(120, 50)
@@ -273,7 +274,7 @@ func _make_vignette_texture() -> Texture2D:
 
 ## 母壇聖光暈紋理（金光中心 → 透明邊；低 alpha）。
 func _make_altar_glow_texture() -> Texture2D:
-	var gold: Color = THEME.get_color("incense_gold", FRIEND_GOLD)
+	var gold: Color = FRIEND_GOLD
 	var g := Gradient.new()
 	g.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
 	g.colors = PackedColorArray([
@@ -379,7 +380,7 @@ func _make_altar(pos: Vector2) -> void:
 	_altar_bar.size = Vector2(asize.x - 32, 34)
 	_altar_bar.show_percentage = false
 	_altar_bar.add_theme_stylebox_override("background", THEME.make_stylebox(Color(0.08, 0.05, 0.04, 1.0), Color(0.40, 0.30, 0.18), 0, 1, 0.0))
-	_altar_bar.add_theme_stylebox_override("fill", THEME.make_stylebox(THEME.get_color("incense_gold", FRIEND_GOLD), FRIEND_GOLD, 0, 0, 0.0))
+	_altar_bar.add_theme_stylebox_override("fill", THEME.make_stylebox(FRIEND_GOLD, FRIEND_GOLD, 0, 0, 0.0))
 	_altar_panel.add_child(_altar_bar)
 
 func _info_label(pos: Vector2, fsize: int, col: Color) -> Label:
@@ -401,7 +402,7 @@ func _make_action_button(pos: Vector2, col: Color) -> Button:
 	b.add_theme_color_override("font_hover_color", Color(1.0, 0.97, 0.88))
 	b.add_theme_color_override("font_pressed_color", Color(0.96, 0.90, 0.80))
 	b.add_theme_color_override("font_disabled_color", Color(0.58, 0.54, 0.48))
-	var gold: Color = THEME.get_color("incense_gold", FRIEND_GOLD)
+	var gold: Color = FRIEND_GOLD
 	b.add_theme_stylebox_override("normal", THEME.make_stylebox(col, gold, 0, 2, 0.0))
 	b.add_theme_stylebox_override("hover", THEME.make_stylebox(col.lightened(0.08), gold, 0, 2, 0.0))
 	b.add_theme_stylebox_override("pressed", THEME.make_stylebox(col.darkened(0.10), gold, 0, 2, 0.0))
@@ -535,7 +536,7 @@ func _update_altar_danger() -> void:
 	var low: bool = ratio <= 0.34
 	var rim: Color = FOE_RED if low else FRIEND_GOLD
 	_altar_panel.add_theme_stylebox_override("panel", THEME.make_stylebox(ALTAR_BG, rim, 0, 4, 0.0))
-	var fill_col: Color = FOE_RED if low else THEME.get_color("incense_gold", FRIEND_GOLD)
+	var fill_col: Color = FOE_RED if low else FRIEND_GOLD
 	_altar_bar.add_theme_stylebox_override("fill", THEME.make_stylebox(fill_col, fill_col, 0, 0, 0.0))
 	_altar_label.add_theme_color_override("font_color", rim)
 
@@ -571,7 +572,7 @@ func _refresh_fu_hand() -> void:
 		# 符令＝符紙暖底 + 燙金框（硬邊）；選取中加粗金框
 		var sb := THEME.make_stylebox(
 			Color(0.20, 0.14, 0.10, 0.96),
-			THEME.get_color("incense_gold", FRIEND_GOLD) if sel else Color(0.56, 0.46, 0.32),
+			FRIEND_GOLD if sel else Color(0.56, 0.46, 0.32),
 			0, 4 if sel else 2, 0.0)
 		b.add_theme_color_override("font_color", Color(0.97, 0.92, 0.80))
 		b.add_theme_color_override("font_disabled_color", Color(0.70, 0.64, 0.54))
