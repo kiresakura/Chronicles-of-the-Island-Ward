@@ -52,7 +52,7 @@ const ANIM_LOOKUP: Dictionary = {
 	"enemy_paper_soldier.png": "enemy_paper_soldier",
 }
 const ANIM_FRAME_COUNT: int = 4
-const ANIM_IDLE_FPS: float = 4.0     # idle 慢循環
+const ANIM_IDLE_FPS: float = 6.0     # idle 循環（4 幀 @6fps，比舊 4fps 幻燈片順）
 const ANIM_ACTION_FPS: float = 8.0   # attack/hit/death 較快
 var _anim_frames: Array[Texture2D] = []
 var _anim_actor_id: String = ""
