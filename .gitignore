@@ -67,8 +67,9 @@ qa_root.log
 # Temporary generated backups
 assets/generated/_backup_before_character_replace/
 
-# 大型設計 mockup HTML（保留在磁碟當參考，不進 git 避免肥大）
-docs/design/mockups/
+# 大型設計 mockup HTML（使用者 13–28MB 匯出，不進 git）；但追蹤手寫的小型視覺基準
+docs/design/mockups/*
+!docs/design/mockups/codex_baseline.html
 
 # 美術重生 staging（AI 生成的中間產物、bakeoff、未 promote 的素材）
 qa/art_regen/
