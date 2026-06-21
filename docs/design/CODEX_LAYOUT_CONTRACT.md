@@ -52,8 +52,31 @@
 
 欄數隨可用寬自動增減、側欄隨寬高比收放、瀏海下內容全部內縮無裁切。
 
-## 接線 live（下一步）
+## 接線 live（已完成）
 
-`scripts/ui/menus/CodexMenu.gd` 目前硬寫欄數（6/4/3）且無空／載入／鎖定態。
-整合方向：把上述 kit ＋ `_apply_safe`／`_recompute_columns` 模式接進 CodexMenu，
-資料源換成真實 collection／符令／家將／神明，補四態，跑 167 測試 + 三解析度 audit。
+契約已接進真實 `scripts/ui/menus/CodexMenu.gd`（真實資料源：CardData／符令庫／8 家將／6 神明）：
+
+- **取代 SafeFit 等比縮放** → 自管反流。`TitleScreen.gd` 移除 `SafeFit.bind(codex_menu)`；
+  CodexMenu 自己 `_apply_safe()` 由 viewport＋`Responsive.safe_rect` 推導三區塊
+  （側欄／返回／內容捲動），resize 經 `Responsive.changed` 重排。
+- **響應式欄數**取代寫死 6/4/3：`_recompute_columns()` 由內容捲動可用寬推導，各分頁不同 cell 目標。
+- **DimBackground** 全出血交給既有 `UiMaskFitter`（`fullbleed_mask` group）。
+- **焦點導航**：分頁／返回／卡位 FOCUS_ALL，開啟時初始焦點落首分頁；ScrollContainer `follow_focus` 自動捲。
+- **邊界態**：分類為空 → 置中提示（i18n key `codex.empty_category`）。
+- **路徑保留**：`ScrollContainer/MarginContainer/CodexCardContainer` 維持直屬，不破壞 QA driver 與 `_on_tab_*` API。
+
+### live 驗收（`qa/collection_codex_driver.tscn`，真機渲染）
+
+| 情境 | cards 欄數 | 結果 |
+|---|---|---|
+| 1200×700 | 5 | PASS=3／FAIL=0，null_textures=0，empty_labels=0 |
+| 1515×700 | 6 | PASS=3／FAIL=0 |
+| 1200×700 + 瀏海(80/24/80/48) | 4（自動收欄） | PASS=3／FAIL=0，內容內縮無裁切 |
+
+家將=4 欄、神明=3 欄維持。全套測試 **365／365 綠**（i18n 零殘留含新 key）。
+
+### 尚未接（誠實標註，待資料層）
+
+`locked`／`loading`／`error` 三態 kit 已就緒，但 **live 未接**：圖鑑現為同步載入（無 loading／error IO 路徑），
+且存檔無「已發現」旗標（無 locked 資料模型）。硬造 ??? 會是「玩家明明持有卻顯示未收」的假資訊 → 不假接。
+待加 collection discovery flag 後再接 locked，屬獨立資料層工作。
