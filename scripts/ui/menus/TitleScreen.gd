@@ -52,10 +52,11 @@ func _ready():
 
 	_loading_bg_color = COTIW_UI_THEME.get_color("boot_splash_red", _loading_bg_color)
 
-	# MainMenu 自己做完整自適應；NewRunMenu/CodexMenu 為固定 1200×700 版面，
+	# MainMenu 自己做完整自適應；NewRunMenu 為固定 1200×700 版面，
 	# 用 SafeFit 等比置中塞進安全區（Phase 1；戰鬥/地圖等留 Phase 2）
 	SafeFit.bind(new_run_menu)
-	SafeFit.bind(codex_menu)
+	# CodexMenu 已升級為「佈局契約」自管（響應式欄數＋安全區內縮＋焦點導航），
+	# 不再 SafeFit 等比縮放固定版面（見 docs/design/CODEX_LAYOUT_CONTRACT.md）
 
 	# 角色面板：程序化建構，動態 add_child（不需要 .tscn 節點）
 	_character_panel = Control.new()

@@ -37,6 +37,8 @@ const DEITY_LIST: Array = [
 
 @onready var title_screen: Control = $%TitleScreen
 @onready var back_button: Button = $BackButton
+@onready var scroll_container: ScrollContainer = $ScrollContainer
+@onready var tab_sidebar: VBoxContainer = $VBoxContainer
 @onready var codex_card_container: GridContainer = $ScrollContainer/MarginContainer/CodexCardContainer
 @onready var tab_cards: Button = %TabCards
 @onready var tab_jiajiang: Button = %TabJiajiang
@@ -56,6 +58,18 @@ func _ready() -> void:
 		tab_jiajiang.button_up.connect(_on_tab_jiajiang)
 	if is_instance_valid(tab_deities):
 		tab_deities.button_up.connect(_on_tab_deities)
+	# 佈局契約：自管安全區內縮 + 響應式欄數（取代 TitleScreen 的 SafeFit 等比縮放）。
+	# 純從 viewport + Responsive.safe_rect 推導區塊（無寫死 1200×700 座標），resize 自動重排。
+	scale = Vector2.ONE
+	position = Vector2.ZERO
+	_apply_safe()
+	var resp: Node = get_node_or_null("/root/Responsive")
+	if resp != null and resp.has_signal("changed") and not resp.changed.is_connected(_apply_safe):
+		resp.changed.connect(_apply_safe)
+	# 焦點導航：分頁 + 返回可達（卡位於 _populate_cards 設 FOCUS_ALL）
+	for b: Button in [tab_cards, tab_jiajiang, tab_deities, back_button]:
+		if is_instance_valid(b):
+			b.focus_mode = Control.FOCUS_ALL
 
 ## 符令分頁鈕：複製卡牌分頁鈕（沿用主題樣式）、改文案、插在其後、接 _on_tab_fu。
 func _build_fu_tab_button() -> void:
@@ -70,13 +84,16 @@ func _build_fu_tab_button() -> void:
 
 
 func populate_codex_menu() -> void:
+	_apply_safe()	# 開啟時 viewport 可能已變 → 重排一次
 	_show_tab(TAB.CARDS)
+	if is_instance_valid(tab_cards):
+		tab_cards.grab_focus.call_deferred()	# 初始焦點落首分頁（手把/鍵盤入口）
 
 
 func _show_tab(tab: int) -> void:
 	_current_tab = tab
 	_clear_container()
-	codex_card_container.columns = 6 if tab == TAB.CARDS else (4 if (tab == TAB.JIAJIANG or tab == TAB.FU) else 3)
+	_recompute_columns(tab)	# 響應式欄數（取代寫死 6/4/3）
 	match tab:
 		TAB.CARDS:
 			_populate_cards()
@@ -86,6 +103,15 @@ func _show_tab(tab: int) -> void:
 			_populate_portraits(JIAJIANG_LIST, JIAJIANG_DIR)
 		TAB.DEITIES:
 			_populate_portraits(DEITY_LIST, DEITY_DIR)
+	# 邊界態：分類為空 → 置中提示（防呆；active 分頁恆有資料，停用分頁不可點）
+	if codex_card_container.get_child_count() == 0:
+		codex_card_container.columns = 1
+		var hint := Label.new()
+		hint.text = tr("codex.empty_category")
+		hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		hint.add_theme_font_size_override("font_size", COTIW_UI_THEME.get_typography_size("body", 22))
+		hint.add_theme_color_override("font_color", COTIW_UI_THEME.get_color("smoke_gray", Color(0.55, 0.49, 0.45)))
+		codex_card_container.add_child(hint)
 
 
 ## 收藏卡牌過濾：只顯示 active COTIW 角色卡（乩童/鸞女/道士/家將），
@@ -111,6 +137,7 @@ func _populate_cards() -> void:
 		var card: Card = Scenes.CARD.instantiate()
 		codex_card_container.add_child(card)
 		card.init(card_data, 0, false, false)
+		card.focus_mode = Control.FOCUS_ALL	# 焦點導航：D-pad 可進卡牌格（ScrollContainer follow_focus 自動捲）
 		shown += 1
 
 
@@ -251,6 +278,64 @@ func _make_portrait_card(sid: String, title: String, subtitle: String, base_dir:
 func _clear_container() -> void:
 	for child in codex_card_container.get_children():
 		child.queue_free()
+
+
+## 佈局契約核心：從 viewport + safe_rect 推導三區塊（側欄／返回／內容捲動），
+## 全出血底由 UiMaskFitter 管 DimBackground。零寫死 1200×700，resize 經 Responsive.changed 重排。
+func _apply_safe() -> void:
+	if not is_instance_valid(scroll_container):
+		return
+	var vp: Vector2 = get_viewport().get_visible_rect().size
+	var safe: Rect2 = COTIW_UI_THEME.get_safe_content_rect(get_viewport())
+	var base: float = float(COTIW_UI_THEME.get_spacing("lg", 24))
+	var gap: float = float(COTIW_UI_THEME.get_spacing("md", 16))
+	var l: float = base + maxf(0.0, safe.position.x)
+	var t: float = base + maxf(0.0, safe.position.y)
+	var r: float = base + maxf(0.0, vp.x - safe.end.x)
+	var b: float = base + maxf(0.0, vp.y - safe.end.y)
+	# 響應式：窄寬比（平板 4:3）側欄收窄讓位給內容
+	var ar: float = vp.x / maxf(vp.y, 1.0)
+	var side_w: float = 150.0 if ar < 1.6 else 172.0
+	var back_h: float = 64.0
+	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	# 側欄分頁：左欄，置於返回鈕之上
+	_place(tab_sidebar, l, t, side_w, maxf(120.0, vp.y - t - b - back_h - gap))
+	# 返回：左下（拇指可達；原置中改靠左以讓出內容高度）
+	_place(back_button, l, vp.y - b - back_h, side_w, back_h)
+	# 內容捲動：填右側剩餘、內縮安全區
+	var sx: float = l + side_w + gap
+	_place(scroll_container, sx, t, maxf(200.0, vp.x - sx - r), maxf(160.0, vp.y - t - b))
+	_recompute_columns(_current_tab)
+
+
+## 置入區塊（anchor 左上 + 由安全區推導的 offset）；resize 時整批重算 → 響應式無寫死座標。
+func _place(c: Control, x: float, y: float, w: float, h: float) -> void:
+	if not is_instance_valid(c):
+		return
+	c.set_anchors_preset(PRESET_TOP_LEFT)
+	c.offset_left = x
+	c.offset_top = y
+	c.offset_right = x + w
+	c.offset_bottom = y + h
+
+
+## 響應式欄數：由內容捲動區可用寬推導（不寫死 6/4/3），各分頁 cell 目標寬不同。
+func _recompute_columns(tab: int) -> void:
+	if not is_instance_valid(scroll_container) or not is_instance_valid(codex_card_container):
+		return
+	# 用 offset 推導寬（剛由 _apply_safe 設定，比可能 stale 的 .size 可靠），扣 MarginContainer 10+10
+	var inner: float = (scroll_container.offset_right - scroll_container.offset_left) - 20.0
+	var target: float = 168.0
+	var lo: int = 3
+	var hi: int = 6
+	match tab:
+		TAB.JIAJIANG, TAB.FU:
+			target = 196.0; lo = 2; hi = 4
+		TAB.DEITIES:
+			target = 240.0; lo = 2; hi = 3
+		_:
+			target = 168.0; lo = 3; hi = 6
+	codex_card_container.columns = clampi(int(inner / target), lo, hi)
 
 
 # Legacy public API kept for backwards compatibility
