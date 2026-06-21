@@ -12,10 +12,6 @@ config_version=5
 
 compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
-[audio]
-
-general/ios/session_category=3
-
 [application]
 
 config/name="鎮島錄"
@@ -29,9 +25,12 @@ config/description="台灣民俗主題肉鴿卡牌戰鬥手機遊戲。Fork from
 run/main_scene="res://scenes/Root.tscn"
 config/features=PackedStringArray("4.6")
 boot_splash/bg_color=Color(0.06, 0.03, 0.03, 1)
-boot_splash/show_image=true
 boot_splash/image="res://assets/ui/boot_splash_v5.png"
 config/icon="uid://8kopj5luv8dc"
+
+[audio]
+
+general/ios/session_category=3
 
 [autoload]
 
@@ -49,6 +48,7 @@ Responsive="*res://autoload/Responsive.gd"
 AudioManager="*res://autoload/AudioManager.gd"
 BadgeManager="*res://autoload/BadgeManager.gd"
 FtueCoach="*res://scripts/systems/ftue/FtueCoach.gd"
+MCPRuntime="*uid://b38tl8ec4gxsj"
 
 [debug]
 
@@ -62,6 +62,10 @@ window/size/viewport_height=700
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation="landscape"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/auto_reload/plugin.cfg", "res://addons/godot_mcp_editor/plugin.cfg", "res://addons/godot_mcp_runtime/plugin.cfg")
 
 [gui]
 
