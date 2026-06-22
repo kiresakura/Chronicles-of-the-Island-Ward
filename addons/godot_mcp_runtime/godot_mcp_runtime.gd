@@ -12,7 +12,7 @@ extends EditorPlugin
 ## - Performance metrics reporting
 ## - Signal watching
 
-const DEFAULT_PORT = 7788  # COTIW: 與 autoload 同步改自 7777（本機 lume serve 已占 7777）
+const DEFAULT_PORT = 7777
 const PROTOCOL_VERSION = "1.0"
 
 var _server: TCPServer
