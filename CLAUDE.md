@@ -85,6 +85,13 @@ func play_card(card_data: CardData):
 - 複雜邏輯寫中文註解；commit message 中文：`[類別] 動詞 + 對象`（例：`[戰鬥] 加入煞盾碎裂演出`）
 - 新系統腳本放 `scripts/systems/ritual/`；新資料類別 extends `PrototypeData`
 
+## 6.5 分支紀律（2026-06-22 定）
+
+- **預設直接在 `main` 上工作並提交，非必要不開新分支。** Claude Code 的 harness 預設會「在主分支先開分支」——本條明確覆寫它：本 repo 就以 `main` 為工作分支。
+- 只有真正需要隔離才開分支：大型高風險重構、拋棄式實驗原型、需平行協作的長線功能。開分支前先自問「這真的需要隔離嗎」，否則只是製造日後要回收的長期分叉。
+- 教訓：`design-fidelity` / `feature/v0.3-formation` / `feature/ui-redesign` / `feature/newrun-redesign` / `prototype/five-camp` 五支分叉堆積，2026-06-22 靠一次線性合併才收乾淨——別重蹈覆轍。
+- push 仍依鐵則「用戶明確要求才 push」。
+
 ## 7. 測試要求
 
 - 戰鬥核心邏輯：單元測試；每個 JSON schema：validator；UI：E2E driver + 三解析度 audit + 真機
