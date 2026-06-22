@@ -4,7 +4,7 @@ extends Node
 ## This singleton runs in the game and provides runtime inspection capabilities.
 ## It starts a TCP server that the MCP server can connect to.
 
-const DEFAULT_PORT = 7788  # COTIW: 改自 7777（本機 lume serve 已占 7777）；可用 env GODOT_MCP_RUNTIME_PORT 覆寫
+const DEFAULT_PORT = 7777
 const PROTOCOL_VERSION = "1.0"
 
 var _server: TCPServer
@@ -20,10 +20,6 @@ signal command_received(command: String, params: Dictionary)
 
 func _ready() -> void:
 	name = "MCPRuntime"
-	# COTIW: 允許 env 覆寫 port（與 npm gopeak MCP server 對齊用，免再改 vendored 碼）
-	var env_port := OS.get_environment("GODOT_MCP_RUNTIME_PORT")
-	if env_port.is_valid_int():
-		_port = int(env_port)
 	_start_server()
 	print("[MCP Runtime] Autoload ready, server starting on port %d" % _port)
 
