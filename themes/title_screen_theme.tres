@@ -3,17 +3,11 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ibui"]
 bg_color = Color(0.294118, 0.294118, 0.294118, 1)
 border_color = Color(0.8, 0.8, 0.8, 0)
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_left = 0
 shadow_size = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d0nh8"]
 bg_color = Color(0.439216, 0.396078, 0.407843, 1)
 border_color = Color(0.8, 0.8, 0.8, 0)
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_left = 0
 
 [resource]
 Button/colors/icon_focus_color = Color(1, 1, 1, 1)
