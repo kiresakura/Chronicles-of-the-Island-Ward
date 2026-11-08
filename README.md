@@ -8,6 +8,20 @@
 
 ---
 
+## 遊戲畫面
+
+> 以下皆為 Godot 4 實機執行截圖（1200×700 橫向 mobile 版面），非概念圖。
+
+| 主畫面 · 鎮島廟 | 五營鎮守戰鬥 |
+|---|---|
+| ![主畫面](docs/screenshots/01-title.png) | ![五營戰鬥](docs/screenshots/05-formation-combat.png) |
+| **符令卡牌圖鑑** | **家將圖鑑** |
+| ![卡牌圖鑑](docs/screenshots/02-card-codex.png) | ![家將圖鑑](docs/screenshots/03-jiajiang-codex.png) |
+| **神明圖鑑** | **神示供桌（開局擲筊）** |
+| ![神明圖鑑](docs/screenshots/04-deity-codex.png) | ![神示供桌](docs/screenshots/06-oracle-table.png) |
+
+---
+
 ## 30 秒理解這個專案
 
 **這不是「殺戮尖塔換台灣皮」。** 它是一款以「儀式編排」為核心的卡牌 roguelike——每一場戰鬥都是一次鎮煞儀式：
