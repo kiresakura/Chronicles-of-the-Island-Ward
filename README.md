@@ -8,9 +8,11 @@
 
 ---
 
-## 遊戲畫面
+## 實際執行畫面
 
-> 以下皆為 Godot 4 實機執行截圖（1200×700 橫向 mobile 版面），非概念圖。
+![鎮島錄 — 實際執行畫面](https://raw.githubusercontent.com/kiresakura/kiresakura/main/assets/01b-island-ward-title.png)
+
+更多畫面。以下皆為 Godot 4 實機執行截圖（1200×700 橫向 mobile 版面），非概念圖：
 
 | 主畫面 · 鎮島廟 | 五營鎮守戰鬥 |
 |---|---|
@@ -22,9 +24,18 @@
 
 ---
 
+## 出處與授權
+
+- 本專案以 DesirePathGames 的 [Slay-The-Robot](https://github.com/DesirePathGames/Slay-The-Robot) 為底改作。Slay-The-Robot 是 Godot 4 的肉鴿卡牌遊戲框架，採 MIT 授權。
+- 2026-05-16 起從該框架分出，開始做鎮島錄（第一個本專案 commit：`2129c9c`）。repo 最前面的 6 個 commit 是原作者的紀錄。
+- 原專案的說明文件保留在 [docs/UPSTREAM_README.md](./docs/UPSTREAM_README.md)。
+- 授權：MIT，全文見 [LICENSE](./LICENSE)。LICENSE 照原專案保留，著作權行是 `Copyright (c) 2025 DesirePathGames`。
+
+---
+
 ## 30 秒理解這個專案
 
-**這不是「殺戮尖塔換台灣皮」。** 它是一款以「儀式編排」為核心的卡牌 roguelike——每一場戰鬥都是一次鎮煞儀式：
+**這不是「殺戮尖塔換台灣皮」。** 它是一款以「儀式編排」為核心的卡牌 roguelike，每一場戰鬥都是一次鎮煞儀式：
 
 | 支柱 | 你在做什麼 | 靈感轉化（非照抄） |
 |---|---|---|
@@ -32,52 +43,35 @@
 | 💥 **破煞** | 用對「儀法」（拳/符/火/鈴/陣/咒）命中妖怪弱點，削「煞盾」，破煞後開爆發窗口 | 《崩壞：星穹鐵道》弱點擊破 |
 | ⛩️ **請神** | 累積請神值、擇時降乩（虎爺破煞、城隍審判、媽祖守護、土地公資源） | 民俗信仰原創 |
 | 🏮 **遶境** | 不是爬塔，是出巡遶境：山路 / 廟路 / 夜市路 / 荒宅路，污染越高香火越豐、越危險 | roguelike 路線 |
-| 🛕 **修廟** | 香火拿去修復鎮島廟，解鎖神明位 / 法器 / 籤詩——**但永遠不賣戰力** | meta progression |
+| 🛕 **修廟** | 香火拿去修復鎮島廟，解鎖神明位 / 法器 / 籤詩，但永遠不賣戰力 | meta progression |
 
-**開局**不是只選一個職業，而是配置 **主祭 / 護壇 / 法器** 三件班底。
-**變現**只賣外觀 / 角色解鎖 / 支持者內容，**絕不賣戰力、不做戰力 Gacha、不放廣告**。
-
-> 想一句話判斷重構是否成功？讀完本 README 與 PRD 後，你應該說得出「這是破煞 + 請神 + 合符」，而不是「STS 換皮」。
-
----
-
-## 當前開發狀態
-
-> 最後更新：2026-06-06 — **儀式編排型重構 Phase 1A 完成**
-
-**✅ Phase 1A（文件與 schema）已完成**：
-- PRD v0.2 + README 重定位為儀式編排型；6 份系統設計文件
-- `CardData` / `EnemyData` 擴充儀式欄位（破煞 / 合符 / 請神 / 分類），新增 `DeityData` / `GuardianData` / `RitualToolData`
-- `RitualTags`（六道儀法單一事實來源）+ `WardBreakSystem`（破煞純函式運算，已單元測試）
-- 資料注入：乩童 11 卡 + 鸞女 7 卡帶儀式欄位、act1 全 9 敵帶煞盾 / 弱點、4 神明 / 2 護壇 / 3 法器 / 4 路線 / 6 建築
-- 測試 **101 / 101 綠燈**（含新 schema validator + 破煞單元 + 載入 round-trip 證明）
-
-**⏳ 下一步**：Phase 1B 把破煞接進戰鬥流程（`WardBreakSystem` ← `ActionAttack`/`Hand`，煞盾條 UI）。
-
-**既有可玩基礎**（重構前）：乩童 + 鸞女兩角、第一章敵人 + 百年虎爺、橫向 mobile UI、戰鬥 / 地圖 / 商店 / 休息流程、Android 真機跑通。
+- **開局**不是只選一個職業，而是配置 **主祭 / 護壇 / 法器** 三件班底。
+- **變現**的設計原則：只賣外觀 / 角色解鎖 / 支持者內容，不賣戰力、不做戰力 Gacha、不放廣告。
+- **v0.3 起戰鬥改成「五營佈陣」**：戰場是東、南、西、北、中五營的羅盤，取代抽手牌、花神力的骨架；符令手牌與神明養成（敕封、緣分合祀）也一併接進戰鬥。設計見 [docs/design/formation_progression_v0.3.md](./docs/design/formation_progression_v0.3.md)。
 
 ---
 
-## 已落地 vs 設計待接（誠實標註）
+## 目前狀態
 
-| 系統 | 資料 / schema | 運算層 | 戰鬥 / UI 接線 |
-|---|---|---|---|
-| 破煞 | ✅ | ✅ `WardBreakSystem` + 單元測試 | ✅ **接線 + 煞盾指示（Enemy.gd）**；AoE/視覺/平衡續調 |
-| 合符 | ✅ 合成圖已驗證 | ✅ `TalismanMergeSystem` + 單元測試 | ✅ **接線（右鍵合符 + 每回合限額）**；UI 提示/手機手勢續調 |
-| 請神 | ✅ 4 神 | ✅ `DeityInvocationSystem` + 單元測試 | ✅ **4 神請神槽（虎爺/城隍/媽祖/土地公）+ 觸發路由 + 降乩效果**；平衡/手機版位續調 |
-| 主祭/護壇/法器 | ✅ 樣本 | ✅ `RitualLoadout` + 單元測試 | ✅ **系統 + NewRunMenu 選擇器 UI**：4 角各解析不同出戰神明（乩童→虎爺/鸞女→城隍/道士→媽祖/家將→虎爺）+ 護壇卡入庫 + 法器規則 |
-| 遶境地圖 | ✅ 路線特徵 | ✅ `PilgrimageRoutes` + 單元 | ✅ **遶境生成器**（act_1 切 `ActionGeneratePilgrimage`：有效圖 + 路線標記 + 危險度難度池） |
-| 修廟 meta | ✅ 6 建築 | ✅ `RitualTemple` + 單元 | ✅ **系統：香火結算 + 修廟（成本遞增/解鎖聚合）+ ProfileData 持久**；修廟 screen 留後續 |
+- **時間**：2026-05-16 開始，5 月 104 個 commit、6 月 135 個 commit；之後 8 月一次翻譯與主題更新，11 月補上實機截圖。全部共 247 個 commit（含原作者的 6 個）。
+- **內容**：4 個角色、5 個營、4 位神明、2 種護壇、3 種法器、4 條遶境路線、6 種修廟建築。（外部資料目錄 `external/data/` 有卡牌資料檔 87 個、敵人 16 個、遺物 28 個、事件 15 個。）
+- **已能做的事**：主畫面、新一局選班底、神示供桌擲筊、五營戰鬥、符令手牌、遶境地圖、商店與休息、圖鑑、每日上香、新手導引。
+- **測試**：`tests/` 有 55 個測試檔、約 365 個測試函式；每次 push 由 GitHub Actions 跑資料驗證與單元測試，最近一次（2026-11-08）通過。
+- **平台**：Android 已做過實機驗收（[紀錄](./docs/archive/ANDROID_VERIFICATION_2026-05-20.md)）；iOS 可匯出 Xcode 專案並建置成功，但 Apple Silicon 的 iOS 模擬器跑不起來（[紀錄](./docs/IOS_EXPORT_SETUP.md)）。iOS 真機：待補。
+- **美術**：像素風，規格見 [docs/design/ART_PRODUCTION_STANDARD.md](./docs/design/ART_PRODUCTION_STANDARD.md)。部分素材用 AI 圖像工具生成，生成規格與提示詞留在 `docs/design/production-specs/`。
+- **上架**：待補。
 
 ---
 
-## 跑專案 / 跑測試
+## 怎麼跑
+
+需要 [Godot](https://godotengine.org/) 4.6（`project.godot` 標示的版本）。
 
 ```bash
 # 匯入（首次或新增資源後）
 godot --headless --import
 
-# 跑全套 headless 測試（exit 0 = 全過；目前 101/101）
+# 跑全套 headless 測試（exit 0 = 全過）
 godot --headless res://tests/TestRunner.tscn
 
 # 開編輯器 / 跑遊戲
@@ -85,7 +79,19 @@ godot -e          # 編輯器
 godot             # 直接執行
 ```
 
-詳見 [tests/README.md](./tests/README.md)。新系統測試：`tests/unit/test_ritual_schema.gd`、`tests/unit/test_ward_break_system.gd`。
+- 測試必須以「場景」方式跑（`--script` 不會載入 autoload）。詳見 [tests/README.md](./tests/README.md)。
+- 匯出 Android 測試包：`godot --headless --export-debug "Android" build/android/cotiw.apk`，需要 Android SDK 和 JDK，步驟見 [docs/ANDROID_EXPORT_SETUP.md](./docs/ANDROID_EXPORT_SETUP.md)。
+- 匯出 iOS：見 [docs/IOS_EXPORT_SETUP.md](./docs/IOS_EXPORT_SETUP.md)。
+- 瀏覽器版（Web 匯出）：待補。
+
+---
+
+## 開發原則
+
+1. **資料驅動**：神明、弱點、破煞值都放 JSON，不寫死在程式裡。
+2. **mobile-first**：橫向 1200×700。
+3. **fork-first**：新增優先，少改 Slay-The-Robot 的核心。
+4. **測試要綠**：改動後跑 `TestRunner`；新系統補 validator 或單元測試。
 
 ---
 
@@ -93,33 +99,22 @@ godot             # 直接執行
 
 | 檔案 | 用途 |
 |---|---|
-| [PRD.md](./PRD.md) | **產品需求文件 v0.2**（儀式編排型定位、四大支柱、角色、遶境、修廟、變現、Phase 計畫） |
-| [docs/design/ritual_combat_system.md](./docs/design/ritual_combat_system.md) | **戰鬥總覽**：四支柱如何咬合成儀式鏈（先讀這份） |
+| [PRD.md](./PRD.md) | 產品需求文件（儀式編排型定位、四大支柱、角色、遶境、修廟、變現、Phase 計畫） |
+| [docs/design/ritual_combat_system.md](./docs/design/ritual_combat_system.md) | 戰鬥總覽：四支柱如何咬合成儀式鏈（先讀這份） |
 | [docs/design/ward_break_system.md](./docs/design/ward_break_system.md) | 破煞 / 煞盾系統 |
 | [docs/design/talisman_merge_system.md](./docs/design/talisman_merge_system.md) | 符階合成系統 |
 | [docs/design/deity_invocation_system.md](./docs/design/deity_invocation_system.md) | 請神系統 |
 | [docs/design/pilgrimage_route_system.md](./docs/design/pilgrimage_route_system.md) | 遶境地圖系統 |
 | [docs/design/meta_temple_progression.md](./docs/design/meta_temple_progression.md) | 修廟 meta progression |
-| [CLAUDE.md](./CLAUDE.md) / [AGENTS.md](./AGENTS.md) | 工程接手指南（三鐵律） |
-| [QUESTIONS.md](./QUESTIONS.md) | 開發過程累積問題 → 憲龍 |
+| [docs/design/formation_progression_v0.3.md](./docs/design/formation_progression_v0.3.md) | v0.3：五營陣型與神明養成 |
+| [docs/UPSTREAM_README.md](./docs/UPSTREAM_README.md) | 原專案 Slay-The-Robot 的說明 |
 
-**新資料目錄**：`external/data/{deities,guardians,ritual_tools,route_traits,meta_buildings}/`
-**新系統腳本**：`scripts/systems/ritual/{RitualTags,WardBreakSystem}.gd`
-**新資料類別**：`data/prototype/{DeityData,GuardianData,RitualToolData}.gd`
-
----
-
-## 給接手工程師 / Claude Code 的注意事項
-
-1. **三鐵律**：資料驅動（神明 / 弱點 / 破煞值全 JSON，不硬編碼）、mobile-first 橫向 1200×700、Slay-The-Robot fork-first（新增 > 改核心）。
-2. **名詞紅線**：機制吸收 R1999 / HSR，但**禁用**「韌性 / 弱點擊破 / 升階 / 終結技」原詞——我們用「煞盾 / 破煞 / 合符 / 敕符 / 降乩」。
-3. **新欄位向後相容**：卡 / 敵的儀式欄位預設空 / 0，對既有戰鬥行為零影響；接 Phase 1B 時才讓 `WardBreakSystem` 生效。
-4. **測試必綠**：改動後跑 `TestRunner`，維持 101/101；新系統請補 validator / 單元測試。
-5. **下一步**：Phase 1（四支柱）+ Phase 2（2A 多神 / 2B 配置+UI / 2C 道士家將 / 2E 遶境生成器 / 2D 修廟系統 / 2F 大醮 Boss）核心皆已落地。剩餘打磨：修廟 screen UI、班底/卡面美術、Boss 演出、建築解鎖實套進 run-start——詳 [PHASE_2_PLAN.md](./docs/design/PHASE_2_PLAN.md)。
+**資料目錄**：`external/data/{deities,guardians,ritual_tools,route_traits,meta_buildings,formation_camps}/` 等
+**系統腳本**：`scripts/systems/ritual/`
+**資料類別**：`data/prototype/`
 
 ---
 
-## 聯絡
+## 作者
 
-- 產品負責人：憲龍（42954151+kiresakura@users.noreply.github.com）
-- 開發接手：Claude Code
+憲龍（GitHub：[kiresakura](https://github.com/kiresakura)）

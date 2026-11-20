@@ -621,7 +621,7 @@ FileLoader autoload（`autoload/FileLoader.gd:50`）啟動會檢查
 開發者帳號（US$25 一次性）。註冊/付費/憑證皆屬帳號持有人操作，我不能代辦。
 
 **需要你做**：
-1. Apple Developer 註冊（42954151+kiresakura@users.noreply.github.com 或專用帳號）→ 給我 Team ID
+1. Apple Developer 註冊（個人 Apple ID 或專用帳號）→ 給我 Team ID
 2. （可後補）Google Play Console 註冊
 3. Bundle ID 確認：建議 `com.kiresakura.cotiw`（或你指定）
 

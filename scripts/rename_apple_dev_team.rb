@@ -3,7 +3,7 @@
 #
 # 用法：
 #   cd scripts && bundle install
-#   APPLE_ID=42954151+kiresakura@users.noreply.github.com ruby rename_apple_dev_team.rb "新的顯示名字"
+#   APPLE_ID=you@example.com ruby rename_apple_dev_team.rb "新的顯示名字"
 #
 # 目的：
 # - 連 Apple Developer Portal 印出當前 team 資訊
@@ -18,7 +18,7 @@
 require "spaceship"
 require "io/console"
 
-APPLE_ID = ENV["APPLE_ID"] || "42954151+kiresakura@users.noreply.github.com"
+APPLE_ID = ENV.fetch("APPLE_ID") { abort("APPLE_ID is not set") }
 NEW_NAME = ARGV[0]
 
 if NEW_NAME.nil? || NEW_NAME.strip.empty?
