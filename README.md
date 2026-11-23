@@ -27,7 +27,7 @@
 ## 出處與授權
 
 - 本專案以 DesirePathGames 的 [Slay-The-Robot](https://github.com/DesirePathGames/Slay-The-Robot) 為底改作。Slay-The-Robot 是 Godot 4 的肉鴿卡牌遊戲框架，採 MIT 授權。
-- 2026-05-16 起從該框架分出，開始做鎮島錄（第一個本專案 commit：`2129c9c`）。repo 最前面的 6 個 commit 是原作者的紀錄。
+- 2026-05-16 起從該框架分出，開始做鎮島錄（第一個本專案 commit：2026-05-16）。repo 最前面的 6 個 commit 是原作者的紀錄。
 - 原專案的說明文件保留在 [docs/UPSTREAM_README.md](./docs/UPSTREAM_README.md)。
 - 授權：MIT，全文見 [LICENSE](./LICENSE)。LICENSE 照原專案保留，著作權行是 `Copyright (c) 2025 DesirePathGames`。
 

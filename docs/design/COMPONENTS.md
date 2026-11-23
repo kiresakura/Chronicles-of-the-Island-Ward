@@ -247,7 +247,7 @@ Tooltip 專用樣式，讀 `design_tokens.components.tooltip`：
 ## 14. 採用率 / 待補（2026-05-19）
 
 - **53 個 UI .gd**，**11 採用** `CotiwUiTheme`（核心畫面齊；STR-runtime 內部邏輯 scripts 多數不需要主題）。
-- ✅ 已完成（commit `2ca0902`）：72 處硬編色 token 化、Combat HUD 語意色、design_tokens 補 7 token。
+- ✅ 已完成（commit 2026-05-20）：72 處硬編色 token 化、Combat HUD 語意色、design_tokens 補 7 token。
 - ✅ 已完成（icon/觸控/型錄 commit）：icon 命名統一、觸控目標補修、本元件型錄。
 - ✅ 已完成（focus/panel/tooltip commit）：`apply_focus_style`、`apply_panel_style`、`apply_tooltip_style` 補齊；apply_primary/secondary 預設套用 focus ring；測試 23→26。
 - 設計系統 audit 全部 priority action 落地完畢。後續優化由各 sprint 內容驅動。

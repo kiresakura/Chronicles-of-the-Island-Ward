@@ -1,7 +1,7 @@
 # Android 實機驗收報告 — 2026-05-20
 
 > **裝置**：Redmi 25080RABDG（Android 物理 1280×2772、實際橫向 2772×1280、520dpi）
-> **APK**：`build/android/cotiw.apk` 81MB（debug-signed），commit `e8f721d` 之後重 build
+> **APK**：`build/android/cotiw.apk` 81MB（debug-signed），commit 2026-05-20 之後重 build
 > **截圖**：`build/android/shots_redmi/01..10.png`
 > **耗時**：≈ 25 min（含解 BlueStacks Vulkan 黑屏 + qemu AVD config 問題）
 
@@ -99,7 +99,7 @@
 
 **症狀**：4 個起手選項擠在螢幕左下角（佔約 30% 寬度），而非置中在 1200×700 stage 內。
 
-**根因**：Phase 2 (`17d0b00`) RunScreen 整體 SafeFit 但 RunStartOptions 是 STR 的 menu overlay，可能在 RunScreen 之外被 add_child 到 Run.tscn root → 跳過 SafeFit 的祖先縮放。
+**根因**：Phase 2 (2026-05-19) RunScreen 整體 SafeFit 但 RunStartOptions 是 STR 的 menu overlay，可能在 RunScreen 之外被 add_child 到 Run.tscn root → 跳過 SafeFit 的祖先縮放。
 
 **應對**：定位 RunStartOptions 的實際父節點，把它移到 SafeFit 之內；或單獨對其 apply SafeFit.bind。
 
